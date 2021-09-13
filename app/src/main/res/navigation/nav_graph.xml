@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.dauma.grokimkartu.ui.HomeFragment"
+        android:name="com.dauma.grokimkartu.ui.players.PlayersFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_players" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.dauma.grokimkartu.ui.ProfileFragment"
+        android:name="com.dauma.grokimkartu.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>
