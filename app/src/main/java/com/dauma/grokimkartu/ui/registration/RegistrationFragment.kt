@@ -6,8 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.globals.ComponentProvider
+import com.dauma.grokimkartu.viewmodels.registration.RegistrationViewModel
+import com.dauma.grokimkartu.viewmodels.registration.RegistrationViewModelImpl
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,6 +28,7 @@ class RegistrationFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var registrationViewModel: RegistrationViewModel? = null
     private var closeImageButton: ImageButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +37,9 @@ class RegistrationFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        // TODO: Inject registrationViewModelFactory
+        registrationViewModel = ViewModelProvider(this, ComponentProvider.ioCContainer.registrationViewModelFactory())
+            .get(RegistrationViewModelImpl::class.java)
     }
 
     override fun onCreateView(
