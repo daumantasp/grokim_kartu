@@ -3,4 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile_fragment">Profile fragment</string>
+    <string name="login_welcomeTextView">Grokim Kartu</string>
+    <string name="login_loginButton">Prisijungti</string>
+    <string name="login_registerTextView">Registruotis</string>
 </resources>
