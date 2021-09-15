@@ -6,9 +6,9 @@
     app:startDestination="@id/loginFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/playersFragment"
         android:name="com.dauma.grokimkartu.ui.players.PlayersFragment"
-        android:label="fragment_home"
+        android:label="fragment_players"
         tools:layout="@layout/fragment_players" />
     <fragment
         android:id="@+id/profileFragment"
