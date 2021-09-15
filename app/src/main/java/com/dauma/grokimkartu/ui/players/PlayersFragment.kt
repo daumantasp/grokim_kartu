@@ -53,7 +53,7 @@ class PlayersFragment : Fragment(), PlayersView {
 
     private fun setupPlayersRecyclerView(players: List<Player>) {
         if (playersRecyclerView == null) {
-            Log.d(TAG, "playersRecyclerView not found")
+            Log.d(TAG, "ERROR: playersRecyclerView not found")
             return
         }
 
