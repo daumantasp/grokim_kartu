@@ -6,4 +6,6 @@
     <string name="login_welcomeTextView">Grokim Kartu</string>
     <string name="login_loginButton">Prisijungti</string>
     <string name="login_registerTextView">Registruotis</string>
+    <string name="registration_registrationTextView">Registracija</string>
+    <string name="registration_registerButton">Registruotis</string>
 </resources>
