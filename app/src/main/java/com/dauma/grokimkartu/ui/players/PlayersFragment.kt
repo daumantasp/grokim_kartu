@@ -17,7 +17,7 @@ import com.dauma.grokimkartu.models.Player
 import com.dauma.grokimkartu.viewmodels.players.PlayersViewModel
 import com.dauma.grokimkartu.viewmodels.players.PlayersViewModelImpl
 
-class PlayersFragment : Fragment(), PlayersView {
+class PlayersFragment : Fragment() {
     private var playersViewModel: PlayersViewModel? = null
     private var playersRecyclerView: RecyclerView? = null
     private var isPlayersRecyclerViewSetup: Boolean = false
