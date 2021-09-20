@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.adapters
+package com.dauma.grokimkartu.ui.players
 
 import android.view.LayoutInflater
 import android.view.View

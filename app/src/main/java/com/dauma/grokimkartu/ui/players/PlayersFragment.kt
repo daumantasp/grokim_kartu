@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.adapters.PlayersListAdapter
 import com.dauma.grokimkartu.globals.ComponentProvider
 import com.dauma.grokimkartu.models.Player
 import com.dauma.grokimkartu.viewmodels.players.PlayersViewModel
