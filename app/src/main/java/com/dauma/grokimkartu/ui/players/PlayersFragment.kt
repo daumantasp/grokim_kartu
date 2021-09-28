@@ -6,30 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.adapters.PlayersListAdapter
-import com.dauma.grokimkartu.globals.ComponentProvider
 import com.dauma.grokimkartu.models.Player
-import com.dauma.grokimkartu.viewmodels.players.PlayersViewModel
 import com.dauma.grokimkartu.viewmodels.players.PlayersViewModelImpl
+import dagger.hilt.android.AndroidEntryPoint
 
-class PlayersFragment : Fragment(), PlayersView {
-    private var playersViewModel: PlayersViewModel? = null
+@AndroidEntryPoint
+class PlayersFragment : Fragment() {
+    private val playersViewModel by viewModels<PlayersViewModelImpl>()
+    // read more at https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
     private var playersRecyclerView: RecyclerView? = null
     private var isPlayersRecyclerViewSetup: Boolean = false
 
     companion object {
         private var TAG = "PlayersFragment"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        playersViewModel = ViewModelProvider(this, ComponentProvider.ioCContainer.playersViewModelFactory()).get(
-            PlayersViewModelImpl::class.java)
     }
 
     override fun onCreateView(
@@ -53,7 +47,7 @@ class PlayersFragment : Fragment(), PlayersView {
 
     private fun setupPlayersRecyclerView(players: List<Player>) {
         if (playersRecyclerView == null) {
-            Log.d(TAG, "playersRecyclerView not found")
+            Log.d(TAG, "ERROR: playersRecyclerView not found")
             return
         }
 
