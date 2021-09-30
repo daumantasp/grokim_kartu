@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "250149297775",
+    "project_id": "grokim-kartu",
+    "storage_bucket": "grokim-kartu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250149297775:android:e79b03f980c718dbc0b79a",
+        "android_client_info": {
+          "package_name": "com.dauma.grokimkartu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250149297775-jtl8bk238voh9ar8udjv3hu16mf82ese.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT9R3fkIVrRumL8r-XK8YrzKy_GEcp3qg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250149297775-jtl8bk238voh9ar8udjv3hu16mf82ese.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
