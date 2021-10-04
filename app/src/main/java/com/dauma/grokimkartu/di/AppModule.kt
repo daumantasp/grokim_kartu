@@ -2,8 +2,14 @@ package com.dauma.grokimkartu.di
 
 import com.dauma.grokimkartu.data.players.FakePlayersDaoImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
+import com.dauma.grokimkartu.data.users.UsersDao
+import com.dauma.grokimkartu.data.users.UsersDaoImpl
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.players.PlayersRepositoryImpl
+import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.users.UsersRepositoryImpl
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,5 +28,16 @@ class AppModule {
     @Singleton
     fun providePlayersRepository(playersDao: PlayersDao) : PlayersRepository {
         return PlayersRepositoryImpl(playersDao)
+    }
+
+    @Provides
+    fun provideUsersDao() : UsersDao {
+        return UsersDaoImpl(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+    }
+
+    @Provides
+    @Singleton
+    fun providesUsersRepository(usersDao: UsersDao) : UsersRepository {
+        return UsersRepositoryImpl(usersDao)
     }
 }
