@@ -7,5 +7,10 @@
     <string name="login_loginButton">Prisijungti</string>
     <string name="login_registerTextView">Registruotis</string>
     <string name="registration_registrationTextView">Registracija</string>
+    <string name="registration_name">Vardas</string>
+    <string name="registration_email">El. paštas</string>
+    <string name="registration_password">Slaptažodis</string>
+    <string name="registration_name_description">Vardą turi sudaryti ne daugiau kaip 20 simbolių.</string>
+    <string name="registration_password_description">Slaptažodį turi sudaryti ne mažiau kaip 6 ir ne daugiau kaip 35 simboliai.</string>
     <string name="registration_registerButton">Registruotis</string>
 </resources>
