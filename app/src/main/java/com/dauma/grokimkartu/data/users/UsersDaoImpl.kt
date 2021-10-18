@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.data.users
 
+import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.models.users.User
 import com.google.firebase.auth.FirebaseAuth
@@ -42,6 +43,17 @@ class UsersDaoImpl(
             }
             .addOnFailureListener { _ ->
                 onComplete(false, null)
+            }
+    }
+
+    override fun loginUser(user: LoginUser, onComplete: (Boolean) -> Unit) {
+        firebaseAuth
+            .signInWithEmailAndPassword(user.email, user.password)
+            .addOnCompleteListener { result ->
+                onComplete(result.isSuccessful)
+            }
+            .addOnFailureListener { _ ->
+                onComplete(false)
             }
     }
 }
