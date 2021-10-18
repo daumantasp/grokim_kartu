@@ -1,16 +1,16 @@
 package com.dauma.grokimkartu.ui.login
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
-import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
+import com.dauma.grokimkartu.models.EventObserver
 import com.dauma.grokimkartu.viewmodels.login.LoginViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +32,8 @@ class LoginFragment : Fragment() {
         val view = binding.root
 
         // TODO: Implement it in MVVM pattern
+        // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
+        // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
         binding.registerTextView.setOnClickListener {
             it.findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
@@ -39,6 +41,10 @@ class LoginFragment : Fragment() {
         loginViewModel.getLoginForm().getFormFields().observe(viewLifecycleOwner) {
             loginViewModel.loginUser(it.get(0), it.get(1))
         }
+
+        loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(it as Int)
+        })
 
         return view
     }
