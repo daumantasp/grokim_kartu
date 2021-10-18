@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseAuth
 @AndroidEntryPoint
 class RegistrationFragment : Fragment() {
     private val registrationViewModel by viewModels<RegistrationViewModelImpl>()
-    private var mAuth: FirebaseAuth? = null
 
     private var _binding: FragmentRegistrationBinding? = null
     // This property is only valid between onCreateView and
@@ -36,8 +35,6 @@ class RegistrationFragment : Fragment() {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         binding.model = registrationViewModel
         val view = binding.root
-
-        mAuth = FirebaseAuth.getInstance();
 
         // TODO: Implement it in MVVM pattern
         binding.closeImageButton.setOnClickListener {
