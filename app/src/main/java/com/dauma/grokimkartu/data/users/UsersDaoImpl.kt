@@ -18,8 +18,8 @@ class UsersDaoImpl(
     override fun registerUser(user: RegistrationUser, onComplete: (Boolean, User?) -> Unit) {
         firebaseAuth
             .createUserWithEmailAndPassword(user.email!!, user.password!!)
-            .addOnCompleteListener { result ->
-                if (result.isSuccessful) {
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
                     val id = firebaseAuth.currentUser?.uid
                     if (id != null) {
                         val userToSaveInFirestore = User(id, user.name)
@@ -46,19 +46,23 @@ class UsersDaoImpl(
             }
     }
 
-    override fun loginUser(user: LoginUser, onComplete: (Boolean) -> Unit) {
+    override fun loginUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseAuth
             .signInWithEmailAndPassword(user.email, user.password)
-            .addOnCompleteListener { result ->
-                onComplete(result.isSuccessful)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, task.exception)
+                }
             }
             .addOnFailureListener { _ ->
-                onComplete(false)
+                onComplete(false, Exception("SOMETHING_FAILED"))
             }
     }
 
     override fun isUserLoggedIn(): Boolean {
-        // TODO: read more at https://firebase.google.com/docs/auth/web/manage-users
+        // TODO: read more at https://firebase.google.com/docs/auth/android/manage-users
         return firebaseAuth.currentUser != null
     }
 

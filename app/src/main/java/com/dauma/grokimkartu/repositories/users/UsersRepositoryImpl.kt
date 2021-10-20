@@ -35,9 +35,20 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         }
     }
 
-    override fun loginUser(user: LoginUser, onComplete: (Boolean) -> Unit) {
+    override fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationException?) -> Unit) {
         if (isUserLoggedIn() == false) {
-            usersDao.loginUser(user, onComplete)
+            usersDao.loginUser(user) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    if (e != null) {
+                        // READ MORE AT: https://www.techotopia.com/index.php?title=Handling_Firebase_Authentication_Errors_and_Failures&mobileaction=toggle_view_mobile
+                    } else {
+                        // TODO: why sometimes I throw exception, and sometimes I send?
+                        onComplete(false, AuthenticationException(3, "Something failed!"))
+                    }
+                }
+            }
         } else {
             throw AuthenticationException(1, "User is already logged in!")
         }

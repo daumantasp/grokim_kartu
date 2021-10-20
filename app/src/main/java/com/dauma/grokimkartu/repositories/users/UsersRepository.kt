@@ -9,6 +9,6 @@ interface UsersRepository {
     fun registerUser(user: RegistrationUser, onComplete: (Boolean, User?) -> Unit)
     fun sendEmailVerification()
     fun isEmailVerified(): Boolean
-    fun loginUser(user: LoginUser, onComplete: (Boolean) -> Unit)
+    fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationException?) -> Unit)
     fun logOut()
 }

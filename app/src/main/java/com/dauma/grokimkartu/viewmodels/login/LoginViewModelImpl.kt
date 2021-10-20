@@ -21,7 +21,7 @@ class LoginViewModelImpl @Inject constructor(
 
     override fun loginUser(email: String, password: String) {
         val loginUser = LoginUser(email, password)
-        usersRepository.loginUser(loginUser) { isSuccessful ->
+        usersRepository.loginUser(loginUser) { isSuccessful, e ->
             if (isSuccessful) {
                 _navigateToPlayers.value = Event(R.id.action_loginFragment_to_playersFragment)
             }
