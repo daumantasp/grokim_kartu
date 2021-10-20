@@ -5,6 +5,10 @@ import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.models.users.User
 
 interface UsersRepository {
+    fun isUserLoggedIn(): Boolean
     fun registerUser(user: RegistrationUser, onComplete: (Boolean, User?) -> Unit)
+    fun sendEmailVerification()
+    fun isEmailVerified(): Boolean
     fun loginUser(user: LoginUser, onComplete: (Boolean) -> Unit)
+    fun logOut()
 }

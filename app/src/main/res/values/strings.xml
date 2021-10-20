@@ -15,4 +15,5 @@
     <string name="registration_name_description">Vardą turi sudaryti ne daugiau kaip 20 simbolių.</string>
     <string name="registration_password_description">Slaptažodį turi sudaryti ne mažiau kaip 6 ir ne daugiau kaip 35 simboliai.</string>
     <string name="registration_registerButton">Registruotis</string>
+    <string name="registration_email_verification_description">Jums į el. paštą buvo išsiųsta patvirtinimo nuoroda</string>
 </resources>

@@ -56,4 +56,21 @@ class UsersDaoImpl(
                 onComplete(false)
             }
     }
+
+    override fun isUserLoggedIn(): Boolean {
+        // TODO: read more at https://firebase.google.com/docs/auth/web/manage-users
+        return firebaseAuth.currentUser != null
+    }
+
+    override fun logOut() {
+        firebaseAuth.signOut()
+    }
+
+    override fun isEmailVerified(): Boolean {
+        return firebaseAuth.currentUser?.isEmailVerified ?: false
+    }
+
+    override fun sendEmailVerification() {
+        firebaseAuth.currentUser?.sendEmailVerification()
+    }
 }
