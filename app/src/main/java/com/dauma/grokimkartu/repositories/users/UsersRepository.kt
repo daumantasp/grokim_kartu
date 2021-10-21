@@ -6,9 +6,9 @@ import com.dauma.grokimkartu.models.users.User
 
 interface UsersRepository {
     fun isUserLoggedIn(): Boolean
-    fun registerUser(user: RegistrationUser, onComplete: (Boolean, User?) -> Unit)
+    fun registerUser(user: RegistrationUser, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun sendEmailVerification()
     fun isEmailVerified(): Boolean
-    fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationException?) -> Unit)
+    fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun logOut()
 }

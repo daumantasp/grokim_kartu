@@ -15,34 +15,37 @@ class UsersDaoImpl(
         private const val usersCollection = "users"
     }
 
-    override fun registerUser(user: RegistrationUser, onComplete: (Boolean, User?) -> Unit) {
+    override fun registerUser(user: RegistrationUser, onComplete: (Boolean, String?, Exception?) -> Unit) {
         firebaseAuth
-            .createUserWithEmailAndPassword(user.email!!, user.password!!)
+            .createUserWithEmailAndPassword(user.email, user.password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val id = firebaseAuth.currentUser?.uid
                     if (id != null) {
-                        val userToSaveInFirestore = User(id, user.name)
-                        firebaseFirestore
-                            .collection(UsersDaoImpl.usersCollection)
-                            .document(id)
-                            .set(userToSaveInFirestore)
-                            .addOnSuccessListener { _ ->
-                                onComplete(true, userToSaveInFirestore)
-                            }
-                            .addOnFailureListener { _ ->
-                                onComplete(false, null)
-                            }
+                        onComplete(true, id, null)
                     } else {
                         // This situation should never occur
-                        onComplete(false, null)
+                        onComplete(false, null, Exception("MISSING REGISTERED USER ID"))
                     }
                 } else {
-                    onComplete(false, null)
+                    onComplete(false, null, task.exception)
                 }
             }
-            .addOnFailureListener { _ ->
-                onComplete(false, null)
+            .addOnFailureListener { e ->
+                onComplete(false, null, e)
+            }
+    }
+
+    override fun addUserToFirestore(user: User, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(UsersDaoImpl.usersCollection)
+            .document(user.id)
+            .set(user)
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
             }
     }
 
@@ -56,8 +59,8 @@ class UsersDaoImpl(
                     onComplete(false, task.exception)
                 }
             }
-            .addOnFailureListener { _ ->
-                onComplete(false, Exception("SOMETHING_FAILED"))
+            .addOnFailureListener { e ->
+                onComplete(false, e)
             }
     }
 
