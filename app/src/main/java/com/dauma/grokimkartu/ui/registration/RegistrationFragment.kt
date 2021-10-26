@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
@@ -56,6 +57,14 @@ class RegistrationFragment : Fragment() {
                     Toast.LENGTH_LONG
                 )
             }
+        })
+
+        registrationViewModel.emailError.observe(viewLifecycleOwner, Observer {
+            binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
+        })
+
+        registrationViewModel.passwordError.observe(viewLifecycleOwner, Observer {
+            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
 
         return view

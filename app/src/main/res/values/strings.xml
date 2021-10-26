@@ -16,4 +16,7 @@
     <string name="registration_password_description">Slaptažodį turi sudaryti ne mažiau kaip 6 ir ne daugiau kaip 35 simboliai.</string>
     <string name="registration_registerButton">Registruotis</string>
     <string name="registration_email_verification_description">Jums į el. paštą buvo išsiųsta patvirtinimo nuoroda</string>
+    <string name="registration_email_already_exists_error">Toks el. paštas jau naudojamas</string>
+    <string name="registration_email_incorrect_format_error">Netinkamas el. pašto formatas</string>
+    <string name="registration_email_password_too_weak_error">Nurodytas slaptažodis yra per silpnas</string>
 </resources>
