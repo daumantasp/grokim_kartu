@@ -19,4 +19,6 @@
     <string name="registration_email_already_exists_error">Toks el. paštas jau naudojamas</string>
     <string name="registration_email_incorrect_format_error">Netinkamas el. pašto formatas</string>
     <string name="registration_email_password_too_weak_error">Nurodytas slaptažodis yra per silpnas</string>
+    <string name="login_invalid_email_error">Toks vartotojas nerastas</string>
+    <string name="login_invalid_password_error">Neteisingas slaptažodis</string>
 </resources>
