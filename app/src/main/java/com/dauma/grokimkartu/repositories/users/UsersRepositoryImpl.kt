@@ -24,26 +24,26 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
                         if (isSuccessful) {
                             onComplete(true, null)
                         } else {
-                            val error = AuthenticationError(6, "Failed adding registered user to Firestore!")
+                            val error = AuthenticationError(6)
                             onComplete(false, error)
                         }
                     }
                 } else {
                     val error: AuthenticationError
                     if (e is FirebaseAuthUserCollisionException) {
-                        error = AuthenticationError(7, "Email already registered!")
+                        error = AuthenticationError(7)
                     } else if (e is FirebaseAuthInvalidCredentialsException) {
-                        error = AuthenticationError(8, "Email is in incorrect format!")
+                        error = AuthenticationError(8)
                     } else if (e is FirebaseAuthWeakPasswordException) {
-                        error = AuthenticationError(9, "Password is too weak!")
+                        error = AuthenticationError(9)
                     } else {
-                        error = AuthenticationError(5, "Something failed")
+                        error = AuthenticationError(5)
                     }
                     onComplete(false, error)
                 }
             }
         } else {
-            val error = AuthenticationError(1, "User is already logged in!")
+            val error = AuthenticationError(1)
             throw AuthenticationException(error)
         }
     }
@@ -52,7 +52,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         if (isUserLoggedIn()) {
             usersDao.sendEmailVerification()
         } else {
-            val error = AuthenticationError(2, "User is not logged in!")
+            val error = AuthenticationError(2)
             throw AuthenticationException(error)
         }
     }
@@ -61,7 +61,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         if (isUserLoggedIn()) {
             return usersDao.isEmailVerified()
         } else {
-            val error = AuthenticationError(2, "User is not logged in!")
+            val error = AuthenticationError(2)
             throw AuthenticationException(error)
         }
     }
@@ -74,17 +74,17 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
                 } else {
                     val error: AuthenticationError
                     if (e is FirebaseAuthInvalidCredentialsException) {
-                        error = AuthenticationError(3, "Invalid password")
+                        error = AuthenticationError(3)
                     } else if (e is FirebaseAuthInvalidUserException) {
-                        error = AuthenticationError(4, "Incorrect email address")
+                        error = AuthenticationError(4)
                     } else {
-                        error = AuthenticationError(5, "Something failed")
+                        error = AuthenticationError(5)
                     }
                     onComplete(false, error)
                 }
             }
         } else {
-            val error = AuthenticationError(1, "User is already logged in!")
+            val error = AuthenticationError(1)
             throw AuthenticationException(error)
         }
         // READ MORE AT: https://www.techotopia.com/index.php?title=Handling_Firebase_Authentication_Errors_and_Failures&mobileaction=toggle_view_mobile
@@ -94,7 +94,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         if (isUserLoggedIn()) {
             usersDao.logOut()
         } else {
-            val error = AuthenticationError(2, "User is not logged in!")
+            val error = AuthenticationError(2)
             throw AuthenticationException(error)
         }
     }
@@ -104,4 +104,29 @@ class AuthenticationException(error: AuthenticationError)
     : Exception(error.message) {
 }
 
-data class AuthenticationError(val code: Int, val message: String)
+class AuthenticationError(val code: Int) {
+    val message: String = when(code) {
+        1 -> USER_ALREADY_LOGGED_IN
+        2 -> USER_NOT_LOGGED_IN
+        3 -> INVALID_PASSWORD
+        4 -> INVALID_EMAIL
+        5 -> SOMETHING_FAILED
+        6 -> FAILED_TO_ADD_USER_TO_FIRESTORE
+        7 -> EMAIL_ALREADY_REGISTERED
+        8 -> EMAIL_INCORRECT_FORMAT
+        9 -> PASSWORD_TOO_WEAK
+        else -> ""
+    }
+
+    companion object {
+        const val USER_ALREADY_LOGGED_IN = "User is already logged in!"
+        const val USER_NOT_LOGGED_IN = "User is not logged in!"
+        const val INVALID_PASSWORD = "Invalid password"
+        const val INVALID_EMAIL = "Incorrect email address"
+        const val SOMETHING_FAILED = "Something failed"
+        const val FAILED_TO_ADD_USER_TO_FIRESTORE = "Failed adding registered user to Firestore!"
+        const val EMAIL_ALREADY_REGISTERED = "Email already registered!"
+        const val EMAIL_INCORRECT_FORMAT = "Email is in incorrect format!"
+        const val PASSWORD_TOO_WEAK = "Password is too weak!"
+    }
+}
