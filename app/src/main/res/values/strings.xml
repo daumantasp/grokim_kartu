@@ -21,4 +21,5 @@
     <string name="registration_email_password_too_weak_error">Nurodytas slaptažodis yra per silpnas</string>
     <string name="login_invalid_email_error">Toks vartotojas nerastas</string>
     <string name="login_invalid_password_error">Neteisingas slaptažodis</string>
+    <string name="profile_logout">Atsijungti</string>
 </resources>
