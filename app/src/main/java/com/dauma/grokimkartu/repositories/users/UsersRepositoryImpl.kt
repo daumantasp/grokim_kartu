@@ -70,7 +70,12 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         if (isUserLoggedIn() == false) {
             usersDao.loginUser(user) { isSuccessful, e ->
                 if (isSuccessful) {
-                    onComplete(true, null)
+                    if (isEmailVerified()) {
+                        onComplete(true, null)
+                    } else {
+                        logOut()
+                        onComplete(false, AuthenticationError(10))
+                    }
                 } else {
                     val error: AuthenticationError
                     if (e is FirebaseAuthInvalidCredentialsException) {
@@ -115,6 +120,7 @@ class AuthenticationError(val code: Int) {
         7 -> EMAIL_ALREADY_REGISTERED
         8 -> EMAIL_INCORRECT_FORMAT
         9 -> PASSWORD_TOO_WEAK
+        10 -> EMAIL_NOT_VERIFIED
         else -> ""
     }
 
@@ -128,5 +134,6 @@ class AuthenticationError(val code: Int) {
         const val EMAIL_ALREADY_REGISTERED = "Email already registered!"
         const val EMAIL_INCORRECT_FORMAT = "Email is in incorrect format!"
         const val PASSWORD_TOO_WEAK = "Password is too weak!"
+        const val EMAIL_NOT_VERIFIED = "Email is not verified!"
     }
 }

@@ -24,4 +24,5 @@
     <string name="profile_logout">Atsijungti</string>
     <string name="registrationConfirm_registrationSuccessful">Jūs sėkmingai užsiregistravote. Į jūsų el. paštą buvo išsiųstas patvirtinimo laiškas.</string>
     <string name="registrationConfirm_okButton">Supratau</string>
+    <string name="login_email_not_verified">El. paštas nepatvirtintas</string>
 </resources>

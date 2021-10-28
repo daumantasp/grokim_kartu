@@ -64,6 +64,10 @@ class LoginViewModelImpl @Inject constructor(
                 _emailError.value = -1
                 _passwordError.value = R.string.login_invalid_password_error
             }
+            AuthenticationError.EMAIL_NOT_VERIFIED -> {
+                _emailError.value = R.string.login_email_not_verified
+                _passwordError.value = -1
+            }
             else -> clearAuthenticationErrors()
         }
     }
