@@ -1,15 +1,10 @@
 package com.dauma.grokimkartu.ui.registration
 
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -20,7 +15,6 @@ import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
 import com.dauma.grokimkartu.models.EventObserver
 import com.dauma.grokimkartu.viewmodels.registration.RegistrationViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
-import com.google.firebase.auth.FirebaseAuth
 
 @AndroidEntryPoint
 class RegistrationFragment : Fragment() {
@@ -51,11 +45,7 @@ class RegistrationFragment : Fragment() {
 
         registrationViewModel.emailVerificationSent.observe(viewLifecycleOwner, EventObserver {
             if (it as Boolean) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.registration_email_verification_description),
-                    Toast.LENGTH_LONG
-                )
+                findNavController().navigate(R.id.action_registrationFragment_to_registrationConfirmFragment)
             }
         })
 

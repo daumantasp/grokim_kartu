@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.loginFragment, R.id.registrationFragment -> showBottomNavigation(false)
+                R.id.loginFragment, R.id.registrationFragment, R.id.registrationConfirmFragment -> showBottomNavigation(false)
                 else -> showBottomNavigation(true)
             }
         }
