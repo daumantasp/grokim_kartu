@@ -80,4 +80,20 @@ class UsersDaoImpl(
     override fun sendEmailVerification() {
         firebaseAuth.currentUser?.sendEmailVerification()
     }
+
+    override fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit) {
+
+        firebaseAuth
+            .sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, task.exception)
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
 }
