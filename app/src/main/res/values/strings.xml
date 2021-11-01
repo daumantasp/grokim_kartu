@@ -7,6 +7,7 @@
     <string name="login_password">Slaptažodis</string>
     <string name="login_loginButton">Prisijungti</string>
     <string name="login_register">Registruotis</string>
+    <string name="login_forgot_password">Pamiršau slaptažodį</string>
     <string name="registration_registrationTextView">Registracija</string>
     <string name="registration_name">Vardas</string>
     <string name="registration_email">El. paštas</string>
@@ -24,4 +25,12 @@
     <string name="registrationConfirm_registrationSuccessful">Jūs sėkmingai užsiregistravote. Į jūsų el. paštą buvo išsiųstas patvirtinimo laiškas.</string>
     <string name="registrationConfirm_okButton">Supratau</string>
     <string name="login_email_not_verified">El. paštas nepatvirtintas</string>
+    <string name="forgotPassword_email">El. paštas</string>
+    <string name="forgotPassword_resetDescription">Atstatyti slaptažodį</string>
+    <string name="forgotPassword_reset">Atstatyti</string>
+    <string name="passwordReset_invalid_email_error">Toks vartotojas nerastas</string>
+    <string name="passwordReset_email_sent">Slaptažodžio atstatymo laiškas išsiųstas Jums į paštą</string>
+    <string name="passwordReset_okButton">Supratau</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
