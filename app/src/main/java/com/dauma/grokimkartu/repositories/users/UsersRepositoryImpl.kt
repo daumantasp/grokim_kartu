@@ -103,6 +103,30 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
             throw AuthenticationException(error)
         }
     }
+
+    override fun sendPasswordResetEmail(
+        email: String,
+        onComplete: (Boolean, AuthenticationError?) -> Unit
+    ) {
+        if (isUserLoggedIn() == false) {
+            usersDao.sendPasswordResetEmail(email) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error: AuthenticationError
+                    if (e is FirebaseAuthInvalidUserException) {
+                        error = AuthenticationError(4)
+                    } else {
+                        error = AuthenticationError(5)
+                    }
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = AuthenticationError(1)
+            throw AuthenticationException(error)
+        }
+    }
 }
 
 class AuthenticationException(error: AuthenticationError)

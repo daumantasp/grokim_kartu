@@ -11,4 +11,5 @@ interface UsersRepository {
     fun isEmailVerified(): Boolean
     fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun logOut()
+    fun sendPasswordResetEmail(email: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
 }
