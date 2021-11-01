@@ -75,5 +75,12 @@
             android:layout_marginEnd="76dp"
             android:text="@string/login_register" />
 
+        <TextView
+            android:id="@+id/forgotPasswordTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="76dp"
+            android:text="@string/login_forgot_password" />
+
     </LinearLayout>
 </layout>

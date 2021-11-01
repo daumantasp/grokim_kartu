@@ -21,9 +21,11 @@ class LoginViewModelImpl @Inject constructor(
     private val loginForm: LoginForm
 ) : ViewModel(), LoginViewModel {
     private val _navigateToPlayers = MutableLiveData<Event<Any>>()
+    private val _navigateToForgotPassword = MutableLiveData<Event<Int>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     val navigateToPlayers: LiveData<Event<Any>> = _navigateToPlayers
+    val navigateToForgotPassword: LiveData<Event<Int>> = _navigateToForgotPassword
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
 
@@ -48,6 +50,10 @@ class LoginViewModelImpl @Inject constructor(
         } catch (e: AuthenticationException) {
             Log.d(TAG, e.message ?: "Login was unsuccessful")
         }
+    }
+
+    override fun forgotPasswordClicked() {
+        _navigateToForgotPassword.value = Event(R.id.action_loginFragment_to_forgotPasswordFragment)
     }
 
     fun getLoginForm() : LoginForm {

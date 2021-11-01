@@ -39,12 +39,20 @@ class LoginFragment : Fragment() {
             it.findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
 
+        binding.forgotPasswordTextView.setOnClickListener {
+            loginViewModel.forgotPasswordClicked()
+        }
+
         loginViewModel.getLoginForm().getFormFields().observe(viewLifecycleOwner) {
             loginViewModel.loginUser(it.get(0), it.get(1))
         }
 
         loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(it as Int)
+        })
+
+        loginViewModel.navigateToForgotPassword.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(it)
         })
 
         loginViewModel.emailError.observe(viewLifecycleOwner, Observer {
