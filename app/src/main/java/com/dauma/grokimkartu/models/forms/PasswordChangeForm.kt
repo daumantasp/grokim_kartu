@@ -44,14 +44,20 @@ class PasswordChangeForm: BaseObservable() {
     }
 
     fun onClick() {
-        if (isPasswordValid()) {
+        if (isValid()) {
             formFields.value = listOf(oldPassword, newPassword, repeatPassword)
         }
     }
 
     // TODO: refactor, Duplicating in registrationForm
     @Bindable
-    fun isPasswordValid() : Boolean {
+    fun isValid() : Boolean {
+        return isNewPasswordValid() &&
+                oldPassword.isEmpty() == false &&
+                newPassword.isEmpty() == false
+    }
+
+    private fun isNewPasswordValid() : Boolean {
         if (newPassword.length < 6 || newPassword.length > 35) {
             return false
         }
