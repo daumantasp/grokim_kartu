@@ -51,6 +51,22 @@ class UsersDaoImpl(
             }
     }
 
+    override fun deleteUserFromFirestore(
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebaseFirestore
+            .collection(UsersDaoImpl.usersCollection)
+            .document(userId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
     override fun loginUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseAuth
             .signInWithEmailAndPassword(user.email, user.password)
@@ -84,7 +100,6 @@ class UsersDaoImpl(
     }
 
     override fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit) {
-
         firebaseAuth
             .sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
@@ -98,6 +113,27 @@ class UsersDaoImpl(
                 onComplete(false, e)
             }
     }
+
+    override fun deleteUser(onComplete: (Boolean, String?, Exception?) -> Unit) {
+        val id = firebaseAuth.currentUser?.uid
+        if (id == null) {
+            // This situation should never occur
+            onComplete(false, null, Exception("MISSING LOGGED IN USER ID"))
+        }
+        firebaseAuth.currentUser
+            ?.delete()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, id, null)
+                } else {
+                    onComplete(false, null, task.exception)
+                }
+            }
+            ?.addOnFailureListener { e ->
+                onComplete(false, null, e)
+            }
+    }
+
     override fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit) {
         val credential = EmailAuthProvider.getCredential(user.email, user.password)
         firebaseAuth.currentUser
