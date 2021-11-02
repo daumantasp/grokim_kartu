@@ -33,6 +33,14 @@ class ProfileFragment : Fragment() {
             this.findNavController().navigate(it as Int)
         })
 
+        profileViewModel.getProfileForm().getFormFields().observe(viewLifecycleOwner) {
+            profileViewModel.deleteUser(it[0])
+        }
+
+        profileViewModel.passwordError.observe(viewLifecycleOwner) {
+            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
+        }
+
         return view
     }
 
