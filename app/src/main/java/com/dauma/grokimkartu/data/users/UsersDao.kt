@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.data.users
 
+import com.dauma.grokimkartu.models.users.AuthenticatedUser
 import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.models.users.User
@@ -14,4 +15,5 @@ interface UsersDao {
     fun sendEmailVerification()
     fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit)
     fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit)
+    fun getAuthenticatedUserDataProfiles(): List<AuthenticatedUser>
 }

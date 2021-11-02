@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.data.users
 
+import com.dauma.grokimkartu.models.users.AuthenticatedUser
 import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.models.users.User
@@ -111,5 +112,23 @@ class UsersDaoImpl(
             ?.addOnFailureListener { e ->
                 onComplete(false, e)
             }
+    }
+
+    override fun getAuthenticatedUserDataProfiles(): List<AuthenticatedUser> {
+        val authenticatedUserByProfiles: MutableList<AuthenticatedUser> = mutableListOf()
+        val user = firebaseAuth.currentUser
+        user?.let {
+            for (profile in it.providerData) {
+                val authenticatedUserProfile = AuthenticatedUser(
+                    profile.providerId,
+                    profile.uid,
+                    profile.displayName,
+                    profile.email,
+                    profile.photoUrl
+                )
+                authenticatedUserByProfiles.add(authenticatedUserProfile)
+            }
+        }
+        return authenticatedUserByProfiles
     }
 }
