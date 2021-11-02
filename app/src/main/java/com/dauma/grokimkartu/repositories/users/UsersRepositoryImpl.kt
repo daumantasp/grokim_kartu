@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import java.lang.Exception
+import kotlin.Exception
 
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override fun isUserLoggedIn(): Boolean {
@@ -125,6 +125,30 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         } else {
             val error = AuthenticationError(1)
             throw AuthenticationException(error)
+        }
+    }
+
+    // TODO: Same as login. Refactor?
+    override fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit) {
+        usersDao.reauthenticateUser(user) { isSuccessful, e ->
+            if (isSuccessful) {
+                if (isEmailVerified()) {
+                    onComplete(true, null)
+                } else {
+                    logOut()
+                    onComplete(false, AuthenticationError(10))
+                }
+            } else {
+                val error: AuthenticationError
+                if (e is FirebaseAuthInvalidCredentialsException) {
+                    error = AuthenticationError(3)
+                } else if (e is FirebaseAuthInvalidUserException) {
+                    error = AuthenticationError(4)
+                } else {
+                    error = AuthenticationError(5)
+                }
+                onComplete(false, error)
+            }
         }
     }
 }
