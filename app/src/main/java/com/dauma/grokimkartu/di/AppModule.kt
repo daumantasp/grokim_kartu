@@ -6,6 +6,7 @@ import com.dauma.grokimkartu.data.users.UsersDao
 import com.dauma.grokimkartu.data.users.UsersDaoImpl
 import com.dauma.grokimkartu.models.forms.ForgotPasswordForm
 import com.dauma.grokimkartu.models.forms.LoginForm
+import com.dauma.grokimkartu.models.forms.ProfileForm
 import com.dauma.grokimkartu.models.forms.RegistrationForm
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.players.PlayersRepositoryImpl
@@ -57,5 +58,10 @@ class AppModule {
     @Provides
     fun providesForgotPasswordForm() : ForgotPasswordForm {
         return ForgotPasswordForm()
+    }
+
+    @Provides
+    fun providesProfileForm() : ProfileForm {
+        return ProfileForm()
     }
 }
