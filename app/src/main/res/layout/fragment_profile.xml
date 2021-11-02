@@ -47,6 +47,13 @@
             android:onClick="@{() -> model.profileForm.onClick()}"/>
 
         <Button
+            android:id="@+id/changePasswordButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_change_password_button"
+            android:onClick="@{() -> model.passwordChangeClicked()}"/>
+
+        <Button
             android:id="@+id/logoutButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

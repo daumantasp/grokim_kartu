@@ -22,6 +22,9 @@ class ProfileViewModelImpl @Inject constructor(
     private val _navigateToLogin = MutableLiveData<Event<Any>>()
     val navigateToLogin: LiveData<Event<Any>> = _navigateToLogin
 
+    private val _navigateToPasswordChange = MutableLiveData<Event<Any>>()
+    val navigateToPasswordChange: LiveData<Event<Any>> = _navigateToPasswordChange
+
     private val _passwordError = MutableLiveData<Int>()
     val passwordError: LiveData<Int> = _passwordError
 
@@ -65,6 +68,10 @@ class ProfileViewModelImpl @Inject constructor(
         } catch (e: AuthenticationException) {
             Log.d(TAG, e.message ?: "Login was unsuccessful")
         }
+    }
+
+    fun passwordChangeClicked() {
+        _navigateToPasswordChange.value = Event(R.id.action_profileFragment_to_passwordChangeFragment)
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

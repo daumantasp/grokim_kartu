@@ -41,6 +41,10 @@ class ProfileFragment : Fragment() {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         }
 
+        profileViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(it as Int)
+        })
+
         return view
     }
 
