@@ -167,4 +167,19 @@ class UsersDaoImpl(
         }
         return authenticatedUserByProfiles
     }
+
+    override fun updatePassword(newPassword: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseAuth.currentUser
+            ?.updatePassword(newPassword)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, task.exception)
+                }
+            }
+            ?.addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
 }

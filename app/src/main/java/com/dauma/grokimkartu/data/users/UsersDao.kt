@@ -18,4 +18,5 @@ interface UsersDao {
     fun deleteUser(onComplete: (Boolean, String?, Exception?) -> Unit)
     fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit)
     fun getAuthenticatedUserDataProfiles(): List<AuthenticatedUser>
+    fun updatePassword(newPassword: String, onComplete: (Boolean, Exception?) -> Unit)
 }
