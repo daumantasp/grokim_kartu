@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.repositories.users
 
 import com.dauma.grokimkartu.data.users.UsersDao
+import com.dauma.grokimkartu.models.users.AuthenticatedUser
 import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.models.users.User
@@ -149,6 +150,22 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
                 }
                 onComplete(false, error)
             }
+        }
+    }
+
+    // TODO: return some general object, not Authenticated User
+    override fun getAuthenticatedUserData(): AuthenticatedUser {
+        if (isUserLoggedIn()) {
+            val userDataProfiles = usersDao.getAuthenticatedUserDataProfiles()
+            if (userDataProfiles.count() > 0) {
+                return userDataProfiles[0]
+            } else{
+                val error = AuthenticationError(5)
+                throw AuthenticationException(error)
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
         }
     }
 }
