@@ -13,6 +13,7 @@ interface UsersRepository {
     fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun logOut()
     fun sendPasswordResetEmail(email: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
+    fun deleteUser(onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun getAuthenticatedUserData(): AuthenticatedUser
 }

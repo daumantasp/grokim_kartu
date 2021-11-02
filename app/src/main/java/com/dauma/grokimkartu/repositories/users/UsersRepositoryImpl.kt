@@ -129,6 +129,27 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         }
     }
 
+    override fun deleteUser(onComplete: (Boolean, AuthenticationError?) -> Unit) {
+        if (isUserLoggedIn()) {
+            usersDao.deleteUser { isSuccessful, id, e ->
+                if (isSuccessful && id != null) {
+                    this.usersDao.deleteUserFromFirestore(id) { isSuccessful, e ->
+                        if (isSuccessful) {
+                            onComplete(true, null)
+                        } else {
+                            onComplete(false, AuthenticationError(11))
+                        }
+                    }
+                } else {
+                    onComplete(false, AuthenticationError(5))
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
+    }
+
     // TODO: Same as login. Refactor?
     override fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit) {
         usersDao.reauthenticateUser(user) { isSuccessful, e ->
@@ -186,6 +207,7 @@ class AuthenticationError(val code: Int) {
         8 -> EMAIL_INCORRECT_FORMAT
         9 -> PASSWORD_TOO_WEAK
         10 -> EMAIL_NOT_VERIFIED
+        11 -> FAILED_TO_DELETE_USER_FROM_FIRESTORE
         else -> ""
     }
 
@@ -200,5 +222,6 @@ class AuthenticationError(val code: Int) {
         const val EMAIL_INCORRECT_FORMAT = "Email is in incorrect format!"
         const val PASSWORD_TOO_WEAK = "Password is too weak!"
         const val EMAIL_NOT_VERIFIED = "Email is not verified!"
+        const val FAILED_TO_DELETE_USER_FROM_FIRESTORE = "Failed to delete current user from Firestore!"
     }
 }
