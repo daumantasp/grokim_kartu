@@ -189,6 +189,27 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
             throw AuthenticationException(error)
         }
     }
+
+    override fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit) {
+        if (isUserLoggedIn()) {
+            usersDao.updatePassword(newPassword) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error: AuthenticationError
+                    if (e is FirebaseAuthWeakPasswordException) {
+                        error = AuthenticationError(9)
+                    } else {
+                        error = AuthenticationError(5)
+                    }
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
+    }
 }
 
 class AuthenticationException(error: AuthenticationError)

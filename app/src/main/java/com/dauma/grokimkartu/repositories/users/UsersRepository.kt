@@ -16,4 +16,5 @@ interface UsersRepository {
     fun deleteUser(onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun getAuthenticatedUserData(): AuthenticatedUser
+    fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
 }
