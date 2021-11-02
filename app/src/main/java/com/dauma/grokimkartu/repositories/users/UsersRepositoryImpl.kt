@@ -19,8 +19,8 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override fun registerUser(user: RegistrationUser, onComplete: (Boolean, AuthenticationError?) -> Unit) {
         if (isUserLoggedIn() == false) {
             usersDao.registerUser(user) { isSuccessful, userId, e ->
-                if (isSuccessful) {
-                    val userToSaveInFirestore = User(userId!!, user.name)
+                if (isSuccessful && userId != null) {
+                    val userToSaveInFirestore = User(userId, user.name)
                     this.usersDao.addUserToFirestore(userToSaveInFirestore) { isSuccessful, e ->
                         if (isSuccessful) {
                             onComplete(true, null)
@@ -217,7 +217,7 @@ class AuthenticationError(val code: Int) {
         const val INVALID_PASSWORD = "Invalid password"
         const val INVALID_EMAIL = "Incorrect email address"
         const val SOMETHING_FAILED = "Something failed"
-        const val FAILED_TO_ADD_USER_TO_FIRESTORE = "Failed adding registered user to Firestore!"
+        const val FAILED_TO_ADD_USER_TO_FIRESTORE = "Failed to add a registered user to Firestore!"
         const val EMAIL_ALREADY_REGISTERED = "Email already registered!"
         const val EMAIL_INCORRECT_FORMAT = "Email is in incorrect format!"
         const val PASSWORD_TOO_WEAK = "Password is too weak!"
