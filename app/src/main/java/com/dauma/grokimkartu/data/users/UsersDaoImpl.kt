@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.users
 import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.models.users.User
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -93,6 +94,21 @@ class UsersDaoImpl(
                 }
             }
             .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+    override fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit) {
+        val credential = EmailAuthProvider.getCredential(user.email, user.password)
+        firebaseAuth.currentUser
+            ?.reauthenticate(credential)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, task.exception)
+                }
+            }
+            ?.addOnFailureListener { e ->
                 onComplete(false, e)
             }
     }

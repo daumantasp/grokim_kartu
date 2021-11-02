@@ -13,4 +13,5 @@ interface UsersDao {
     fun isEmailVerified(): Boolean
     fun sendEmailVerification()
     fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit)
+    fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit)
 }
