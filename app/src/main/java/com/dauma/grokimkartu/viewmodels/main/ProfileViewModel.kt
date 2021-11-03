@@ -18,13 +18,11 @@ class ProfileViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val profileForm: ProfileForm
 ) : ViewModel() {
-    private val _navigateToLogin = MutableLiveData<Event<Any>>()
-    val navigateToLogin: LiveData<Event<Any>> = _navigateToLogin
-
-    private val _navigateToPasswordChange = MutableLiveData<Event<Any>>()
-    val navigateToPasswordChange: LiveData<Event<Any>> = _navigateToPasswordChange
-
+    private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
+    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
 
     companion object {
@@ -43,7 +41,7 @@ class ProfileViewModel @Inject constructor(
                     if (isSuccessful) {
                         usersRepository.deleteUser() { isSuccessful, error ->
                             if (isSuccessful) {
-                                _navigateToLogin.value = Event(R.id.action_profileFragment_to_loginFragment)
+                                _navigateToLogin.value = Event("")
                             }
                         }
                     } else {
@@ -59,17 +57,17 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    fun logoutClicked() {
         try {
             usersRepository.logOut()
-            _navigateToLogin.value = Event(R.id.action_profileFragment_to_loginFragment)
+            _navigateToLogin.value = Event("")
         } catch (e: AuthenticationException) {
             Log.d(TAG, e.message ?: "Login was unsuccessful")
         }
     }
 
     fun passwordChangeClicked() {
-        _navigateToPasswordChange.value = Event(R.id.action_profileFragment_to_passwordChangeFragment)
+        _navigateToPasswordChange.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

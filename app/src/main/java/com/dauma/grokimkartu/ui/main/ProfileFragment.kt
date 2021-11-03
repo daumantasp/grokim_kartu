@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.general.EventObserver
 import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
@@ -28,22 +29,7 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.model = profileViewModel
         val view = binding.root
-
-        profileViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(it as Int)
-        })
-
-        profileViewModel.getProfileForm().getFormFields().observe(viewLifecycleOwner) {
-            profileViewModel.deleteUser(it[0])
-        }
-
-        profileViewModel.passwordError.observe(viewLifecycleOwner) {
-            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        }
-
-        profileViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(it as Int)
-        })
+        setupObservers()
 
         return view
     }
@@ -51,5 +37,20 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupObservers() {
+        profileViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+        })
+        profileViewModel.getProfileForm().getFormFields().observe(viewLifecycleOwner) {
+            profileViewModel.deleteUser(it[0])
+        }
+        profileViewModel.passwordError.observe(viewLifecycleOwner) {
+            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
+        }
+        profileViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_profileFragment_to_passwordChangeFragment)
+        })
     }
 }
