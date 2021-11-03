@@ -1,6 +1,5 @@
 package com.dauma.grokimkartu.viewmodels.splash
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.models.Event
@@ -12,9 +11,9 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val usersRepository: UsersRepository
 ) : ViewModel() {
-    private val _navigateToLogin = MutableLiveData<Event<Boolean>>()
-    val navigateToLogin: LiveData<Event<Boolean>> = _navigateToLogin
-    private val _navigateToPlayers = MutableLiveData<Event<Boolean>>()
+    private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _navigateToPlayers = MutableLiveData<Event<String>>()
+    val navigateToLogin = _navigateToLogin
     val navigateToPlayers = _navigateToPlayers
 
     companion object {
@@ -24,13 +23,13 @@ class SplashViewModel @Inject constructor(
     fun splashCompleted() {
         if (usersRepository.isUserLoggedIn()) {
             if (usersRepository.isEmailVerified()) {
-                _navigateToPlayers.value = Event(true)
+                _navigateToPlayers.value = Event("")
             } else {
                 usersRepository.logOut()
-                _navigateToLogin.value = Event(true)
+                _navigateToLogin.value = Event("")
             }
         } else {
-            _navigateToLogin.value = Event(true)
+            _navigateToLogin.value = Event("")
         }
     }
 }

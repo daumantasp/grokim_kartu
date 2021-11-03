@@ -29,20 +29,22 @@ class SplashFragment : Fragment() {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
         binding.model = splashViewModel
         val view = binding.root
-
-        splashViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
-            }
-        })
-
-        splashViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                findNavController().navigate(R.id.action_splashFragment_to_playersFragment)
-            }
-        })
-
+        setupObservers()
         splashViewModel.splashCompleted()
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupObservers() {
+        splashViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+        })
+        splashViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_splashFragment_to_playersFragment)
+        })
     }
 }
