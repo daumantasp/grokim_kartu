@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.forgotPassword
+package com.dauma.grokimkartu.viewmodels.authentication
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,7 +9,6 @@ import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.ForgotPasswordForm
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.UsersRepository
-import com.dauma.grokimkartu.viewmodels.login.LoginViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

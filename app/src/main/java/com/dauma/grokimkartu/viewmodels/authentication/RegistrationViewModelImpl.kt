@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.registration
+package com.dauma.grokimkartu.viewmodels.authentication
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class RegistrationViewModelImpl @Inject constructor(
     private val usersRepository: UsersRepository,
     private val registrationForm: RegistrationForm,
-) : ViewModel(), RegistrationViewModel {
+) : ViewModel() {
     private val _emailVerificationSent = MutableLiveData<Event<Any>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
@@ -38,7 +38,7 @@ class RegistrationViewModelImpl @Inject constructor(
         private val TAG = "RegistrationViewModel"
     }
 
-    override fun createUser(name: String, email: String, password: String) {
+    fun createUser(name: String, email: String, password: String) {
         val registrationUser = RegistrationUser(name, email, password)
         try {
             usersRepository.registerUser(registrationUser) { isSuccessful, error ->

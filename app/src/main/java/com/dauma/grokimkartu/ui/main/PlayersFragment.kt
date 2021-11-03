@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.ui.players
+package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.models.Player
-import com.dauma.grokimkartu.viewmodels.players.PlayersViewModelImpl
+import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
+import com.dauma.grokimkartu.viewmodels.main.PlayersViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

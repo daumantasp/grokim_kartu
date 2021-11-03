@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModelImpl @Inject constructor(
     private val usersRepository: UsersRepository
-) : ViewModel(), SplashViewModel {
+) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<Boolean>>()
     val navigateToLogin: LiveData<Event<Boolean>> = _navigateToLogin
     private val _navigateToPlayers = MutableLiveData<Event<Boolean>>()
@@ -21,9 +21,9 @@ class SplashViewModelImpl @Inject constructor(
         private val TAG = "SplashViewModelImpl"
     }
 
-    override fun splashCompleted() {
+    fun splashCompleted() {
         if (usersRepository.isUserLoggedIn()) {
-            if (usersRepository.isEmailVerified()){
+            if (usersRepository.isEmailVerified()) {
                 _navigateToPlayers.value = Event(true)
             } else {
                 usersRepository.logOut()

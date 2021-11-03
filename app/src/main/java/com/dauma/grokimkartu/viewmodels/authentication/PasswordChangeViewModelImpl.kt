@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.passwordChange
+package com.dauma.grokimkartu.viewmodels.authentication
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,8 +11,6 @@ import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
-import com.dauma.grokimkartu.viewmodels.login.LoginViewModelImpl
-import com.dauma.grokimkartu.viewmodels.profile.ProfileViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.ui.passwordChange
+package com.dauma.grokimkartu.ui.authentication
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPasswordChangeBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.passwordChange.PasswordChangeViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.PasswordChangeViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

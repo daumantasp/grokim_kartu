@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.ui.login
+package com.dauma.grokimkartu.ui.authentication
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.login.LoginViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.LoginViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.profile
+package com.dauma.grokimkartu.viewmodels.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -18,7 +18,7 @@ import javax.inject.Inject
 class ProfileViewModelImpl @Inject constructor(
     private val usersRepository: UsersRepository,
     private val profileForm: ProfileForm
-) : ViewModel(), ProfileViewModel {
+) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<Any>>()
     val navigateToLogin: LiveData<Event<Any>> = _navigateToLogin
 
@@ -61,7 +61,7 @@ class ProfileViewModelImpl @Inject constructor(
         }
     }
 
-    override fun logout() {
+    fun logout() {
         try {
             usersRepository.logOut()
             _navigateToLogin.value = Event(R.id.action_profileFragment_to_loginFragment)

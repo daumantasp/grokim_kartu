@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.players
+package com.dauma.grokimkartu.viewmodels.main
 
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.models.Player
@@ -9,7 +9,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayersViewModelImpl @Inject constructor(
     private val playersRepository: PlayersRepository
-) : ViewModel(), PlayersViewModel {
-    override fun getPlayers() = playersRepository.getPlayers()
+) : ViewModel() {
+    fun getPlayers() = playersRepository.getPlayers()
     fun addPlayer(player: Player) = playersRepository.addPlayer(player)
 }

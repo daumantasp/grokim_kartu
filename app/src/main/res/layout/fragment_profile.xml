@@ -6,14 +6,14 @@
     <data>
         <variable
             name="model"
-            type="com.dauma.grokimkartu.viewmodels.profile.ProfileViewModelImpl" />
+            type="com.dauma.grokimkartu.viewmodels.main.ProfileViewModelImpl" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.profile.ProfileFragment">
+        tools:context=".ui.main.ProfileFragment">
 
         <TextView
             android:layout_width="match_parent"

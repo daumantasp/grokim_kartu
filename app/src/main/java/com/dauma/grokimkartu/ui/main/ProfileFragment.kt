@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.ui.profile
+package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.profile.ProfileViewModelImpl
+import com.dauma.grokimkartu.viewmodels.main.ProfileViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

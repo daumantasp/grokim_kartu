@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.login
+package com.dauma.grokimkartu.viewmodels.authentication
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -11,7 +11,6 @@ import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
-import com.dauma.grokimkartu.viewmodels.registration.RegistrationViewModelImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class LoginViewModelImpl @Inject constructor(
     private val usersRepository: UsersRepository,
     private val loginForm: LoginForm
-) : ViewModel(), LoginViewModel {
+) : ViewModel() {
     private val _navigateToPlayers = MutableLiveData<Event<Any>>()
     private val _navigateToForgotPassword = MutableLiveData<Event<Int>>()
     private val _emailError = MutableLiveData<Int>()
@@ -33,7 +32,7 @@ class LoginViewModelImpl @Inject constructor(
         private val TAG = "LoginViewModel"
     }
 
-    override fun loginUser(email: String, password: String) {
+    fun loginUser(email: String, password: String) {
         val loginUser = LoginUser(email, password)
         try {
             usersRepository.loginUser(loginUser) { isSuccessful, error ->
@@ -52,7 +51,7 @@ class LoginViewModelImpl @Inject constructor(
         }
     }
 
-    override fun forgotPasswordClicked() {
+    fun forgotPasswordClicked() {
         _navigateToForgotPassword.value = Event(R.id.action_loginFragment_to_forgotPasswordFragment)
     }
 

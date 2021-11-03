@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.ui.forgotPassword
+package com.dauma.grokimkartu.ui.authentication
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
-import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.forgotPassword.ForgotPasswordViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModelImpl
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/playersFragment"
-        android:name="com.dauma.grokimkartu.ui.players.PlayersFragment"
+        android:name="com.dauma.grokimkartu.ui.main.PlayersFragment"
         android:label="fragment_players"
         tools:layout="@layout/fragment_players" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.dauma.grokimkartu.ui.profile.ProfileFragment"
+        android:name="com.dauma.grokimkartu.ui.main.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.dauma.grokimkartu.ui.login.LoginFragment"
+        android:name="com.dauma.grokimkartu.ui.authentication.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.dauma.grokimkartu.ui.registration.RegistrationFragment"
+        android:name="com.dauma.grokimkartu.ui.authentication.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" >
         <action
@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.dauma.grokimkartu.ui.forgotPassword.ForgotPasswordFragment"
+        android:name="com.dauma.grokimkartu.ui.authentication.ForgotPasswordFragment"
         android:label="ForgotPasswordFragment" >
         <action
             android:id="@+id/action_forgotPasswordFragment_to_loginFragment"
@@ -67,7 +67,7 @@
     </fragment>
     <fragment
         android:id="@+id/passwordChangeFragment"
-        android:name="com.dauma.grokimkartu.ui.passwordChange.PasswordChangeFragment"
+        android:name="com.dauma.grokimkartu.ui.authentication.PasswordChangeFragment"
         android:label="PasswordChangeFragment" >
         <action
             android:id="@+id/action_passwordChangeFragment_to_profileFragment"
