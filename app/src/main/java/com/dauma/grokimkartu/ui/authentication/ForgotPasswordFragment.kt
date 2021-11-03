@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
 import com.dauma.grokimkartu.general.EventObserver
 import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModel
@@ -28,15 +30,27 @@ class ForgotPasswordFragment : Fragment() {
         _binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
         binding.model = forgotPasswordViewModel
         val view = binding.root
+        setupObservers()
 
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            forgotPasswordViewModel.backClicked()
+        }
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupObservers() {
         forgotPasswordViewModel.getForgotPasswordForm().getFormFields().observe(viewLifecycleOwner) {
             forgotPasswordViewModel.resetClicked(it.get(0))
         }
-
         forgotPasswordViewModel.emailError.observe(viewLifecycleOwner) {
             binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
         }
-
         forgotPasswordViewModel.showSuccess.observe(viewLifecycleOwner, EventObserver {
             if (it) {
                 binding.emailTextInput.visibility = View.GONE
@@ -45,17 +59,8 @@ class ForgotPasswordFragment : Fragment() {
                 binding.okButton.visibility = View.VISIBLE
             }
         })
-
         forgotPasswordViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(it)
+            findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
         })
-
-        // Inflate the layout for this fragment
-        return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

@@ -17,15 +17,19 @@ class ForgotPasswordViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val forgotPasswordForm: ForgotPasswordForm
 ) : ViewModel() {
-    private val _emailError = MutableLiveData<Int>()
-    val emailError: LiveData<Int> = _emailError
+    private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _showSuccess = MutableLiveData<Event<Boolean>>()
-    val showSuccess = _showSuccess
-    private val _navigateToLogin = MutableLiveData<Event<Int>>()
-    val navigateToLogin: LiveData<Event<Int>> = _navigateToLogin
+    private val _emailError = MutableLiveData<Int>()
+    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val showSuccess: LiveData<Event<Boolean>> = _showSuccess
+    val emailError: LiveData<Int> = _emailError
 
     companion object {
         private val TAG = "ForgotPasswordViewModel"
+    }
+
+    fun getForgotPasswordForm(): ForgotPasswordForm {
+        return forgotPasswordForm
     }
 
     fun resetClicked(email: String) {
@@ -42,11 +46,11 @@ class ForgotPasswordViewModel @Inject constructor(
     }
 
     fun okClicked() {
-        _navigateToLogin.value = Event(R.id.action_forgotPasswordFragment_to_loginFragment)
+        _navigateToLogin.value = Event("")
     }
 
-    fun getForgotPasswordForm(): ForgotPasswordForm {
-        return forgotPasswordForm
+    fun backClicked() {
+        _navigateToLogin.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {
