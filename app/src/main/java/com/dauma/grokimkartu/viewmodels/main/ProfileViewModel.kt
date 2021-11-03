@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.ProfileForm
-import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
@@ -40,8 +39,7 @@ class ProfileViewModel @Inject constructor(
         try {
             val email = usersRepository.getAuthenticatedUserData().email
             if (email != null) {
-                val loginUser = LoginUser(email, password)
-                usersRepository.reauthenticateUser(loginUser) { isSuccessful, error ->
+                usersRepository.reauthenticateUser(email, password) { isSuccessful, error ->
                     if (isSuccessful) {
                         usersRepository.deleteUser() { isSuccessful, error ->
                             if (isSuccessful) {

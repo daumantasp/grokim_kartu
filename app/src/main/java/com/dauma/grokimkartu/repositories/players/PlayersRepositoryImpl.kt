@@ -2,7 +2,7 @@ package com.dauma.grokimkartu.repositories.players
 
 import androidx.lifecycle.LiveData
 import com.dauma.grokimkartu.data.players.PlayersDao
-import com.dauma.grokimkartu.models.Player
+import com.dauma.grokimkartu.data.players.entities.Player
 
 class PlayersRepositoryImpl(private val playersDao: PlayersDao)
     : PlayersRepository {

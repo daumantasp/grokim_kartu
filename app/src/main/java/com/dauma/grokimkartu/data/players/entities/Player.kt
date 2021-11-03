@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.models
+package com.dauma.grokimkartu.data.players.entities
 
 data class Player(
     var id: Long,

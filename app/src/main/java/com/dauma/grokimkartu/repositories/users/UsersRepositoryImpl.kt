@@ -1,10 +1,8 @@
 package com.dauma.grokimkartu.repositories.users
 
 import com.dauma.grokimkartu.data.users.UsersDao
-import com.dauma.grokimkartu.models.users.AuthenticatedUser
-import com.dauma.grokimkartu.models.users.LoginUser
-import com.dauma.grokimkartu.models.users.RegistrationUser
-import com.dauma.grokimkartu.models.users.User
+import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
+import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -16,11 +14,11 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.isUserLoggedIn()
     }
 
-    override fun registerUser(user: RegistrationUser, onComplete: (Boolean, AuthenticationError?) -> Unit) {
+    override fun registerUser(email: String, password: String, name: String, onComplete: (Boolean, AuthenticationError?) -> Unit) {
         if (isUserLoggedIn() == false) {
-            usersDao.registerUser(user) { isSuccessful, userId, e ->
+            usersDao.registerUser(email, password) { isSuccessful, userId, e ->
                 if (isSuccessful && userId != null) {
-                    val userToSaveInFirestore = User(userId, user.name)
+                    val userToSaveInFirestore = FirestoreUser(userId, name)
                     this.usersDao.addUserToFirestore(userToSaveInFirestore) { isSuccessful, e ->
                         if (isSuccessful) {
                             onComplete(true, null)
@@ -67,9 +65,9 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         }
     }
 
-    override fun loginUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit) {
+    override fun loginUser(email: String, password: String, onComplete: (Boolean, AuthenticationError?) -> Unit) {
         if (isUserLoggedIn() == false) {
-            usersDao.loginUser(user) { isSuccessful, e ->
+            usersDao.loginUser(email, password) { isSuccessful, e ->
                 if (isSuccessful) {
                     if (isEmailVerified()) {
                         onComplete(true, null)
@@ -151,8 +149,8 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     }
 
     // TODO: Same as login. Refactor?
-    override fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, AuthenticationError?) -> Unit) {
-        usersDao.reauthenticateUser(user) { isSuccessful, e ->
+    override fun reauthenticateUser(email: String, password: String, onComplete: (Boolean, AuthenticationError?) -> Unit) {
+        usersDao.reauthenticateUser(email, password) { isSuccessful, e ->
             if (isSuccessful) {
                 if (isEmailVerified()) {
                     onComplete(true, null)
@@ -175,7 +173,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     }
 
     // TODO: return some general object, not Authenticated User
-    override fun getAuthenticatedUserData(): AuthenticatedUser {
+    override fun getAuthenticatedUserData(): AuthenticationUser {
         if (isUserLoggedIn()) {
             val userDataProfiles = usersDao.getAuthenticatedUserDataProfiles()
             if (userDataProfiles.count() > 0) {

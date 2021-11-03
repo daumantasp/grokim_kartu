@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.RegistrationForm
-import com.dauma.grokimkartu.models.users.RegistrationUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
@@ -39,9 +38,8 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun createUser(name: String, email: String, password: String) {
-        val registrationUser = RegistrationUser(name, email, password)
         try {
-            usersRepository.registerUser(registrationUser) { isSuccessful, error ->
+            usersRepository.registerUser(email, password, name) { isSuccessful, error ->
                 if (isSuccessful) {
                     usersRepository.sendEmailVerification()
                     updateVerificationEmailTimer()

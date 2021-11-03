@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.LoginForm
-import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
@@ -33,9 +32,8 @@ class LoginViewModel @Inject constructor(
     }
 
     fun loginUser(email: String, password: String) {
-        val loginUser = LoginUser(email, password)
         try {
-            usersRepository.loginUser(loginUser) { isSuccessful, error ->
+            usersRepository.loginUser(email, password) { isSuccessful, error ->
                 if (isSuccessful) {
                     clearAuthenticationErrors()
                     _navigateToPlayers.value = Event(R.id.action_loginFragment_to_playersFragment)

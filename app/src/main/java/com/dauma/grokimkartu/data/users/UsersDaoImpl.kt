@@ -1,9 +1,7 @@
 package com.dauma.grokimkartu.data.users
 
-import com.dauma.grokimkartu.models.users.AuthenticatedUser
-import com.dauma.grokimkartu.models.users.LoginUser
-import com.dauma.grokimkartu.models.users.RegistrationUser
-import com.dauma.grokimkartu.models.users.User
+import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
+import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,9 +15,9 @@ class UsersDaoImpl(
         private const val usersCollection = "users"
     }
 
-    override fun registerUser(user: RegistrationUser, onComplete: (Boolean, String?, Exception?) -> Unit) {
+    override fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit) {
         firebaseAuth
-            .createUserWithEmailAndPassword(user.email, user.password)
+            .createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val id = firebaseAuth.currentUser?.uid
@@ -38,7 +36,7 @@ class UsersDaoImpl(
             }
     }
 
-    override fun addUserToFirestore(user: User, onComplete: (Boolean, Exception?) -> Unit) {
+    override fun addUserToFirestore(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseFirestore
             .collection(UsersDaoImpl.usersCollection)
             .document(user.id)
@@ -67,9 +65,9 @@ class UsersDaoImpl(
             }
     }
 
-    override fun loginUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit) {
+    override fun loginUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseAuth
-            .signInWithEmailAndPassword(user.email, user.password)
+            .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     onComplete(true, null)
@@ -134,8 +132,8 @@ class UsersDaoImpl(
             }
     }
 
-    override fun reauthenticateUser(user: LoginUser, onComplete: (Boolean, Exception?) -> Unit) {
-        val credential = EmailAuthProvider.getCredential(user.email, user.password)
+    override fun reauthenticateUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit) {
+        val credential = EmailAuthProvider.getCredential(email, password)
         firebaseAuth.currentUser
             ?.reauthenticate(credential)
             ?.addOnCompleteListener { task ->
@@ -150,12 +148,12 @@ class UsersDaoImpl(
             }
     }
 
-    override fun getAuthenticatedUserDataProfiles(): List<AuthenticatedUser> {
-        val authenticatedUserByProfiles: MutableList<AuthenticatedUser> = mutableListOf()
+    override fun getAuthenticatedUserDataProfiles(): List<AuthenticationUser> {
+        val authenticatedUserByProfiles: MutableList<AuthenticationUser> = mutableListOf()
         val user = firebaseAuth.currentUser
         user?.let {
             for (profile in it.providerData) {
-                val authenticatedUserProfile = AuthenticatedUser(
+                val authenticatedUserProfile = AuthenticationUser(
                     profile.providerId,
                     profile.uid,
                     profile.displayName,

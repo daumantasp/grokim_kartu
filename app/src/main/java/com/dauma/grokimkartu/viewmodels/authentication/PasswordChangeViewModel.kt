@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.PasswordChangeForm
-import com.dauma.grokimkartu.models.users.LoginUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
@@ -49,8 +48,7 @@ class PasswordChangeViewModel @Inject constructor(
         try {
             val email = usersRepository.getAuthenticatedUserData().email
             if (email != null) {
-                val loginUser = LoginUser(email, oldPassword)
-                usersRepository.reauthenticateUser(loginUser) { isSuccessful, error ->
+                usersRepository.reauthenticateUser(email, oldPassword) { isSuccessful, error ->
                     if (isSuccessful) {
                         usersRepository.updatePassword(newPassword) { isSuccessful, error ->
                             if (isSuccessful) {

@@ -2,7 +2,7 @@ package com.dauma.grokimkartu.data.players
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.dauma.grokimkartu.models.Player
+import com.dauma.grokimkartu.data.players.entities.Player
 
 class FakePlayersDaoImpl : PlayersDao {
     private val playerList = mutableListOf<Player>()

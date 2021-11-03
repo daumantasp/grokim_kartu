@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.models.Player
+import com.dauma.grokimkartu.data.players.entities.Player
 
 class PlayersListAdapter(
     private var playersData: List<Player>

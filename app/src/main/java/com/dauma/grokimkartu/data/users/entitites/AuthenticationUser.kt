@@ -1,8 +1,8 @@
-package com.dauma.grokimkartu.models.users
+package com.dauma.grokimkartu.data.users.entitites
 
 import android.net.Uri
 
-data class AuthenticatedUser(
+data class AuthenticationUser(
     val providerId: String?,
     val id: String?,
     val name: String?,

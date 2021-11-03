@@ -1,6 +1,6 @@
-package com.dauma.grokimkartu.models.users
+package com.dauma.grokimkartu.data.users.entitites
 
-class User(
+class FirestoreUser(
     var id: String,
     val name: String
 ) {
