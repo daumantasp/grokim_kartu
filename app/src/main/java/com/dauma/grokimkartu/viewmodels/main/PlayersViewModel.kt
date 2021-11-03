@@ -12,4 +12,8 @@ class PlayersViewModel @Inject constructor(
 ) : ViewModel() {
     fun getPlayers() = playersRepository.getPlayers()
     fun addPlayer(player: Player) = playersRepository.addPlayer(player)
+
+    fun backClicked() {
+        // TODO
+    }
 }

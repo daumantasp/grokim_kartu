@@ -1,27 +1,31 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.data.players.entities.Player
+import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+// read more at https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
+
 @AndroidEntryPoint
 class PlayersFragment : Fragment() {
     private val playersViewModel by viewModels<PlayersViewModel>()
-    // read more at https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
-    private var playersRecyclerView: RecyclerView? = null
     private var isPlayersRecyclerViewSetup: Boolean = false
+
+    private var _binding: FragmentPlayersBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     companion object {
         private var TAG = "PlayersFragment"
@@ -31,28 +35,30 @@ class PlayersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_players, container, false)
-        playersRecyclerView = rootView.findViewById(R.id.playersRecyclerView)
+        _binding = FragmentPlayersBinding.inflate(inflater, container, false)
+        binding.model = playersViewModel
+        val view = binding.root
+        setupObservers()
 
-        playersViewModel!!.getPlayers().observe(
-            viewLifecycleOwner, Observer {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            playersViewModel.backClicked()
+        }
+
+        return view
+    }
+
+    private fun setupObservers() {
+        playersViewModel.getPlayers().observe(viewLifecycleOwner, Observer {
                 if (isPlayersRecyclerViewSetup == false) {
                     setupPlayersRecyclerView(it)
                 } else {
-                    playersRecyclerView?.adapter?.notifyDataSetChanged()
+                    binding.playersRecyclerView.adapter?.notifyDataSetChanged()
                 }
             })
-
-        return rootView
     }
 
     private fun setupPlayersRecyclerView(players: List<Player>) {
-        if (playersRecyclerView == null) {
-            Log.d(TAG, "ERROR: playersRecyclerView not found")
-            return
-        }
-
-        playersRecyclerView!!.layoutManager = LinearLayoutManager(context)
-        playersRecyclerView!!.adapter = PlayersListAdapter(players)
+        binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.playersRecyclerView.adapter = PlayersListAdapter(players)
     }
 }
