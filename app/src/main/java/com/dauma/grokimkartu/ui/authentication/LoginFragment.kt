@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
@@ -31,37 +31,12 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.model = loginViewModel
         val view = binding.root
+        setupOnClickListeners()
+        setupObservers()
 
-        // TODO: Implement it in MVVM pattern
-        // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
-        // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
-        binding.registerTextView.setOnClickListener {
-            it.findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            loginViewModel.backClicked()
         }
-
-        binding.forgotPasswordTextView.setOnClickListener {
-            loginViewModel.forgotPasswordClicked()
-        }
-
-        loginViewModel.getLoginForm().getFormFields().observe(viewLifecycleOwner) {
-            loginViewModel.loginUser(it.get(0), it.get(1))
-        }
-
-        loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(it as Int)
-        })
-
-        loginViewModel.navigateToForgotPassword.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(it)
-        })
-
-        loginViewModel.emailError.observe(viewLifecycleOwner, Observer {
-            binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        })
-
-        loginViewModel.passwordError.observe(viewLifecycleOwner, Observer {
-            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        })
 
         return view
     }
@@ -69,5 +44,40 @@ class LoginFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupOnClickListeners() {
+        binding.registerTextView.setOnClickListener {
+            loginViewModel.registrationClicked()
+        }
+        binding.forgotPasswordTextView.setOnClickListener {
+            loginViewModel.forgotPasswordClicked()
+        }
+    }
+
+    private fun setupObservers() {
+        loginViewModel.getLoginForm().getFormFields().observe(viewLifecycleOwner) {
+            this.loginViewModel.loginUser(it.get(0), it.get(1))
+        }
+        // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
+        // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
+        loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_loginFragment_to_playersFragment)
+        })
+        loginViewModel.navigateToRegistration.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+        })
+        loginViewModel.navigateToForgotPassword.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+        })
+        loginViewModel.emailError.observe(viewLifecycleOwner, Observer {
+            this.binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
+        })
+        loginViewModel.passwordError.observe(viewLifecycleOwner, Observer {
+            this.binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
+        })
+        loginViewModel.closeApp.observe(viewLifecycleOwner, EventObserver {
+            this.activity?.finish()
+        })
     }
 }

@@ -18,12 +18,16 @@ class LoginViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val loginForm: LoginForm
 ) : ViewModel() {
-    private val _navigateToPlayers = MutableLiveData<Event<Any>>()
-    private val _navigateToForgotPassword = MutableLiveData<Event<Int>>()
+    private val _navigateToPlayers = MutableLiveData<Event<String>>()
+    private val _navigateToRegistration = MutableLiveData<Event<String>>()
+    private val _navigateToForgotPassword = MutableLiveData<Event<String>>()
+    private val _closeApp = MutableLiveData<Event<String>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
-    val navigateToPlayers: LiveData<Event<Any>> = _navigateToPlayers
-    val navigateToForgotPassword: LiveData<Event<Int>> = _navigateToForgotPassword
+    val navigateToPlayers: LiveData<Event<String>> = _navigateToPlayers
+    val navigateToRegistration: LiveData<Event<String>> = _navigateToRegistration
+    val navigateToForgotPassword: LiveData<Event<String>> = _navigateToForgotPassword
+    val closeApp: LiveData<Event<String>> = _closeApp
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
 
@@ -36,7 +40,7 @@ class LoginViewModel @Inject constructor(
             usersRepository.loginUser(email, password) { isSuccessful, error ->
                 if (isSuccessful) {
                     clearAuthenticationErrors()
-                    _navigateToPlayers.value = Event(R.id.action_loginFragment_to_playersFragment)
+                    _navigateToPlayers.value = Event("")
                 } else {
                     Log.d(TAG, error?.message ?: "Login was unsuccessful")
                     if (error != null) {
@@ -49,12 +53,20 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun forgotPasswordClicked() {
-        _navigateToForgotPassword.value = Event(R.id.action_loginFragment_to_forgotPasswordFragment)
-    }
-
     fun getLoginForm() : LoginForm {
         return loginForm
+    }
+
+    fun registrationClicked() {
+        _navigateToRegistration.value = Event("")
+    }
+
+    fun forgotPasswordClicked() {
+        _navigateToForgotPassword.value = Event("")
+    }
+
+    fun backClicked() {
+        _closeApp.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {
