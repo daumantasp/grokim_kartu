@@ -23,7 +23,12 @@ class SplashViewModelImpl @Inject constructor(
 
     override fun splashCompleted() {
         if (usersRepository.isUserLoggedIn()) {
-            _navigateToPlayers.value = Event(true)
+            if (usersRepository.isEmailVerified()){
+                _navigateToPlayers.value = Event(true)
+            } else {
+                usersRepository.logOut()
+                _navigateToLogin.value = Event(true)
+            }
         } else {
             _navigateToLogin.value = Event(true)
         }

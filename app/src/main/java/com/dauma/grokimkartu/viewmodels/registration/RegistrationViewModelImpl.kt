@@ -12,6 +12,8 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import android.os.Handler
+import android.os.Looper
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,10 +25,14 @@ class RegistrationViewModelImpl @Inject constructor(
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     private val _navigateToLogin = MutableLiveData<Int>()
+    private var _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
+    private val _enableResendButton = MutableLiveData<Boolean>()
     val emailVerificationSent: LiveData<Event<Any>> = _emailVerificationSent
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
     val navigateToLogin: LiveData<Int> = _navigateToLogin
+    val enableResendButton = _enableResendButton
+    var verificationEmailWillBeAllowedToSentInSeconds: LiveData<Int> = _verificationEmailWillBeAllowedToSentInSeconds
 
     companion object {
         private val TAG = "RegistrationViewModel"
@@ -38,7 +44,7 @@ class RegistrationViewModelImpl @Inject constructor(
             usersRepository.registerUser(registrationUser) { isSuccessful, error ->
                 if (isSuccessful) {
                     usersRepository.sendEmailVerification()
-                    usersRepository.logOut()
+                    updateVerificationEmailTimer()
                     clearAuthenticationErrors()
                     _emailVerificationSent.value = Event(isSuccessful)
                 } else {
@@ -58,7 +64,36 @@ class RegistrationViewModelImpl @Inject constructor(
     }
 
     fun okClicked() {
+        usersRepository.logOut()
         _navigateToLogin.value = R.id.action_registrationFragment_to_loginFragment
+    }
+
+    fun resendClicked() {
+        val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
+        if (timerValue == 0) {
+            usersRepository.sendEmailVerification()
+            _verificationEmailWillBeAllowedToSentInSeconds.value = 60
+            updateVerificationEmailTimer()
+        }
+    }
+
+    private fun updateVerificationEmailTimer() {
+        val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
+        if (timerValue == null) {
+            _verificationEmailWillBeAllowedToSentInSeconds.value = 60
+            _enableResendButton.value = false
+            Handler(Looper.getMainLooper()).postDelayed({
+                updateVerificationEmailTimer()
+            }, 1000)
+        } else if (timerValue > 0) {
+            _verificationEmailWillBeAllowedToSentInSeconds.value = timerValue - 1
+            _enableResendButton.value = false
+            Handler(Looper.getMainLooper()).postDelayed({
+                updateVerificationEmailTimer()
+            }, 1000)
+        } else {
+            _enableResendButton.value = true
+        }
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

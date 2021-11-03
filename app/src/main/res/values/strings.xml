@@ -21,6 +21,7 @@
     <string name="registration_email_password_too_weak_error">Nurodytas slaptažodis yra per silpnas</string>
     <string name="registration_registrationSuccessful">Jūs sėkmingai užsiregistravote. Į jūsų el. paštą buvo išsiųstas patvirtinimo laiškas.</string>
     <string name="registration_okButton">Supratau</string>
+    <string name="registration_resendButton">Siųsti dar kartą</string>
     <string name="login_invalid_email_error">Toks vartotojas nerastas</string>
     <string name="login_invalid_password_error">Neteisingas slaptažodis</string>
     <string name="profile_delete_user_button">Panaikinti vartotoją</string>

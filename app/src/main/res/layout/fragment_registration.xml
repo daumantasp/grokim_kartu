@@ -111,6 +111,15 @@
             android:text="@string/registration_registrationSuccessful" />
 
         <Button
+            android:id="@+id/resendButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:onClick="@{() -> model.resendClicked()}"
+            android:visibility="gone"
+            android:text="@string/registration_resendButton" />
+
+        <Button
             android:id="@+id/okButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
