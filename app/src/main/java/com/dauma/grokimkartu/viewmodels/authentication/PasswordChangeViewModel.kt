@@ -18,19 +18,23 @@ class PasswordChangeViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val passwordChangeForm: PasswordChangeForm
 ) : ViewModel() {
-    private val _navigateToProfile = MutableLiveData<Event<Int>>()
-    val navigateToProfile: LiveData<Event<Int>> = _navigateToProfile
+    private val _navigateToProfile = MutableLiveData<Event<String>>()
+    private val _showSuccess = MutableLiveData<Event<Boolean>>()
     private val _oldPasswordError = MutableLiveData<Int>()
     private val _newPasswordError = MutableLiveData<Int>()
     private val _repeatPasswordError = MutableLiveData<Int>()
+    val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
+    val showSuccess: LiveData<Event<Boolean>> = _showSuccess
     val oldPasswordError: LiveData<Int> = _oldPasswordError
     val newPasswordError: LiveData<Int> = _newPasswordError
     val repeatPasswordError: LiveData<Int> = _repeatPasswordError
-    private val _showSuccess = MutableLiveData<Event<Boolean>>()
-    val showSuccess = _showSuccess
 
     companion object {
         private val TAG = "PasswordChangeViewModel"
+    }
+
+    fun passwordChangeForm() : PasswordChangeForm {
+        return passwordChangeForm
     }
 
     fun passwordChangeClicked(oldPassword: String, newPassword: String, repeatPassword: String) {
@@ -73,12 +77,12 @@ class PasswordChangeViewModel @Inject constructor(
         }
     }
 
-    fun passwordChangeForm() : PasswordChangeForm {
-        return passwordChangeForm
+    fun okClicked() {
+        _navigateToProfile.value = Event("")
     }
 
-    fun okClicked() {
-        _navigateToProfile.value = Event(R.id.action_passwordChangeFragment_to_profileFragment)
+    fun backClicked() {
+        _navigateToProfile.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {
