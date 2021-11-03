@@ -22,9 +22,11 @@ class RegistrationViewModelImpl @Inject constructor(
     private val _emailVerificationSent = MutableLiveData<Event<Any>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
+    private val _navigateToLogin = MutableLiveData<Int>()
     val emailVerificationSent: LiveData<Event<Any>> = _emailVerificationSent
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
+    val navigateToLogin: LiveData<Int> = _navigateToLogin
 
     companion object {
         private val TAG = "RegistrationViewModel"
@@ -53,6 +55,10 @@ class RegistrationViewModelImpl @Inject constructor(
 
     fun getRegistrationForm() : RegistrationForm {
         return registrationForm
+    }
+
+    fun okClicked() {
+        _navigateToLogin.value = R.id.action_registrationFragment_to_loginFragment
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

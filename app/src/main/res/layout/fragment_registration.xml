@@ -103,5 +103,20 @@
             android:onClick="@{() -> model.registrationForm.onClick()}"
             android:text="@string/registration_registerButton" />
 
+        <TextView
+            android:id="@+id/registrationSuccessfulTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/registration_registrationSuccessful" />
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> model.okClicked()}"
+            android:visibility="gone"
+            android:text="@string/registration_okButton" />
+
     </LinearLayout>
 </layout>

@@ -45,17 +45,6 @@
         <action
             android:id="@+id/action_registrationFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_registrationFragment_to_registrationConfirmFragment"
-            app:destination="@id/registrationConfirmFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/registrationConfirmFragment"
-        android:name="com.dauma.grokimkartu.ui.registrationConfirm.RegistrationConfirmFragment"
-        android:label="RegistrationConfirmFragment" >
-        <action
-            android:id="@+id/action_registrationConfirmFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"

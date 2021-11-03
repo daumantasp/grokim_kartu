@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.splashFragment,
                 R.id.loginFragment,
                 R.id.registrationFragment,
-                R.id.registrationConfirmFragment,
                 R.id.forgotPasswordFragment,
                 R.id.passwordChangeFragment, -> showBottomNavigation(false)
                 else -> showBottomNavigation(true)

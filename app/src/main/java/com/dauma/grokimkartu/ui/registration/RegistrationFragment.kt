@@ -44,7 +44,15 @@ class RegistrationFragment : Fragment() {
 
         registrationViewModel.emailVerificationSent.observe(viewLifecycleOwner, EventObserver {
             if (it as Boolean) {
-                findNavController().navigate(R.id.action_registrationFragment_to_registrationConfirmFragment)
+                binding.nameDescriptionTextView.visibility = View.GONE
+                binding.nameTextInput.visibility = View.GONE
+                binding.emailTextInput.visibility = View.GONE
+                binding.passwordDescriptionTextView.visibility = View.GONE
+                binding.passwordTextInput.visibility = View.GONE
+                binding.registerButton.visibility = View.GONE
+
+                binding.registrationSuccessfulTextView.visibility = View.VISIBLE
+                binding.okButton.visibility = View.VISIBLE
             }
         })
 
@@ -55,6 +63,11 @@ class RegistrationFragment : Fragment() {
         registrationViewModel.passwordError.observe(viewLifecycleOwner, Observer {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
+
+        registrationViewModel.navigateToLogin.observe(viewLifecycleOwner, {
+            findNavController().navigate(it)
+        })
+
 
         return view
     }

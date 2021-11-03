@@ -19,14 +19,14 @@
     <string name="registration_email_already_exists_error">Toks el. paštas jau naudojamas</string>
     <string name="registration_email_incorrect_format_error">Netinkamas el. pašto formatas</string>
     <string name="registration_email_password_too_weak_error">Nurodytas slaptažodis yra per silpnas</string>
+    <string name="registration_registrationSuccessful">Jūs sėkmingai užsiregistravote. Į jūsų el. paštą buvo išsiųstas patvirtinimo laiškas.</string>
+    <string name="registration_okButton">Supratau</string>
     <string name="login_invalid_email_error">Toks vartotojas nerastas</string>
     <string name="login_invalid_password_error">Neteisingas slaptažodis</string>
     <string name="profile_delete_user_button">Panaikinti vartotoją</string>
     <string name="profile_delete_user_password">Slaptažodis</string>
     <string name="profile_change_password_button">Keisti slaptažodį</string>
     <string name="profile_logout">Atsijungti</string>
-    <string name="registrationConfirm_registrationSuccessful">Jūs sėkmingai užsiregistravote. Į jūsų el. paštą buvo išsiųstas patvirtinimo laiškas.</string>
-    <string name="registrationConfirm_okButton">Supratau</string>
     <string name="login_email_not_verified">El. paštas nepatvirtintas</string>
     <string name="forgotPassword_email">El. paštas</string>
     <string name="forgotPassword_resetDescription">Atstatyti slaptažodį</string>
