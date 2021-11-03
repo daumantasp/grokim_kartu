@@ -11,7 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
-import com.dauma.grokimkartu.models.EventObserver
+import com.dauma.grokimkartu.general.EventObserver
 import com.dauma.grokimkartu.viewmodels.authentication.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

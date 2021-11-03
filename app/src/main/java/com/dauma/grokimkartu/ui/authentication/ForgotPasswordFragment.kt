@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
-import com.dauma.grokimkartu.models.EventObserver
+import com.dauma.grokimkartu.general.EventObserver
 import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

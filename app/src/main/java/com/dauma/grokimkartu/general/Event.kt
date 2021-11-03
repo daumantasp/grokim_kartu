@@ -1,7 +1,6 @@
 package com.dauma.grokimkartu.models
 
-import androidx.lifecycle.Observer
-
+// TODO: Read more at https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
 open class Event<out T>(private val content: T) {
 
     var hasBeenHandled = false
@@ -24,12 +23,4 @@ open class Event<out T>(private val content: T) {
      * Returns the content, even if it's already been handled.
      */
     fun peekContent(): T = content
-}
-
-class EventObserver<T>(private val onEventUnhandledContent: (T) -> Unit) : Observer<Event<T>> {
-    override fun onChanged(event: Event<T>?) {
-        event?.getContentIfNotHandled()?.let {
-            onEventUnhandledContent(it)
-        }
-    }
 }
