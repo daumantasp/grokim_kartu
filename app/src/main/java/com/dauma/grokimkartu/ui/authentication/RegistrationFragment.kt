@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
@@ -32,18 +32,26 @@ class RegistrationFragment : Fragment() {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         binding.model = registrationViewModel
         val view = binding.root
+        setupObservers()
 
-        // TODO: Implement it in MVVM pattern
-        binding.closeImageButton.setOnClickListener {
-            it.findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            registrationViewModel.backClicked()
         }
 
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    fun setupObservers() {
         registrationViewModel.getRegistrationForm().getFormFields().observe(viewLifecycleOwner) {
             registrationViewModel.createUser(it.get(0), it.get(1), it.get(2))
         }
-
         registrationViewModel.emailVerificationSent.observe(viewLifecycleOwner, EventObserver {
-            if (it as Boolean) {
+            if (it) {
                 binding.nameDescriptionTextView.visibility = View.GONE
                 binding.nameTextInput.visibility = View.GONE
                 binding.emailTextInput.visibility = View.GONE
@@ -56,23 +64,18 @@ class RegistrationFragment : Fragment() {
                 binding.okButton.visibility = View.VISIBLE
             }
         })
-
         registrationViewModel.emailError.observe(viewLifecycleOwner, Observer {
             binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
-
         registrationViewModel.passwordError.observe(viewLifecycleOwner, Observer {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
-
         registrationViewModel.navigateToLogin.observe(viewLifecycleOwner, {
-            findNavController().navigate(it)
+            findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
         })
-
         registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
             binding.resendButton.isEnabled = it
         })
-
         registrationViewModel.verificationEmailWillBeAllowedToSentInSeconds.observe(viewLifecycleOwner, {
             val resendButtonTitle: String
             if (it > 0) {
@@ -82,12 +85,5 @@ class RegistrationFragment : Fragment() {
             }
             binding.resendButton.text = resendButtonTitle
         })
-
-        return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

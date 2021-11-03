@@ -20,21 +20,25 @@ class RegistrationViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val registrationForm: RegistrationForm,
 ) : ViewModel() {
-    private val _emailVerificationSent = MutableLiveData<Event<Any>>()
+    private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _emailVerificationSent = MutableLiveData<Event<Boolean>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
-    private val _navigateToLogin = MutableLiveData<Int>()
-    private var _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
+    private val _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
     private val _enableResendButton = MutableLiveData<Boolean>()
-    val emailVerificationSent: LiveData<Event<Any>> = _emailVerificationSent
+    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val emailVerificationSent: LiveData<Event<Boolean>> = _emailVerificationSent
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
-    val navigateToLogin: LiveData<Int> = _navigateToLogin
-    val enableResendButton = _enableResendButton
     var verificationEmailWillBeAllowedToSentInSeconds: LiveData<Int> = _verificationEmailWillBeAllowedToSentInSeconds
+    val enableResendButton: LiveData<Boolean> = _enableResendButton
 
     companion object {
         private val TAG = "RegistrationViewModel"
+    }
+
+    fun getRegistrationForm() : RegistrationForm {
+        return registrationForm
     }
 
     fun createUser(name: String, email: String, password: String) {
@@ -42,7 +46,7 @@ class RegistrationViewModel @Inject constructor(
             usersRepository.registerUser(email, password, name) { isSuccessful, error ->
                 if (isSuccessful) {
                     usersRepository.sendEmailVerification()
-                    updateVerificationEmailTimer()
+                    updateEmailVerificationTimer()
                     clearAuthenticationErrors()
                     _emailVerificationSent.value = Event(isSuccessful)
                 } else {
@@ -57,13 +61,12 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    fun getRegistrationForm() : RegistrationForm {
-        return registrationForm
+    fun backClicked() {
+        cleanUp()
     }
 
     fun okClicked() {
-        usersRepository.logOut()
-        _navigateToLogin.value = R.id.action_registrationFragment_to_loginFragment
+        cleanUp()
     }
 
     fun resendClicked() {
@@ -71,27 +74,28 @@ class RegistrationViewModel @Inject constructor(
         if (timerValue == 0) {
             usersRepository.sendEmailVerification()
             _verificationEmailWillBeAllowedToSentInSeconds.value = 60
-            updateVerificationEmailTimer()
+            updateEmailVerificationTimer()
         }
     }
 
-    private fun updateVerificationEmailTimer() {
+    private fun updateEmailVerificationTimer() {
         val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
-        if (timerValue == null) {
-            _verificationEmailWillBeAllowedToSentInSeconds.value = 60
+        if (timerValue == null || timerValue > 0) {
+            _verificationEmailWillBeAllowedToSentInSeconds.value = if (timerValue == null) 60 else timerValue - 1
             _enableResendButton.value = false
             Handler(Looper.getMainLooper()).postDelayed({
-                updateVerificationEmailTimer()
-            }, 1000)
-        } else if (timerValue > 0) {
-            _verificationEmailWillBeAllowedToSentInSeconds.value = timerValue - 1
-            _enableResendButton.value = false
-            Handler(Looper.getMainLooper()).postDelayed({
-                updateVerificationEmailTimer()
+                updateEmailVerificationTimer()
             }, 1000)
         } else {
             _enableResendButton.value = true
         }
+    }
+
+    private fun cleanUp() {
+        if (usersRepository.isUserLoggedIn()) {
+            usersRepository.logOut()
+        }
+        _navigateToLogin.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

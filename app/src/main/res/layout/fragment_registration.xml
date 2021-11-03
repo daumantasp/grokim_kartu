@@ -20,6 +20,7 @@
             android:id="@+id/closeImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> model.backClicked()}"
             android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
         <TextView
