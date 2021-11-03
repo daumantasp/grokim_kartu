@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.authentication.RegistrationViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RegistrationFragment : Fragment() {
-    private val registrationViewModel by viewModels<RegistrationViewModelImpl>()
+    private val registrationViewModel by viewModels<RegistrationViewModel>()
 
     private var _binding: FragmentRegistrationBinding? = null
     // This property is only valid between onCreateView and

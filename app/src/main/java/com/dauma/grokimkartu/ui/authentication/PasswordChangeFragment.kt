@@ -9,12 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentPasswordChangeBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.authentication.PasswordChangeViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.PasswordChangeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PasswordChangeFragment : Fragment() {
-    private val passwordChangeViewModel by viewModels<PasswordChangeViewModelImpl>()
+    private val passwordChangeViewModel by viewModels<PasswordChangeViewModel>()
 
     private var _binding: FragmentPasswordChangeBinding? = null
     // This property is only valid between onCreateView and

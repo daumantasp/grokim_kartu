@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.models.Player
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
-import com.dauma.grokimkartu.viewmodels.main.PlayersViewModelImpl
+import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PlayersFragment : Fragment() {
-    private val playersViewModel by viewModels<PlayersViewModelImpl>()
+    private val playersViewModel by viewModels<PlayersViewModel>()
     // read more at https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
     private var playersRecyclerView: RecyclerView? = null
     private var isPlayersRecyclerViewSetup: Boolean = false

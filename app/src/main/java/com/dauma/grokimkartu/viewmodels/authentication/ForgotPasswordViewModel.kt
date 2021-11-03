@@ -13,7 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ForgotPasswordViewModelImpl @Inject constructor(
+class ForgotPasswordViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val forgotPasswordForm: ForgotPasswordForm
 ) : ViewModel() {

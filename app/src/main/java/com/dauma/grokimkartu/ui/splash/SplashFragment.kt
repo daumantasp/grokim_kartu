@@ -10,12 +10,12 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSplashBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.splash.SplashViewModelImpl
+import com.dauma.grokimkartu.viewmodels.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplashFragment : Fragment() {
-    private val splashViewModel by viewModels<SplashViewModelImpl>()
+    private val splashViewModel by viewModels<SplashViewModel>()
 
     private var _binding: FragmentSplashBinding? = null
     // This property is only valid between onCreateView and

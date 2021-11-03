@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.authentication.LoginViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
-    private val loginViewModel by viewModels<LoginViewModelImpl>()
+    private val loginViewModel by viewModels<LoginViewModel>()
 
     private var _binding: FragmentLoginBinding? = null
     // This property is only valid between onCreateView and

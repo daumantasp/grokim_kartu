@@ -15,7 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModelImpl @Inject constructor(
+class ProfileViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val profileForm: ProfileForm
 ) : ViewModel() {

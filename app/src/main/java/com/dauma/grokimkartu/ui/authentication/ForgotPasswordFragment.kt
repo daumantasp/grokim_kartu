@@ -9,12 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModelImpl
+import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ForgotPasswordFragment : Fragment() {
-    private val forgotPasswordViewModel by viewModels<ForgotPasswordViewModelImpl>()
+    private val forgotPasswordViewModel by viewModels<ForgotPasswordViewModel>()
 
     private var _binding: FragmentForgotPasswordBinding? = null
     // This property is only valid between onCreateView and

@@ -15,7 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModelImpl @Inject constructor(
+class LoginViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val loginForm: LoginForm
 ) : ViewModel() {

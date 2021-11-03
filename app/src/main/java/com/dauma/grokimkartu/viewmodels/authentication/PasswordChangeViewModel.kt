@@ -15,7 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PasswordChangeViewModelImpl @Inject constructor(
+class PasswordChangeViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val passwordChangeForm: PasswordChangeForm
 ) : ViewModel() {

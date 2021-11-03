@@ -5,7 +5,7 @@
     <data>
         <variable
             name="model"
-            type="com.dauma.grokimkartu.viewmodels.splash.SplashViewModelImpl" />
+            type="com.dauma.grokimkartu.viewmodels.splash.SplashViewModel" />
     </data>
 
     <FrameLayout

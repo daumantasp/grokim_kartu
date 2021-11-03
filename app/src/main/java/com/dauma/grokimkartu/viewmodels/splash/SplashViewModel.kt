@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModelImpl @Inject constructor(
+class SplashViewModel @Inject constructor(
     private val usersRepository: UsersRepository
 ) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<Boolean>>()

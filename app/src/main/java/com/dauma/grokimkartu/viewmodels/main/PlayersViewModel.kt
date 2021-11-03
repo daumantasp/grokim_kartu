@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayersViewModelImpl @Inject constructor(
+class PlayersViewModel @Inject constructor(
     private val playersRepository: PlayersRepository
 ) : ViewModel() {
     fun getPlayers() = playersRepository.getPlayers()

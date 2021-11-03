@@ -9,12 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.models.EventObserver
-import com.dauma.grokimkartu.viewmodels.main.ProfileViewModelImpl
+import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
-    private val profileViewModel by viewModels<ProfileViewModelImpl>()
+    private val profileViewModel by viewModels<ProfileViewModel>()
 
     private var _binding: FragmentProfileBinding? = null
     // This property is only valid between onCreateView and

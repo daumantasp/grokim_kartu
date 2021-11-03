@@ -17,7 +17,7 @@ import android.os.Looper
 import javax.inject.Inject
 
 @HiltViewModel
-class RegistrationViewModelImpl @Inject constructor(
+class RegistrationViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val registrationForm: RegistrationForm,
 ) : ViewModel() {
