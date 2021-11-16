@@ -60,7 +60,7 @@ class RegistrationFragment : Fragment() {
                 binding.registerButton.visibility = View.GONE
 
                 binding.registrationSuccessfulTextView.visibility = View.VISIBLE
-                binding.resendButton.visibility = View.VISIBLE
+                binding.resendTextView.visibility = View.VISIBLE
                 binding.okButton.visibility = View.VISIBLE
             }
         })
@@ -74,7 +74,7 @@ class RegistrationFragment : Fragment() {
             findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
         })
         registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
-            binding.resendButton.isEnabled = it
+            binding.resendTextView.isEnabled = it
         })
         registrationViewModel.verificationEmailWillBeAllowedToSentInSeconds.observe(viewLifecycleOwner, {
             val resendButtonTitle: String
@@ -83,7 +83,7 @@ class RegistrationFragment : Fragment() {
             } else {
                 resendButtonTitle = requireContext().getString(R.string.registration_resendButton)
             }
-            binding.resendButton.text = resendButtonTitle
+            binding.resendTextView.text = resendButtonTitle
         })
     }
 }
