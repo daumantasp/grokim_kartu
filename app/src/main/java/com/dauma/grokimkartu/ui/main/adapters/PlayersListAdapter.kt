@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.data.players.entities.Player
+import com.dauma.grokimkartu.data.players.entities.FirestorePlayer
 
 class PlayersListAdapter(
-    private var playersData: List<Player>
+    private var playersData: List<FirestorePlayer>
 ) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -19,7 +19,7 @@ class PlayersListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = playersData[position]
-        holder.idTextView.text = player.id.toString()
+        holder.idTextView.text = player.userId.toString()
         holder.nameTextView.text = player.name
         holder.instrumentTextView.text = player.instrument
     }
