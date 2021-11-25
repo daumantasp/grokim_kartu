@@ -11,6 +11,9 @@ class PlayersDaoImpl(
         private const val playersCollection = "players"
     }
 
+    //https://firebase.google.com/docs/firestore/query-data/query-cursors#kotlin+ktx_3
+    // TODO: implement pagination and filter only visible ones?
+    //https://medium.com/firebase-tips-tricks/how-to-paginate-firestore-using-paging-3-on-android-c485acb0a2df
     override fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit) {
         firebaseFirestore
             .collection(PlayersDaoImpl.playersCollection)
