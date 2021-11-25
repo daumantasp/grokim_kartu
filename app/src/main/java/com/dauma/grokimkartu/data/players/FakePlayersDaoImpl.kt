@@ -8,10 +8,10 @@ class FakePlayersDaoImpl : PlayersDao {
     private val players = MutableLiveData<List<FirestorePlayer>>()
 
     init {
-        playerList.addAll(listOf(
-            FirestorePlayer("1", true, "Daumantas", "Gitara"),
-            FirestorePlayer("2", true, "Petras", "Armonika")
-        ))
+//        playerList.addAll(listOf(
+//            FirestorePlayer("1", true, "Daumantas", "Gitara"),
+//            FirestorePlayer("2", true, "Petras", "Armonika")
+//        ))
         players.value = playerList
     }
 
