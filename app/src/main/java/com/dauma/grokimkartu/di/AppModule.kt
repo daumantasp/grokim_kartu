@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.di
 
 import com.dauma.grokimkartu.data.players.FakePlayersDaoImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
+import com.dauma.grokimkartu.data.players.PlayersDaoImpl
 import com.dauma.grokimkartu.data.users.UsersDao
 import com.dauma.grokimkartu.data.users.UsersDaoImpl
 import com.dauma.grokimkartu.models.forms.*
@@ -22,7 +23,7 @@ import javax.inject.Singleton
 class AppModule {
     @Provides
     fun providePlayersDao() : PlayersDao {
-        return FakePlayersDaoImpl()
+        return PlayersDaoImpl(FirebaseFirestore.getInstance())
     }
 
     @Provides
