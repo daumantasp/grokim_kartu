@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSettingsBinding
+import com.dauma.grokimkartu.general.EventObserver
 import com.dauma.grokimkartu.viewmodels.main.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +29,7 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.model = settingsViewModel
         val view = binding.root
+        setupObservers()
 
         return view
     }
@@ -34,5 +37,20 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupObservers() {
+        settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+        })
+        settingsViewModel.getSettingsForm().getFormFields().observe(viewLifecycleOwner) {
+            settingsViewModel.deleteUser(it[0])
+        }
+        settingsViewModel.passwordError.observe(viewLifecycleOwner) {
+            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
+        }
+        settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
+        })
     }
 }

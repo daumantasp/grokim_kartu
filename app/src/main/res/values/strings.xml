@@ -47,4 +47,5 @@
     <string name="passwordChange_okButton">Slaptažodžis sėkmingai pakeistas</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_settings_fragment">Hello from Settings fragment</string>
+    <string name="settings_fragment">Settings</string>
 </resources>

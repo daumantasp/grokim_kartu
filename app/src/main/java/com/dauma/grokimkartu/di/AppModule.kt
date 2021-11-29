@@ -66,4 +66,9 @@ class AppModule {
     fun providesPasswordChangeForm() : PasswordChangeForm {
         return PasswordChangeForm()
     }
+
+    @Provides
+    fun providesSettingsForm() : SettingsForm {
+        return SettingsForm()
+    }
 }
