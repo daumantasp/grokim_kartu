@@ -61,6 +61,10 @@ class SettingsViewModel @Inject constructor(
         _navigateToPasswordChange.value = Event("")
     }
 
+    fun showMeClicked(isOn: Boolean) {
+        Log.d(TAG, "showMeClicked isOn=$isOn")
+    }
+
     private fun handleAuthenticationError(error: AuthenticationError) {
         when(error.message) {
             AuthenticationError.INVALID_PASSWORD -> {
