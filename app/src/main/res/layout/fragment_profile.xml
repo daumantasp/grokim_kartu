@@ -26,47 +26,6 @@
             android:layout_marginBottom="50dp"
             android:text="@string/profile_fragment" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordTextInput"
-            android:layout_width="300dp"
-            android:layout_height="80dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/passwordTextInputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="@={model.profileForm.password}"
-                android:hint="@string/profile_delete_user_password"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:lines="1"
-                android:inputType="textPassword"
-                android:fontFamily="@font/lato"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/deleteUserButton"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:fontFamily="@font/lato"
-            android:layout_gravity="center"
-            android:text="@string/profile_delete_user_button"
-            android:enabled="@{model.profileForm.passwordValid}"
-            android:onClick="@{() -> model.profileForm.onClick()}"/>
-
-        <Button
-            android:id="@+id/changePasswordButton"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:text="@string/profile_change_password_button"
-            android:fontFamily="@font/lato"
-            android:layout_gravity="center"
-            android:onClick="@{() -> model.passwordChangeClicked()}"/>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

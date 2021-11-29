@@ -70,7 +70,7 @@ class PasswordChangeFragment : Fragment() {
             }
         })
         passwordChangeViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_passwordChangeFragment_to_profileFragment)
+            findNavController().navigate(R.id.action_passwordChangeFragment_to_settingsFragment)
         })
     }
 }

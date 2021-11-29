@@ -18,9 +18,6 @@
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_passwordChangeFragment"
-            app:destination="@id/passwordChangeFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -69,9 +66,6 @@
         android:id="@+id/passwordChangeFragment"
         android:name="com.dauma.grokimkartu.ui.authentication.PasswordChangeFragment"
         android:label="PasswordChangeFragment" >
-        <action
-            android:id="@+id/action_passwordChangeFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
         <action
             android:id="@+id/action_passwordChangeFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
