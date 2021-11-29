@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.repositories.users
 
 import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
+import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
 
 interface UsersRepository {
     fun isUserLoggedIn(): Boolean
@@ -14,4 +15,6 @@ interface UsersRepository {
     fun reauthenticateUser(email: String, password: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun getAuthenticatedUserData(): AuthenticationUser
     fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
+    fun getUserData(onComplete: (FirestoreUser?, Exception?) -> Unit)
+    fun setUserData(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
 }

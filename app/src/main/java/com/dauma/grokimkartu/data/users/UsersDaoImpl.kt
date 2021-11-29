@@ -36,7 +36,7 @@ class UsersDaoImpl(
             }
     }
 
-    override fun addUserToFirestore(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+    override fun setFirestoreUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseFirestore
             .collection(UsersDaoImpl.usersCollection)
             .document(user.id)
@@ -49,7 +49,25 @@ class UsersDaoImpl(
             }
     }
 
-    override fun deleteUserFromFirestore(
+    override fun getFirestoreUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(UsersDaoImpl.usersCollection)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { userDocumentSnapshot ->
+                if (userDocumentSnapshot.exists()) {
+                    val user = userDocumentSnapshot.toObject(FirestoreUser::class.java)
+                    onComplete(user, null)
+                } else {
+                    onComplete(null, Exception("USER WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
+            }
+    }
+
+    override fun deleteFirestoreUser(
         userId: String,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
@@ -80,9 +98,9 @@ class UsersDaoImpl(
             }
     }
 
-    override fun isUserLoggedIn(): Boolean {
+    override fun getAuthenticatedUserId(): String? {
         // TODO: read more at https://firebase.google.com/docs/auth/android/manage-users
-        return firebaseAuth.currentUser != null
+        return firebaseAuth.currentUser?.uid
     }
 
     override fun logOut() {
@@ -148,7 +166,7 @@ class UsersDaoImpl(
             }
     }
 
-    override fun getAuthenticatedUserDataProfiles(): List<AuthenticationUser> {
+    override fun getUserDataProfiles(): List<AuthenticationUser> {
         val authenticatedUserByProfiles: MutableList<AuthenticationUser> = mutableListOf()
         val user = firebaseAuth.currentUser
         user?.let {
@@ -166,7 +184,7 @@ class UsersDaoImpl(
         return authenticatedUserByProfiles
     }
 
-    override fun updatePassword(newPassword: String, onComplete: (Boolean, Exception?) -> Unit) {
+    override fun updateUserPassword(newPassword: String, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseAuth.currentUser
             ?.updatePassword(newPassword)
             ?.addOnCompleteListener { task ->

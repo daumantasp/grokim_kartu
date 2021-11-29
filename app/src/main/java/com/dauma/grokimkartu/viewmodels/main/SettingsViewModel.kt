@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
 import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.SettingsForm
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
@@ -61,7 +62,29 @@ class SettingsViewModel @Inject constructor(
         _navigateToPasswordChange.value = Event("")
     }
 
+    private var currentUserData: FirestoreUser? = null
     fun showMeClicked(isOn: Boolean) {
+        // PROOF OF CONCEPT
+        if (currentUserData == null) {
+            usersRepository.getUserData { user, e ->
+                currentUserData = user
+
+                var updatedShowMe: Boolean? = null
+                if (user?.showMe == true) {
+                    updatedShowMe = false
+                } else {
+                    updatedShowMe = true
+                }
+
+                var newUserData = FirestoreUser()
+                newUserData.id = user?.id ?: ""
+                newUserData.showMe = updatedShowMe
+                this.usersRepository.setUserData(newUserData) { isSuccessful, e ->
+                    Log.d(TAG, "showMeClicked updated successfully")
+                }
+            }
+        }
+
         Log.d(TAG, "showMeClicked isOn=$isOn")
     }
 
