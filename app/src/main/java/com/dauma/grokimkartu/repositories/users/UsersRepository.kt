@@ -17,4 +17,6 @@ interface UsersRepository {
     fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun getUserData(onComplete: (FirestoreUser?, Exception?) -> Unit)
     fun setUserData(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
+    // TODO: think about  getAuthenticatedUserData and getUserData merging into one method
+    // hide complex logic in the repository
 }

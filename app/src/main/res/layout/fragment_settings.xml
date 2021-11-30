@@ -76,5 +76,21 @@
             android:layout_gravity="center"
             android:onCheckedChanged="@{(view, isOn) -> model.showMeClicked(isOn)}"/>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/saveChangesButton"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@font/lato"
+            android:layout_gravity="center"
+            android:text="@string/settings_saveChanges_button"
+            android:onClick="@{() -> model.saveChangesClicked()}"/>
+<!--        TODO: Move saveChangesClicked to settings form-->
+
     </LinearLayout>
 </layout>

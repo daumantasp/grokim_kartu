@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,10 @@ class SettingsFragment : Fragment() {
         binding.model = settingsViewModel
         val view = binding.root
         setupObservers()
+        if (savedInstanceState == null) {
+            // TODO: Still reloads on device rotate, probably need to save state instance
+            settingsViewModel.loadSettings()
+        }
 
         return view
     }
@@ -52,5 +57,9 @@ class SettingsFragment : Fragment() {
         settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
         })
+        settingsViewModel.firestoreUser.observe(viewLifecycleOwner) {
+            Log.d("SettingsFragment", "id=${it.id}, name=${it.name}, showMe=${it.showMe}")
+            binding.showMeSwitch.isChecked = it.showMe ?: false
+        }
     }
 }
