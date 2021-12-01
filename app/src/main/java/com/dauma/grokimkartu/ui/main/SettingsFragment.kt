@@ -60,6 +60,7 @@ class SettingsFragment : Fragment() {
         settingsViewModel.firestoreUser.observe(viewLifecycleOwner) {
             Log.d("SettingsFragment", "id=${it.id}, name=${it.name}, showMe=${it.showMe}")
             binding.showMeSwitch.isChecked = it.showMe ?: false
+            binding.nameTextInputEditText.setText(it.name ?: "")
         }
     }
 }
