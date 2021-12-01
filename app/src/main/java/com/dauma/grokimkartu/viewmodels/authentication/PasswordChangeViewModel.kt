@@ -50,24 +50,27 @@ class PasswordChangeViewModel @Inject constructor(
         }
 
         try {
-            val email = usersRepository.getAuthenticatedUserData().email
-            if (email != null) {
-                usersRepository.reauthenticateUser(email, oldPassword) { isSuccessful, error ->
-                    if (isSuccessful) {
-                        usersRepository.updatePassword(newPassword) { isSuccessful, error ->
-                            if (isSuccessful) {
-                                _showSuccess.value = Event(true)
-                            } else {
-                                Log.d(TAG, error?.message ?: "Password change was unsuccessful")
-                                if (error != null) {
-                                    handleAuthenticationError(error)
+            usersRepository.getUserData { user, exception ->
+                val email = user?.email
+                if (email != null) {
+                    // TODO: maybe reauthenticatge and update should be merged into single method?
+                    usersRepository.reauthenticateUser(email, oldPassword) { isSuccessful, error ->
+                        if (isSuccessful) {
+                            usersRepository.updatePassword(newPassword) { isSuccessful, error ->
+                                if (isSuccessful) {
+                                    _showSuccess.value = Event(true)
+                                } else {
+                                    Log.d(TAG, error?.message ?: "Password change was unsuccessful")
+                                    if (error != null) {
+                                        handleAuthenticationError(error)
+                                    }
                                 }
                             }
-                        }
-                    } else {
-                        Log.d(TAG, error?.message ?: "Reauthentication was unsuccessful")
-                        if (error != null) {
-                            handleAuthenticationError(error)
+                        } else {
+                            Log.d(TAG, error?.message ?: "Reauthentication was unsuccessful")
+                            if (error != null) {
+                                handleAuthenticationError(error)
+                            }
                         }
                     }
                 }

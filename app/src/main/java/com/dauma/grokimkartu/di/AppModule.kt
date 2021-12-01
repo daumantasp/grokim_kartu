@@ -45,8 +45,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesUsersRepository(usersDao: UsersDao) : UsersRepository {
-        return UsersRepositoryImpl(usersDao)
+    fun providesUsersRepository(authDao: AuthDao, usersDao: UsersDao) : UsersRepository {
+        return UsersRepositoryImpl(authDao, usersDao)
     }
 
     @Provides

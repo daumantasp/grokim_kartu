@@ -57,9 +57,9 @@ class SettingsFragment : Fragment() {
         settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
         })
-        settingsViewModel.firestoreUser.observe(viewLifecycleOwner) {
-            Log.d("SettingsFragment", "id=${it.id}, name=${it.name}, showMe=${it.showMe}")
-            binding.showMeSwitch.isChecked = it.showMe ?: false
+        settingsViewModel.user.observe(viewLifecycleOwner) {
+            Log.d("SettingsFragment", "id=${it.id}, name=${it.name}, showMe=${it.visible}")
+            binding.showMeSwitch.isChecked = it.visible ?: false
             binding.nameTextInputEditText.setText(it.name ?: "")
         }
     }

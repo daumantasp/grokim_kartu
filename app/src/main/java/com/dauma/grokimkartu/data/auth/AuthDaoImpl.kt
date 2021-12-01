@@ -41,7 +41,7 @@ class AuthDaoImpl(private val firebaseAuth: FirebaseAuth) : AuthDao {
             }
     }
 
-    override fun getAuthenticatedUserId(): String? {
+    override fun getUserId(): String? {
         // TODO: read more at https://firebase.google.com/docs/auth/android/manage-users
         return firebaseAuth.currentUser?.uid
     }

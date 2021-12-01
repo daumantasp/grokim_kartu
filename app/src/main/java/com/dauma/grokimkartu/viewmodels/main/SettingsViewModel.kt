@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.data.users.entities.FirestoreUser
 import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.SettingsForm
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.users.entities.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -19,14 +19,15 @@ class SettingsViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val settingsForm: SettingsForm
 ) : ViewModel() {
+    private var initialUser: User? = null
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
-    private val _firestoreUser = MutableLiveData<FirestoreUser>()
+    private val _user = MutableLiveData<User>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
-    val firestoreUser: LiveData<FirestoreUser> = _firestoreUser
+    val user: LiveData<User> = _user
 
     companion object {
         private val TAG = "SettingsViewModel"
@@ -37,28 +38,30 @@ class SettingsViewModel @Inject constructor(
     }
     
     fun loadSettings() {
-        usersRepository.getUserData { firestoreUser, e ->
-            if (firestoreUser != null) {
-                _firestoreUser.value = firestoreUser
+        usersRepository.getUserData { user, e ->
+            if (user != null) {
+                initialUser = user
+                _user.value = user
             }
         }
     }
 
     fun deleteUser(password: String) {
         try {
-            val email = usersRepository.getAuthenticatedUserData().email
-            if (email != null) {
-                usersRepository.reauthenticateUser(email, password) { isSuccessful, error ->
-                    if (isSuccessful) {
-                        usersRepository.deleteUser() { isSuccessful, error ->
-                            if (isSuccessful) {
-                                _navigateToLogin.value = Event("")
+            usersRepository.getUserData() { user, exception ->
+                if (user?.email != null) {
+                    usersRepository.reauthenticateUser(user.email, password) { isSuccessful, error ->
+                        if (isSuccessful) {
+                            usersRepository.deleteUser() { isSuccessful, error ->
+                                if (isSuccessful) {
+                                    _navigateToLogin.value = Event("")
+                                }
                             }
-                        }
-                    } else {
-                        Log.d(SettingsViewModel.TAG, error?.message ?: "Reauthentication was unsuccessful")
-                        if (error != null) {
-                            handleAuthenticationError(error)
+                        } else {
+                            Log.d(SettingsViewModel.TAG, error?.message ?: "Reauthentication was unsuccessful")
+                            if (error != null) {
+                                handleAuthenticationError(error)
+                            }
                         }
                     }
                 }
@@ -73,13 +76,20 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun showMeClicked(isOn: Boolean) {
-        _firestoreUser.value?.showMe = isOn
+        _user.value = User(
+            initialUser?.providerId,
+            initialUser?.id,
+            initialUser?.name,
+            initialUser?.email,
+            initialUser?.photoUrl,
+            isOn
+        )
     }
 
     fun saveChangesClicked() {
-        val firestoreUserValue = _firestoreUser.value
-        if (firestoreUserValue != null) {
-            usersRepository.setUserData(firestoreUserValue) { isSuccessful, e ->
+        val user = _user.value
+        if (user != null) {
+            usersRepository.setUserData(user) { isSuccessful, e ->
                 Log.d(TAG, "showMeClicked updated successfully")
             }
         }

@@ -6,7 +6,7 @@ interface AuthDao {
     fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit)
     fun loginUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit)
     fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun getAuthenticatedUserId(): String?
+    fun getUserId(): String?
     fun logOut()
     fun isEmailVerified(): Boolean
     fun sendEmailVerification()
