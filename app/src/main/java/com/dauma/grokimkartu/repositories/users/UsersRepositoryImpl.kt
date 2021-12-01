@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.repositories.users
 
 import com.dauma.grokimkartu.data.users.UsersDao
-import com.dauma.grokimkartu.data.users.entities.AuthenticationUser
+import com.dauma.grokimkartu.data.auth.entities.AuthUser
 import com.dauma.grokimkartu.data.users.entities.FirestoreUser
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -173,7 +173,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     }
 
     // TODO: return some general object, not Authenticated User
-    override fun getAuthenticatedUserData(): AuthenticationUser {
+    override fun getAuthenticatedUserData(): AuthUser {
         if (isUserLoggedIn()) {
             val userDataProfiles = usersDao.getUserDataProfiles()
             if (userDataProfiles.count() > 0) {
