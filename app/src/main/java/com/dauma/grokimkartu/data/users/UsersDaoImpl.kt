@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.data.users
 
-import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
-import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
+import com.dauma.grokimkartu.data.users.entities.AuthenticationUser
+import com.dauma.grokimkartu.data.users.entities.FirestoreUser
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

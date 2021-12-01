@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.data.users.entitites
+package com.dauma.grokimkartu.data.users.entities
 
 import android.net.Uri
 

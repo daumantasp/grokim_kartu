@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.data.users
 
-import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
-import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
+import com.dauma.grokimkartu.data.users.entities.AuthenticationUser
+import com.dauma.grokimkartu.data.users.entities.FirestoreUser
 
 interface UsersDao {
     fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit)

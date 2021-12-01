@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.repositories.users
 
-import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
-import com.dauma.grokimkartu.data.users.entitites.FirestoreUser
+import com.dauma.grokimkartu.data.users.entities.AuthenticationUser
+import com.dauma.grokimkartu.data.users.entities.FirestoreUser
 
 interface UsersRepository {
     fun isUserLoggedIn(): Boolean
