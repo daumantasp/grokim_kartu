@@ -43,14 +43,5 @@ class ProfileFragment : Fragment() {
         profileViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         })
-        profileViewModel.getProfileForm().getFormFields().observe(viewLifecycleOwner) {
-            profileViewModel.deleteUser(it[0])
-        }
-        profileViewModel.passwordError.observe(viewLifecycleOwner) {
-            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        }
-        profileViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_profileFragment_to_passwordChangeFragment)
-        })
     }
 }

@@ -1,5 +1,7 @@
 package com.dauma.grokimkartu.di
 
+import com.dauma.grokimkartu.data.auth.AuthDao
+import com.dauma.grokimkartu.data.auth.AuthDaoImpl
 import com.dauma.grokimkartu.data.players.FakePlayersDaoImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoImpl
@@ -34,13 +36,18 @@ class AppModule {
 
     @Provides
     fun provideUsersDao() : UsersDao {
-        return UsersDaoImpl(FirebaseAuth.getInstance(), FirebaseFirestore.getInstance())
+        return UsersDaoImpl(FirebaseFirestore.getInstance())
+    }
+
+    @Provides
+    fun providesAuthDao() : AuthDao {
+        return AuthDaoImpl(FirebaseAuth.getInstance())
     }
 
     @Provides
     @Singleton
-    fun providesUsersRepository(usersDao: UsersDao) : UsersRepository {
-        return UsersRepositoryImpl(usersDao)
+    fun providesUsersRepository(authDao: AuthDao, usersDao: UsersDao) : UsersRepository {
+        return UsersRepositoryImpl(authDao, usersDao)
     }
 
     @Provides
@@ -66,5 +73,10 @@ class AppModule {
     @Provides
     fun providesPasswordChangeForm() : PasswordChangeForm {
         return PasswordChangeForm()
+    }
+
+    @Provides
+    fun providesSettingsForm() : SettingsForm {
+        return SettingsForm()
     }
 }

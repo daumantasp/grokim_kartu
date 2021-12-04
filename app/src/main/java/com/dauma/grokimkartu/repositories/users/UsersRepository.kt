@@ -1,6 +1,6 @@
 package com.dauma.grokimkartu.repositories.users
 
-import com.dauma.grokimkartu.data.users.entitites.AuthenticationUser
+import com.dauma.grokimkartu.repositories.users.entities.User
 
 interface UsersRepository {
     fun isUserLoggedIn(): Boolean
@@ -12,6 +12,7 @@ interface UsersRepository {
     fun sendPasswordResetEmail(email: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun deleteUser(onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun reauthenticateUser(email: String, password: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
-    fun getAuthenticatedUserData(): AuthenticationUser
     fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
+    fun getUserData(onComplete: (User?, Exception?) -> Unit)
+    fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit)
 }

@@ -24,6 +24,7 @@
     <string name="registration_resendButton">Siųsti dar kartą</string>
     <string name="login_invalid_email_error">Toks vartotojas nerastas</string>
     <string name="login_invalid_password_error">Neteisingas slaptažodis</string>
+    <string name="settings_saveChanges_button">Išsaugoti</string>
     <string name="profile_delete_user_button">Panaikinti vartotoją</string>
     <string name="profile_delete_user_password">Slaptažodis</string>
     <string name="profile_change_password_button">Keisti slaptažodį</string>
@@ -46,5 +47,7 @@
     <string name="passwordChange_passwordChangedSuccessfully">Slaptažodžis sėkmingai pakeistas</string>
     <string name="passwordChange_okButton">Slaptažodžis sėkmingai pakeistas</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_settings_fragment">Hello from Settings fragment</string>
+    <string name="settings_fragment">Settings</string>
+    <string name="settings_name">Vardas</string>
 </resources>

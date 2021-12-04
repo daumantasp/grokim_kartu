@@ -1,9 +1,0 @@
-package com.dauma.grokimkartu.data.users.entitites
-
-class FirestoreUser(
-    val id: String,
-    val name: String
-) {
-    // Empty constructor is a must for Firestore
-    constructor() : this("", "")
-}
