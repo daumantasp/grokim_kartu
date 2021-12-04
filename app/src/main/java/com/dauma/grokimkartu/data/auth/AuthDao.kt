@@ -4,6 +4,7 @@ import com.dauma.grokimkartu.data.auth.entities.AuthUser
 
 interface AuthDao {
     fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit)
+    fun updateUser(name: String, onComplete: (Boolean, Exception?) -> Unit)
     fun loginUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit)
     fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getUserId(): String?

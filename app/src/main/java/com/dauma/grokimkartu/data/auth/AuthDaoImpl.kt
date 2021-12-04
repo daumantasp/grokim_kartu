@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.auth
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class AuthDaoImpl(private val firebaseAuth: FirebaseAuth) : AuthDao {
     override fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit) {
@@ -23,6 +24,24 @@ class AuthDaoImpl(private val firebaseAuth: FirebaseAuth) : AuthDao {
             }
             .addOnFailureListener { e ->
                 onComplete(false, null, e)
+            }
+    }
+
+    override fun updateUser(name: String, onComplete: (Boolean, Exception?) -> Unit) {
+        val profileUpdates = UserProfileChangeRequest.Builder().apply {
+            displayName = name
+        }.build()
+
+        firebaseAuth.currentUser?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, task.exception)
+                }
+            }
+            ?.addOnFailureListener { e ->
+                    onComplete(false, e)
             }
     }
 
