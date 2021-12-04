@@ -23,12 +23,19 @@ class UsersRepositoryImpl(
         if (isUserLoggedIn() == false) {
             authDao.registerUser(email, password) { isSuccessful, userId, e ->
                 if (isSuccessful && userId != null) {
-                    val userToSaveInFirestore = FirestoreUser(userId, true)
-                    this.usersDao.setFirestoreUser(userToSaveInFirestore) { isSuccessful, e ->
+                    this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            onComplete(true, null)
+                            val userToSaveInFirestore = FirestoreUser(userId, true)
+                            this.usersDao.setFirestoreUser(userToSaveInFirestore) { isSuccessful, e ->
+                                if (isSuccessful) {
+                                    onComplete(true, null)
+                                } else {
+                                    val error = AuthenticationError(6)
+                                    onComplete(false, error)
+                                }
+                            }
                         } else {
-                            val error = AuthenticationError(6)
+                            val error = AuthenticationError(5)
                             onComplete(false, error)
                         }
                     }

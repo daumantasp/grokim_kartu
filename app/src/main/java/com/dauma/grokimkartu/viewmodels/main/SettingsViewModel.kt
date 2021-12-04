@@ -39,7 +39,7 @@ class SettingsViewModel @Inject constructor(
         usersRepository.getUserData { user, e ->
             this._initialUser = user
             this.settingsForm.setInitialValues(
-                user?.email ?: "",
+                user?.name ?: "",
                 user?.visible ?: false
             )
         }
