@@ -1,7 +1,6 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,22 +44,14 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
-        })
-        settingsViewModel.getSettingsForm().getFormFields().observe(viewLifecycleOwner) {
-            settingsViewModel.deleteUser(it[0])
-        }
         settingsViewModel.passwordError.observe(viewLifecycleOwner) {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         }
+        settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+        })
         settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
         })
-        settingsViewModel.user.observe(viewLifecycleOwner) {
-            Log.d("SettingsFragment", "id=${it.id}, name=${it.name}, showMe=${it.visible}")
-            binding.showMeSwitch.isChecked = it.visible ?: false
-            binding.nameTextInputEditText.setText(it.name ?: "")
-        }
     }
 }

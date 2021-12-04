@@ -2,31 +2,37 @@ package com.dauma.grokimkartu.models.forms
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
 
 class SettingsForm: BaseObservable() {
-    private var password: String = ""
-    private var formFields: MutableLiveData<List<String>> = MutableLiveData()
+    private var initialIsVisible: Boolean = false
 
-    fun getPassword(): String {
-        return password
-    }
-
-    fun setPassword(password: String) {
-        this.password = password
-        notifyPropertyChanged(BR.passwordValid)
-    }
-
-    fun getFormFields(): LiveData<List<String>> {
-        return formFields
-    }
-
-    fun onClick() {
-        if (isPasswordValid()) {
-            formFields.value = listOf(password)
+    @get:Bindable
+    var name: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.name)
         }
+
+    @get:Bindable
+    var isVisible: Boolean = false
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.visible)
+            notifyPropertyChanged(BR.changed)
+        }
+
+    @get:Bindable
+    var password: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.passwordValid)
+        }
+
+    fun setInitialValues(name: String, isVisible: Boolean) {
+        this.name = name
+        this.isVisible = isVisible
+        this.initialIsVisible = isVisible
     }
 
     // TODO: refactor, Duplicating in registrationForm
@@ -36,5 +42,10 @@ class SettingsForm: BaseObservable() {
             return false
         }
         return true
+    }
+
+    @Bindable
+    fun isChanged(): Boolean {
+        return initialIsVisible != isVisible
     }
 }

@@ -19,15 +19,13 @@ class SettingsViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val settingsForm: SettingsForm
 ) : ViewModel() {
-    private var initialUser: User? = null
+    private var _initialUser: User? = null
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
-    private val _user = MutableLiveData<User>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
-    val user: LiveData<User> = _user
 
     companion object {
         private val TAG = "SettingsViewModel"
@@ -39,18 +37,23 @@ class SettingsViewModel @Inject constructor(
     
     fun loadSettings() {
         usersRepository.getUserData { user, e ->
-            if (user != null) {
-                initialUser = user
-                _user.value = user
-            }
+            this._initialUser = user
+            this.settingsForm.setInitialValues(
+                user?.email ?: "",
+                user?.visible ?: false
+            )
         }
     }
 
-    fun deleteUser(password: String) {
+    fun deleteUser() {
+        if (settingsForm.isPasswordValid() == false) {
+            return
+        }
+
         try {
             usersRepository.getUserData() { user, exception ->
                 if (user?.email != null) {
-                    usersRepository.reauthenticateUser(user.email, password) { isSuccessful, error ->
+                    usersRepository.reauthenticateUser(user.email, settingsForm.password) { isSuccessful, error ->
                         if (isSuccessful) {
                             usersRepository.deleteUser() { isSuccessful, error ->
                                 if (isSuccessful) {
@@ -71,27 +74,31 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun passwordChangeClicked() {
+    fun changePassword() {
         _navigateToPasswordChange.value = Event("")
     }
 
-    fun showMeClicked(isOn: Boolean) {
-        _user.value = User(
-            initialUser?.providerId,
-            initialUser?.id,
-            initialUser?.name,
-            initialUser?.email,
-            initialUser?.photoUrl,
-            isOn
-        )
-    }
+    fun saveChanges() {
+        if (settingsForm.isChanged() == false) {
+            return
+        }
 
-    fun saveChangesClicked() {
-        val user = _user.value
-        if (user != null) {
-            usersRepository.setUserData(user) { isSuccessful, e ->
-                Log.d(TAG, "showMeClicked updated successfully")
-            }
+        val newUser = User(
+            _initialUser?.providerId,
+            _initialUser?.id,
+            _initialUser?.name,
+            _initialUser?.email,
+            _initialUser?.photoUrl,
+            settingsForm.isVisible
+        )
+
+        usersRepository.setUserData(newUser) { isSuccessful, e ->
+            Log.d(TAG, "showMeClicked updated successfully")
+            this._initialUser = newUser
+            this.settingsForm.setInitialValues(
+                newUser.email ?: "",
+                newUser.visible ?: false
+            )
         }
     }
 

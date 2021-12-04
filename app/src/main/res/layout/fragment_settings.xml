@@ -39,6 +39,7 @@
                 android:layout_height="60dp"
                 android:hint="@string/settings_name"
                 android:singleLine="true"
+                android:text="@{model.settingsForm.name}"
                 android:maxLines="1"
                 android:lines="1"
                 android:fontFamily="@font/lato"/>
@@ -75,7 +76,7 @@
             android:layout_gravity="center"
             android:text="@string/profile_delete_user_button"
             android:enabled="@{model.settingsForm.passwordValid}"
-            android:onClick="@{() -> model.settingsForm.onClick()}"/>
+            android:onClick="@{() -> model.deleteUser()}"/>
 
         <Button
             android:id="@+id/changePasswordButton"
@@ -85,7 +86,7 @@
             android:fontFamily="@font/lato"
             android:layout_gravity="center"
             android:layout_marginBottom="30dp"
-            android:onClick="@{() -> model.passwordChangeClicked()}"/>
+            android:onClick="@{() -> model.changePassword()}"/>
 
         <Switch
             android:id="@+id/showMeSwitch"
@@ -94,7 +95,7 @@
             android:text="Rodyti mane sąraše"
             android:fontFamily="@font/lato"
             android:layout_gravity="center"
-            android:onCheckedChanged="@{(view, isOn) -> model.showMeClicked(isOn)}"/>
+            android:checked="@={model.settingsForm.visible}"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -109,8 +110,8 @@
             android:fontFamily="@font/lato"
             android:layout_gravity="center"
             android:text="@string/settings_saveChanges_button"
-            android:onClick="@{() -> model.saveChangesClicked()}"/>
-<!--        TODO: Move saveChangesClicked to settings form-->
+            android:enabled="@{model.settingsForm.changed}"
+            android:onClick="@{() -> model.saveChanges()}"/>
 
     </LinearLayout>
 </layout>
