@@ -3,7 +3,9 @@ package com.dauma.grokimkartu.repositories.users
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.users.UsersDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
+import com.dauma.grokimkartu.data.users.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.users.entities.FirestoreUser
+import com.dauma.grokimkartu.repositories.users.entities.Profile
 import com.dauma.grokimkartu.repositories.users.entities.User
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
@@ -25,7 +27,7 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSaveInFirestore = FirestoreUser(userId, true)
+                            val userToSaveInFirestore = FirestoreUser(userId, true, null)
                             this.usersDao.setFirestoreUser(userToSaveInFirestore) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
@@ -219,7 +221,7 @@ class UsersRepositoryImpl(
 
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val firestoreUser = FirestoreUser(authDao.getUserId() ?: "", user.visible)
+            val firestoreUser = FirestoreUser(authDao.getUserId() ?: "", user.visible, null)
             usersDao.setFirestoreUser(firestoreUser) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
@@ -232,6 +234,45 @@ class UsersRepositoryImpl(
             val error = AuthenticationError(2)
             throw AuthenticationException(error)
         }
+    }
+
+    override fun getUserProfile(onComplete: (Profile?, Exception?) -> Unit) {
+        if (isUserLoggedIn()) {
+            val userId = authDao.getUserId()
+            usersDao.getFirestoreUser(userId!!) { firestoreUser, e ->
+                if (firestoreUser != null) {
+                    val profile = Profile(
+                        firestoreUser.profile?.instrument ?: "",
+                        firestoreUser.profile?.description
+                    )
+                    onComplete(profile, null)
+                } else {
+                    val error = AuthenticationError(2)
+                    onComplete(null, AuthenticationException(error))
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
+    }
+
+    override fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit) {
+        // TODO
+//        if (isUserLoggedIn()) {
+//            val firestorePlayer = FirestoreProfile(profile.instrument, profile.description)
+//            usersDao.setFirestoreUser(firestoreUser) { isSuccessful, e ->
+//                if (isSuccessful) {
+//                    onComplete(true, null)
+//                } else {
+//                    val error = AuthenticationError(2)
+//                    onComplete(false, AuthenticationException(error))
+//                }
+//            }
+//        } else {
+//            val error = AuthenticationError(2)
+//            throw AuthenticationException(error)
+//        }
     }
 
     override fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit) {

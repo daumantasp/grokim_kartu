@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.users
 
+import com.dauma.grokimkartu.repositories.users.entities.Profile
 import com.dauma.grokimkartu.repositories.users.entities.User
 
 interface UsersRepository {
@@ -15,4 +16,6 @@ interface UsersRepository {
     fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit)
     fun getUserData(onComplete: (User?, Exception?) -> Unit)
     fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit)
+    fun getUserProfile(onComplete: (Profile?, Exception?) -> Unit)
+    fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit)
 }
