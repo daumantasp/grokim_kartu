@@ -31,7 +31,10 @@ class UsersDaoImpl(private val firebaseFirestore: FirebaseFirestore) : UsersDao 
         firebaseFirestore
             .collection(UsersDaoImpl.usersCollection)
             .document(user.id)
-            .set(user)
+            .update(mapOf(
+                "id" to user.id,
+                "visible" to user.visible
+            ))
             .addOnSuccessListener { _ ->
                 onComplete(true, null)
             }
@@ -64,12 +67,14 @@ class UsersDaoImpl(private val firebaseFirestore: FirebaseFirestore) : UsersDao 
             .addOnSuccessListener { userDocumentSnapshot ->
                 if (userDocumentSnapshot.exists()) {
                     val profileDao = ProfileDao()
-                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>
-                    for (profile in profileMap) {
-                        if (profile.key == "instrument") {
-                            profileDao.instrument = profile.value as String
-                        } else if (profile.key == "description") {
-                            profileDao.description = profile.value as String?
+                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
+                    if (profileMap != null) {
+                        for (profile in profileMap) {
+                            if (profile.key == "instrument") {
+                                profileDao.instrument = profile.value as String
+                            } else if (profile.key == "description") {
+                                profileDao.description = profile.value as String?
+                            }
                         }
                     }
                     onComplete(profileDao, null)
