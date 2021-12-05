@@ -26,6 +26,48 @@
             android:layout_marginBottom="50dp"
             android:text="@string/profile_fragment" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/instrumentTextInput"
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="10dp"
+            android:enabled="false"
+            android:layout_gravity="center">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/instrumentTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="@string/profile_instrument"
+                android:singleLine="true"
+                android:text="@{model.profileForm.instrument}"
+                android:maxLines="1"
+                android:lines="1"
+                android:fontFamily="@font/lato"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionTextInput"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:layout_marginBottom="10dp"
+            android:enabled="false"
+            android:layout_gravity="center">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/descriptionTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:hint="@string/profile_desciption"
+                android:text="@{model.profileForm.description}"
+                android:maxLines="10"
+                android:lines="10"
+                android:gravity="top"
+                android:fontFamily="@font/lato"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

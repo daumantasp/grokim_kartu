@@ -27,6 +27,13 @@ class ProfileViewModel @Inject constructor(
         return profileForm
     }
 
+    fun loadProfile() {
+        usersRepository.getUserProfile { profile, e ->
+            this.profileForm.instrument = profile?.instrument ?: ""
+            this.profileForm.description = profile?.description ?: ""
+        }
+    }
+
     fun logoutClicked() {
         try {
             usersRepository.logOut()

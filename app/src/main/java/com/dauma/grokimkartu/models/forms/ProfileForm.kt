@@ -7,4 +7,17 @@ import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
 
 class ProfileForm: BaseObservable() {
+    @get:Bindable
+    var instrument: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.instrument)
+        }
+
+    @get:Bindable
+    var description: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.description)
+        }
 }

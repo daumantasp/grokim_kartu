@@ -30,6 +30,10 @@ class ProfileFragment : Fragment() {
         binding.model = profileViewModel
         val view = binding.root
         setupObservers()
+        if (savedInstanceState == null) {
+            // TODO: Still reloads on device rotate, probably need to save state instance
+            profileViewModel.loadProfile()
+        }
 
         return view
     }
