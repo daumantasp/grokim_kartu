@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.models.Event
 import com.dauma.grokimkartu.models.forms.ProfileForm
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.users.entities.Profile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -29,8 +30,31 @@ class ProfileViewModel @Inject constructor(
 
     fun loadProfile() {
         usersRepository.getUserProfile { profile, e ->
-            this.profileForm.instrument = profile?.instrument ?: ""
-            this.profileForm.description = profile?.description ?: ""
+            this.profileForm.setInitialValues(
+                profile?.instrument ?: "",
+                profile?.description ?: ""
+            )
+        }
+    }
+
+    fun saveChanges() {
+        if (profileForm.isChanged() == false) {
+            return
+        }
+
+        val newProfile = Profile(
+            profileForm.instrument,
+            profileForm.description
+        )
+
+        usersRepository.setUserProfile(newProfile) { isSuccessful, e ->
+            if (isSuccessful) {
+                Log.d(TAG, "User profile updated successfully")
+                this.profileForm.setInitialValues(
+                    newProfile.instrument,
+                    newProfile.description ?: ""
+                )
+            }
         }
     }
 

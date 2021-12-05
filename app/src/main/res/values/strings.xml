@@ -52,4 +52,5 @@
     <string name="settings_name">Vardas</string>
     <string name="profile_instrument">Instrumentas</string>
     <string name="profile_desciption">Aprašymas</string>
+    <string name="profile_saveChanges_button">Išsaugoti</string>
 </resources>
