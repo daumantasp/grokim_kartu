@@ -3,8 +3,8 @@ package com.dauma.grokimkartu.repositories.users
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.users.UsersDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
-import com.dauma.grokimkartu.data.users.entities.FirestoreProfile
-import com.dauma.grokimkartu.data.users.entities.FirestoreUser
+import com.dauma.grokimkartu.data.users.entities.ProfileDao
+import com.dauma.grokimkartu.data.users.entities.UserDao
 import com.dauma.grokimkartu.repositories.users.entities.Profile
 import com.dauma.grokimkartu.repositories.users.entities.User
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -27,8 +27,8 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSaveInFirestore = FirestoreUser(userId, true, null)
-                            this.usersDao.setFirestoreUser(userToSaveInFirestore) { isSuccessful, e ->
+                            val userToSave = UserDao(userId, true)
+                            this.usersDao.setUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
                                 } else {
@@ -145,7 +145,7 @@ class UsersRepositoryImpl(
         if (isUserLoggedIn()) {
             authDao.deleteUser { isSuccessful, id, e ->
                 if (isSuccessful && id != null) {
-                    this.usersDao.deleteFirestoreUser(id) { isSuccessful, e ->
+                    this.usersDao.deleteUser(id) { isSuccessful, e ->
                         if (isSuccessful) {
                             onComplete(true, null)
                         } else {
@@ -197,15 +197,15 @@ class UsersRepositoryImpl(
                 val error = AuthenticationError(5)
                 throw AuthenticationException(error)
             }
-            usersDao.getFirestoreUser(userId!!) { firestoreUser, e ->
-                if (firestoreUser != null) {
+            usersDao.getUser(userId!!) { userDao, e ->
+                if (userDao != null) {
                     val user = User(
                         authUser.providerId,
                         authUser.id,
                         authUser.name,
                         authUser.email,
                         authUser.photoUrl,
-                        firestoreUser.visible
+                        userDao.visible
                     )
                     onComplete(user, null)
                 } else {
@@ -221,8 +221,8 @@ class UsersRepositoryImpl(
 
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val firestoreUser = FirestoreUser(authDao.getUserId() ?: "", user.visible, null)
-            usersDao.setFirestoreUser(firestoreUser) { isSuccessful, e ->
+            val userDao = UserDao(authDao.getUserId() ?: "", user.visible)
+            usersDao.setUser(userDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
                 } else {
@@ -239,15 +239,15 @@ class UsersRepositoryImpl(
     override fun getUserProfile(onComplete: (Profile?, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
             val userId = authDao.getUserId()
-            usersDao.getFirestoreUser(userId!!) { firestoreUser, e ->
-                if (firestoreUser != null) {
-                    val profile = Profile(
-                        firestoreUser.profile?.instrument ?: "",
-                        firestoreUser.profile?.description
+            usersDao.getProfile(userId!!) { profile, e ->
+                if (profile != null) {
+                    val profileDao = Profile(
+                        profile?.instrument ?: "",
+                        profile?.description
                     )
-                    onComplete(profile, null)
+                    onComplete(profileDao, null)
                 } else {
-                    val error = AuthenticationError(2)
+                    val error = AuthenticationError(5)
                     onComplete(null, AuthenticationException(error))
                 }
             }
@@ -258,21 +258,21 @@ class UsersRepositoryImpl(
     }
 
     override fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit) {
-        // TODO
-//        if (isUserLoggedIn()) {
-//            val firestorePlayer = FirestoreProfile(profile.instrument, profile.description)
-//            usersDao.setFirestoreUser(firestoreUser) { isSuccessful, e ->
-//                if (isSuccessful) {
-//                    onComplete(true, null)
-//                } else {
-//                    val error = AuthenticationError(2)
-//                    onComplete(false, AuthenticationException(error))
-//                }
-//            }
-//        } else {
-//            val error = AuthenticationError(2)
-//            throw AuthenticationException(error)
-//        }
+        if (isUserLoggedIn()) {
+            val profileDao = ProfileDao(profile.instrument, profile.description)
+            val userId = authDao.getUserId()
+            usersDao.setProfile(userId!!, profileDao) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error = AuthenticationError(5)
+                    onComplete(false, AuthenticationException(error))
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
     }
 
     override fun updatePassword(newPassword: String, onComplete: (Boolean, AuthenticationError?) -> Unit) {
@@ -308,12 +308,12 @@ class AuthenticationError(val code: Int) {
         3 -> INVALID_PASSWORD
         4 -> INVALID_EMAIL
         5 -> SOMETHING_FAILED
-        6 -> FAILED_TO_ADD_USER_TO_FIRESTORE
+        6 -> FAILED_TO_ADD_USER
         7 -> EMAIL_ALREADY_REGISTERED
         8 -> EMAIL_INCORRECT_FORMAT
         9 -> PASSWORD_TOO_WEAK
         10 -> EMAIL_NOT_VERIFIED
-        11 -> FAILED_TO_DELETE_USER_FROM_FIRESTORE
+        11 -> FAILED_TO_DELETE_USER
         else -> ""
     }
 
@@ -323,11 +323,11 @@ class AuthenticationError(val code: Int) {
         const val INVALID_PASSWORD = "Invalid password"
         const val INVALID_EMAIL = "Incorrect email address"
         const val SOMETHING_FAILED = "Something failed"
-        const val FAILED_TO_ADD_USER_TO_FIRESTORE = "Failed to add a registered user to Firestore!"
+        const val FAILED_TO_ADD_USER = "Failed to add a registered user!"
         const val EMAIL_ALREADY_REGISTERED = "Email already registered!"
         const val EMAIL_INCORRECT_FORMAT = "Email is in incorrect format!"
         const val PASSWORD_TOO_WEAK = "Password is too weak!"
         const val EMAIL_NOT_VERIFIED = "Email is not verified!"
-        const val FAILED_TO_DELETE_USER_FROM_FIRESTORE = "Failed to delete current user from Firestore!"
+        const val FAILED_TO_DELETE_USER = "Failed to delete current user!"
     }
 }

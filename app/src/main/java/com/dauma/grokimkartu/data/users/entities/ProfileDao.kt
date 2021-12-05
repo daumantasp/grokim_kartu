@@ -1,6 +1,6 @@
 package com.dauma.grokimkartu.data.users.entities
 
-class FirestoreProfile(
+class ProfileDao(
     var instrument: String,
     var description: String?
 ) {
