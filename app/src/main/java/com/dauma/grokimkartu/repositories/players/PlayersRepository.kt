@@ -1,11 +1,8 @@
 package com.dauma.grokimkartu.repositories.players
 
-import com.dauma.grokimkartu.data.players.entities.FirestorePlayer
+import com.dauma.grokimkartu.repositories.players.entities.Player
 
 interface PlayersRepository {
-    fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, PlayersError?) -> Unit)
-    fun getPlayer(userId: String, onComplete: (Boolean, FirestorePlayer?, PlayersError?) -> Unit)
-    fun createPlayer(player: FirestorePlayer, onComplete: (Boolean, PlayersError?) -> Unit)
-    fun updatePlayer(player: FirestorePlayer, onComplete: (Boolean, PlayersError?) -> Unit)
-    fun deletePlayer(userId: String, onComplete: (Boolean, PlayersError?) -> Unit)
+    fun getPlayers(onComplete: (Boolean, List<Player>?, PlayersError?) -> Unit)
+//    fun getPlayerDetails(playerId: String, onComplete: (Boolean, PlayerDetails, PlayersError?) -> Unit)
 }
