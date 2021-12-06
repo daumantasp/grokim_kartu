@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dauma.grokimkartu.data.players.entities.FirestorePlayer
+import com.dauma.grokimkartu.data.players.entities.PlayerDao
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
+import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +60,7 @@ class PlayersFragment : Fragment() {
             })
     }
 
-    private fun setupPlayersRecyclerView(players: List<FirestorePlayer>) {
+    private fun setupPlayersRecyclerView(players: List<Player>) {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.playersRecyclerView.adapter = PlayersListAdapter(players)
     }
