@@ -37,9 +37,6 @@ class Firestore(
     }
 
     fun setUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        val myFirestore = Firestore(firebaseFirestore)
-        myFirestore.
-
         firebaseFirestore
             .collection(usersCollection)
             .document(user.id)
@@ -48,7 +45,26 @@ class Firestore(
                 "visible" to user.visible
             ))
             .addOnSuccessListener { _ ->
-                onComplete(true, null)
+                if (user.visible ?: false) {
+                    this.getProfile(user.id) { firestoreProfile, e ->
+                        val firestorePlayer = FirestorePlayer(
+                            user.id,
+                            Timestamp.now(),
+                            user.visible ?: false,
+                            "test",
+                            firestoreProfile?.instrument ?: "",
+                            firestoreProfile?.description ?: ""
+                        )
+                        this.setPlayer(firestorePlayer) { isSuccessful, e ->
+                            onComplete(true, null)
+                        }
+                    }
+                } else {
+                    this.deletePlayer(user.id) { isSuccessful, e ->
+                        onComplete(true, null)
+                    }
+                }
+//                onComplete(true, null)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)
@@ -132,36 +148,95 @@ class Firestore(
             .addOnSuccessListener { querySnapshot ->
                 val players: MutableList<FirestorePlayer> = mutableListOf()
                 for (queryDocumentSnapshot in querySnapshot) {
-                    val id = queryDocumentSnapshot.getString("id") ?: ""
-                    val visible = queryDocumentSnapshot.getBoolean("visible") ?: false
-                    if (visible == true) {
-                        var instrument: String = ""
-                        var description: String? = null
-                        val profileMap = queryDocumentSnapshot.get("profile") as MutableMap<*, *>?
-                        if (profileMap != null) {
-                            for (profile in profileMap) {
-                                if (profile.key == "instrument") {
-                                    instrument = profile.value as String
-                                } else if (profile.key == "description") {
-                                    description = profile.value as String?
-                                }
-                            }
-                        }
-                        val player = FirestorePlayer(
-                            id,
-                            Timestamp.now(),
-                            visible,
-                            "",
-                            instrument,
-                            description
-                        )
-                        players.add(player)
-                    }
+                    val player = queryDocumentSnapshot.toObject(FirestorePlayer::class.java)
+                    players.add(player)
                 }
                 onComplete(true, players, null)
             }
             .addOnFailureListener { e ->
                 onComplete(false, null, e)
+            }
+
+//        firebaseFirestore
+//            .collection(playersCollection)
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                val players: MutableList<FirestorePlayer> = mutableListOf()
+//                for (queryDocumentSnapshot in querySnapshot) {
+//                    val id = queryDocumentSnapshot.getString("id") ?: ""
+//                    val visible = queryDocumentSnapshot.getBoolean("visible") ?: false
+//                    if (visible == true) {
+//                        var instrument: String = ""
+//                        var description: String? = null
+//                        val profileMap = queryDocumentSnapshot.get("profile") as MutableMap<*, *>?
+//                        if (profileMap != null) {
+//                            for (profile in profileMap) {
+//                                if (profile.key == "instrument") {
+//                                    instrument = profile.value as String
+//                                } else if (profile.key == "description") {
+//                                    description = profile.value as String?
+//                                }
+//                            }
+//                        }
+//                        val player = FirestorePlayer(
+//                            id,
+//                            Timestamp.now(),
+//                            visible,
+//                            "",
+//                            instrument,
+//                            description
+//                        )
+//                        players.add(player)
+//                    }
+//                }
+//                onComplete(true, players, null)
+//            }
+//            .addOnFailureListener { e ->
+//                onComplete(false, null, e)
+//            }
+    }
+
+    fun getPlayer(userId: String, onComplete: (FirestorePlayer?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(playersCollection)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { playerDocumentSnapshot ->
+                if (playerDocumentSnapshot.exists()) {
+                    val player = playerDocumentSnapshot.toObject(FirestorePlayer::class.java)
+                    onComplete(player, null)
+                } else {
+                    onComplete(null, Exception("PLAYER WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
+            }
+    }
+
+    fun setPlayer(player: FirestorePlayer, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(playersCollection)
+            .document(player.userId)
+            .set(player)
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(playersCollection)
+            .document(userId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
             }
     }
 }
