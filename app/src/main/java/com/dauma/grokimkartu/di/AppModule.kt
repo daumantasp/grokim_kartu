@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.di
 
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
+import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoImpl
 import com.dauma.grokimkartu.data.users.UsersDao
@@ -23,8 +24,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
     @Provides
-    fun providePlayersDao() : PlayersDao {
-        return PlayersDaoImpl(FirebaseFirestore.getInstance())
+    @Singleton
+    fun providesFirestore() : Firestore {
+        return Firestore(FirebaseFirestore.getInstance())
+    }
+
+    @Provides
+    fun providePlayersDao(firestore: Firestore) : PlayersDao {
+        return PlayersDaoImpl(firestore)
     }
 
     @Provides
@@ -34,8 +41,8 @@ class AppModule {
     }
 
     @Provides
-    fun provideUsersDao() : UsersDao {
-        return UsersDaoImpl(FirebaseFirestore.getInstance())
+    fun provideUsersDao(firestore: Firestore) : UsersDao {
+        return UsersDaoImpl(firestore)
     }
 
     @Provides

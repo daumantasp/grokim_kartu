@@ -1,9 +1,9 @@
-package com.dauma.grokimkartu.data.players.entities
+package com.dauma.grokimkartu.data.firestore.entities
 
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 
-data class PlayerDao(
+class FirestorePlayer(
     val userId: String,
     @ServerTimestamp
     val registrationDate: Timestamp,
@@ -11,4 +11,7 @@ data class PlayerDao(
     val name: String,
     val instrument: String,
     val description: String?
-)
+) {
+    // Empty constructor is a must for Firestore
+    constructor() : this("", Timestamp.now(), false, "", "", null)
+}

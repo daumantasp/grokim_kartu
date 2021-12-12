@@ -1,115 +1,73 @@
 package com.dauma.grokimkartu.data.users
 
+import com.dauma.grokimkartu.data.firestore.Firestore
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
-import com.google.firebase.firestore.FirebaseFirestore
 
-class UsersDaoImpl(private val firebaseFirestore: FirebaseFirestore) : UsersDao {
-    companion object {
-        private const val usersCollection = "users"
-    }
-
+class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
     override fun getUser(userId: String, onComplete: (UserDao?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(UsersDaoImpl.usersCollection)
-            .document(userId)
-            .get()
-            .addOnSuccessListener { userDocumentSnapshot ->
-                if (userDocumentSnapshot.exists()) {
-                    val user = userDocumentSnapshot.toObject(UserDao::class.java)
-                    onComplete(user, null)
-                } else {
-                    onComplete(null, Exception("USER WAS NOT FOUND"))
-                }
-            }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
-            }
+        firebase.getUser(userId) { firestoreUser, e ->
+            val usersDao = toUserDao(firestoreUser)
+            onComplete(usersDao, e)
+        }
     }
 
     override fun setUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(UsersDaoImpl.usersCollection)
-            .document(user.id)
-            .update(mapOf(
-                "id" to user.id,
-                "visible" to user.visible
-            ))
-            .addOnSuccessListener { _ ->
-                onComplete(true, null)
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+        val firestoreUser = toFirestoreUser(user)
+        firebase.setUser(firestoreUser!!, onComplete)
     }
 
-    override fun deleteUser(
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        firebaseFirestore
-            .collection(UsersDaoImpl.usersCollection)
-            .document(userId)
-            .delete()
-            .addOnSuccessListener { _ ->
-                onComplete(true, null)
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+    override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebase.deleteUser(userId, onComplete)
     }
 
     override fun getProfile(userId: String, onComplete: (ProfileDao?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(UsersDaoImpl.usersCollection)
-            .document(userId)
-            .get()
-            .addOnSuccessListener { userDocumentSnapshot ->
-                if (userDocumentSnapshot.exists()) {
-                    val profileDao = ProfileDao()
-                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
-                    if (profileMap != null) {
-                        for (profile in profileMap) {
-                            if (profile.key == "instrument") {
-                                profileDao.instrument = profile.value as String
-                            } else if (profile.key == "description") {
-                                profileDao.description = profile.value as String?
-                            }
-                        }
-                    }
-                    onComplete(profileDao, null)
-                } else {
-                    onComplete(null, Exception("USER WAS NOT FOUND"))
-                }
-            }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
-            }
+        firebase.getProfile(userId) { firestoreProfile, e ->
+            val profileDao = toProfileDao(firestoreProfile)
+            onComplete(profileDao, e)
+        }
     }
 
     override fun setProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(UsersDaoImpl.usersCollection)
-            .document(userId)
-            .update("profile", profile)
-            .addOnSuccessListener { _ ->
-                onComplete(true, null)
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+        val firestoreProfile = toFirestoreProfile(profile)
+        firebase.setProfile(userId, firestoreProfile!!, onComplete)
     }
 
     override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(UsersDaoImpl.usersCollection)
-            .document(userId)
-            .update("profile", null)
-            .addOnSuccessListener { _ ->
-                onComplete(true, null)
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+        firebase.deleteProfile(userId, onComplete)
+    }
+
+    private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
+        var userDao: UserDao? = null
+        if (firestoreUser != null) {
+            userDao = UserDao(firestoreUser.id, firestoreUser.visible)
+        }
+        return userDao
+    }
+
+    private fun toFirestoreUser(userDao: UserDao?) : FirestoreUser? {
+        var firestoreUser: FirestoreUser? = null
+        if (userDao != null) {
+            firestoreUser = FirestoreUser(userDao.id, userDao.visible)
+        }
+        return firestoreUser
+    }
+
+    private fun toProfileDao(firestoreProfile: FirestoreProfile?) : ProfileDao? {
+        var profileDao: ProfileDao? = null
+        if (firestoreProfile != null) {
+            profileDao = ProfileDao(firestoreProfile.instrument, firestoreProfile.description)
+        }
+        return profileDao
+    }
+
+    private fun toFirestoreProfile(profileDao: ProfileDao?) : FirestoreProfile? {
+        var firestoreProfile: FirestoreProfile? = null
+        if (profileDao != null) {
+            firestoreProfile = FirestoreProfile(profileDao.instrument, profileDao.description)
+        }
+        return firestoreProfile
     }
 }
