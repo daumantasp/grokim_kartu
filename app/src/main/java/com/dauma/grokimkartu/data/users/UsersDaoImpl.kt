@@ -42,7 +42,7 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
     private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
         var userDao: UserDao? = null
         if (firestoreUser != null) {
-            userDao = UserDao(firestoreUser.id, firestoreUser.visible)
+            userDao = UserDao(firestoreUser.id, firestoreUser.name, firestoreUser.visible)
         }
         return userDao
     }
@@ -50,7 +50,7 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
     private fun toFirestoreUser(userDao: UserDao?) : FirestoreUser? {
         var firestoreUser: FirestoreUser? = null
         if (userDao != null) {
-            firestoreUser = FirestoreUser(userDao.id, userDao.visible)
+            firestoreUser = FirestoreUser(userDao.id, userDao.name, userDao.visible)
         }
         return firestoreUser
     }

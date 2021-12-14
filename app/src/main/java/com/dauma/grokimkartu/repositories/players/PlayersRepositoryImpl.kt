@@ -7,7 +7,12 @@ class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersReposit
     override fun getPlayers(onComplete: (Boolean, List<Player>?, PlayersError?) -> Unit) {
         playersDao.getPlayers { isSuccessful, playersDao, e ->
             if (isSuccessful && playersDao != null) {
-                val players = playersDao.map { pd -> Player(pd.userId, pd.name, pd.instrument, pd.description ?: "") }
+                val players = playersDao.map { pd -> Player(
+                    pd.userId,
+                    pd.name,
+                    pd.instrument,
+                    pd.description
+                ) }
                 onComplete(true, players, null)
             } else {
                 onComplete(false, null, PlayersError(2))

@@ -20,8 +20,6 @@ class PlayersDaoImpl(
         if (firestorePlayer != null) {
             playerDao = PlayerDao(
                 firestorePlayer.userId,
-                firestorePlayer.registrationDate,
-                firestorePlayer.visible,
                 firestorePlayer.name,
                 firestorePlayer.instrument,
                 firestorePlayer.description

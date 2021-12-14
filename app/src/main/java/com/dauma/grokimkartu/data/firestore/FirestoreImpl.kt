@@ -1,0 +1,226 @@
+package com.dauma.grokimkartu.data.firestore
+
+import android.util.Log
+import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+
+class FirestoreImpl(
+    private val firebaseFirestore: FirebaseFirestore,
+) : Firestore {
+    companion object {
+        private const val TAG = "FirestoreImpl"
+        private const val usersCollection = "users"
+        private const val playersCollection = "players"
+    }
+
+    override fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { userDocumentSnapshot ->
+                if (userDocumentSnapshot.exists()) {
+                    val user = userDocumentSnapshot.toObject(FirestoreUser::class.java)
+                    onComplete(user, null)
+                } else {
+                    onComplete(null, Exception("USER WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
+            }
+    }
+
+    override fun setUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+        if (user.id == null) {
+            Log.d(TAG, "Failed to setUser: missing user.id")
+            return
+        }
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (user.name != null) {
+            valuesToSet["name"] = user.name!!
+        }
+        if (user.visible != null) {
+            valuesToSet["visible"] = user.visible!!
+        }
+
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(user.id!!)
+            // Because of the profile fields, you have to use merge
+            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
+            .set(valuesToSet, SetOptions.merge())
+            .addOnSuccessListener { _ ->
+                if (user.visible != null) {
+                    this.addOrDeletePlayerTrigger(user, onComplete)
+                } else {
+                    onComplete(true, null)
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    override fun deleteUser(
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    override fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { userDocumentSnapshot ->
+                if (userDocumentSnapshot.exists()) {
+                    val profileDao = FirestoreProfile()
+                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
+                    if (profileMap != null) {
+                        for (profile in profileMap) {
+                            if (profile.key == "instrument") {
+                                profileDao.instrument = profile.value as String
+                            } else if (profile.key == "description") {
+                                profileDao.description = profile.value as String?
+                            }
+                        }
+                    }
+                    onComplete(profileDao, null)
+                } else {
+                    onComplete(null, Exception("USER WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
+            }
+    }
+
+    override fun setProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (profile.instrument != null) {
+            valuesToSet["instrument"] = profile.instrument!!
+        }
+        if (profile.description != null) {
+            valuesToSet["description"] = profile.description!!
+        }
+
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .update("profile", valuesToSet)
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        val emptySet: HashMap<String, Any> = hashMapOf()
+
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .update("profile", emptySet)
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    override fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(playersCollection)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val players: MutableList<FirestorePlayer> = mutableListOf()
+                for (queryDocumentSnapshot in querySnapshot) {
+                    val player = queryDocumentSnapshot.toObject(FirestorePlayer::class.java)
+                    players.add(player)
+                }
+                onComplete(true, players, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, null, e)
+            }
+    }
+
+    private fun addOrDeletePlayerTrigger(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+        val isUserVisible = user.visible!!
+        if (isUserVisible) {
+            getProfile(user.id!!) { firestoreProfile, e ->
+                val firestorePlayer = FirestorePlayer(
+                    user.id!!,
+                    user.name,
+                    firestoreProfile?.instrument ?: "",
+                    firestoreProfile?.description ?: ""
+                )
+                this.setPlayer(firestorePlayer) { isSuccessful, e ->
+                    onComplete(true, null)
+                }
+            }
+        } else {
+            deletePlayer(user.id!!) { isSuccessful, e ->
+                onComplete(true, e)
+            }
+        }
+    }
+
+    private fun setPlayer(player: FirestorePlayer, onComplete: (Boolean, Exception?) -> Unit) {
+        if (player.userId == null) {
+            Log.d(TAG, "Failed to setPlayer: missing player.userId")
+            return
+        }
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (player.name != null) {
+            valuesToSet["name"] = player.name!!
+        }
+        if (player.instrument != null) {
+            valuesToSet["instrument"] = player.instrument!!
+        }
+        if (player.description != null) {
+            valuesToSet["description"] = player.description!!
+        }
+
+        firebaseFirestore
+            .collection(playersCollection)
+            .document(player.userId)
+            .set(valuesToSet)
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    private fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(playersCollection)
+            .document(userId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+}

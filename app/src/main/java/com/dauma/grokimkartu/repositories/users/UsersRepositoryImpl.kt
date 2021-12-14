@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.users
 
+import android.net.Uri
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.users.UsersDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
@@ -27,7 +28,7 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSave = UserDao(userId, true)
+                            val userToSave = UserDao(userId, name, true)
                             this.usersDao.setUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
@@ -221,7 +222,7 @@ class UsersRepositoryImpl(
 
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val userDao = UserDao(authDao.getUserId() ?: "", user.visible)
+            val userDao = UserDao(authDao.getUserId(), user.name, user.visible)
             usersDao.setUser(userDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
@@ -242,8 +243,8 @@ class UsersRepositoryImpl(
             usersDao.getProfile(userId!!) { profile, e ->
                 if (profile != null) {
                     val profileDao = Profile(
-                        profile?.instrument ?: "",
-                        profile?.description
+                        profile.instrument,
+                        profile.description,
                     )
                     onComplete(profileDao, null)
                 } else {

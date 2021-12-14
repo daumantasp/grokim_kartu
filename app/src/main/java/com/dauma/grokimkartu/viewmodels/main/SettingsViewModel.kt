@@ -96,7 +96,7 @@ class SettingsViewModel @Inject constructor(
             Log.d(TAG, "showMeClicked updated successfully")
             this._initialUser = newUser
             this.settingsForm.setInitialValues(
-                newUser.email ?: "",
+                newUser.name ?: "",
                 newUser.visible ?: false
             )
         }

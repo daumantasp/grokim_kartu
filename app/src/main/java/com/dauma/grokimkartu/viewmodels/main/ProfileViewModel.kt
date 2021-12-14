@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
             if (isSuccessful) {
                 Log.d(TAG, "User profile updated successfully")
                 this.profileForm.setInitialValues(
-                    newProfile.instrument,
+                    newProfile.instrument ?: "",
                     newProfile.description ?: ""
                 )
             }
