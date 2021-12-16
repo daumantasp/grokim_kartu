@@ -53,7 +53,7 @@ class FirestoreImpl(
             .document(userId)
             .delete()
             .addOnSuccessListener { _ ->
-                onComplete(true, null)
+                this.deletePlayerWhenUserIsDeletedTrigger(userId, onComplete)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)
@@ -165,7 +165,7 @@ class FirestoreImpl(
             .set(valuesToSet, SetOptions.merge())
             .addOnSuccessListener { _ ->
                 if (user.visible != null) {
-                    this.addOrDeletePlayerTrigger(user, onComplete)
+                    this.addOrDeletePlayerWhenVisibilityChangesTrigger(user, onComplete)
                 } else {
                     onComplete(true, null)
                 }
@@ -175,7 +175,7 @@ class FirestoreImpl(
             }
     }
 
-    private fun addOrDeletePlayerTrigger(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+    private fun addOrDeletePlayerWhenVisibilityChangesTrigger(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
         val isUserVisible = user.visible!!
         if (isUserVisible) {
             getProfile(user.id!!) { firestoreProfile, e ->
@@ -213,6 +213,13 @@ class FirestoreImpl(
             } else {
                 onComplete(true, null)
             }
+        }
+    }
+
+    private fun deletePlayerWhenUserIsDeletedTrigger(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        // Try to delete, do not care if such player exist
+        deletePlayer(userId) { isSuccessful, e ->
+            onComplete(true, e)
         }
     }
 
