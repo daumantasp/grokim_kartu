@@ -84,13 +84,13 @@ class SettingsViewModel @Inject constructor(
         }
 
         val newUser = User(
-            _initialUser?.providerId,
-            _initialUser?.id,
-            _initialUser?.name,
-            _initialUser?.email,
-            _initialUser?.photoUrl,
-            settingsForm.isVisible,
-            null
+            providerId = null,
+            id = null,
+            name = null,
+            email = null,
+            photoUrl = null,
+            visible = settingsForm.isVisible,
+            registrationDate = null
         )
 
         usersRepository.setUserData(newUser) { isSuccessful, e ->
