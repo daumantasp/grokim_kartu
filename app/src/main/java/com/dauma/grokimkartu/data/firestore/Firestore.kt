@@ -10,6 +10,7 @@ import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 interface Firestore {
     fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit)
     fun setUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
+    fun registerUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
     fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit)
     fun setProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit)

@@ -4,6 +4,7 @@ import android.util.Log
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
@@ -35,34 +36,11 @@ class FirestoreImpl(
     }
 
     override fun setUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        if (user.id == null) {
-            Log.d(TAG, "Failed to setUser: missing user.id")
-            return
-        }
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (user.name != null) {
-            valuesToSet["name"] = user.name!!
-        }
-        if (user.visible != null) {
-            valuesToSet["visible"] = user.visible!!
-        }
+        this.setUser(user, false, onComplete)
+    }
 
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(user.id!!)
-            // Because of the profile fields, you have to use merge
-            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
-            .set(valuesToSet, SetOptions.merge())
-            .addOnSuccessListener { _ ->
-                if (user.visible != null) {
-                    this.addOrDeletePlayerTrigger(user, onComplete)
-                } else {
-                    onComplete(true, null)
-                }
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+    override fun registerUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+        this.setUser(user, true, onComplete)
     }
 
     override fun deleteUser(
@@ -159,6 +137,40 @@ class FirestoreImpl(
             }
             .addOnFailureListener { e ->
                 onComplete(false, null, e)
+            }
+    }
+
+    private fun setUser(user: FirestoreUser, isRegistration: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
+        if (user.id == null) {
+            Log.d(TAG, "Failed to setUser: missing user.id")
+            return
+        }
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (user.name != null) {
+            valuesToSet["name"] = user.name!!
+        }
+        if (user.visible != null) {
+            valuesToSet["visible"] = user.visible!!
+        }
+        if (isRegistration) {
+            valuesToSet["registrationDate"] = Timestamp.now()
+        }
+
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(user.id!!)
+            // Because of the profile fields, you have to use merge
+            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
+            .set(valuesToSet, SetOptions.merge())
+            .addOnSuccessListener { _ ->
+                if (user.visible != null) {
+                    this.addOrDeletePlayerTrigger(user, onComplete)
+                } else {
+                    onComplete(true, null)
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
             }
     }
 

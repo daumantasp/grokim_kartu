@@ -19,6 +19,11 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
         firebase.setUser(firestoreUser!!, onComplete)
     }
 
+    override fun registerUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
+        val firestoreUser = toFirestoreUser(user)
+        firebase.registerUser(firestoreUser!!, onComplete)
+    }
+
     override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
         firebase.deleteUser(userId, onComplete)
     }
@@ -42,7 +47,7 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
     private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
         var userDao: UserDao? = null
         if (firestoreUser != null) {
-            userDao = UserDao(firestoreUser.id, firestoreUser.name, firestoreUser.visible)
+            userDao = UserDao(firestoreUser.id, firestoreUser.name, firestoreUser.visible, firestoreUser.registrationDate)
         }
         return userDao
     }
@@ -50,7 +55,7 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
     private fun toFirestoreUser(userDao: UserDao?) : FirestoreUser? {
         var firestoreUser: FirestoreUser? = null
         if (userDao != null) {
-            firestoreUser = FirestoreUser(userDao.id, userDao.name, userDao.visible)
+            firestoreUser = FirestoreUser(userDao.id, userDao.name, userDao.visible, userDao.registrationDate)
         }
         return firestoreUser
     }

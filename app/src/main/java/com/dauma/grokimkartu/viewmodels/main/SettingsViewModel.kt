@@ -89,7 +89,8 @@ class SettingsViewModel @Inject constructor(
             _initialUser?.name,
             _initialUser?.email,
             _initialUser?.photoUrl,
-            settingsForm.isVisible
+            settingsForm.isVisible,
+            null
         )
 
         usersRepository.setUserData(newUser) { isSuccessful, e ->
