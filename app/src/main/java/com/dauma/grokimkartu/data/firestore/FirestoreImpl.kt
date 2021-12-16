@@ -24,7 +24,8 @@ class FirestoreImpl(
             .get()
             .addOnSuccessListener { userDocumentSnapshot ->
                 if (userDocumentSnapshot.exists()) {
-                    val user = userDocumentSnapshot.toObject(FirestoreUser::class.java)
+                    var user = userDocumentSnapshot.toObject(FirestoreUser::class.java)
+                    user?.id = userId
                     onComplete(user, null)
                 } else {
                     onComplete(null, Exception("USER WAS NOT FOUND"))
@@ -101,7 +102,7 @@ class FirestoreImpl(
             .document(userId)
             .update("profile", valuesToSet)
             .addOnSuccessListener { _ ->
-                onComplete(true, null)
+                this.updatePlayerWhenProfileIsUpdatedTrigger(userId, profile, onComplete)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)
@@ -195,6 +196,26 @@ class FirestoreImpl(
         }
     }
 
+    private fun updatePlayerWhenProfileIsUpdatedTrigger(
+        userId: String,
+        profile: FirestoreProfile,
+        onComplete: (Boolean, Exception?) -> Unit,
+    ) {
+        getUser(userId) { user, e ->
+            if (user?.visible ?: false) {
+                val firestorePlayer = FirestorePlayer(
+                    user?.id,
+                    user?.name,
+                    profile.instrument,
+                    profile.description
+                )
+                this.setPlayer(firestorePlayer, onComplete)
+            } else {
+                onComplete(true, null)
+            }
+        }
+    }
+
     private fun setPlayer(player: FirestorePlayer, onComplete: (Boolean, Exception?) -> Unit) {
         if (player.userId == null) {
             Log.d(TAG, "Failed to setPlayer: missing player.userId")
@@ -214,7 +235,7 @@ class FirestoreImpl(
         firebaseFirestore
             .collection(playersCollection)
             .document(player.userId)
-            .set(valuesToSet)
+            .set(valuesToSet, SetOptions.merge())
             .addOnSuccessListener { _ ->
                 onComplete(true, null)
             }
