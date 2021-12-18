@@ -17,6 +17,30 @@ class FirestoreImpl(
         private const val playersCollection = "players"
     }
 
+    override fun createUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+        this.setUser(user, true, onComplete)
+    }
+
+    override fun updateUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
+        this.setUser(user, false, onComplete)
+    }
+
+    override fun deleteUser(
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                this.deletePlayerWhenUserIsDeletedTrigger(userId, onComplete)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
     override fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
         firebaseFirestore
             .collection(usersCollection)
@@ -36,59 +60,7 @@ class FirestoreImpl(
             }
     }
 
-    override fun setUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        this.setUser(user, false, onComplete)
-    }
-
-    override fun registerUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        this.setUser(user, true, onComplete)
-    }
-
-    override fun deleteUser(
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .delete()
-            .addOnSuccessListener { _ ->
-                this.deletePlayerWhenUserIsDeletedTrigger(userId, onComplete)
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
-    }
-
-    override fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .get()
-            .addOnSuccessListener { userDocumentSnapshot ->
-                if (userDocumentSnapshot.exists()) {
-                    val profileDao = FirestoreProfile()
-                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
-                    if (profileMap != null) {
-                        for (profile in profileMap) {
-                            if (profile.key == "instrument") {
-                                profileDao.instrument = profile.value as String
-                            } else if (profile.key == "description") {
-                                profileDao.description = profile.value as String?
-                            }
-                        }
-                    }
-                    onComplete(profileDao, null)
-                } else {
-                    onComplete(null, Exception("USER WAS NOT FOUND"))
-                }
-            }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
-            }
-    }
-
-    override fun setProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
+    override fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
         val valuesToSet: HashMap<String, Any> = hashMapOf()
         if (profile.instrument != null) {
             valuesToSet["instrument"] = profile.instrument!!
@@ -124,6 +96,34 @@ class FirestoreImpl(
             }
     }
 
+    override fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(usersCollection)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { userDocumentSnapshot ->
+                if (userDocumentSnapshot.exists()) {
+                    val profileDao = FirestoreProfile()
+                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
+                    if (profileMap != null) {
+                        for (profile in profileMap) {
+                            if (profile.key == "instrument") {
+                                profileDao.instrument = profile.value as String
+                            } else if (profile.key == "description") {
+                                profileDao.description = profile.value as String?
+                            }
+                        }
+                    }
+                    onComplete(profileDao, null)
+                } else {
+                    onComplete(null, Exception("USER WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
+            }
+    }
+
     override fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit) {
         firebaseFirestore
             .collection(playersCollection)
@@ -141,7 +141,7 @@ class FirestoreImpl(
             }
     }
 
-    private fun setUser(user: FirestoreUser, isRegistration: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
+    private fun setUser(user: FirestoreUser, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
         if (user.id == null) {
             Log.d(TAG, "Failed to setUser: missing user.id")
             return
@@ -153,7 +153,7 @@ class FirestoreImpl(
         if (user.visible != null) {
             valuesToSet["visible"] = user.visible!!
         }
-        if (isRegistration) {
+        if (isCreation) {
             valuesToSet["registrationDate"] = Timestamp.now()
         }
 

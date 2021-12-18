@@ -7,7 +7,6 @@ import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
 import com.dauma.grokimkartu.repositories.users.entities.Profile
 import com.dauma.grokimkartu.repositories.users.entities.User
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -29,7 +28,7 @@ class UsersRepositoryImpl(
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
                             val userToSave = UserDao(userId, name, true, null)
-                            this.usersDao.registerUser(userToSave) { isSuccessful, e ->
+                            this.usersDao.createUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
                                 } else {
@@ -224,7 +223,7 @@ class UsersRepositoryImpl(
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
             val userDao = UserDao(authDao.getUserId(), user.name, user.visible, user.registrationDate)
-            usersDao.setUser(userDao) { isSuccessful, e ->
+            usersDao.updateUser(userDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
                 } else {
@@ -263,7 +262,7 @@ class UsersRepositoryImpl(
         if (isUserLoggedIn()) {
             val profileDao = ProfileDao(profile.instrument, profile.description)
             val userId = authDao.getUserId()
-            usersDao.setProfile(userId!!, profileDao) { isSuccessful, e ->
+            usersDao.updateProfile(userId!!, profileDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
                 } else {

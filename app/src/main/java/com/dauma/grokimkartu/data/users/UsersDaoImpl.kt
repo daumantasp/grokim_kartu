@@ -7,6 +7,20 @@ import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
 
 class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
+    override fun createUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
+        val firestoreUser = toFirestoreUser(user)
+        firebase.createUser(firestoreUser!!, onComplete)
+    }
+
+    override fun updateUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
+        val firestoreUser = toFirestoreUser(user)
+        firebase.updateUser(firestoreUser!!, onComplete)
+    }
+
+    override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebase.deleteUser(userId, onComplete)
+    }
+
     override fun getUser(userId: String, onComplete: (UserDao?, Exception?) -> Unit) {
         firebase.getUser(userId) { firestoreUser, e ->
             val usersDao = toUserDao(firestoreUser)
@@ -14,18 +28,13 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
         }
     }
 
-    override fun setUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
-        val firestoreUser = toFirestoreUser(user)
-        firebase.setUser(firestoreUser!!, onComplete)
+    override fun updateProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
+        val firestoreProfile = toFirestoreProfile(profile)
+        firebase.updateProfile(userId, firestoreProfile!!, onComplete)
     }
 
-    override fun registerUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
-        val firestoreUser = toFirestoreUser(user)
-        firebase.registerUser(firestoreUser!!, onComplete)
-    }
-
-    override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteUser(userId, onComplete)
+    override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebase.deleteProfile(userId, onComplete)
     }
 
     override fun getProfile(userId: String, onComplete: (ProfileDao?, Exception?) -> Unit) {
@@ -33,15 +42,6 @@ class UsersDaoImpl(private val firebase: Firestore) : UsersDao {
             val profileDao = toProfileDao(firestoreProfile)
             onComplete(profileDao, e)
         }
-    }
-
-    override fun setProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
-        val firestoreProfile = toFirestoreProfile(profile)
-        firebase.setProfile(userId, firestoreProfile!!, onComplete)
-    }
-
-    override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteProfile(userId, onComplete)
     }
 
     private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
