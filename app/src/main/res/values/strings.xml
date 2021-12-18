@@ -53,4 +53,5 @@
     <string name="profile_instrument">Instrumentas</string>
     <string name="profile_desciption">Aprašymas</string>
     <string name="profile_saveChanges_button">Išsaugoti</string>
+    <string name="profile_selectPhoto_button">Pasirinkti nuotrauką</string>
 </resources>

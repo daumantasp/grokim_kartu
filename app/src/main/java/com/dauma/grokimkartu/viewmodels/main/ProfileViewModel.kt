@@ -59,6 +59,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun selectPhoto() {
+
+    }
+
     fun logoutClicked() {
         try {
             usersRepository.logOut()
