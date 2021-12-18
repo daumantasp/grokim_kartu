@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.di
 
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
+import com.google.firebase.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.FirestoreImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
@@ -28,6 +29,12 @@ class AppModule {
     @Singleton
     fun providesFirestore() : Firestore {
         return FirestoreImpl(FirebaseFirestore.getInstance())
+    }
+
+    @Provides
+    @Singleton
+    fun providesFirebaseStorage() : FirebaseStorage {
+        return FirebaseStorage.getInstance()
     }
 
     @Provides
