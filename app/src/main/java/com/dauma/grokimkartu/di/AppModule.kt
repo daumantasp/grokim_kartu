@@ -1,8 +1,8 @@
 package com.dauma.grokimkartu.di
 
+import FirebaseStorageImpl
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
-import com.google.firebase.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.FirestoreImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
@@ -16,6 +16,8 @@ import com.dauma.grokimkartu.repositories.users.UsersRepository
 import com.dauma.grokimkartu.repositories.users.UsersRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.dauma.grokimkartu.data.firestore.FirebaseStorage
+import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +36,7 @@ class AppModule {
     @Provides
     @Singleton
     fun providesFirebaseStorage() : FirebaseStorage {
-        return FirebaseStorage.getInstance()
+        return FirebaseStorageImpl(GoogleFirebaseStorage.getInstance())
     }
 
     @Provides
@@ -49,8 +51,8 @@ class AppModule {
     }
 
     @Provides
-    fun provideUsersDao(firestore: Firestore) : UsersDao {
-        return UsersDaoImpl(firestore)
+    fun provideUsersDao(firestore: Firestore, firebaseStorage: FirebaseStorage) : UsersDao {
+        return UsersDaoImpl(firestore, firebaseStorage)
     }
 
     @Provides
