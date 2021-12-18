@@ -27,7 +27,7 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSave = UserDao(userId, name, true, null, null)
+                            val userToSave = UserDao(userId, name, true, null)
                             this.usersDao.createUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
@@ -204,7 +204,7 @@ class UsersRepositoryImpl(
                         authUser.id,
                         authUser.name,
                         authUser.email,
-                        userDao.profilePhoto,
+                        authUser.photoUrl,
                         userDao.visible,
                         userDao.registrationDate
                     )
@@ -222,7 +222,7 @@ class UsersRepositoryImpl(
 
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val userDao = UserDao(authDao.getUserId(), user.name, user.visible, user.registrationDate, user.photo)
+            val userDao = UserDao(authDao.getUserId(), user.name, user.visible, user.registrationDate)
             usersDao.updateUser(userDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
@@ -245,6 +245,7 @@ class UsersRepositoryImpl(
                     val profileDao = Profile(
                         profile.instrument,
                         profile.description,
+                        profile.photo
                     )
                     onComplete(profileDao, null)
                 } else {
@@ -260,7 +261,7 @@ class UsersRepositoryImpl(
 
     override fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val profileDao = ProfileDao(profile.instrument, profile.description)
+            val profileDao = ProfileDao(profile.instrument, profile.description, profile.photo)
             val userId = authDao.getUserId()
             usersDao.updateProfile(userId!!, profileDao) { isSuccessful, e ->
                 if (isSuccessful) {

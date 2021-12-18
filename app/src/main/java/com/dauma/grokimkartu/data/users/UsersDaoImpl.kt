@@ -14,27 +14,31 @@ class UsersDaoImpl(
 ) : UsersDao {
     override fun createUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
         val firestoreUser = toFirestoreUser(user)
-        firebase.createUser(firestoreUser!!) { isSuccessful, e ->
-            if (isSuccessful) {
-                if (user.id != null && user.profilePhoto != null) {
-                    firebaseStorage.uploadProfilePhoto(user.id!!, user.profilePhoto!!) { isSuccessful, e ->
-                        onComplete(isSuccessful, null)
-                    }
-                } else {
-                    onComplete(false, null)
-                }
-            } else {
-                onComplete(false, e)
-            }
-        }
+        firebase.createUser(firestoreUser!!, onComplete)
     }
 
     override fun updateUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
         val firestoreUser = toFirestoreUser(user)
-        firebase.updateUser(firestoreUser!!) { isSuccessful, e ->
+        firebase.updateUser(firestoreUser!!, onComplete)
+    }
+
+    override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebase.deleteUser(userId, onComplete)
+    }
+
+    override fun getUser(userId: String, onComplete: (UserDao?, Exception?) -> Unit) {
+        firebase.getUser(userId) { firestoreUser, e ->
+            val usersDao = toUserDao(firestoreUser)
+            onComplete(usersDao, e)
+        }
+    }
+
+    override fun updateProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
+        val firestoreProfile = toFirestoreProfile(profile)
+        firebase.updateProfile(userId, firestoreProfile!!) { isSuccessful, e ->
             if (isSuccessful) {
-                if (user.id != null && user.profilePhoto != null) {
-                    firebaseStorage.uploadProfilePhoto(user.id!!, user.profilePhoto!!) { isSuccessful, e ->
+                if (profile.photo != null) {
+                    firebaseStorage.uploadProfilePhoto(userId, profile.photo!!) { isSuccessful, e ->
                         onComplete(isSuccessful, null)
                     }
                 } else {
@@ -46,8 +50,8 @@ class UsersDaoImpl(
         }
     }
 
-    override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteUser(userId) { isSuccessful, e ->
+    override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebase.deleteProfile(userId) { isSuccessful, e ->
             if (isSuccessful) {
                 firebaseStorage.deleteProfilePhoto(userId) { isSuccessful, e ->
                     onComplete(true, null)
@@ -58,35 +62,19 @@ class UsersDaoImpl(
         }
     }
 
-    override fun getUser(userId: String, onComplete: (UserDao?, Exception?) -> Unit) {
-        firebase.getUser(userId) { firestoreUser, e ->
+    override fun getProfile(userId: String, onComplete: (ProfileDao?, Exception?) -> Unit) {
+        firebase.getProfile(userId) { firestoreProfile, e ->
             firebaseStorage.downloadProfilePhoto(userId) { profilePhoto, e ->
-                val usersDao = toUserDao(firestoreUser, profilePhoto)
-                onComplete(usersDao, e)
+                val profileDao = toProfileDao(firestoreProfile, profilePhoto)
+                onComplete(profileDao, e)
             }
         }
     }
 
-    override fun updateProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
-        val firestoreProfile = toFirestoreProfile(profile)
-        firebase.updateProfile(userId, firestoreProfile!!, onComplete)
-    }
-
-    override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteProfile(userId, onComplete)
-    }
-
-    override fun getProfile(userId: String, onComplete: (ProfileDao?, Exception?) -> Unit) {
-        firebase.getProfile(userId) { firestoreProfile, e ->
-            val profileDao = toProfileDao(firestoreProfile)
-            onComplete(profileDao, e)
-        }
-    }
-
-    private fun toUserDao(firestoreUser: FirestoreUser?, profilePhoto: Bitmap?) : UserDao? {
+    private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
         var userDao: UserDao? = null
         if (firestoreUser != null) {
-            userDao = UserDao(firestoreUser.id, firestoreUser.name, firestoreUser.visible, firestoreUser.registrationDate, profilePhoto)
+            userDao = UserDao(firestoreUser.id, firestoreUser.name, firestoreUser.visible, firestoreUser.registrationDate)
         }
         return userDao
     }
@@ -99,10 +87,10 @@ class UsersDaoImpl(
         return firestoreUser
     }
 
-    private fun toProfileDao(firestoreProfile: FirestoreProfile?) : ProfileDao? {
+    private fun toProfileDao(firestoreProfile: FirestoreProfile?, photo: Bitmap?) : ProfileDao? {
         var profileDao: ProfileDao? = null
         if (firestoreProfile != null) {
-            profileDao = ProfileDao(firestoreProfile.instrument, firestoreProfile.description)
+            profileDao = ProfileDao(firestoreProfile.instrument, firestoreProfile.description, photo)
         }
         return profileDao
     }

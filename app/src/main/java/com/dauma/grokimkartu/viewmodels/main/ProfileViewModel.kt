@@ -44,7 +44,8 @@ class ProfileViewModel @Inject constructor(
 
         val newProfile = Profile(
             profileForm.instrument,
-            profileForm.description
+            profileForm.description,
+            null
         )
 
         usersRepository.setUserProfile(newProfile) { isSuccessful, e ->

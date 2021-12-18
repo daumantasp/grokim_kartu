@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.repositories.users.entities
 
 import android.graphics.Bitmap
+import android.net.Uri
 import com.google.firebase.Timestamp
 
 data class User(
@@ -8,7 +9,7 @@ data class User(
     val id: String?,
     val name: String?,
     val email: String?,
-    val photo: Bitmap?,
+    val photoUri: Uri?,
     val visible: Boolean?,
     val registrationDate: Timestamp?
 )
