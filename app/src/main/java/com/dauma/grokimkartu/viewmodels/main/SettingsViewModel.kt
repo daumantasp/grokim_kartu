@@ -88,7 +88,7 @@ class SettingsViewModel @Inject constructor(
             id = null,
             name = null,
             email = null,
-            photoUrl = null,
+            photo = null,
             visible = settingsForm.isVisible,
             registrationDate = null
         )

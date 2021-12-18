@@ -27,7 +27,7 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSave = UserDao(userId, name, true, null)
+                            val userToSave = UserDao(userId, name, true, null, null)
                             this.usersDao.createUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
@@ -204,7 +204,7 @@ class UsersRepositoryImpl(
                         authUser.id,
                         authUser.name,
                         authUser.email,
-                        authUser.photoUrl,
+                        userDao.profilePhoto,
                         userDao.visible,
                         userDao.registrationDate
                     )
@@ -222,7 +222,7 @@ class UsersRepositoryImpl(
 
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val userDao = UserDao(authDao.getUserId(), user.name, user.visible, user.registrationDate)
+            val userDao = UserDao(authDao.getUserId(), user.name, user.visible, user.registrationDate, user.photo)
             usersDao.updateUser(userDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
