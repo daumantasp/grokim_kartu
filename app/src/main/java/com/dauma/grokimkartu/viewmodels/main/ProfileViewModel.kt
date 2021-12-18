@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.viewmodels.main
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,7 +19,14 @@ class ProfileViewModel @Inject constructor(
     private val profileForm: ProfileForm
 ) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _selectPhoto = MutableLiveData<Event<String>>()
+    private val _selectedPhoto = MutableLiveData<Bitmap>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val selectPhoto: LiveData<Event<String>> = _selectPhoto
+    val selectedPhoto: LiveData<Bitmap> = _selectedPhoto
+
+    // TODO refactor
+    private var photo: Bitmap? = null
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -34,6 +42,9 @@ class ProfileViewModel @Inject constructor(
                 profile?.instrument ?: "",
                 profile?.description ?: ""
             )
+            if (profile?.photo != null) {
+                _selectedPhoto.value = profile.photo!!
+            }
         }
     }
 
@@ -45,7 +56,7 @@ class ProfileViewModel @Inject constructor(
         val newProfile = Profile(
             profileForm.instrument,
             profileForm.description,
-            null
+            photo
         )
 
         usersRepository.setUserProfile(newProfile) { isSuccessful, e ->
@@ -60,7 +71,11 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun selectPhoto() {
+        _selectPhoto.value = Event("")
+    }
 
+    fun photoSelected(photo: Bitmap) {
+        this.photo = photo
     }
 
     fun logoutClicked() {
