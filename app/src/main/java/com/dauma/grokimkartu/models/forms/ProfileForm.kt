@@ -1,14 +1,15 @@
 package com.dauma.grokimkartu.models.forms
 
+import android.graphics.Bitmap
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
 
+//READ https://developer.android.com/topic/libraries/data-binding/two-way
 class ProfileForm: BaseObservable() {
     private var initialInstrument: String = ""
     private var initialDescription: String = ""
+    private var initialPhoto: Bitmap? = null
 
     @get:Bindable
     var instrument: String = ""
@@ -26,15 +27,27 @@ class ProfileForm: BaseObservable() {
             notifyPropertyChanged(BR.changed)
         }
 
-    fun setInitialValues(instrument: String, description: String) {
+    @get:Bindable
+    var photo: Bitmap? = null
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.photo)
+            notifyPropertyChanged(BR.changed)
+        }
+
+    fun setInitialValues(instrument: String, description: String, photo: Bitmap?) {
         this.instrument = instrument
         this.description = description
+        this.photo = photo
         this.initialInstrument = instrument
         this.initialDescription = description
+        this.initialPhoto = photo
     }
 
     @Bindable
     fun isChanged(): Boolean {
-        return initialInstrument != instrument || initialDescription != description
+        return initialInstrument != instrument ||
+                initialDescription != description ||
+                initialPhoto != photo
     }
 }

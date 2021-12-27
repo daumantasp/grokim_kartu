@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_profile_photo_width">250px</dimen>
+    <dimen name="default_profile_photo_height">250px</dimen>
+</resources>

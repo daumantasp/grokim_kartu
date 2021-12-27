@@ -1,32 +1,34 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
-import com.dauma.grokimkartu.general.EventObserver
+import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.InputStream
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private val profileViewModel by viewModels<ProfileViewModel>()
-    private var startForResult: ActivityResultLauncher<Intent>
+    private var galleryResult: ActivityResultLauncher<Intent>
+//    private var cameraResult: ActivityResultLauncher<Intent>
+    @Inject lateinit var utils: Utils
 
     private var _binding: FragmentProfileBinding? = null
     // This property is only valid between onCreateView and
@@ -34,15 +36,15 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     init {
-        // TODO: refactor
-        startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                if (it.data?.data != null) {
-                    val imageUri = it.data?.data!!
-                    val image = getImageWithAuthority(imageUri)
+        galleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imageUri = result.data?.data
+                if (imageUri != null) {
+                    val width = resources.getDimensionPixelSize(R.dimen.default_profile_photo_width)
+                    val height = resources.getDimensionPixelSize(R.dimen.default_profile_photo_height)
+                    val image = utils.imageUtils.getImageWithAuthority(requireContext(), imageUri, width, height)
                     if (image != null) {
-                        profileViewModel.photoSelected(image)
-                        binding.photoImageView.setImageBitmap(image)
+                        profileViewModel.getProfileForm().photo = image
                     }
                 }
             }
@@ -61,8 +63,12 @@ class ProfileFragment : Fragment() {
             // TODO: Still reloads on device rotate, probably need to save state instance
             profileViewModel.loadProfile()
         }
-
         return view
+    }
+
+    override fun onResume() {
+        bindDefaultPhotoIfNeeded()
+        super.onResume()
     }
 
     override fun onDestroyView() {
@@ -76,60 +82,13 @@ class ProfileFragment : Fragment() {
         })
         profileViewModel.selectPhoto.observe(viewLifecycleOwner, EventObserver {
             val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startForResult.launch(pickIntent)
-        })
-        profileViewModel.selectedPhoto.observe(viewLifecycleOwner, {
-            binding.photoImageView.setImageBitmap(it)
+            galleryResult.launch(pickIntent)
         })
     }
 
-    // TODO: refactor
-    private fun getImageWithAuthority(uri: Uri): Bitmap? {
-        return decodeUriStreamToSize(uri, 250, 250, requireContext())
-    }
-
-    private fun decodeUriStreamToSize(uri: Uri,
-                              width: Int, height: Int, context: Context
-    ): Bitmap? {
-        var inputStream: InputStream? = null
-        try {
-            val options: BitmapFactory.Options
-            inputStream = context.contentResolver.openInputStream(uri)
-            if (inputStream != null) {
-                options = BitmapFactory.Options()
-                options.inJustDecodeBounds = true
-                BitmapFactory.decodeStream(inputStream, null, options)
-                inputStream.close()
-                inputStream = context.contentResolver.openInputStream(uri)
-                if (inputStream != null) {
-                    options.inSampleSize = calculateInSampleSize(
-                        options.outWidth, options.outHeight,
-                        width, height)
-                    options.inJustDecodeBounds = false
-                    val bitmap = BitmapFactory.decodeStream(
-                        inputStream, null, options)
-                    inputStream.close()
-                    return bitmap
-                } }
-            return null
-        } catch (e: Exception) {
-            return null
-        } finally {
-            inputStream?.close()
+    private fun bindDefaultPhotoIfNeeded() {
+        if (profileViewModel.getProfileForm().photo == null) {
+            binding.photoImageView.setImageResource(R.drawable.user)
         }
-    }
-
-    private fun calculateInSampleSize(
-        width: Int, height: Int,
-        reqWidth: Int, reqHeight: Int): Int {
-        var inSampleSize = 1
-        if (height > reqHeight || width > reqWidth) {
-            val halfHeight = height / 2
-            val halfWidth = width / 2
-            while (halfHeight / inSampleSize >= reqHeight &&
-                halfWidth / inSampleSize >= reqWidth) {
-                inSampleSize *= 2
-            } }
-        return inSampleSize
     }
 }

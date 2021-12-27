@@ -17,6 +17,10 @@ import com.dauma.grokimkartu.repositories.users.UsersRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.dauma.grokimkartu.data.firestore.FirebaseStorage
+import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.UtilsImpl
+import com.dauma.grokimkartu.general.utils.image.ImageUtils
+import com.dauma.grokimkartu.general.utils.image.ImageUtilsImpl
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
 import dagger.Module
 import dagger.Provides
@@ -27,6 +31,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+    @Provides
+    fun providesImageUtils() : ImageUtils {
+        return ImageUtilsImpl()
+    }
+
+    @Provides
+    fun providesUtils(imageUtils: ImageUtils) : Utils {
+        return UtilsImpl(imageUtils)
+    }
+
     @Provides
     @Singleton
     fun providesFirestore() : Firestore {

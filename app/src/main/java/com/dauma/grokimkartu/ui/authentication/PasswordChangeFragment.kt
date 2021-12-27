@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPasswordChangeBinding
-import com.dauma.grokimkartu.general.EventObserver
+import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.viewmodels.authentication.PasswordChangeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

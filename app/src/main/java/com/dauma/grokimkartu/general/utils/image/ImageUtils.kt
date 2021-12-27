@@ -1,0 +1,9 @@
+package com.dauma.grokimkartu.general.utils.image
+
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+
+interface ImageUtils {
+    fun getImageWithAuthority(context: Context, uri: Uri, width: Int, height: Int): Bitmap?
+}

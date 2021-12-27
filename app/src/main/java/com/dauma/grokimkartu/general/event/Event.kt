@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.models
+package com.dauma.grokimkartu.general.event
 
 // TODO: Read more at https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
 open class Event<out T>(private val content: T) {

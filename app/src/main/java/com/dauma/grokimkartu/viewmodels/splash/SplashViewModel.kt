@@ -2,7 +2,7 @@ package com.dauma.grokimkartu.viewmodels.splash
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.models.Event
+import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

@@ -1,11 +1,13 @@
 package com.dauma.grokimkartu.viewmodels.main
 
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.models.Event
+import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.ProfileForm
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
@@ -20,13 +22,8 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _selectPhoto = MutableLiveData<Event<String>>()
-    private val _selectedPhoto = MutableLiveData<Bitmap>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
-    val selectedPhoto: LiveData<Bitmap> = _selectedPhoto
-
-    // TODO refactor
-    private var photo: Bitmap? = null
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -40,11 +37,9 @@ class ProfileViewModel @Inject constructor(
         usersRepository.getUserProfile { profile, e ->
             this.profileForm.setInitialValues(
                 profile?.instrument ?: "",
-                profile?.description ?: ""
+                profile?.description ?: "",
+                profile?.photo
             )
-            if (profile?.photo != null) {
-                _selectedPhoto.value = profile.photo!!
-            }
         }
     }
 
@@ -56,7 +51,7 @@ class ProfileViewModel @Inject constructor(
         val newProfile = Profile(
             profileForm.instrument,
             profileForm.description,
-            photo
+            profileForm.photo
         )
 
         usersRepository.setUserProfile(newProfile) { isSuccessful, e ->
@@ -64,7 +59,8 @@ class ProfileViewModel @Inject constructor(
                 Log.d(TAG, "User profile updated successfully")
                 this.profileForm.setInitialValues(
                     newProfile.instrument ?: "",
-                    newProfile.description ?: ""
+                    newProfile.description ?: "",
+                    newProfile.photo
                 )
             }
         }
@@ -72,10 +68,6 @@ class ProfileViewModel @Inject constructor(
 
     fun selectPhoto() {
         _selectPhoto.value = Event("")
-    }
-
-    fun photoSelected(photo: Bitmap) {
-        this.photo = photo
     }
 
     fun logoutClicked() {

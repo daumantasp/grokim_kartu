@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.models.Event
+import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.RegistrationForm
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
