@@ -49,8 +49,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesFirebaseStorage() : FirebaseStorage {
-        return FirebaseStorageImpl(GoogleFirebaseStorage.getInstance())
+    fun providesFirebaseStorage(imageUtils: ImageUtils) : FirebaseStorage {
+        return FirebaseStorageImpl(GoogleFirebaseStorage.getInstance(), imageUtils)
     }
 
     @Provides
