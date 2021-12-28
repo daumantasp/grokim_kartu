@@ -11,6 +11,12 @@ class ImageUtilsImpl : ImageUtils {
         return decodeUriStreamToSize(context, uri, width, height)
     }
 
+    override fun scaleImage(bitmap: Bitmap, width: Int, height: Int): Bitmap {
+        val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+        val ratioHeight = Math.round(width / aspectRatio)
+        return Bitmap.createScaledBitmap(bitmap, width, ratioHeight, false)
+    }
+
     private fun decodeUriStreamToSize(context: Context, uri: Uri, width: Int, height: Int): Bitmap? {
         var inputStream: InputStream? = null
         try {
