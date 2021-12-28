@@ -131,7 +131,8 @@ class FirestoreImpl(
             .addOnSuccessListener { querySnapshot ->
                 val players: MutableList<FirestorePlayer> = mutableListOf()
                 for (queryDocumentSnapshot in querySnapshot) {
-                    val player = queryDocumentSnapshot.toObject(FirestorePlayer::class.java)
+                    var player = queryDocumentSnapshot.toObject(FirestorePlayer::class.java)
+                    player.userId = queryDocumentSnapshot.id
                     players.add(player)
                 }
                 onComplete(true, players, null)
@@ -241,7 +242,7 @@ class FirestoreImpl(
 
         firebaseFirestore
             .collection(playersCollection)
-            .document(player.userId)
+            .document(player.userId!!)
             .set(valuesToSet, SetOptions.merge())
             .addOnSuccessListener { _ ->
                 onComplete(true, null)

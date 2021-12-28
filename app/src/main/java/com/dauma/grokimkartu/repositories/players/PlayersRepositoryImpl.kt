@@ -3,17 +3,24 @@ package com.dauma.grokimkartu.repositories.players
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.repositories.players.entities.Player
+import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
 
 class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersRepository {
     override fun getPlayers(onComplete: (Boolean, List<Player>?, PlayersError?) -> Unit) {
         playersDao.getPlayers { isSuccessful, playersDao, e ->
             if (isSuccessful && playersDao != null) {
-                val players = playersDao.map { pd -> Player(
-                    pd.userId,
-                    pd.name,
-                    pd.instrument,
-                    pd.description
-                ) }
+                val players = playersDao.map { pd ->
+                    val loader = { onComplete: (Bitmap?, PlayersError?) -> Unit ->
+                        this.getPlayerIcon(pd.userId ?: "", onComplete)
+                    }
+                    Player(
+                        pd.userId,
+                        pd.name,
+                        pd.instrument,
+                        pd.description,
+                        PlayerIcon(loader)
+                    )
+                }
                 onComplete(true, players, null)
             } else {
                 onComplete(false, null, PlayersError(2))

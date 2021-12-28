@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.data.firestore.entities
 
 class FirestorePlayer(
-    val userId: String?,
+    var userId: String?,
     val name: String?,
     val instrument: String?,
     val description: String?
