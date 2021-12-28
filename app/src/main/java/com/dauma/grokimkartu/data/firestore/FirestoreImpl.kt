@@ -74,7 +74,7 @@ class FirestoreImpl(
             .document(userId)
             .update("profile", valuesToSet)
             .addOnSuccessListener { _ ->
-                this.updatePlayerWhenProfileIsUpdatedTrigger(userId, profile, onComplete)
+                this.updatePlayerWhenProfileIsUpdatedTrigger(userId, onComplete)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)
@@ -166,7 +166,7 @@ class FirestoreImpl(
             .set(valuesToSet, SetOptions.merge())
             .addOnSuccessListener { _ ->
                 if (user.visible != null) {
-                    this.addOrDeletePlayerWhenVisibilityChangesTrigger(user, onComplete)
+                    this.addOrDeletePlayerWhenVisibilityChangesTrigger(user.id!!, user.visible!!, onComplete)
                 } else {
                     onComplete(true, null)
                 }
@@ -176,41 +176,51 @@ class FirestoreImpl(
             }
     }
 
-    private fun addOrDeletePlayerWhenVisibilityChangesTrigger(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        val isUserVisible = user.visible!!
-        if (isUserVisible) {
-            getProfile(user.id!!) { firestoreProfile, e ->
-                val firestorePlayer = FirestorePlayer(
-                    user.id!!,
-                    user.name,
-                    firestoreProfile?.instrument ?: "",
-                    firestoreProfile?.description ?: ""
-                )
-                this.setPlayer(firestorePlayer) { isSuccessful, e ->
-                    onComplete(true, null)
+    private fun addOrDeletePlayerWhenVisibilityChangesTrigger(
+        userId: String,
+        isVisible: Boolean,
+        onComplete: (Boolean, Exception?) -> Unit,
+    ) {
+        if (isVisible) {
+            getUser(userId) { firestoreUser, e ->
+                if (firestoreUser != null) {
+                    this.getProfile(userId) { firestoreProfile, e ->
+                        val firestorePlayer = FirestorePlayer(
+                            firestoreUser.id,
+                            firestoreUser.name,
+                            firestoreProfile?.instrument ?: "",
+                            firestoreProfile?.description ?: ""
+                        )
+                        this.setPlayer(firestorePlayer) { isSuccessful, e ->
+                            onComplete(true, e)
+                        }
+                    }
+                } else {
+                    onComplete(false, e)
                 }
             }
         } else {
-            deletePlayer(user.id!!) { isSuccessful, e ->
-                onComplete(true, e)
-            }
+            deletePlayer(userId, onComplete)
         }
     }
 
     private fun updatePlayerWhenProfileIsUpdatedTrigger(
         userId: String,
-        profile: FirestoreProfile,
         onComplete: (Boolean, Exception?) -> Unit,
     ) {
-        getUser(userId) { user, e ->
-            if (user?.visible ?: false) {
-                val firestorePlayer = FirestorePlayer(
-                    user?.id,
-                    user?.name,
-                    profile.instrument,
-                    profile.description
-                )
-                this.setPlayer(firestorePlayer, onComplete)
+        getUser(userId) { firestoreUser, e ->
+            if (firestoreUser?.visible ?: false) {
+                this.getProfile(userId) { firestoreProfile, e ->
+                    val firestorePlayer = FirestorePlayer(
+                        firestoreUser?.id,
+                        firestoreUser?.name,
+                        firestoreProfile?.instrument ?: "",
+                        firestoreProfile?.description ?: ""
+                    )
+                    this.setPlayer(firestorePlayer) { isSuccessful, e ->
+                        onComplete(true, e)
+                    }
+                }
             } else {
                 onComplete(true, null)
             }

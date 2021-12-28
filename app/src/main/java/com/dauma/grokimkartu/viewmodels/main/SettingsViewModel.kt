@@ -83,6 +83,8 @@ class SettingsViewModel @Inject constructor(
             return
         }
 
+        val name = settingsForm.name
+        // I do not let user to change his name
         val newUser = User(
             providerId = null,
             id = null,
@@ -97,7 +99,7 @@ class SettingsViewModel @Inject constructor(
             Log.d(TAG, "showMeClicked updated successfully")
             this._initialUser = newUser
             this.settingsForm.setInitialValues(
-                newUser.name ?: "",
+                name,
                 newUser.visible ?: false
             )
         }
