@@ -54,4 +54,6 @@
     <string name="profile_desciption">Aprašymas</string>
     <string name="profile_saveChanges_button">Išsaugoti</string>
     <string name="profile_selectPhoto_button">Pasirinkti nuotrauką</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="playerDetails_title">Player Details fragment</string>
 </resources>

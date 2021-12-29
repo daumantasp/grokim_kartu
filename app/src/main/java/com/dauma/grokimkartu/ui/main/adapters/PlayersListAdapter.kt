@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +13,8 @@ import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIconStatus
 
 class PlayersListAdapter(
-    private var playersData: List<Player>
+    private val playersData: List<Player>,
+    private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,6 +27,10 @@ class PlayersListAdapter(
         holder.idTextView.text = player.userId
         holder.nameTextView.text = player.name
         holder.instrumentTextView.text = player.instrument
+
+        holder.playerItemContainer.setOnClickListener {
+            this.onItemClicked(player.userId ?: "")
+        }
 
         if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_SET) {
             holder.photoIcon.setImageBitmap(player.icon.icon)
@@ -53,6 +59,7 @@ class PlayersListAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val playerItemContainer = view.findViewById<LinearLayout>(R.id.playerItemContainer)
         val idTextView = view.findViewById<TextView>(R.id.playerId)
         val nameTextView = view.findViewById<TextView>(R.id.playerName)
         val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)

@@ -9,7 +9,11 @@
         android:id="@+id/playersFragment"
         android:name="com.dauma.grokimkartu.ui.main.PlayersFragment"
         android:label="fragment_players"
-        tools:layout="@layout/fragment_players" />
+        tools:layout="@layout/fragment_players" >
+        <action
+            android:id="@+id/action_playersFragment_to_playerDetailsFragment"
+            app:destination="@id/playerDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.dauma.grokimkartu.ui.main.ProfileFragment"
@@ -82,4 +86,9 @@
             android:id="@+id/action_settingsFragment_to_passwordChangeFragment"
             app:destination="@id/passwordChangeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/playerDetailsFragment"
+        android:name="com.dauma.grokimkartu.ui.main.PlayerDetailsFragment"
+        android:label="fragment_player_details"
+        tools:layout="@layout/fragment_player_details" />
 </navigation>
