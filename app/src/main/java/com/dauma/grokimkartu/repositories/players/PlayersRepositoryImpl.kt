@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.repositories.players
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.repositories.players.entities.Player
+import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
 
 class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersRepository {
@@ -32,6 +33,26 @@ class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersReposit
         playersDao.getPlayerIcon(userId) { playerIcon, e ->
             if (playerIcon != null) {
                 onComplete(playerIcon, null)
+            } else {
+                onComplete(null, PlayersError(2))
+            }
+        }
+    }
+
+    override fun getPlayerDetails(
+        userId: String,
+        onComplete: (PlayerDetails?, PlayersError?) -> Unit
+    ) {
+        playersDao.getPlayerDetails(userId) { playerDetailsDao, e ->
+            if (playerDetailsDao != null) {
+                val playerDetails = PlayerDetails(
+                    playerDetailsDao.userId,
+                    playerDetailsDao.name,
+                    playerDetailsDao.instrument,
+                    playerDetailsDao.description,
+                    null
+                )
+                onComplete(playerDetails, null)
             } else {
                 onComplete(null, PlayersError(2))
             }

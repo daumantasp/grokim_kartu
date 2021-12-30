@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.data.firestore
 
 import android.util.Log
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
+import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.google.firebase.Timestamp
@@ -15,6 +16,7 @@ class FirestoreImpl(
         private const val TAG = "FirestoreImpl"
         private const val usersCollection = "users"
         private const val playersCollection = "players"
+        private const val playerDetailsCollection = "playerDetails"
     }
 
     override fun createUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
@@ -142,6 +144,28 @@ class FirestoreImpl(
             }
     }
 
+    override fun getPlayerDetails(
+        userId: String,
+        onComplete: (FirestorePlayerDetails?, Exception?) -> Unit
+    ) {
+        firebaseFirestore
+            .collection(playerDetailsCollection)
+            .document(userId)
+            .get()
+            .addOnSuccessListener { playerDetailsDocumentSnapshot ->
+                if (playerDetailsDocumentSnapshot.exists()) {
+                    var playerDetails = playerDetailsDocumentSnapshot.toObject(FirestorePlayerDetails::class.java)
+                    playerDetails?.userId = userId
+                    onComplete(playerDetails, null)
+                } else {
+                    onComplete(null, Exception("PLAYER DETAILS WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
+            }
+    }
+
     private fun setUser(user: FirestoreUser, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
         if (user.id == null) {
             Log.d(TAG, "Failed to setUser: missing user.id")
@@ -191,8 +215,16 @@ class FirestoreImpl(
                             firestoreProfile?.instrument ?: "",
                             firestoreProfile?.description ?: ""
                         )
+                        val firestorePlayerDetails = FirestorePlayerDetails(
+                            firestoreUser.id,
+                            firestoreUser.name,
+                            firestoreProfile?.instrument ?: "",
+                            firestoreProfile?.description ?: ""
+                        )
                         this.setPlayer(firestorePlayer) { isSuccessful, e ->
-                            onComplete(true, e)
+                            this.setPlayerDetails(firestorePlayerDetails) { isSuccessful, e ->
+                                onComplete(true, e)
+                            }
                         }
                     }
                 } else {
@@ -200,7 +232,9 @@ class FirestoreImpl(
                 }
             }
         } else {
-            deletePlayer(userId, onComplete)
+            deletePlayer(userId) { isSuccessful, e ->
+                this.deletePlayerDetails(userId, onComplete)
+            }
         }
     }
 
@@ -217,8 +251,16 @@ class FirestoreImpl(
                         firestoreProfile?.instrument ?: "",
                         firestoreProfile?.description ?: ""
                     )
+                    val firestorePlayerDetails = FirestorePlayerDetails(
+                        firestoreUser?.id,
+                        firestoreUser?.name,
+                        firestoreProfile?.instrument ?: "",
+                        firestoreProfile?.description ?: ""
+                    )
                     this.setPlayer(firestorePlayer) { isSuccessful, e ->
-                        onComplete(true, e)
+                        this.setPlayerDetails(firestorePlayerDetails) { isSuccessful, e ->
+                            onComplete(true, e)
+                        }
                     }
                 }
             } else {
@@ -230,7 +272,9 @@ class FirestoreImpl(
     private fun deletePlayerWhenUserIsDeletedTrigger(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
         // Try to delete, do not care if such player exist
         deletePlayer(userId) { isSuccessful, e ->
-            onComplete(true, e)
+            this.deletePlayerDetails(userId) { isSuccessful, e ->
+                onComplete(true, e)
+            }
         }
     }
 
@@ -265,6 +309,47 @@ class FirestoreImpl(
     private fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
         firebaseFirestore
             .collection(playersCollection)
+            .document(userId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    private fun setPlayerDetails(playerDetails: FirestorePlayerDetails, onComplete: (Boolean, Exception?) -> Unit) {
+        if (playerDetails.userId == null) {
+            Log.d(TAG, "Failed to setPlayer: missing player.userId")
+            return
+        }
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (playerDetails.name != null) {
+            valuesToSet["name"] = playerDetails.name!!
+        }
+        if (playerDetails.instrument != null) {
+            valuesToSet["instrument"] = playerDetails.instrument!!
+        }
+        if (playerDetails.description != null) {
+            valuesToSet["description"] = playerDetails.description!!
+        }
+
+        firebaseFirestore
+            .collection(playerDetailsCollection)
+            .document(playerDetails.userId!!)
+            .set(valuesToSet, SetOptions.merge())
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    private fun deletePlayerDetails(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(playerDetailsCollection)
             .document(userId)
             .delete()
             .addOnSuccessListener { _ ->

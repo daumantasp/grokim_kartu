@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.data.firestore
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
+import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 
@@ -16,4 +17,5 @@ interface Firestore {
     fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit)
     fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit)
+    fun getPlayerDetails(userId: String, onComplete: (FirestorePlayerDetails?, Exception?) -> Unit)
 }
