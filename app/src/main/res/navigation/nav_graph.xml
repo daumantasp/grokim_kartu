@@ -90,5 +90,10 @@
         android:id="@+id/playerDetailsFragment"
         android:name="com.dauma.grokimkartu.ui.main.PlayerDetailsFragment"
         android:label="fragment_player_details"
-        tools:layout="@layout/fragment_player_details" />
+        tools:layout="@layout/fragment_player_details">
+        <argument
+            android:name="userId"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
 </navigation>

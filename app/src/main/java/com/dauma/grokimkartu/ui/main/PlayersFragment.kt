@@ -61,7 +61,9 @@ class PlayersFragment : Fragment() {
                 }
             })
         playersViewModel.playerDetails.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment)
+            val args = Bundle()
+            args.putString("userId", it)
+            this.findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment, args)
         })
     }
 
