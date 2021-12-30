@@ -109,4 +109,9 @@ class AppModule {
     fun providesSettingsForm() : SettingsForm {
         return SettingsForm()
     }
+
+    @Provides
+    fun providesPlayerDetailsForm() : PlayerDetailsForm {
+        return PlayerDetailsForm()
+    }
 }

@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.viewmodels.main
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.dauma.grokimkartu.models.forms.PlayerDetailsForm
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -9,12 +10,29 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerDetailsViewModel @Inject constructor(
     private val playersRepository: PlayersRepository,
+    private val playerDetailsForm: PlayerDetailsForm,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    // READ https://medium.com/@fabioCollini/android-data-binding-f9f9d3afc761
     private val userId = savedStateHandle.get<String>("userId")
 
     companion object {
         private val TAG = "DetailsViewModel"
+    }
+
+    fun getPlayerDetailsForm() : PlayerDetailsForm {
+        return playerDetailsForm
+    }
+
+    fun loadDetails() {
+        playersRepository.getPlayerDetails(userId ?: "") { playerDetails, playersError ->
+            this.playerDetailsForm.setInitialValues(
+                userId ?: "",
+                playerDetails?.name ?: "",
+                playerDetails?.instrument ?: ""
+            )
+        }
     }
 }
 

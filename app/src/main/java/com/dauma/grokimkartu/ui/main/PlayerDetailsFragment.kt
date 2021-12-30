@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayerDetailsBinding
 import com.dauma.grokimkartu.viewmodels.main.PlayerDetailsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PlayerDetailsFragment : Fragment() {
     private val playerDetailsViewModel by viewModels<PlayerDetailsViewModel>()
 
@@ -22,7 +23,18 @@ class PlayerDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_player_details, container, false)
+        _binding = FragmentPlayerDetailsBinding.inflate(inflater, container, false)
+        binding.model = playerDetailsViewModel
+        val view = binding.root
+        if (savedInstanceState == null) {
+            // TODO: Still reloads on device rotate, probably need to save state instance
+            playerDetailsViewModel.loadDetails()
+        }
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
