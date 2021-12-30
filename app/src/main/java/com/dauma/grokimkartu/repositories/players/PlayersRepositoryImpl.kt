@@ -39,6 +39,16 @@ class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersReposit
         }
     }
 
+    override fun getPlayerPhoto(userId: String, onComplete: (Bitmap?, PlayersError?) -> Unit) {
+        playersDao.getPlayerPhoto(userId) { playerPhoto, e ->
+            if (playerPhoto != null) {
+                onComplete(playerPhoto, null)
+            } else {
+                onComplete(null, PlayersError(2))
+            }
+        }
+    }
+
     override fun getPlayerDetails(
         userId: String,
         onComplete: (PlayerDetails?, PlayersError?) -> Unit

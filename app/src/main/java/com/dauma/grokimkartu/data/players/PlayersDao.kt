@@ -6,6 +6,7 @@ import com.dauma.grokimkartu.data.players.entities.PlayerDetailsDao
 
 interface PlayersDao {
     fun getPlayers(onComplete: (Boolean, List<PlayerDao>?, Exception?) -> Unit)
+    fun getPlayerPhoto(userId: String, onComplete: (Bitmap?, Exception?) -> Unit)
     fun getPlayerIcon(userId: String, onComplete: (Bitmap?, Exception?) -> Unit)
     fun getPlayerDetails(userId: String, onComplete: (PlayerDetailsDao?, Exception?) -> Unit)
 }

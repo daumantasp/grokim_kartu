@@ -33,6 +33,11 @@ class PlayerDetailsViewModel @Inject constructor(
                 playerDetails?.instrument ?: ""
             )
         }
+        playersRepository.getPlayerPhoto(userId ?: "") { playerPhoto, playerError ->
+            if (playerPhoto != null) {
+                this.playerDetailsForm.setInitialPhoto(playerPhoto)
+            }
+        }
     }
 }
 

@@ -20,6 +20,10 @@ class PlayersDaoImpl(
         }
     }
 
+    override fun getPlayerPhoto(userId: String, onComplete: (Bitmap?, Exception?) -> Unit) {
+        firebaseStorage.downloadProfilePhoto(userId, onComplete)
+    }
+
     override fun getPlayerIcon(userId: String, onComplete: (Bitmap?, Exception?) -> Unit) {
         firebaseStorage.downloadProfilePhotoIcon(userId, onComplete)
     }
@@ -55,8 +59,7 @@ class PlayersDaoImpl(
                 firestorePlayerDetails.userId,
                 firestorePlayerDetails.name,
                 firestorePlayerDetails.instrument,
-                firestorePlayerDetails.description,
-                null
+                firestorePlayerDetails.description
             )
         }
         return playerDetailsDao
