@@ -1,15 +1,16 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayerDetailsViewModel @Inject constructor(savedStateHandle: SavedStateHandle)
-    : ViewModel() {
+class PlayerDetailsViewModel @Inject constructor(
+    private val playersRepository: PlayersRepository,
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
     private val userId = savedStateHandle.get<String>("userId")
 
     companion object {
