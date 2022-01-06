@@ -38,7 +38,8 @@ class ProfileViewModel @Inject constructor(
             this.profileForm.setInitialValues(
                 profile?.instrument ?: "",
                 profile?.description ?: "",
-                profile?.photo
+                profile?.photo,
+                profile?.city ?: ""
             )
         }
     }
@@ -51,7 +52,8 @@ class ProfileViewModel @Inject constructor(
         val newProfile = Profile(
             profileForm.instrument,
             profileForm.description,
-            profileForm.photo
+            profileForm.photo,
+            profileForm.city
         )
 
         usersRepository.setUserProfile(newProfile) { isSuccessful, e ->
@@ -60,7 +62,8 @@ class ProfileViewModel @Inject constructor(
                 this.profileForm.setInitialValues(
                     newProfile.instrument ?: "",
                     newProfile.description ?: "",
-                    newProfile.photo
+                    newProfile.photo,
+                    newProfile.city ?: ""
                 )
             }
         }

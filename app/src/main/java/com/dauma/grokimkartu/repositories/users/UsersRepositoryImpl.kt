@@ -245,7 +245,8 @@ class UsersRepositoryImpl(
                     val profileDao = Profile(
                         profile.instrument,
                         profile.description,
-                        profile.photo
+                        profile.photo,
+                        profile.city
                     )
                     onComplete(profileDao, null)
                 } else {
@@ -261,7 +262,7 @@ class UsersRepositoryImpl(
 
     override fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val profileDao = ProfileDao(profile.instrument, profile.description, profile.photo)
+            val profileDao = ProfileDao(profile.instrument, profile.description, profile.photo, profile.city)
             val userId = authDao.getUserId()
             usersDao.updateProfile(userId!!, profileDao) { isSuccessful, e ->
                 if (isSuccessful) {

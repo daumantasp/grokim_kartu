@@ -4,5 +4,6 @@ data class PlayerDetailsDao(
     val userId: String?,
     val name: String?,
     val instrument: String?,
-    val description: String?
+    val description: String?,
+    val city: String?
 )

@@ -5,5 +5,6 @@ import android.graphics.Bitmap
 data class Profile(
     var instrument: String?,
     var description: String?,
-    var photo: Bitmap?
+    var photo: Bitmap?,
+    var city: String?
 )

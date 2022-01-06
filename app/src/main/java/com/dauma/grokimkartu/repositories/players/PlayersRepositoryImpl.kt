@@ -19,7 +19,8 @@ class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersReposit
                         pd.name,
                         pd.instrument,
                         pd.description,
-                        PlayerIcon(loader)
+                        PlayerIcon(loader),
+                        pd.city
                     )
                 }
                 onComplete(true, players, null)
@@ -60,7 +61,8 @@ class PlayersRepositoryImpl(private val playersDao: PlayersDao) : PlayersReposit
                     playerDetailsDao.name,
                     playerDetailsDao.instrument,
                     playerDetailsDao.description,
-                    null
+                    null,
+                    playerDetailsDao.city
                 )
                 onComplete(playerDetails, null)
             } else {

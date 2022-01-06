@@ -90,7 +90,7 @@ class UsersDaoImpl(
     private fun toProfileDao(firestoreProfile: FirestoreProfile?, photo: Bitmap?) : ProfileDao? {
         var profileDao: ProfileDao? = null
         if (firestoreProfile != null) {
-            profileDao = ProfileDao(firestoreProfile.instrument, firestoreProfile.description, photo)
+            profileDao = ProfileDao(firestoreProfile.instrument, firestoreProfile.description, photo, firestoreProfile.city)
         }
         return profileDao
     }
@@ -98,7 +98,7 @@ class UsersDaoImpl(
     private fun toFirestoreProfile(profileDao: ProfileDao?) : FirestoreProfile? {
         var firestoreProfile: FirestoreProfile? = null
         if (profileDao != null) {
-            firestoreProfile = FirestoreProfile(profileDao.instrument, profileDao.description)
+            firestoreProfile = FirestoreProfile(profileDao.instrument, profileDao.description, profileDao.city)
         }
         return firestoreProfile
     }

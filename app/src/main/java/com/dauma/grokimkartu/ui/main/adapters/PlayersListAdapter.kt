@@ -27,6 +27,7 @@ class PlayersListAdapter(
         holder.idTextView.text = player.userId
         holder.nameTextView.text = player.name
         holder.instrumentTextView.text = player.instrument
+        holder.cityTextView.text = player.city
 
         holder.playerItemContainer.setOnClickListener {
             this.onItemClicked(player.userId ?: "")
@@ -63,6 +64,7 @@ class PlayersListAdapter(
         val idTextView = view.findViewById<TextView>(R.id.playerId)
         val nameTextView = view.findViewById<TextView>(R.id.playerName)
         val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)
+        val cityTextView = view.findViewById<TextView>(R.id.playerCity)
         val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
         val progressBar = view.findViewById<ProgressBar>(R.id.playerProgressBar)
     }

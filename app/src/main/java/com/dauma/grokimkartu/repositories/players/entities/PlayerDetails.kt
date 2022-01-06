@@ -7,5 +7,6 @@ data class PlayerDetails (
     val name: String?,
     val instrument: String?,
     val description: String?,
-    val photo: Bitmap?
+    val photo: Bitmap?,
+    val city: String?
 )

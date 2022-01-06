@@ -70,6 +70,9 @@ class FirestoreImpl(
         if (profile.description != null) {
             valuesToSet["description"] = profile.description!!
         }
+        if (profile.city != null) {
+            valuesToSet["city"] = profile.city!!
+        }
 
         firebaseFirestore
             .collection(usersCollection)
@@ -110,9 +113,11 @@ class FirestoreImpl(
                     if (profileMap != null) {
                         for (profile in profileMap) {
                             if (profile.key == "instrument") {
-                                profileDao.instrument = profile.value as String
+                                profileDao.instrument = profile.value as String?
                             } else if (profile.key == "description") {
                                 profileDao.description = profile.value as String?
+                            } else if (profile.key == "city") {
+                                profileDao.city = profile.value as String?
                             }
                         }
                     }
@@ -213,13 +218,15 @@ class FirestoreImpl(
                             firestoreUser.id,
                             firestoreUser.name,
                             firestoreProfile?.instrument ?: "",
-                            firestoreProfile?.description ?: ""
+                            firestoreProfile?.description ?: "",
+                            firestoreProfile?.city ?: ""
                         )
                         val firestorePlayerDetails = FirestorePlayerDetails(
                             firestoreUser.id,
                             firestoreUser.name,
                             firestoreProfile?.instrument ?: "",
-                            firestoreProfile?.description ?: ""
+                            firestoreProfile?.description ?: "",
+                            firestoreProfile?.city ?: ""
                         )
                         this.setPlayer(firestorePlayer) { isSuccessful, e ->
                             this.setPlayerDetails(firestorePlayerDetails) { isSuccessful, e ->
@@ -249,13 +256,15 @@ class FirestoreImpl(
                         firestoreUser?.id,
                         firestoreUser?.name,
                         firestoreProfile?.instrument ?: "",
-                        firestoreProfile?.description ?: ""
+                        firestoreProfile?.description ?: "",
+                        firestoreProfile?.city ?: ""
                     )
                     val firestorePlayerDetails = FirestorePlayerDetails(
                         firestoreUser?.id,
                         firestoreUser?.name,
                         firestoreProfile?.instrument ?: "",
-                        firestoreProfile?.description ?: ""
+                        firestoreProfile?.description ?: "",
+                        firestoreProfile?.city ?: ""
                     )
                     this.setPlayer(firestorePlayer) { isSuccessful, e ->
                         this.setPlayerDetails(firestorePlayerDetails) { isSuccessful, e ->
@@ -292,6 +301,9 @@ class FirestoreImpl(
         }
         if (player.description != null) {
             valuesToSet["description"] = player.description!!
+        }
+        if (player.city != null) {
+            valuesToSet["city"] = player.city!!
         }
 
         firebaseFirestore
@@ -333,6 +345,9 @@ class FirestoreImpl(
         }
         if (playerDetails.description != null) {
             valuesToSet["description"] = playerDetails.description!!
+        }
+        if (playerDetails.city != null) {
+            valuesToSet["city"] = playerDetails.city!!
         }
 
         firebaseFirestore

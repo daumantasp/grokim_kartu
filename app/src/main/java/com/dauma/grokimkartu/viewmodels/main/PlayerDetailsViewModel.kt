@@ -30,7 +30,8 @@ class PlayerDetailsViewModel @Inject constructor(
             this.playerDetailsForm.setInitialValues(
                 userId ?: "",
                 playerDetails?.name ?: "",
-                playerDetails?.instrument ?: ""
+                playerDetails?.instrument ?: "",
+                playerDetails?.city ?: ""
             )
         }
         playersRepository.getPlayerPhoto(userId ?: "") { playerPhoto, playerError ->

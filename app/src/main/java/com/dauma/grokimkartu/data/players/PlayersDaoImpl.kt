@@ -46,7 +46,8 @@ class PlayersDaoImpl(
                 firestorePlayer.name,
                 firestorePlayer.instrument,
                 firestorePlayer.description,
-                null
+                null,
+                firestorePlayer.city
             )
         }
         return playerDao
@@ -59,7 +60,8 @@ class PlayersDaoImpl(
                 firestorePlayerDetails.userId,
                 firestorePlayerDetails.name,
                 firestorePlayerDetails.instrument,
-                firestorePlayerDetails.description
+                firestorePlayerDetails.description,
+                firestorePlayerDetails.city
             )
         }
         return playerDetailsDao
