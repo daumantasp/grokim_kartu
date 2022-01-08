@@ -63,6 +63,7 @@
                 android:singleLine="true"
                 android:maxLines="1"
                 android:lines="1"
+                android:inputType="textPassword"
                 android:fontFamily="@font/lato"/>
 
         </com.google.android.material.textfield.TextInputLayout>
