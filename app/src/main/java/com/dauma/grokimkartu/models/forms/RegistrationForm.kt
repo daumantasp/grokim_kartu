@@ -11,6 +11,7 @@ class RegistrationForm: BaseObservable() {
     private var name: String = ""
     private var email: String = ""
     private var password: String = ""
+    private var passwordRepeat: String = ""
     private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
     fun getName(): String {
@@ -40,6 +41,15 @@ class RegistrationForm: BaseObservable() {
         notifyPropertyChanged(BR.valid)
     }
 
+    fun getPasswordRepeat(): String {
+        return password
+    }
+
+    fun setPasswordRepeat(password: String) {
+        this.passwordRepeat = password
+        notifyPropertyChanged(BR.valid)
+    }
+
     fun getFormFields(): LiveData<List<String>> {
         return formFields
     }
@@ -52,7 +62,7 @@ class RegistrationForm: BaseObservable() {
 
     @Bindable
     fun isValid() : Boolean {
-        return isEmailValid() && isNameValid() && isPasswordValid()
+        return isEmailValid() && isNameValid() && isPasswordValid() && isPasswordRepeatValid()
     }
 
     private fun isEmailValid() : Boolean {
@@ -74,5 +84,9 @@ class RegistrationForm: BaseObservable() {
             return false
         }
         return true
+    }
+
+    private fun isPasswordRepeatValid() : Boolean {
+        return password == passwordRepeat
     }
 }
