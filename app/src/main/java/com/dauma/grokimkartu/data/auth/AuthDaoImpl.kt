@@ -138,7 +138,8 @@ class AuthDaoImpl(private val firebaseAuth: FirebaseAuth) : AuthDao {
                     profile.uid,
                     profile.displayName,
                     profile.email,
-                    profile.photoUrl
+                    profile.photoUrl,
+                    it.isEmailVerified
                 )
                 authenticatedUserByProfiles.add(authenticatedUserProfile)
             }

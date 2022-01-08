@@ -17,6 +17,14 @@ class UsersRepositoryImpl(
     private val authDao: AuthDao,
     private val usersDao: UsersDao,
 ) : UsersRepository {
+
+    companion object {
+        // NOTE: If you want to make user visible, you have to solve
+        // issue with email verification. Because until email is verified,
+        // user should not be visible.
+        private const val isUserVisibleAsPlayerWhenCreated = false
+    }
+
     override fun isUserLoggedIn(): Boolean {
         return authDao.getUserId() != null
     }
@@ -27,7 +35,7 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSave = UserDao(userId, name, true, null)
+                            val userToSave = UserDao(userId, name, isUserVisibleAsPlayerWhenCreated, null)
                             this.usersDao.createUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
                                     onComplete(true, null)
@@ -204,6 +212,7 @@ class UsersRepositoryImpl(
                         authUser.id,
                         authUser.name,
                         authUser.email,
+                        authUser.isEmailVerified,
                         authUser.photoUrl,
                         userDao.visible,
                         userDao.registrationDate

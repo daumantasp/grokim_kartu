@@ -9,6 +9,7 @@ data class User(
     val id: String?,
     val name: String?,
     val email: String?,
+    val isEmailVerified: Boolean?,
     val photoUri: Uri?,
     val visible: Boolean?,
     val registrationDate: Timestamp?

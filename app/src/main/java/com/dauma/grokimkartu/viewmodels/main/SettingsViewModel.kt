@@ -90,6 +90,7 @@ class SettingsViewModel @Inject constructor(
             id = null,
             name = null,
             email = null,
+            isEmailVerified = null,
             photoUri = null,
             visible = settingsForm.isVisible,
             registrationDate = null
