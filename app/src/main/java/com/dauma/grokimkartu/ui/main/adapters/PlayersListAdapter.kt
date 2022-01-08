@@ -61,7 +61,7 @@ class PlayersListAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val playerItemContainer = view.findViewById<LinearLayout>(R.id.playerItemContainer)
-        val idTextView = view.findViewById<TextView>(R.id.playerId)
+        val idTextView = view.findViewById<TextView>(R.id.userId)
         val nameTextView = view.findViewById<TextView>(R.id.playerName)
         val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)
         val cityTextView = view.findViewById<TextView>(R.id.playerCity)
