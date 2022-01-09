@@ -9,106 +9,145 @@
             type="com.dauma.grokimkartu.viewmodels.authentication.LoginViewModel" />
     </data>
 
-    <LinearLayout
-        android:id="@+id/loginLinearLayout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.authentication.LoginFragment"
-        android:background="@drawable/login_background">
+        android:background="@drawable/login_background"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/welcomeTextView"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loginLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="50dp"
-            android:text="@string/login_welcome"
-            style="@style/Title" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/emailTextInput"
-            android:layout_width="300dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            style="@style/PrimaryTextInput">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/emailTextInputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="@={model.loginForm.email}"
-                android:hint="@string/login_email"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:lines="1"
-                android:fontFamily="@font/lato"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordTextInput"
-            android:layout_width="300dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            style="@style/PrimaryTextInput">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/passwordTextInputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="@={model.loginForm.password}"
-                android:hint="@string/login_password"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:lines="1"
-                android:inputType="textPassword"
-                android:fontFamily="@font/lato"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <android.widget.Button
-            android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/PrimaryButton"
-            android:text="@string/login_loginButton"
-            android:enabled="@{model.loginForm.valid}"
-            android:onClick="@{() -> model.loginForm.onClick()}"
-            android:layout_gravity="center" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
+            tools:context=".ui.authentication.LoginFragment">
 
             <TextView
-                android:id="@+id/registerTextView"
+                android:id="@+id/welcomeTextView"
+                style="@style/Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login_register"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                style = "@style/Text"/>
+                android:text="@string/login_welcome"
+                android:layout_margin="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/inputFieldsLinearLayout"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread" />
 
-            <TextView
-                android:id="@+id/forgotPasswordTextView"
+            <LinearLayout
+                android:id="@+id/inputFieldsLinearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login_forgot_password"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                style = "@style/Text" />
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/welcomeTextView"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/buttonsLinearLayout">
 
-        </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailTextInput"
+                    style="@style/PrimaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="20dp">
 
-    </LinearLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:fontFamily="@font/lato"
+                        android:hint="@string/login_email"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@={model.loginForm.email}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordTextInput"
+                    style="@style/PrimaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:fontFamily="@font/lato"
+                        android:hint="@string/login_password"
+                        android:inputType="textPassword"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@={model.loginForm.password}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/buttonsLinearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputFieldsLinearLayout"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <android.widget.Button
+                    android:id="@+id/loginButton"
+                    style="@style/PrimaryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:enabled="@{model.loginForm.valid}"
+                    android:onClick="@{() -> model.loginForm.onClick()}"
+                    android:text="@string/login_loginButton" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/loginButton">
+
+                    <TextView
+                        android:id="@+id/registerTextView"
+                        style="@style/Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/login_register" />
+
+                    <TextView
+                        android:id="@+id/forgotPasswordTextView"
+                        style="@style/Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/login_forgot_password" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>
