@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--    https://zoolatech.com/blog/android-themes-styles-and-attributes/-->
+<!--    https://www.linuxtopia.org/online_books/android/devguide/guide/topics/ui/themes.html-->
+<resources>
+    <style name="LightTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="loginBackgroundStartColor">@color/yellow</item>
+        <item name="loginBackgroundEndColor">@color/beige</item>
+
+        <item name="disabledColor">@color/lightGrey</item>
+
+        <item name="primaryButtonColor">@color/appleGreen</item>
+        <item name="primaryButtonPressedColor">@color/budGreen</item>
+        <item name="primaryButtonText">@color/white</item>
+
+    </style>
+
+    <style name="PrimaryButton">
+        <item name="android:background">@drawable/primary_button_ripple</item>
+        <item name="android:textColor">?attr/primaryButtonText</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:width">250dp</item>
+        <item name="android:height">30dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:padding">10dp</item>
+    </style>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="loginBackgroundStartColor" format="color" />
+    <attr name="loginBackgroundEndColor" format="color" />
+
+    <attr name="disabledColor" format="color" />
+
+    <attr name="primaryButtonColor" format="color" />
+    <attr name="primaryButtonPressedColor" format="color" />
+    <attr name="primaryButtonText" format="color" />
+</resources>
