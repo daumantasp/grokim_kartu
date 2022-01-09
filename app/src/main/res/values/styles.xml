@@ -3,6 +3,9 @@
 <!--    https://www.linuxtopia.org/online_books/android/devguide/guide/topics/ui/themes.html-->
 <resources>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!--        Status bar-->
+        <item name="colorPrimaryDark">@color/yellow</item>
+
         <item name="loginBackgroundStartColor">@color/yellow</item>
         <item name="loginBackgroundEndColor">@color/beige</item>
 
