@@ -22,11 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/login_welcome"
-            android:textSize="32sp"
-            android:fontFamily="@font/lato"
             android:layout_marginTop="80dp"
-            android:layout_marginBottom="50dp"/>
+            android:layout_marginBottom="50dp"
+            android:text="@string/login_welcome"
+            style="@style/Title" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/emailTextInput"
@@ -90,22 +89,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_register"
-                android:fontFamily="@font/lato"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"/>
+                android:paddingBottom="10dp"
+                style = "@style/Text"/>
 
             <TextView
                 android:id="@+id/forgotPasswordTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_forgot_password"
-                android:fontFamily="@font/lato"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"/>
+                android:paddingBottom="10dp"
+                style = "@style/Text" />
 
         </LinearLayout>
 

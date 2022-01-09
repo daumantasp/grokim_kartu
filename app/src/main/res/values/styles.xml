@@ -8,10 +8,25 @@
 
         <item name="disabledColor">@color/lightGrey</item>
 
+        <item name="titleColor">@color/white</item>
+        <item name="textColor">@color/brown</item>
+
         <item name="primaryButtonColor">@color/appleGreen</item>
         <item name="primaryButtonPressedColor">@color/budGreen</item>
         <item name="primaryButtonText">@color/white</item>
+    </style>
 
+    <style name="Title">
+        <item name="android:textColor">?attr/titleColor</item>
+        <item name="android:fontFamily">"@font/raleway"</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="PrimaryButton">
