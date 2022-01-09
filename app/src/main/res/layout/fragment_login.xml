@@ -72,11 +72,11 @@
             android:id="@+id/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/PrimaryButton"
             android:text="@string/login_loginButton"
             android:enabled="@{model.loginForm.valid}"
             android:onClick="@{() -> model.loginForm.onClick()}"
-            android:layout_gravity="center"
-            android:fontFamily="@font/lato"/>
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:layout_width="wrap_content"
