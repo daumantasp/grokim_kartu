@@ -17,4 +17,8 @@
     <attr name="textInputBackgroundColor" format="color" />
     <attr name="textInputHintColor" format="color" />
     <attr name="textInputBoxStrokeColor" format="color" />
+
+    <declare-styleable name="ButtonViewElement">
+        <attr name="text" format="string" />
+    </declare-styleable>
 </resources>
