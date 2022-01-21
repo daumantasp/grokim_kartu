@@ -7,6 +7,7 @@ import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
 import com.dauma.grokimkartu.repositories.users.entities.Profile
 import com.dauma.grokimkartu.repositories.users.entities.User
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -103,6 +104,8 @@ class UsersRepositoryImpl(
                         error = AuthenticationError(3)
                     } else if (e is FirebaseAuthInvalidUserException) {
                         error = AuthenticationError(4)
+                    } else if (e is FirebaseTooManyRequestsException) {
+                        error = AuthenticationError(12)
                     } else {
                         error = AuthenticationError(5)
                     }
@@ -326,6 +329,7 @@ class AuthenticationError(val code: Int) {
         9 -> PASSWORD_TOO_WEAK
         10 -> EMAIL_NOT_VERIFIED
         11 -> FAILED_TO_DELETE_USER
+        12 -> TOO_MANY_REQUESTS
         else -> ""
     }
 
@@ -341,5 +345,6 @@ class AuthenticationError(val code: Int) {
         const val PASSWORD_TOO_WEAK = "Password is too weak!"
         const val EMAIL_NOT_VERIFIED = "Email is not verified!"
         const val FAILED_TO_DELETE_USER = "Failed to delete current user!"
+        const val TOO_MANY_REQUESTS = "Too many requests!"
     }
 }
