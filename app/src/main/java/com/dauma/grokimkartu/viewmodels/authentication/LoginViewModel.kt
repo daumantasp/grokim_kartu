@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.viewmodels.authentication
 
+import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,12 +25,14 @@ class LoginViewModel @Inject constructor(
     private val _closeApp = MutableLiveData<Event<String>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
+    private val _loginInProgress = MutableLiveData<Boolean>()
     val navigateToPlayers: LiveData<Event<String>> = _navigateToPlayers
     val navigateToRegistration: LiveData<Event<String>> = _navigateToRegistration
     val navigateToForgotPassword: LiveData<Event<String>> = _navigateToForgotPassword
     val closeApp: LiveData<Event<String>> = _closeApp
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
+    val loginInProgress: LiveData<Boolean> = _loginInProgress
 
     companion object {
         private val TAG = "LoginViewModel"
@@ -37,6 +40,7 @@ class LoginViewModel @Inject constructor(
 
     fun loginUser(email: String, password: String) {
         try {
+            _loginInProgress.value = true
             usersRepository.loginUser(email, password) { isSuccessful, error ->
                 if (isSuccessful) {
                     clearAuthenticationErrors()
@@ -47,6 +51,7 @@ class LoginViewModel @Inject constructor(
                         handleAuthenticationError(error)
                     }
                 }
+                _loginInProgress.value = false
             }
         } catch (e: AuthenticationException) {
             Log.d(TAG, e.message ?: "Login was unsuccessful")
@@ -81,6 +86,10 @@ class LoginViewModel @Inject constructor(
             }
             AuthenticationError.EMAIL_NOT_VERIFIED -> {
                 _emailError.value = R.string.login_email_not_verified
+                _passwordError.value = -1
+            }
+            AuthenticationError.TOO_MANY_REQUESTS -> {
+                _emailError.value = R.string.login_too_many_requests_error
                 _passwordError.value = -1
             }
             else -> clearAuthenticationErrors()

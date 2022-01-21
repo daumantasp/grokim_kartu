@@ -129,15 +129,14 @@
                 app:layout_constraintTop_toBottomOf="@id/inputFieldsLinearLayout"
                 app:layout_constraintBottom_toBottomOf="parent">
 
-                <android.widget.Button
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/loginButton"
-                    style="@style/PrimaryButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:enabled="@{model.loginForm.valid}"
-                    android:onClick="@{() -> model.loginForm.onClick()}"
-                    android:text="@string/login_loginButton" />
+                    app:enabled="@{model.loginForm.valid}"
+                    app:onClick="@{() -> model.loginForm.onClick()}"
+                    app:text="@string/login_loginButton" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout"

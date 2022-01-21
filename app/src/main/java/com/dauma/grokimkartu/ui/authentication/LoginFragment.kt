@@ -59,6 +59,9 @@ class LoginFragment : Fragment() {
         loginViewModel.getLoginForm().getFormFields().observe(viewLifecycleOwner) {
             this.loginViewModel.loginUser(it.get(0), it.get(1))
         }
+        loginViewModel.loginInProgress.observe(viewLifecycleOwner) {
+            this.binding.loginButton.showAnimation(it)
+        }
         // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
         // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
         loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
