@@ -42,23 +42,25 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun createUser(name: String, email: String, password: String) {
-        try {
-            usersRepository.registerUser(email, password, name) { isSuccessful, error ->
-                if (isSuccessful) {
-                    usersRepository.sendEmailVerification()
-                    updateEmailVerificationTimer()
-                    clearAuthenticationErrors()
-                    _emailVerificationSent.value = Event(isSuccessful)
-                } else {
-                    Log.d(TAG, error?.message ?: "Registration was unsuccessful")
-                    if (error != null) {
-                        handleAuthenticationError(error)
-                    }
-                }
-            }
-        } catch (e: AuthenticationException) {
-            Log.d(TAG, e.message ?: "Registration was unsuccessful")
-        }
+        _emailVerificationSent.value = Event(true)
+
+//        try {
+//            usersRepository.registerUser(email, password, name) { isSuccessful, error ->
+//                if (isSuccessful) {
+//                    usersRepository.sendEmailVerification()
+//                    updateEmailVerificationTimer()
+//                    clearAuthenticationErrors()
+//                    _emailVerificationSent.value = Event(isSuccessful)
+//                } else {
+//                    Log.d(TAG, error?.message ?: "Registration was unsuccessful")
+//                    if (error != null) {
+//                        handleAuthenticationError(error)
+//                    }
+//                }
+//            }
+//        } catch (e: AuthenticationException) {
+//            Log.d(TAG, e.message ?: "Registration was unsuccessful")
+//        }
     }
 
     fun backClicked() {

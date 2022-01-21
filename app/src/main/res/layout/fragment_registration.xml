@@ -9,36 +9,39 @@
             type="com.dauma.grokimkartu.viewmodels.authentication.RegistrationViewModel" />
     </data>
 
-    <LinearLayout
-        android:id="@+id/registrationLinearLayout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.authentication.RegistrationFragment">
+        android:fillViewport="true"
+        android:background="@drawable/auth_background">
 
-        <ImageButton
-            android:id="@+id/closeImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:onClick="@{() -> model.backClicked()}"
-            android:src="@android:drawable/ic_menu_close_clear_cancel" />
-
-        <TextView
-            android:id="@+id/registrationTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="50dp"
-            android:textSize="32sp"
-            android:layout_gravity="center"
-            android:fontFamily="@font/lato"
-            android:text="@string/registration_registrationTextView" />
-
-        <ScrollView
+        <LinearLayout
+            android:id="@+id/registrationLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:context=".ui.authentication.RegistrationFragment">
+
+            <ImageButton
+                android:id="@+id/closeImageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/left_arrow"
+                android:backgroundTint="?attr/iconInAuthColor"
+                android:onClick="@{() -> model.backClicked()}" />
+
+            <TextView
+                android:id="@+id/registrationTextView"
+                style="@style/Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="50dp"
+                android:textSize="32sp"
+                android:layout_gravity="center"
+                android:text="@string/registration_registrationTextView" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -47,6 +50,7 @@
 
                 <TextView
                     android:id="@+id/nameDescriptionTextView"
+                    style="@style/Text"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:text="@string/registration_name_description"
@@ -56,6 +60,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/nameTextInput"
+                    style="@style/PrimaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_marginBottom="10dp"
@@ -76,6 +81,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailTextInput"
+                    style="@style/PrimaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_marginBottom="5dp"
@@ -96,6 +102,7 @@
 
                 <TextView
                     android:id="@+id/passwordDescriptionTextView"
+                    style="@style/Text"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/lato"
@@ -105,6 +112,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordTextInput"
+                    style="@style/PrimaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
@@ -126,6 +134,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordRepeatTextInput"
+                    style="@style/PrimaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
@@ -145,19 +154,19 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/registerButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="80dp"
-                    android:enabled="@{model.registrationForm.valid}"
-                    android:onClick="@{() -> model.registrationForm.onClick()}"
-                    android:text="@string/registration_registerButton"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/lato"/>
+                    android:layout_marginBottom="80dp"
+                    app:enabled="@{model.registrationForm.valid}"
+                    app:onClick="@{() -> model.registrationForm.onClick()}"
+                    app:text="@string/registration_registerButton" />
 
                 <TextView
                     android:id="@+id/registrationSuccessfulTextView"
+                    style="@style/Title"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="80dp"
@@ -166,21 +175,20 @@
                     android:textAlignment="center"
                     android:visibility="gone"
                     android:text="@string/registration_registrationSuccessful"
-                    android:fontFamily="@font/lato"
                     android:layout_gravity="center"/>
 
-                <Button
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/okButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{() -> model.okClicked()}"
-                    android:visibility="gone"
-                    android:text="@string/registration_okButton"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/lato"/>
+                    android:visibility="gone"
+                    app:onClick="@{() -> model.okClicked()}"
+                    app:text="@string/registration_okButton" />
 
                 <TextView
                     android:id="@+id/resendTextView"
+                    style="@style/Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
@@ -188,13 +196,11 @@
                     android:paddingBottom="10dp"
                     android:text="@string/registration_resendButton"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/lato"
                     android:onClick="@{() -> model.resendClicked()}"
                     android:enabled="false"/>
 
             </LinearLayout>
+        </LinearLayout>
 
-        </ScrollView>
-
-    </LinearLayout>
+    </ScrollView>
 </layout>

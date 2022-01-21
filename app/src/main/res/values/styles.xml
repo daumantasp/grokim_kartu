@@ -9,8 +9,8 @@
         <item name="loginBackgroundStartColor">@color/yellow</item>
         <item name="loginBackgroundEndColor">@color/beige</item>
 
-        <item name="spinnerInner">@color/white</item>
-
+        <item name="spinnerInnerColor">@color/white</item>
+        <item name="iconInAuthColor">@color/white</item>
         <item name="disabledColor">@color/lightGrey</item>
 
         <item name="titleColor">@color/white</item>

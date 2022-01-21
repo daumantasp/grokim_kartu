@@ -27,8 +27,11 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         button.isEnabled = isEnabled
     }
 
-    fun onClick(action: () -> Unit) {
-        button.setOnClickListener { action() }
+    // https://stackoverflow.com/questions/53443784/android-data-binding-missing-return-statement-in-generated-code-when-calling-cu/53475016
+    fun setOnClick(listener: OnClickListener?) {
+        button.setOnClickListener {
+            listener?.onClick(button)
+        }
     }
 
     fun showAnimation(show: Boolean) {

@@ -8,6 +8,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
@@ -57,6 +58,7 @@ class RegistrationFragment : Fragment() {
                 binding.emailTextInput.visibility = View.GONE
                 binding.passwordDescriptionTextView.visibility = View.GONE
                 binding.passwordTextInput.visibility = View.GONE
+                binding.passwordRepeatTextInput.visibility = View.GONE
                 binding.registerButton.visibility = View.GONE
 
                 binding.registrationSuccessfulTextView.visibility = View.VISIBLE
@@ -71,7 +73,7 @@ class RegistrationFragment : Fragment() {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
         registrationViewModel.navigateToLogin.observe(viewLifecycleOwner, {
-            findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
+            findNavController().popBackStack()
         })
         registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
             binding.resendTextView.isEnabled = it
