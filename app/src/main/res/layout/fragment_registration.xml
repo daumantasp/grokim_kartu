@@ -30,14 +30,14 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintVertical_chainStyle="spread">
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <ImageButton
                     android:id="@+id/closeImageButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="20dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/left_arrow"
                     android:backgroundTint="?attr/iconInAuthColor"
                     android:onClick="@{() -> model.backClicked()}" />
@@ -76,7 +76,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/registration_name_description"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/lato"
                     android:layout_marginBottom="10dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -127,7 +126,6 @@
                     style="@style/Text"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/lato"
                     android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
                     android:text="@string/registration_password_description" />

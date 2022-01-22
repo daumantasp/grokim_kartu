@@ -20,14 +20,14 @@ class RegistrationViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val registrationForm: RegistrationForm,
 ) : ViewModel() {
-    private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _navigateBack = MutableLiveData<Event<String>>()
     private val _emailVerificationSent = MutableLiveData<Event<Boolean>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     private val _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
     private val _enableResendButton = MutableLiveData<Boolean>()
     private val _registrationInProgress = MutableLiveData<Boolean>()
-    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val navigateBack: LiveData<Event<String>> = _navigateBack
     val emailVerificationSent: LiveData<Event<Boolean>> = _emailVerificationSent
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
@@ -99,7 +99,7 @@ class RegistrationViewModel @Inject constructor(
         if (usersRepository.isUserLoggedIn()) {
             usersRepository.logOut()
         }
-        _navigateToLogin.value = Event("")
+        _navigateBack.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

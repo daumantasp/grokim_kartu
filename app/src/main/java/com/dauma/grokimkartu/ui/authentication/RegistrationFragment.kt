@@ -8,7 +8,6 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
@@ -68,7 +67,7 @@ class RegistrationFragment : Fragment() {
         registrationViewModel.passwordError.observe(viewLifecycleOwner, Observer {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
-        registrationViewModel.navigateToLogin.observe(viewLifecycleOwner, {
+        registrationViewModel.navigateBack.observe(viewLifecycleOwner, {
             findNavController().popBackStack()
         })
         registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
