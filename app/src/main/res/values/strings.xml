@@ -8,6 +8,7 @@
     <string name="login_loginButton">Prisijungti</string>
     <string name="login_register">Registruotis</string>
     <string name="login_forgot_password">Pamiršau slaptažodį</string>
+    <string name="login_policy_and_terms">By creating an account you agree to Grokim Kartu Privacy Policy and Terms of use</string>
     <string name="registration_registrationTextView">Registracija</string>
     <string name="registration_name">Vardas</string>
     <string name="registration_email">El. paštas</string>

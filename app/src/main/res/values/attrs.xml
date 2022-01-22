@@ -9,6 +9,7 @@
 
     <attr name="titleColor" format="color" />
     <attr name="textColor" format="color" />
+    <attr name="textSecondaryColor" format="color" />
 
     <attr name="primaryButtonColor" format="color" />
     <attr name="primaryButtonPressedColor" format="color" />
