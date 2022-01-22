@@ -26,12 +26,14 @@ class RegistrationViewModel @Inject constructor(
     private val _passwordError = MutableLiveData<Int>()
     private val _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
     private val _enableResendButton = MutableLiveData<Boolean>()
+    private val _registrationInProgress = MutableLiveData<Boolean>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val emailVerificationSent: LiveData<Event<Boolean>> = _emailVerificationSent
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
     var verificationEmailWillBeAllowedToSentInSeconds: LiveData<Int> = _verificationEmailWillBeAllowedToSentInSeconds
     val enableResendButton: LiveData<Boolean> = _enableResendButton
+    val registrationInProgress: LiveData<Boolean> = _registrationInProgress
 
     companion object {
         private val TAG = "RegistrationViewModel"
@@ -42,25 +44,25 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun createUser(name: String, email: String, password: String) {
-        _emailVerificationSent.value = Event(true)
-
-//        try {
-//            usersRepository.registerUser(email, password, name) { isSuccessful, error ->
-//                if (isSuccessful) {
-//                    usersRepository.sendEmailVerification()
-//                    updateEmailVerificationTimer()
-//                    clearAuthenticationErrors()
-//                    _emailVerificationSent.value = Event(isSuccessful)
-//                } else {
-//                    Log.d(TAG, error?.message ?: "Registration was unsuccessful")
-//                    if (error != null) {
-//                        handleAuthenticationError(error)
-//                    }
-//                }
-//            }
-//        } catch (e: AuthenticationException) {
-//            Log.d(TAG, e.message ?: "Registration was unsuccessful")
-//        }
+        try {
+            usersRepository.registerUser(email, password, name) { isSuccessful, error ->
+                if (isSuccessful) {
+                    usersRepository.sendEmailVerification()
+                    updateEmailVerificationTimer()
+                    clearAuthenticationErrors()
+                    _emailVerificationSent.value = Event(isSuccessful)
+                } else {
+                    Log.d(TAG, error?.message ?: "Registration was unsuccessful")
+                    if (error != null) {
+                        handleAuthenticationError(error)
+                    }
+                }
+                _registrationInProgress.value = false
+            }
+        } catch (e: AuthenticationException) {
+            _registrationInProgress.value = false
+            Log.d(TAG, e.message ?: "Registration was unsuccessful")
+        }
     }
 
     fun backClicked() {

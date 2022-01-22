@@ -15,38 +15,59 @@
         android:fillViewport="true"
         android:background="@drawable/auth_background">
 
-        <LinearLayout
-            android:id="@+id/registrationLinearLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/registrationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             tools:context=".ui.authentication.RegistrationFragment">
 
-            <ImageButton
-                android:id="@+id/closeImageButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/left_arrow"
-                android:backgroundTint="?attr/iconInAuthColor"
-                android:onClick="@{() -> model.backClicked()}" />
-
-            <TextView
-                android:id="@+id/registrationTextView"
-                style="@style/Title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/headerLinearLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="50dp"
-                android:textSize="32sp"
-                android:layout_gravity="center"
-                android:text="@string/registration_registrationTextView" />
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintVertical_chainStyle="spread">
+
+                <ImageButton
+                    android:id="@+id/closeImageButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="20dp"
+                    android:background="@drawable/left_arrow"
+                    android:backgroundTint="?attr/iconInAuthColor"
+                    android:onClick="@{() -> model.backClicked()}" />
+
+                <TextView
+                    android:id="@+id/registrationTextView"
+                    style="@style/Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginEnd="50dp"
+                    android:textSize="32sp"
+                    android:layout_gravity="center"
+                    android:text="@string/registration_registrationTextView" />
+            </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/inputsLinearLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintTop_toBottomOf="@id/headerLinearLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/registerButton"
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/nameDescriptionTextView"
@@ -84,7 +105,8 @@
                     style="@style/PrimaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_gravity="center">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -153,36 +175,55 @@
                         android:fontFamily="@font/lato"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
-                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/registerButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="80dp"
-                    app:enabled="@{model.registrationForm.valid}"
-                    app:onClick="@{() -> model.registrationForm.onClick()}"
-                    app:text="@string/registration_registerButton" />
+            <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                app:enabled="@{model.registrationForm.valid}"
+                app:onClick="@{() -> model.registrationForm.onClick()}"
+                app:text="@string/registration_registerButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="visible"/>
 
-                <TextView
-                    android:id="@+id/registrationSuccessfulTextView"
-                    style="@style/Title"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginBottom="50dp"
-                    android:textSize="20sp"
-                    android:textAlignment="center"
-                    android:visibility="gone"
-                    android:text="@string/registration_registrationSuccessful"
-                    android:layout_gravity="center"/>
+            <!--            Success-->
+            <TextView
+                android:id="@+id/registrationSuccessfulTextView"
+                style="@style/Title"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/registration_registrationSuccessful"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@id/registrationSuccessLinearLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/headerLinearLayout" />
+
+            <LinearLayout
+                android:id="@+id/registrationSuccessLinearLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/okButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:visibility="gone"
                     app:onClick="@{() -> model.okClicked()}"
                     app:text="@string/registration_okButton" />
 
@@ -191,16 +232,14 @@
                     style="@style/Text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
+                    android:layout_gravity="center"
+                    android:enabled="false"
+                    android:onClick="@{() -> model.resendClicked()}"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:text="@string/registration_resendButton"
-                    android:layout_gravity="center"
-                    android:onClick="@{() -> model.resendClicked()}"
-                    android:enabled="false"/>
-
+                    android:text="@string/registration_resendButton" />
             </LinearLayout>
-        </LinearLayout>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

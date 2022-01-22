@@ -53,19 +53,15 @@ class RegistrationFragment : Fragment() {
         }
         registrationViewModel.emailVerificationSent.observe(viewLifecycleOwner, EventObserver {
             if (it) {
-                binding.nameDescriptionTextView.visibility = View.GONE
-                binding.nameTextInput.visibility = View.GONE
-                binding.emailTextInput.visibility = View.GONE
-                binding.passwordDescriptionTextView.visibility = View.GONE
-                binding.passwordTextInput.visibility = View.GONE
-                binding.passwordRepeatTextInput.visibility = View.GONE
-                binding.registerButton.visibility = View.GONE
-
+                binding.inputsLinearLayout.visibility = View.INVISIBLE
+                binding.registerButton.visibility = View.INVISIBLE
                 binding.registrationSuccessfulTextView.visibility = View.VISIBLE
-                binding.resendTextView.visibility = View.VISIBLE
-                binding.okButton.visibility = View.VISIBLE
+                binding.registrationSuccessLinearLayout.visibility = View.VISIBLE
             }
         })
+        registrationViewModel.registrationInProgress.observe(viewLifecycleOwner) {
+            this.binding.registerButton.showAnimation(it)
+        }
         registrationViewModel.emailError.observe(viewLifecycleOwner, Observer {
             binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
