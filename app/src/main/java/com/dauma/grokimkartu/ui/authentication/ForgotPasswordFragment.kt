@@ -8,7 +8,6 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModel
@@ -48,19 +47,22 @@ class ForgotPasswordFragment : Fragment() {
         forgotPasswordViewModel.getForgotPasswordForm().getFormFields().observe(viewLifecycleOwner) {
             forgotPasswordViewModel.resetClicked(it.get(0))
         }
+        forgotPasswordViewModel.passwordResetInProgress.observe(viewLifecycleOwner, {
+            binding.forgotPasswordButton.showAnimation(it)
+        })
         forgotPasswordViewModel.emailError.observe(viewLifecycleOwner) {
             binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
         }
         forgotPasswordViewModel.showSuccess.observe(viewLifecycleOwner, EventObserver {
             if (it) {
-                binding.emailTextInput.visibility = View.GONE
-                binding.forgotPasswordButton.visibility = View.GONE
-                binding.passwordResetEmailSentTextView.visibility = View.VISIBLE
-                binding.okButton.visibility = View.VISIBLE
+                binding.forgotPasswordDescriptionTextView.visibility = View.INVISIBLE
+                binding.emailTextInput.visibility = View.INVISIBLE
+                binding.forgotPasswordButton.visibility = View.INVISIBLE
+                binding.forgotPasswordResetSuccessLinearLayout.visibility = View.VISIBLE
             }
         })
-        forgotPasswordViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_forgotPasswordFragment_to_loginFragment)
+        forgotPasswordViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+            findNavController().popBackStack()
         })
     }
 }

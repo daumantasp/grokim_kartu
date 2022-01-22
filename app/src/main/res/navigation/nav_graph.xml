@@ -37,10 +37,18 @@
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_loginFragment_to_playersFragment"
-            app:destination="@id/playersFragment" />
+            app:destination="@id/playersFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
-            app:destination="@id/forgotPasswordFragment" />
+            app:destination="@id/forgotPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -65,11 +73,7 @@
     <fragment
         android:id="@+id/forgotPasswordFragment"
         android:name="com.dauma.grokimkartu.ui.authentication.ForgotPasswordFragment"
-        android:label="ForgotPasswordFragment" >
-        <action
-            android:id="@+id/action_forgotPasswordFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
+        android:label="ForgotPasswordFragment" />
     <fragment
         android:id="@+id/passwordChangeFragment"
         android:name="com.dauma.grokimkartu.ui.authentication.PasswordChangeFragment"

@@ -32,11 +32,12 @@
     <string name="profile_change_password_button">Keisti slaptažodį</string>
     <string name="profile_logout">Atsijungti</string>
     <string name="login_email_not_verified">El. paštas nepatvirtintas</string>
+    <string name="forgotPassword_title">Atstatyti slaptažodį</string>
+    <string name="forgotPassword_description">Norėdami atstatyti slaptažodį nurodykite el. paštą</string>
     <string name="forgotPassword_email">El. paštas</string>
-    <string name="forgotPassword_resetDescription">Atstatyti slaptažodį</string>
     <string name="forgotPassword_reset">Atstatyti</string>
     <string name="passwordReset_invalid_email_error">Toks vartotojas nerastas</string>
-    <string name="passwordReset_email_sent">Slaptažodžio atstatymo laiškas išsiųstas Jums į paštą</string>
+    <string name="passwordReset_email_sent">Slaptažodžio atstatymo laiškas išsiųstas Jums į el. paštą</string>
     <string name="passwordReset_okButton">Supratau</string>
     <string name="passwordChange_title">Slaptažodžio keitimas</string>
     <string name="passwordChange_oldPassword">Senas slaptažodis</string>
