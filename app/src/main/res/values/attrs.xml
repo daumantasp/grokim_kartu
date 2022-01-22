@@ -21,4 +21,8 @@
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="SpinnerViewElement">
+        <attr name="unitDimensions" format="dimension" />
+    </declare-styleable>
 </resources>

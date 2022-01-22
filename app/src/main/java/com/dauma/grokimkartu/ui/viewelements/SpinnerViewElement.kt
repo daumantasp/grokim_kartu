@@ -25,7 +25,14 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
         spinnerCircles.add(findViewById(R.id.spinner_circle_1))
         spinnerCircles.add(findViewById(R.id.spinner_circle_2))
         spinnerCircles.add(findViewById(R.id.spinner_circle_3))
-        visibility = View.GONE
+        visibility = View.INVISIBLE
+
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.SpinnerViewElement)
+        val unitDimensions = attributes.getDimension(R.styleable.SpinnerViewElement_unitDimensions, 18f)
+        for (i in 0 until spinnerCircles.count()) {
+            spinnerCircles[i].layoutParams.width = unitDimensions.toInt()
+            spinnerCircles[i].layoutParams.height = unitDimensions.toInt()
+        }
     }
 
     fun showAnimation(show: Boolean) {
@@ -52,7 +59,7 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
 
             animatorSet.start()
         } else if (show == false && isAnimationRunning == true) {
-            visibility = View.GONE
+            visibility = View.INVISIBLE
             animatorSet.cancel()
             isAnimationRunning = false
         }
