@@ -2,6 +2,29 @@
 <!--    https://zoolatech.com/blog/android-themes-styles-and-attributes/-->
 <!--    https://www.linuxtopia.org/online_books/android/devguide/guide/topics/ui/themes.html-->
 <resources>
+    <style name="SecondaryLightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!--        Status bar-->
+        <item name="colorPrimaryDark">@color/violet</item>
+
+        <item name="loginBackgroundStartColor">@color/violet</item>
+        <item name="loginBackgroundEndColor">@color/violetBlue</item>
+
+        <item name="spinnerInnerColor">@color/white</item>
+        <item name="iconInAuthColor">@color/white</item>
+        <item name="disabledColor">@color/lightGrey</item>
+
+        <item name="titleColor">@color/white</item>
+        <item name="textColor">@color/champagnePink</item>
+        <item name="textSecondaryColor">@color/white</item>
+
+        <item name="primaryButtonColor">@color/cadetBlue</item>
+        <item name="primaryButtonPressedColor">@color/cadet</item>
+        <item name="primaryButtonText">@color/white</item>
+
+        <item name="textInputBackgroundColor">@color/white</item>
+        <item name="textInputHintColor">@color/cherryRed</item>
+        <item name="textInputBoxStrokeColor">@color/cherryRed</item>
+    </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
         <item name="colorPrimaryDark">@color/yellow</item>
