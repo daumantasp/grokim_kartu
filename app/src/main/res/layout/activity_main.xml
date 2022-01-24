@@ -16,9 +16,13 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
+<!--    https://stackoverflow.com/questions/40316411/bottomnavigationview-shadow-and-ripple-effect-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:itemIconTint="@color/bottom_menu_nav_color_selector"
+        app:itemTextColor="@color/bottom_menu_nav_color_selector"
         app:menu="@menu/bottom_menu_nav" />
 </LinearLayout>

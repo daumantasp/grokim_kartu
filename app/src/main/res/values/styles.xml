@@ -5,6 +5,8 @@
     <style name="SecondaryLightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
         <item name="colorPrimaryDark">@color/violet</item>
+<!--        Menu icon color-->
+        <item name="android:textColorPrimary">@color/violet</item>
 
         <item name="loginBackgroundStartColor">@color/violet</item>
         <item name="loginBackgroundEndColor">@color/violetBlue</item>
@@ -24,6 +26,10 @@
         <item name="textInputBackgroundColor">@color/white</item>
         <item name="textInputHintColor">@color/cherryRed</item>
         <item name="textInputBoxStrokeColor">@color/cherryRed</item>
+
+        <item name="bottomMenuBackgroundColor">@color/white</item>
+        <item name="bottomMenuActiveColor">@color/violetBlue</item>
+        <item name="bottomMenuInactiveColor">@android:color/darker_gray</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -87,4 +93,10 @@
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
     </style>
+
+<!--    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView.Colored">-->
+<!--        <item name="android:background">?attr/bottomMenuBackgroundColor</item>-->
+<!--        <item name="itemTextColor">@color/bottom_menu_nav_color_selector</item>-->
+<!--        <item name="itemIconTint">@color/bottom_menu_nav_color_selector</item>-->
+<!--    </style>-->
 </resources>

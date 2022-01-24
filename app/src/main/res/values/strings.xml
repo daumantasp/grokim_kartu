@@ -61,4 +61,7 @@
     <string name="profile_selectPhoto_button">Pasirinkti nuotrauką</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="playerDetails_title">Player Details fragment</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_settings">Settings</string>
 </resources>
