@@ -3,6 +3,8 @@ package com.dauma.grokimkartu.ui.viewelements
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.*
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
@@ -27,16 +29,25 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
         spinnerCircles.add(findViewById(R.id.spinner_circle_1))
         spinnerCircles.add(findViewById(R.id.spinner_circle_2))
         spinnerCircles.add(findViewById(R.id.spinner_circle_3))
-        visibility = View.INVISIBLE
+        visibility = View.GONE
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.SpinnerViewElement)
         val unitDimensions = attributes.getDimension(R.styleable.SpinnerViewElement_unitDimensions, 18f)
+        val color = attributes.getColor(R.styleable.SpinnerViewElement_color, Color.BLACK)
         spinnerContainerLinearLayout.clipChildren = false
         spinnerContainerLinearLayout.clipToPadding = false
         spinnerContainerLinearLayout.setPadding(unitDimensions.toInt(), unitDimensions.toInt(), unitDimensions.toInt(), unitDimensions.toInt())
         for (i in 0 until spinnerCircles.count()) {
-            spinnerCircles[i].layoutParams.width = unitDimensions.toInt()
-            spinnerCircles[i].layoutParams.height = unitDimensions.toInt()
+            val lp = LayoutParams(unitDimensions.toInt(), unitDimensions.toInt())
+            val marginEnd = unitDimensions.toInt() * 12 / 14
+            lp.setMargins(0, 0, marginEnd, 0)
+            spinnerCircles[i].layoutParams = lp
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                spinnerCircles[i].background.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
+            } else {
+                @Suppress("DEPRECATION")
+                spinnerCircles[i].background.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+            }
         }
     }
 
@@ -72,7 +83,7 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
 
             animatorSet.start()
         } else if (show == false && isAnimationRunning == true) {
-            visibility = View.INVISIBLE
+            visibility = View.GONE
             animatorSet.cancel()
             isAnimationRunning = false
         }

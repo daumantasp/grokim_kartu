@@ -9,11 +9,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIconStatus
+import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
 class PlayersListAdapter(
     private val playersData: List<Player>,
+    private val imageUtils: ImageUtils,
     private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
 
@@ -24,7 +27,6 @@ class PlayersListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val player = playersData[position]
-        holder.idTextView.text = player.userId
         holder.nameTextView.text = player.name
         holder.instrumentTextView.text = player.instrument
         holder.cityTextView.text = player.city
@@ -39,17 +41,21 @@ class PlayersListAdapter(
             holder.photoIcon.setImageResource(R.drawable.user)
         } else if (player.icon.status == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
             holder.photoIcon.visibility = View.GONE
-            holder.progressBar.visibility = View.VISIBLE
+            holder.spinnerViewElement.showAnimation(true)
         } else if (player.icon.status == PlayerIconStatus.NEED_TO_DOWNLOAD) {
             holder.photoIcon.visibility = View.GONE
-            holder.progressBar.visibility = View.VISIBLE
+            holder.spinnerViewElement.showAnimation(true)
             player.icon.loadIfNeeded { photo, e ->
                 if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_SET) {
-                    holder.photoIcon.setImageBitmap(photo)
+                    if (photo != null) {
+                        holder.photoIcon.setImageBitmap(imageUtils.getCircularBitmap(photo))
+                    } else {
+                        holder.photoIcon.setImageResource(R.drawable.user)
+                    }
                 } else if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET) {
                     holder.photoIcon.setImageResource(R.drawable.user)
                 }
-                holder.progressBar.visibility = View.GONE
+                holder.spinnerViewElement.showAnimation(false)
                 holder.photoIcon.visibility = View.VISIBLE
             }
         }
@@ -66,6 +72,6 @@ class PlayersListAdapter(
         val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)
         val cityTextView = view.findViewById<TextView>(R.id.playerCity)
         val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
-        val progressBar = view.findViewById<ProgressBar>(R.id.playerProgressBar)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
     }
 }

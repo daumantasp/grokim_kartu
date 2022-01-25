@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 // read more at https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
 
@@ -24,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PlayersFragment : Fragment() {
     private val playersViewModel by viewModels<PlayersViewModel>()
     private var isPlayersRecyclerViewSetup: Boolean = false
+    @Inject lateinit var utils: Utils
 
     private var _binding: FragmentPlayersBinding? = null
     // This property is only valid between onCreateView and
@@ -69,7 +72,7 @@ class PlayersFragment : Fragment() {
 
     private fun setupPlayersRecyclerView(players: List<Player>) {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.playersRecyclerView.adapter = PlayersListAdapter(players) { userId ->
+        binding.playersRecyclerView.adapter = PlayersListAdapter(players, utils.imageUtils) { userId ->
             this.playersViewModel.playerClicked(userId)
         }
     }

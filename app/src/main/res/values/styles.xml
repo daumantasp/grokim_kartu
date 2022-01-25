@@ -18,6 +18,7 @@
         <item name="titleColor">@color/white</item>
         <item name="textColor">@color/champagnePink</item>
         <item name="textSecondaryColor">@color/white</item>
+        <item name="textThirdlyColor">@android:color/darker_gray</item>
 
         <item name="primaryButtonColor">@color/cadetBlue</item>
         <item name="primaryButtonPressedColor">@color/cadet</item>
@@ -29,7 +30,11 @@
 
         <item name="bottomMenuBackgroundColor">@color/white</item>
         <item name="bottomMenuActiveColor">@color/violetBlue</item>
-        <item name="bottomMenuInactiveColor">@android:color/darker_gray</item>
+        <item name="bottomMenuInactiveColor">@color/lightGrey</item>
+
+        <item name="borderColor">@color/lightGrey</item>
+        <item name="playerItemBackground">@color/white</item>
+        <item name="playerItemName">@color/black</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -73,6 +78,18 @@
         <item name="android:textColor">?attr/textSecondaryColor</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextThirdly">
+        <item name="android:textColor">?attr/textThirdlyColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="PlayerItemTitle">
+        <item name="android:textColor">?attr/playerItemName</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="PrimaryButton">

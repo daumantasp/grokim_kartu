@@ -76,7 +76,7 @@ class FirebaseStorageImpl(
     }
 
     private fun uploadProfilePhotoIcon(userId: String, photo: Bitmap, onComplete: (Boolean, Exception?) -> Unit) {
-        val profilePhotoIcon = imageUtils.scaleImage(photo, 50, 50)
+        val profilePhotoIcon = imageUtils.scaleImage(photo, 100, 100)
         val profilePhotIconRef = usersRef.child(userId).child("$profilePhotoIconChild.$profilePhotoFormatType")
         val baos = ByteArrayOutputStream()
         profilePhotoIcon.compress(Bitmap.CompressFormat.JPEG, 100, baos)

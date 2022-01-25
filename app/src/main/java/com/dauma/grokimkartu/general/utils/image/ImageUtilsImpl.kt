@@ -1,10 +1,12 @@
 package com.dauma.grokimkartu.general.utils.image
 
+import android.R.attr
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import java.io.InputStream
+import android.R.attr.bitmap
+import android.graphics.*
+
 
 class ImageUtilsImpl : ImageUtils {
     override fun getImageWithAuthority(context: Context, uri: Uri, width: Int, height: Int): Bitmap? {
@@ -15,6 +17,52 @@ class ImageUtilsImpl : ImageUtils {
         val aspectRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
         val ratioHeight = Math.round(width / aspectRatio)
         return Bitmap.createScaledBitmap(bitmap, width, ratioHeight, false)
+    }
+
+    override fun getSquaredBitmap(bitmap: Bitmap): Bitmap {
+        val isWidthLarger = bitmap.width > bitmap.height
+        val startX: Int
+        val startY: Int
+        val length: Int
+        if (isWidthLarger == true) {
+            startX = (bitmap.width - bitmap.height) / 2
+            startY = 0
+            length = bitmap.height
+        } else {
+            startX = 0
+            startY = (bitmap.height - bitmap.width) / 2
+            length = bitmap.width
+        }
+
+        return Bitmap.createBitmap(bitmap, startX, startY, length, length)
+    }
+
+    override fun getRoundedCornerBitmap(bitmap: Bitmap, radius: Float): Bitmap {
+        val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(output)
+
+        val color = -0xbdbdbe
+        val paint = Paint()
+        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val rectF = RectF(rect)
+        val roundPx = radius
+
+        paint.setAntiAlias(true)
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.setColor(color)
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint)
+
+        paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+        canvas.drawBitmap(bitmap, rect, rect, paint)
+
+        return output
+    }
+
+    override fun getCircularBitmap(bitmap: Bitmap): Bitmap {
+        val squaredBitmap = getSquaredBitmap(bitmap)
+        val radius = squaredBitmap.width / 2.0f
+        val circularBitmap = getRoundedCornerBitmap(squaredBitmap, radius)
+        return circularBitmap
     }
 
     private fun decodeUriStreamToSize(context: Context, uri: Uri, width: Int, height: Int): Bitmap? {
