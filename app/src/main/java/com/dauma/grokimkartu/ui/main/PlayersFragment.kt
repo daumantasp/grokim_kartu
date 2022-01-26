@@ -72,7 +72,7 @@ class PlayersFragment : Fragment() {
 
     private fun setupPlayersRecyclerView(players: List<Player>) {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.playersRecyclerView.adapter = PlayersListAdapter(players, utils.imageUtils) { userId ->
+        binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), players, utils.imageUtils) { userId ->
             this.playersViewModel.playerClicked(userId)
         }
     }

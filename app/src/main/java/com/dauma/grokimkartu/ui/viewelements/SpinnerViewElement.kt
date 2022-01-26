@@ -39,8 +39,11 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
         spinnerContainerLinearLayout.setPadding(unitDimensions.toInt(), unitDimensions.toInt(), unitDimensions.toInt(), unitDimensions.toInt())
         for (i in 0 until spinnerCircles.count()) {
             val lp = LayoutParams(unitDimensions.toInt(), unitDimensions.toInt())
-            val marginEnd = unitDimensions.toInt() * 12 / 14
-            lp.setMargins(0, 0, marginEnd, 0)
+            val isLast = i == spinnerCircles.count() - 1
+            if (isLast == false) {
+                val marginEnd = unitDimensions.toInt() * 12 / 14
+                lp.setMargins(0, 0, marginEnd, 0)
+            }
             spinnerCircles[i].layoutParams = lp
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 spinnerCircles[i].background.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)

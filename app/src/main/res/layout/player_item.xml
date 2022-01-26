@@ -11,21 +11,27 @@
     android:background="@drawable/player_item_background"
     android:id="@+id/playerItemContainer">
 
-    <ImageView
-        android:id="@+id/playerIconImageView"
+    <RelativeLayout
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="20dp">
 
-    <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
-        android:id="@+id/spinnerViewElement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        app:unitDimensions="11dp"
-        app:color="@color/violetBlue"/>
+        <ImageView
+            android:id="@+id/playerIconImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
+            android:id="@+id/spinnerViewElement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            app:unitDimensions="7dp"
+            app:color="?attr/playerItemSpinnerColor"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

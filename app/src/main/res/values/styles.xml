@@ -33,8 +33,10 @@
         <item name="bottomMenuInactiveColor">@color/lightGrey</item>
 
         <item name="borderColor">@color/lightGrey</item>
-        <item name="playerItemBackground">@color/white</item>
-        <item name="playerItemName">@color/black</item>
+        <item name="playerItemBackgroundColor">@color/white</item>
+        <item name="playerItemPhotoBackgroundColor">@color/lightGrey</item>
+        <item name="playerItemSpinnerColor">@color/white</item>
+        <item name="playerItemNameColor">@color/black</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -87,7 +89,7 @@
     </style>
 
     <style name="PlayerItemTitle">
-        <item name="android:textColor">?attr/playerItemName</item>
+        <item name="android:textColor">?attr/playerItemNameColor</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">18sp</item>
     </style>

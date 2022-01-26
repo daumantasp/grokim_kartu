@@ -24,8 +24,10 @@
     <attr name="bottomMenuActiveColor" format="color" />
     <attr name="bottomMenuInactiveColor" format="color" />
 
-    <attr name="playerItemBackground" format="color" />
-    <attr name="playerItemName" format="color" />
+    <attr name="playerItemBackgroundColor" format="color" />
+    <attr name="playerItemPhotoBackgroundColor" format="color" />
+    <attr name="playerItemSpinnerColor" format="color" />
+    <attr name="playerItemNameColor" format="color" />
     <attr name="borderColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
