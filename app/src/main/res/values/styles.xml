@@ -37,6 +37,15 @@
         <item name="playerItemPhotoBackgroundColor">@color/lightGrey</item>
         <item name="playerItemSpinnerColor">@color/white</item>
         <item name="playerItemNameColor">@color/black</item>
+
+        <item name="initialsTextColor">@color/white</item>
+        <item name="initialsBackgroundColor1">#00AA55</item>
+        <item name="initialsBackgroundColor2">#009FD4</item>
+        <item name="initialsBackgroundColor3">#B381B3</item>
+        <item name="initialsBackgroundColor4">#939393</item>
+        <item name="initialsBackgroundColor5">#E3BC00</item>
+        <item name="initialsBackgroundColor6">#D47500</item>
+        <item name="initialsBackgroundColor7">#DC2A2A</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
