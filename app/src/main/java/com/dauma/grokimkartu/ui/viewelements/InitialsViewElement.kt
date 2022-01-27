@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.FrameLayout
@@ -44,8 +45,6 @@ class InitialsViewElement(context: Context, attrs: AttributeSet) : FrameLayout(c
         initialsTextView.text = initials
         val hashCode = initials.hashCode()
         val colorIdx = hashCode % colorsPalette.count()
-        val alpha = hashCode % 50 / 100.0f + 0.5f
-        rootFrameLayout.setBackgroundColor(colorsPalette[colorIdx])
-        rootFrameLayout.alpha = alpha
+        rootFrameLayout.backgroundTintList = ColorStateList.valueOf(colorsPalette[colorIdx])
     }
 }
