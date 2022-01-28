@@ -9,5 +9,5 @@ interface ImageUtils {
     fun scaleImage(bitmap: Bitmap, width: Int, height: Int): Bitmap
     fun getSquaredBitmap(bitmap: Bitmap): Bitmap
     fun getRoundedCornerBitmap(bitmap: Bitmap, radius: Float): Bitmap
-    fun getCircularBitmap(bitmap: Bitmap): Bitmap
+    fun getOvalBitmap(bitmap: Bitmap): Bitmap
 }

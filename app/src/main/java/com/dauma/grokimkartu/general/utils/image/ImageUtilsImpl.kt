@@ -1,11 +1,9 @@
 package com.dauma.grokimkartu.general.utils.image
 
-import android.R.attr
 import android.content.Context
+import android.graphics.*
 import android.net.Uri
 import java.io.InputStream
-import android.R.attr.bitmap
-import android.graphics.*
 
 
 class ImageUtilsImpl : ImageUtils {
@@ -58,7 +56,7 @@ class ImageUtilsImpl : ImageUtils {
         return output
     }
 
-    override fun getCircularBitmap(bitmap: Bitmap): Bitmap {
+    override fun getOvalBitmap(bitmap: Bitmap): Bitmap {
         val squaredBitmap = getSquaredBitmap(bitmap)
         val radius = squaredBitmap.width / 2.0f
         val circularBitmap = getRoundedCornerBitmap(squaredBitmap, radius)
