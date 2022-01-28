@@ -21,6 +21,8 @@ import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtilsImpl
+import com.dauma.grokimkartu.general.utils.string.StringUtils
+import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
 import dagger.Module
 import dagger.Provides
@@ -32,13 +34,18 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
     @Provides
+    fun providesStringUtils() : StringUtils {
+        return StringUtilsImpl()
+    }
+
+    @Provides
     fun providesImageUtils() : ImageUtils {
         return ImageUtilsImpl()
     }
 
     @Provides
-    fun providesUtils(imageUtils: ImageUtils) : Utils {
-        return UtilsImpl(imageUtils)
+    fun providesUtils(imageUtils: ImageUtils, stringUtils: StringUtils) : Utils {
+        return UtilsImpl(imageUtils, stringUtils)
     }
 
     @Provides
