@@ -3,7 +3,6 @@ package com.dauma.grokimkartu.ui.main.adapters
 import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -13,20 +12,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.general.utils.image.ImageUtils
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIconStatus
+import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
 class PlayersListAdapter(
     val context: Context,
     private val playersData: List<Player>,
-    private val imageUtils: ImageUtils,
+    private val utils: Utils,
     private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
@@ -59,28 +58,42 @@ class PlayersListAdapter(
             this.onItemClicked(player.userId ?: "")
         }
 
-        if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_SET) {
-            holder.photoIcon.setImageBitmap(player.icon.icon)
-        } else if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET) {
-            holder.photoIcon.setImageResource(R.drawable.user)
-        } else if (player.icon.status == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
+        fun bindOrUnbindPhoto() {
+            if (player.icon.icon != null) {
+                val ovalPhoto = utils.imageUtils.getOvalBitmap(player.icon.icon!!)
+                holder.photoIcon.setImageBitmap(ovalPhoto)
+                holder.initialsViewElement.visibility = View.GONE
+                holder.photoIcon.visibility = View.VISIBLE
+            }
+        }
+        fun bindOrUnbindInitials() {
+            if (player.icon.icon == null) {
+                val initials = utils.stringUtils.getInitials(player.name ?: "")
+                holder.initialsViewElement.setInitials(initials)
+                holder.photoIcon.visibility = View.GONE
+                holder.initialsViewElement.visibility = View.VISIBLE
+            }
+        }
+        fun bindDownloadInProgress() {
             holder.photoIcon.setImageDrawable(photoIconBackgroundDrawable)
+            holder.initialsViewElement.visibility = View.GONE
+            holder.photoIcon.visibility = View.VISIBLE
+        }
+
+        if (player.icon.status == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
+            bindDownloadInProgress()
             holder.spinnerViewElement.showAnimation(true)
         } else if (player.icon.status == PlayerIconStatus.NEED_TO_DOWNLOAD) {
-            holder.photoIcon.setImageDrawable(photoIconBackgroundDrawable)
+            bindDownloadInProgress()
             holder.spinnerViewElement.showAnimation(true)
             player.icon.loadIfNeeded { photo, e ->
-                if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_SET) {
-                    if (photo != null) {
-                        holder.photoIcon.setImageBitmap(imageUtils.getCircularBitmap(photo))
-                    } else {
-                        holder.photoIcon.setImageResource(R.drawable.user)
-                    }
-                } else if (player.icon.status == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET) {
-                    holder.photoIcon.setImageResource(R.drawable.user)
-                }
+                bindOrUnbindPhoto()
+                bindOrUnbindInitials()
                 holder.spinnerViewElement.showAnimation(false)
             }
+        } else {
+            bindOrUnbindPhoto()
+            bindOrUnbindInitials()
         }
     }
 
@@ -93,6 +106,7 @@ class PlayersListAdapter(
         val nameTextView = view.findViewById<TextView>(R.id.playerName)
         val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)
         val cityTextView = view.findViewById<TextView>(R.id.playerCity)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
         val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
     }
