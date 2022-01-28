@@ -35,12 +35,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-                    android:id="@+id/initialsViewElment"
-                    app:textSize="36sp"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp" />
-
                 <ImageView
                     android:id="@+id/photoImageView"
                     android:layout_width="250dp"
