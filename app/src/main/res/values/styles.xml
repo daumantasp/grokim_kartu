@@ -11,11 +11,12 @@
         <item name="loginBackgroundStartColor">@color/violet</item>
         <item name="loginBackgroundEndColor">@color/violetBlue</item>
 
-        <item name="spinnerInnerColor">@color/white</item>
+        <item name="spinnerInLoginColor">@color/white</item>
         <item name="iconInAuthColor">@color/white</item>
         <item name="disabledColor">@color/lightGrey</item>
 
         <item name="titleColor">@color/white</item>
+        <item name="titleSecondaryColor">@color/black</item>
         <item name="textColor">@color/champagnePink</item>
         <item name="textSecondaryColor">@color/white</item>
         <item name="textThirdlyColor">@android:color/darker_gray</item>
@@ -35,7 +36,7 @@
         <item name="borderColor">@color/lightGrey</item>
         <item name="playerItemBackgroundColor">@color/white</item>
         <item name="playerItemPhotoBackgroundColor">@color/lightGrey</item>
-        <item name="playerItemSpinnerColor">@color/white</item>
+        <item name="spinnerInMainColor">@color/white</item>
         <item name="playerItemNameColor">@color/black</item>
 
         <item name="initialsTextColor">@color/white</item>
@@ -46,6 +47,8 @@
         <item name="initialsBackgroundColor5">#E3BC00</item>
         <item name="initialsBackgroundColor6">#D47500</item>
         <item name="initialsBackgroundColor7">#DC2A2A</item>
+
+        <item name="headerBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -54,7 +57,7 @@
         <item name="loginBackgroundStartColor">@color/yellow</item>
         <item name="loginBackgroundEndColor">@color/beige</item>
 
-        <item name="spinnerInnerColor">@color/white</item>
+        <item name="spinnerInLoginColor">@color/white</item>
         <item name="iconInAuthColor">@color/white</item>
         <item name="disabledColor">@color/lightGrey</item>
 
@@ -122,9 +125,11 @@
         <item name="boxCornerRadiusTopEnd">10dp</item>
     </style>
 
-<!--    <style name="BottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView.Colored">-->
-<!--        <item name="android:background">?attr/bottomMenuBackgroundColor</item>-->
-<!--        <item name="itemTextColor">@color/bottom_menu_nav_color_selector</item>-->
-<!--        <item name="itemIconTint">@color/bottom_menu_nav_color_selector</item>-->
-<!--    </style>-->
+    <style name="HeaderTitle">
+        <item name="android:textColor">?attr/titleSecondaryColor</item>
+        <item name="android:fontFamily">@font/raleway</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

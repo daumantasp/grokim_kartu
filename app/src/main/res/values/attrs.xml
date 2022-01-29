@@ -3,7 +3,7 @@
     <attr name="loginBackgroundStartColor" format="color" />
     <attr name="loginBackgroundEndColor" format="color" />
 
-    <attr name="spinnerInnerColor" format="color" />
+    <attr name="spinnerInLoginColor" format="color" />
     <attr name="iconInAuthColor" format="color" />
     <attr name="disabledColor" format="color" />
 
@@ -26,9 +26,9 @@
 
     <attr name="playerItemBackgroundColor" format="color" />
     <attr name="playerItemPhotoBackgroundColor" format="color" />
-    <attr name="playerItemSpinnerColor" format="color" />
     <attr name="playerItemNameColor" format="color" />
     <attr name="borderColor" format="color" />
+    <attr name="spinnerInMainColor" format="color" />
 
     <attr name="initialsTextColor" format="color" />
     <attr name="initialsBackgroundColor1" format="color" />
@@ -38,6 +38,9 @@
     <attr name="initialsBackgroundColor5" format="color" />
     <attr name="initialsBackgroundColor6" format="color" />
     <attr name="initialsBackgroundColor7" format="color" />
+
+    <attr name="headerBackgroundColor" format="color" />
+    <attr name="titleSecondaryColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
@@ -50,5 +53,11 @@
 
     <declare-styleable name="InitialsViewElement">
         <attr name="textSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="HeaderViewElement">
+        <attr name="title" format="string" />
+        <attr name="showIcon" format="boolean" />
+        <attr name="showBottomBorder" format="boolean" />
     </declare-styleable>
 </resources>
