@@ -5,6 +5,7 @@
     <style name="SecondaryLightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
         <item name="colorPrimaryDark">@color/violet</item>
+        <item name="StatusBarMainColor">@color/white</item>
 <!--        Menu icon color-->
         <item name="android:textColorPrimary">@color/violet</item>
 

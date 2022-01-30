@@ -49,6 +49,7 @@ class PlayersFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             playersViewModel.backClicked()
         }
+        (requireActivity() as MainActivity).changeStatusBarTheme(StatusBarTheme.MAIN)
 
         playersViewModel.loadPlayers()
 

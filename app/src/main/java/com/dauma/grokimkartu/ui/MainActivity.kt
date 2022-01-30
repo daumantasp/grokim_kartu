@@ -1,11 +1,15 @@
 package com.dauma.grokimkartu.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.Navigation
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
@@ -24,6 +28,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initializeBottomNavigation()
+    }
+
+    fun changeStatusBarTheme(theme: StatusBarTheme) {
+        val typedValue = TypedValue()
+        val attributeId = if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
+        this.theme.resolveAttribute(attributeId, typedValue, true)
+        val statusBarBackgroundColor = typedValue.resourceId
+
+        window.statusBarColor = ContextCompat.getColor(this, statusBarBackgroundColor)
+        // TODO: Check on API 30
+        if (theme == StatusBarTheme.LOGIN) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                window?.insetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            }
+        } else if (theme == StatusBarTheme.MAIN) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                window?.insetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        }
     }
 
     private fun initializeBottomNavigation() {
@@ -52,4 +81,9 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigationView!!.visibility = if (show == true) View.VISIBLE else View.GONE
     }
+}
+
+enum class StatusBarTheme {
+    LOGIN,
+    MAIN
 }

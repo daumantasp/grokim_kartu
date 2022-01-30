@@ -42,6 +42,8 @@
     <attr name="headerBackgroundColor" format="color" />
     <attr name="titleSecondaryColor" format="color" />
 
+    <attr name="StatusBarMainColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
     </declare-styleable>
