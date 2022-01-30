@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/playerIconImageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
             android:id="@+id/spinnerViewElement"
@@ -36,7 +36,7 @@
             android:visibility="gone"
             android:layout_centerInParent="true"
             app:unitDimensions="7dp"
-            app:color="?attr/playerItemSpinnerColor"/>
+            app:color="?attr/spinnerInMainColor"/>
 
     </RelativeLayout>
 

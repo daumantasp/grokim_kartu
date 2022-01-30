@@ -7,8 +7,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.ActivityNavigator
-import androidx.navigation.Navigation
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -17,7 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CustomNavigator {
     private var bottomNavigationView: BottomNavigationView? = null
 
     companion object {
@@ -28,6 +26,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initializeBottomNavigation()
+    }
+
+    override fun navigateToProfile() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.profileFragment)
     }
 
     fun changeStatusBarTheme(theme: StatusBarTheme) {

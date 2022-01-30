@@ -17,14 +17,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
 class PlayersListAdapter(
     val context: Context,
-    private val playersData: List<Player>,
+    private val playersListData: List<PlayersListData>,
     private val utils: Utils,
     private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
@@ -49,27 +48,29 @@ class PlayersListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val player = playersData[position]
-        holder.nameTextView.text = player.name
-        holder.instrumentTextView.text = player.instrument
-        holder.cityTextView.text = player.city
+        val playerData = playersListData[position]
+        holder.nameTextView.text = playerData.player.name
+        holder.instrumentTextView.text = playerData.player.instrument
+        holder.cityTextView.text = playerData.player.city
 
         holder.playerItemContainer.setOnClickListener {
-            this.onItemClicked(player.userId ?: "")
+            this.onItemClicked(playerData.player.userId ?: "")
         }
 
         fun bindOrUnbindPhoto() {
-            if (player.icon.icon != null) {
-                val ovalPhoto = utils.imageUtils.getOvalBitmap(player.icon.icon!!)
+            if (playerData.player.icon.icon != null) {
+                val ovalPhoto = utils.imageUtils.getOvalBitmap(playerData.player.icon.icon!!)
                 holder.photoIcon.setImageBitmap(ovalPhoto)
+                holder.spinnerViewElement.showAnimation(false)
                 holder.initialsViewElement.visibility = View.GONE
                 holder.photoIcon.visibility = View.VISIBLE
             }
         }
         fun bindOrUnbindInitials() {
-            if (player.icon.icon == null) {
-                val initials = utils.stringUtils.getInitials(player.name ?: "")
+            if (playerData.player.icon.icon == null) {
+                val initials = utils.stringUtils.getInitials(playerData.player.name ?: "")
                 holder.initialsViewElement.setInitials(initials)
+                holder.spinnerViewElement.showAnimation(false)
                 holder.photoIcon.visibility = View.GONE
                 holder.initialsViewElement.visibility = View.VISIBLE
             }
@@ -78,27 +79,26 @@ class PlayersListAdapter(
             holder.photoIcon.setImageDrawable(photoIconBackgroundDrawable)
             holder.initialsViewElement.visibility = View.GONE
             holder.photoIcon.visibility = View.VISIBLE
+            holder.spinnerViewElement.showAnimation(true)
         }
 
-        if (player.icon.status == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
-            bindDownloadInProgress()
-            holder.spinnerViewElement.showAnimation(true)
-        } else if (player.icon.status == PlayerIconStatus.NEED_TO_DOWNLOAD) {
-            bindDownloadInProgress()
-            holder.spinnerViewElement.showAnimation(true)
-            player.icon.loadIfNeeded { photo, e ->
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-                holder.spinnerViewElement.showAnimation(false)
-            }
-        } else {
+        val iconStatus = playerData.player.icon.status
+        if (iconStatus == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == PlayerIconStatus.DOWNLOADED_ICON_SET) {
             bindOrUnbindPhoto()
             bindOrUnbindInitials()
+        } else if (iconStatus == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
+            bindDownloadInProgress()
+        } else if (iconStatus == PlayerIconStatus.NEED_TO_DOWNLOAD) {
+            bindDownloadInProgress()
+            playerData.player.icon.loadIfNeeded { photo, e ->
+                bindOrUnbindPhoto()
+                bindOrUnbindInitials()
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return playersData.size
+        return playersListData.size
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

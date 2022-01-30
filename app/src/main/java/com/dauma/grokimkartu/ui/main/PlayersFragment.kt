@@ -10,12 +10,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.players.entities.Player
+import com.dauma.grokimkartu.ui.CustomNavigator
+import com.dauma.grokimkartu.ui.MainActivity
+import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
+import com.dauma.grokimkartu.ui.main.adapters.PlayersListData
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -46,18 +51,42 @@ class PlayersFragment : Fragment() {
         val view = binding.root
         setupObservers()
 
+        binding.homeHeaderViewElement.setOnInitialsOrIconClick {
+            playersViewModel.userIconClicked()
+        }
+
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             playersViewModel.backClicked()
         }
         (requireActivity() as MainActivity).changeStatusBarTheme(StatusBarTheme.MAIN)
 
-        playersViewModel.loadPlayers()
+        binding.homeHeaderViewElement.showIconLoading(true)
+        binding.playersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val firstItem = (binding.playersRecyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+                binding.homeHeaderViewElement.showShadow(firstItem > 0)
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
 
+        playersViewModel.viewIsReady()
         return view
     }
 
     private fun setupObservers() {
-        playersViewModel.players.observe(viewLifecycleOwner, Observer {
+        playersViewModel.userProfile.observe(viewLifecycleOwner, {
+            binding.homeHeaderViewElement.setTitle(it.city ?: "")
+            binding.homeHeaderViewElement.showIconLoading(false)
+            if (it.photo != null) {
+                binding.homeHeaderViewElement.setPhotoIcon(it.photo!!)
+            } else {
+                binding.homeHeaderViewElement.setInitials(it.city ?: "")
+            }
+        })
+        playersViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
+            (requireActivity() as CustomNavigator).navigateToProfile()
+        })
+        playersViewModel.playersListData.observe(viewLifecycleOwner, Observer {
                 if (isPlayersRecyclerViewSetup == false) {
                     setupPlayersRecyclerView(it)
                 } else {
@@ -71,9 +100,9 @@ class PlayersFragment : Fragment() {
         })
     }
 
-    private fun setupPlayersRecyclerView(players: List<Player>) {
+    private fun setupPlayersRecyclerView(playersListData: List<PlayersListData>) {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), players, utils) { userId ->
+        binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), playersListData, utils) { userId ->
             this.playersViewModel.playerClicked(userId)
         }
     }
