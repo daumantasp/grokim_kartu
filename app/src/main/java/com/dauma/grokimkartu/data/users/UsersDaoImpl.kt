@@ -42,7 +42,7 @@ class UsersDaoImpl(
                         onComplete(isSuccessful, null)
                     }
                 } else {
-                    onComplete(false, null)
+                    onComplete(true, null)
                 }
             } else {
                 onComplete(false, e)
@@ -74,7 +74,7 @@ class UsersDaoImpl(
     private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
         var userDao: UserDao? = null
         if (firestoreUser != null) {
-            userDao = UserDao(firestoreUser.id, firestoreUser.name, firestoreUser.visible, firestoreUser.registrationDate)
+            userDao = UserDao(firestoreUser.id, firestoreUser.visible, firestoreUser.registrationDate)
         }
         return userDao
     }
@@ -82,7 +82,7 @@ class UsersDaoImpl(
     private fun toFirestoreUser(userDao: UserDao?) : FirestoreUser? {
         var firestoreUser: FirestoreUser? = null
         if (userDao != null) {
-            firestoreUser = FirestoreUser(userDao.id, userDao.name, userDao.visible, userDao.registrationDate)
+            firestoreUser = FirestoreUser(userDao.id, userDao.visible, userDao.registrationDate)
         }
         return firestoreUser
     }
@@ -90,7 +90,7 @@ class UsersDaoImpl(
     private fun toProfileDao(firestoreProfile: FirestoreProfile?, photo: Bitmap?) : ProfileDao? {
         var profileDao: ProfileDao? = null
         if (firestoreProfile != null) {
-            profileDao = ProfileDao(firestoreProfile.instrument, firestoreProfile.description, photo, firestoreProfile.city)
+            profileDao = ProfileDao(firestoreProfile.name, firestoreProfile.instrument, firestoreProfile.description, photo, firestoreProfile.city)
         }
         return profileDao
     }
@@ -98,7 +98,7 @@ class UsersDaoImpl(
     private fun toFirestoreProfile(profileDao: ProfileDao?) : FirestoreProfile? {
         var firestoreProfile: FirestoreProfile? = null
         if (profileDao != null) {
-            firestoreProfile = FirestoreProfile(profileDao.instrument, profileDao.description, profileDao.city)
+            firestoreProfile = FirestoreProfile(profileDao.name, profileDao.instrument, profileDao.description, profileDao.city)
         }
         return firestoreProfile
     }

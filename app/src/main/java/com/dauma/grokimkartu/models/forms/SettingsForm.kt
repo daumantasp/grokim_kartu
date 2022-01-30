@@ -8,10 +8,10 @@ class SettingsForm: BaseObservable() {
     private var initialIsVisible: Boolean = false
 
     @get:Bindable
-    var name: String = ""
+    var email: String = ""
         set(value) {
             field = value
-            notifyPropertyChanged(BR.name)
+            notifyPropertyChanged(BR.email)
         }
 
     @get:Bindable
@@ -29,8 +29,8 @@ class SettingsForm: BaseObservable() {
             notifyPropertyChanged(BR.passwordValid)
         }
 
-    fun setInitialValues(name: String, isVisible: Boolean) {
-        this.name = name
+    fun setInitialValues(email: String, isVisible: Boolean) {
+        this.email = email
         this.isVisible = isVisible
         this.initialIsVisible = isVisible
     }

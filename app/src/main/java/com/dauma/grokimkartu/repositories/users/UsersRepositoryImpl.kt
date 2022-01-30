@@ -36,10 +36,18 @@ class UsersRepositoryImpl(
                 if (isSuccessful && userId != null) {
                     this.authDao.updateUser(name) { isSuccessful, e ->
                         if (isSuccessful) {
-                            val userToSave = UserDao(userId, name, isUserVisibleAsPlayerWhenCreated, null)
+                            val userToSave = UserDao(userId, isUserVisibleAsPlayerWhenCreated, null)
                             this.usersDao.createUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
-                                    onComplete(true, null)
+                                    val userProfile = Profile(name, null, null, null, null)
+                                    this.setUserProfile(userProfile) { isSuccessful, e ->
+                                        if (isSuccessful) {
+                                            onComplete(true, null)
+                                        } else {
+                                            val error = AuthenticationError(6)
+                                            onComplete(false, error)
+                                        }
+                                    }
                                 } else {
                                     val error = AuthenticationError(6)
                                     onComplete(false, error)
@@ -234,7 +242,7 @@ class UsersRepositoryImpl(
 
     override fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val userDao = UserDao(authDao.getUserId(), user.name, user.visible, user.registrationDate)
+            val userDao = UserDao(authDao.getUserId(), user.visible, user.registrationDate)
             usersDao.updateUser(userDao) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
@@ -252,15 +260,16 @@ class UsersRepositoryImpl(
     override fun getUserProfile(onComplete: (Profile?, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
             val userId = authDao.getUserId()
-            usersDao.getProfile(userId!!) { profile, e ->
-                if (profile != null) {
-                    val profileDao = Profile(
-                        profile.instrument,
-                        profile.description,
-                        profile.photo,
-                        profile.city
+            usersDao.getProfile(userId!!) { profileDao, e ->
+                if (profileDao != null) {
+                    val profile = Profile(
+                        profileDao.name,
+                        profileDao.instrument,
+                        profileDao.description,
+                        profileDao.photo,
+                        profileDao.city
                     )
-                    onComplete(profileDao, null)
+                    onComplete(profile, null)
                 } else {
                     val error = AuthenticationError(5)
                     onComplete(null, AuthenticationException(error))
@@ -274,7 +283,7 @@ class UsersRepositoryImpl(
 
     override fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val profileDao = ProfileDao(profile.instrument, profile.description, profile.photo, profile.city)
+            val profileDao = ProfileDao(profile.name, profile.instrument, profile.description, profile.photo, profile.city)
             val userId = authDao.getUserId()
             usersDao.updateProfile(userId!!, profileDao) { isSuccessful, e ->
                 if (isSuccessful) {

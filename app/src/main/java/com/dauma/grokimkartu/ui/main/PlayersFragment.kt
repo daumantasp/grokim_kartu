@@ -75,12 +75,13 @@ class PlayersFragment : Fragment() {
 
     private fun setupObservers() {
         playersViewModel.userProfile.observe(viewLifecycleOwner, {
-            binding.homeHeaderViewElement.setTitle(it.city ?: "")
+            binding.homeHeaderViewElement.setTitle(it.name ?: "")
             binding.homeHeaderViewElement.showIconLoading(false)
             if (it.photo != null) {
                 binding.homeHeaderViewElement.setPhotoIcon(it.photo!!)
             } else {
-                binding.homeHeaderViewElement.setInitials(it.city ?: "")
+                val initials = utils.stringUtils.getInitials(it.name ?: "")
+                binding.homeHeaderViewElement.setInitials(initials)
             }
         })
         playersViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {

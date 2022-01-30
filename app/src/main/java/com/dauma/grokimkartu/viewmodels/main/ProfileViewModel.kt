@@ -36,6 +36,7 @@ class ProfileViewModel @Inject constructor(
     fun loadProfile() {
         usersRepository.getUserProfile { profile, e ->
             this.profileForm.setInitialValues(
+                profile?.name ?: "",
                 profile?.instrument ?: "",
                 profile?.description ?: "",
                 profile?.photo,
@@ -50,6 +51,7 @@ class ProfileViewModel @Inject constructor(
         }
 
         val newProfile = Profile(
+            profileForm.name,
             profileForm.instrument,
             profileForm.description,
             profileForm.photo,
@@ -60,6 +62,7 @@ class ProfileViewModel @Inject constructor(
             if (isSuccessful) {
                 Log.d(TAG, "User profile updated successfully")
                 this.profileForm.setInitialValues(
+                    newProfile.name ?: "",
                     newProfile.instrument ?: "",
                     newProfile.description ?: "",
                     newProfile.photo,

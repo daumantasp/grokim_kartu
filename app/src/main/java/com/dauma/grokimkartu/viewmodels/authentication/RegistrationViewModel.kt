@@ -45,6 +45,7 @@ class RegistrationViewModel @Inject constructor(
 
     fun createUser(name: String, email: String, password: String) {
         try {
+            _registrationInProgress.value = true
             usersRepository.registerUser(email, password, name) { isSuccessful, error ->
                 if (isSuccessful) {
                     usersRepository.sendEmailVerification()

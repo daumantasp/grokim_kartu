@@ -64,6 +64,9 @@ class FirestoreImpl(
 
     override fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
         val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (profile.name != null) {
+            valuesToSet["name"] = profile.name!!
+        }
         if (profile.instrument != null) {
             valuesToSet["instrument"] = profile.instrument!!
         }
@@ -112,7 +115,9 @@ class FirestoreImpl(
                     val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
                     if (profileMap != null) {
                         for (profile in profileMap) {
-                            if (profile.key == "instrument") {
+                            if (profile.key == "name") {
+                                profileDao.name = profile.value as String?
+                            } else if (profile.key == "instrument") {
                                 profileDao.instrument = profile.value as String?
                             } else if (profile.key == "description") {
                                 profileDao.description = profile.value as String?
@@ -177,9 +182,6 @@ class FirestoreImpl(
             return
         }
         val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (user.name != null) {
-            valuesToSet["name"] = user.name!!
-        }
         if (user.visible != null) {
             valuesToSet["visible"] = user.visible!!
         }
@@ -216,14 +218,14 @@ class FirestoreImpl(
                     this.getProfile(userId) { firestoreProfile, e ->
                         val firestorePlayer = FirestorePlayer(
                             firestoreUser.id,
-                            firestoreUser.name,
+                            firestoreProfile?.name ?: "",
                             firestoreProfile?.instrument ?: "",
                             firestoreProfile?.description ?: "",
                             firestoreProfile?.city ?: ""
                         )
                         val firestorePlayerDetails = FirestorePlayerDetails(
                             firestoreUser.id,
-                            firestoreUser.name,
+                            firestoreProfile?.name ?: "",
                             firestoreProfile?.instrument ?: "",
                             firestoreProfile?.description ?: "",
                             firestoreProfile?.city ?: ""
@@ -254,14 +256,14 @@ class FirestoreImpl(
                 this.getProfile(userId) { firestoreProfile, e ->
                     val firestorePlayer = FirestorePlayer(
                         firestoreUser?.id,
-                        firestoreUser?.name,
+                        firestoreProfile?.name ?: "",
                         firestoreProfile?.instrument ?: "",
                         firestoreProfile?.description ?: "",
                         firestoreProfile?.city ?: ""
                     )
                     val firestorePlayerDetails = FirestorePlayerDetails(
                         firestoreUser?.id,
-                        firestoreUser?.name,
+                        firestoreProfile?.name ?: "",
                         firestoreProfile?.instrument ?: "",
                         firestoreProfile?.description ?: "",
                         firestoreProfile?.city ?: ""

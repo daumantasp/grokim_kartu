@@ -39,7 +39,7 @@ class SettingsViewModel @Inject constructor(
         usersRepository.getUserData { user, e ->
             this._initialUser = user
             this.settingsForm.setInitialValues(
-                user?.name ?: "",
+                user?.email ?: "",
                 user?.visible ?: false
             )
         }
@@ -83,7 +83,7 @@ class SettingsViewModel @Inject constructor(
             return
         }
 
-        val name = settingsForm.name
+        val email = settingsForm.email
         // I do not let user to change his name
         val newUser = User(
             providerId = null,
@@ -100,7 +100,7 @@ class SettingsViewModel @Inject constructor(
             Log.d(TAG, "showMeClicked updated successfully")
             this._initialUser = newUser
             this.settingsForm.setInitialValues(
-                name,
+                email,
                 newUser.visible ?: false
             )
         }

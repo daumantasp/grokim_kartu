@@ -13,6 +13,13 @@ class ProfileForm: BaseObservable() {
     private var initialPhoto: Bitmap? = null
 
     @get:Bindable
+    var name: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.name)
+        }
+
+    @get:Bindable
     var instrument: String = ""
         set(value) {
             field = value
@@ -45,11 +52,13 @@ class ProfileForm: BaseObservable() {
         }
 
     fun setInitialValues(
+        name: String,
         instrument: String,
         description: String,
         photo: Bitmap?,
         city: String
     ) {
+        this.name = name
         this.instrument = instrument
         this.description = description
         this.photo = photo
