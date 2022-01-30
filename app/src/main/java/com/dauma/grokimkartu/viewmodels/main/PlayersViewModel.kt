@@ -1,10 +1,10 @@
 package com.dauma.grokimkartu.viewmodels.main
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
-import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.repositories.users.UsersRepository
 import com.dauma.grokimkartu.repositories.users.entities.Profile
@@ -18,10 +18,12 @@ class PlayersViewModel @Inject constructor(
     private val usersRepository: UsersRepository
 ) : ViewModel() {
     private val _userProfile = MutableLiveData<Profile>()
+    private val _userIcon = MutableLiveData<Bitmap?>()
     private val _playersListData = MutableLiveData<List<PlayersListData>>()
     private val _playerDetails = MutableLiveData<Event<String>>()
     private val _navigateToProfile = MutableLiveData<Event<String>>()
     val userProfile: LiveData<Profile> = _userProfile
+    val userIcon: LiveData<Bitmap?> = _userIcon
     val playersListData: LiveData<List<PlayersListData>> = _playersListData
     val playerDetails: LiveData<Event<String>> = _playerDetails
     val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
@@ -32,6 +34,7 @@ class PlayersViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadUserProfile()
+        loadUserIcon()
         loadPlayers()
     }
 
@@ -50,6 +53,12 @@ class PlayersViewModel @Inject constructor(
     private fun loadUserProfile() {
         usersRepository.getUserProfile { profile, e ->
             this._userProfile.value = profile
+        }
+    }
+
+    private fun loadUserIcon() {
+        usersRepository.getUserIcon() { icon, e ->
+            this._userIcon.value = icon
         }
     }
 

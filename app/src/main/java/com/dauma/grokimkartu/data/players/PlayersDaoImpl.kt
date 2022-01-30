@@ -46,7 +46,6 @@ class PlayersDaoImpl(
                 firestorePlayer.name,
                 firestorePlayer.instrument,
                 firestorePlayer.description,
-                null,
                 firestorePlayer.city
             )
         }

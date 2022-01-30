@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.users
 
+import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.users.UsersDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
@@ -39,7 +40,7 @@ class UsersRepositoryImpl(
                             val userToSave = UserDao(userId, isUserVisibleAsPlayerWhenCreated, null)
                             this.usersDao.createUser(userToSave) { isSuccessful, e ->
                                 if (isSuccessful) {
-                                    val userProfile = Profile(name, null, null, null, null)
+                                    val userProfile = Profile(name, null, null, null)
                                     this.setUserProfile(userProfile) { isSuccessful, e ->
                                         if (isSuccessful) {
                                             onComplete(true, null)
@@ -266,7 +267,6 @@ class UsersRepositoryImpl(
                         profileDao.name,
                         profileDao.instrument,
                         profileDao.description,
-                        profileDao.photo,
                         profileDao.city
                     )
                     onComplete(profile, null)
@@ -283,7 +283,7 @@ class UsersRepositoryImpl(
 
     override fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit) {
         if (isUserLoggedIn()) {
-            val profileDao = ProfileDao(profile.name, profile.instrument, profile.description, profile.photo, profile.city)
+            val profileDao = ProfileDao(profile.name, profile.instrument, profile.description, profile.city)
             val userId = authDao.getUserId()
             usersDao.updateProfile(userId!!, profileDao) { isSuccessful, e ->
                 if (isSuccessful) {
@@ -312,6 +312,54 @@ class UsersRepositoryImpl(
                         error = AuthenticationError(5)
                     }
                     onComplete(false, error)
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
+    }
+
+    override fun getUserPhoto(onComplete: (Bitmap?, Exception?) -> Unit) {
+        if (isUserLoggedIn()) {
+            val userId = authDao.getUserId()
+            usersDao.getUserPhoto(userId!!) { userPhoto, e ->
+                if (userPhoto != null) {
+                    onComplete(userPhoto, null)
+                } else {
+                    onComplete(null, e)
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
+    }
+
+    override fun setUserPhoto(photo: Bitmap, onComplete: (Boolean, Exception?) -> Unit) {
+        if (isUserLoggedIn()) {
+            val userId = authDao.getUserId()
+            usersDao.setUserPhoto(userId!!, photo) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    onComplete(false, e)
+                }
+            }
+        } else {
+            val error = AuthenticationError(2)
+            throw AuthenticationException(error)
+        }
+    }
+
+    override fun getUserIcon(onComplete: (Bitmap?, Exception?) -> Unit) {
+        if (isUserLoggedIn()) {
+            val userId = authDao.getUserId()
+            usersDao.getUserIcon(userId!!) { userIcon, e ->
+                if (userIcon != null) {
+                    onComplete(userIcon, null)
+                } else {
+                    onComplete(null, e)
                 }
             }
         } else {

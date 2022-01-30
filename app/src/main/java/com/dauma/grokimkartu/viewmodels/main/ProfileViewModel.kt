@@ -39,35 +39,41 @@ class ProfileViewModel @Inject constructor(
                 profile?.name ?: "",
                 profile?.instrument ?: "",
                 profile?.description ?: "",
-                profile?.photo,
                 profile?.city ?: ""
             )
+        }
+        usersRepository.getUserPhoto { photo, e ->
+            this.profileForm.setInitialPhoto(photo)
         }
     }
 
     fun saveChanges() {
-        if (profileForm.isChanged() == false) {
-            return
+        if (profileForm.areValuesChanged() == true) {
+            val newProfile = Profile(
+                profileForm.name,
+                profileForm.instrument,
+                profileForm.description,
+                profileForm.city
+            )
+
+            usersRepository.setUserProfile(newProfile) { isSuccessful, e ->
+                if (isSuccessful) {
+                    Log.d(TAG, "User profile updated successfully")
+                    this.profileForm.setInitialValues(
+                        newProfile.name ?: "",
+                        newProfile.instrument ?: "",
+                        newProfile.description ?: "",
+                        newProfile.city ?: ""
+                    )
+                }
+            }
         }
 
-        val newProfile = Profile(
-            profileForm.name,
-            profileForm.instrument,
-            profileForm.description,
-            profileForm.photo,
-            profileForm.city
-        )
-
-        usersRepository.setUserProfile(newProfile) { isSuccessful, e ->
-            if (isSuccessful) {
-                Log.d(TAG, "User profile updated successfully")
-                this.profileForm.setInitialValues(
-                    newProfile.name ?: "",
-                    newProfile.instrument ?: "",
-                    newProfile.description ?: "",
-                    newProfile.photo,
-                    newProfile.city ?: ""
-                )
+        if (profileForm.isPhotoChanged() == true) {
+            if (profileForm.photo != null) {
+                usersRepository.setUserPhoto(this.profileForm.photo!!) { isSuccessful, e ->
+                    this.profileForm.setInitialPhoto(this.profileForm.photo!!)
+                }
             }
         }
     }

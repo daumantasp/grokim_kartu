@@ -37,13 +37,7 @@ class UsersDaoImpl(
         val firestoreProfile = toFirestoreProfile(profile)
         firebase.updateProfile(userId, firestoreProfile!!) { isSuccessful, e ->
             if (isSuccessful) {
-                if (profile.photo != null) {
-                    firebaseStorage.uploadProfilePhoto(userId, profile.photo!!) { isSuccessful, e ->
-                        onComplete(isSuccessful, null)
-                    }
-                } else {
-                    onComplete(true, null)
-                }
+                onComplete(true, null)
             } else {
                 onComplete(false, e)
             }
@@ -64,11 +58,21 @@ class UsersDaoImpl(
 
     override fun getProfile(userId: String, onComplete: (ProfileDao?, Exception?) -> Unit) {
         firebase.getProfile(userId) { firestoreProfile, e ->
-            firebaseStorage.downloadProfilePhoto(userId) { profilePhoto, e ->
-                val profileDao = toProfileDao(firestoreProfile, profilePhoto)
-                onComplete(profileDao, e)
-            }
+            val profileDao = toProfileDao(firestoreProfile)
+            onComplete(profileDao, e)
         }
+    }
+
+    override fun getUserPhoto(userId: String, onComplete: (Bitmap?, Exception?) -> Unit) {
+        firebaseStorage.downloadProfilePhoto(userId, onComplete)
+    }
+
+    override fun setUserPhoto(userId: String, photo: Bitmap, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseStorage.uploadProfilePhoto(userId, photo, onComplete)
+    }
+
+    override fun getUserIcon(userId: String, onComplete: (Bitmap?, Exception?) -> Unit) {
+        firebaseStorage.downloadProfilePhotoIcon(userId, onComplete)
     }
 
     private fun toUserDao(firestoreUser: FirestoreUser?) : UserDao? {
@@ -87,10 +91,10 @@ class UsersDaoImpl(
         return firestoreUser
     }
 
-    private fun toProfileDao(firestoreProfile: FirestoreProfile?, photo: Bitmap?) : ProfileDao? {
+    private fun toProfileDao(firestoreProfile: FirestoreProfile?) : ProfileDao? {
         var profileDao: ProfileDao? = null
         if (firestoreProfile != null) {
-            profileDao = ProfileDao(firestoreProfile.name, firestoreProfile.instrument, firestoreProfile.description, photo, firestoreProfile.city)
+            profileDao = ProfileDao(firestoreProfile.name, firestoreProfile.instrument, firestoreProfile.description, firestoreProfile.city)
         }
         return profileDao
     }

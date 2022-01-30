@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,6 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.ui.CustomNavigator
 import com.dauma.grokimkartu.ui.MainActivity
 import com.dauma.grokimkartu.ui.StatusBarTheme
@@ -31,6 +31,10 @@ import javax.inject.Inject
 class PlayersFragment : Fragment() {
     private val playersViewModel by viewModels<PlayersViewModel>()
     private var isPlayersRecyclerViewSetup: Boolean = false
+    private var isUserIconGot: Boolean = false
+    private var isUserProfileGot: Boolean = false
+    private var userInitials: String = ""
+    private var userIcon: Bitmap? = null
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentPlayersBinding? = null
@@ -76,13 +80,16 @@ class PlayersFragment : Fragment() {
     private fun setupObservers() {
         playersViewModel.userProfile.observe(viewLifecycleOwner, {
             binding.homeHeaderViewElement.setTitle(it.name ?: "")
-            binding.homeHeaderViewElement.showIconLoading(false)
-            if (it.photo != null) {
-                binding.homeHeaderViewElement.setPhotoIcon(it.photo!!)
-            } else {
-                val initials = utils.stringUtils.getInitials(it.name ?: "")
-                binding.homeHeaderViewElement.setInitials(initials)
-            }
+            binding.homeHeaderViewElement.showIconLoading(true)
+            this.userInitials = utils.stringUtils.getInitials(it.name ?: "")
+            this.isUserProfileGot = true
+            this.setPhotoOrInitialsInHeaderIfPossible()
+        })
+        playersViewModel.userIcon.observe(viewLifecycleOwner, {
+            binding.homeHeaderViewElement.showIconLoading(true)
+            this.userIcon = it
+            this.isUserIconGot = true
+            this.setPhotoOrInitialsInHeaderIfPossible()
         })
         playersViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
             (requireActivity() as CustomNavigator).navigateToProfile()
@@ -105,6 +112,17 @@ class PlayersFragment : Fragment() {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), playersListData, utils) { userId ->
             this.playersViewModel.playerClicked(userId)
+        }
+    }
+
+    private fun setPhotoOrInitialsInHeaderIfPossible() {
+        if (isUserProfileGot == true && isUserIconGot == true) {
+            binding.homeHeaderViewElement.showIconLoading(false)
+            if (userIcon != null) {
+                binding.homeHeaderViewElement.setPhotoIcon(userIcon!!)
+            } else {
+                binding.homeHeaderViewElement.setInitials(userInitials)
+            }
         }
     }
 }

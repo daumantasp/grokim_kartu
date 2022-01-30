@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.users
 
+import android.graphics.Bitmap
 import com.dauma.grokimkartu.repositories.users.entities.Profile
 import com.dauma.grokimkartu.repositories.users.entities.User
 
@@ -18,4 +19,7 @@ interface UsersRepository {
     fun setUserData(user: User, onComplete: (Boolean, Exception?) -> Unit)
     fun getUserProfile(onComplete: (Profile?, Exception?) -> Unit)
     fun setUserProfile(profile: Profile, onComplete: (Boolean, Exception?) -> Unit)
+    fun getUserPhoto(onComplete: (Bitmap?, Exception?) -> Unit)
+    fun setUserPhoto(photo: Bitmap, onComplete: (Boolean, Exception?) -> Unit)
+    fun getUserIcon(onComplete: (Bitmap?, Exception?) -> Unit)
 }

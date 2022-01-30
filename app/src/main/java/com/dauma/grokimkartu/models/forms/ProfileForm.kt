@@ -55,25 +55,34 @@ class ProfileForm: BaseObservable() {
         name: String,
         instrument: String,
         description: String,
-        photo: Bitmap?,
         city: String
     ) {
         this.name = name
         this.instrument = instrument
         this.description = description
-        this.photo = photo
         this.city = city
         this.initialInstrument = instrument
         this.initialDescription = description
-        this.initialPhoto = photo
         this.initialCity = city
+    }
+
+    fun setInitialPhoto(photo: Bitmap?) {
+        this.initialPhoto = photo
+        this.photo = photo
     }
 
     @Bindable
     fun isChanged(): Boolean {
+        return areValuesChanged() || isPhotoChanged()
+    }
+
+    fun areValuesChanged(): Boolean {
         return initialInstrument != instrument ||
                 initialDescription != description ||
-                initialPhoto != photo ||
                 initialCity != city
+    }
+
+    fun isPhotoChanged(): Boolean {
+        return initialPhoto != photo
     }
 }
