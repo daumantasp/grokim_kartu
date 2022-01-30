@@ -32,8 +32,8 @@
 
         <RelativeLayout
             android:id="@+id/userRelativeLayout"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginEnd="20dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,14 +41,14 @@
 
             <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
                 android:id="@+id/initialsViewElement"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:textSize="12dp" />
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                app:textSize="7dp" />
 
             <ImageView
                 android:id="@+id/userIconImageView"
-                android:layout_width="60dp"
-                android:layout_height="60dp" />
+                android:layout_width="45dp"
+                android:layout_height="45dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
                 android:id="@+id/spinnerViewElement"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:layout_centerInParent="true"
-                app:unitDimensions="7dp"
+                app:unitDimensions="4dp"
                 app:color="?attr/spinnerInMainColor"/>
 
         </RelativeLayout>
