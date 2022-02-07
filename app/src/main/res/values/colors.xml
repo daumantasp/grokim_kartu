@@ -14,7 +14,8 @@
     <color name="appleGreen">#FF9BB12A</color>
     <color name="budGreen">#FF6EA735</color>
     <color name="grassGreen">#FF3F9F57</color>
-    <color name="lightGrey">#FFDFE0DF</color>
+    <color name="grey">#FFDFE0DF</color>
+    <color name="lightGrey">#FFF5F5F5</color>
     <color name="brown">#FF9E6450</color>
     <color name="cherryRed">#C15A71</color>
 </resources>

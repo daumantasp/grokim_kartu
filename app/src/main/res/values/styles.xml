@@ -14,7 +14,7 @@
 
         <item name="spinnerInLoginColor">@color/white</item>
         <item name="iconInAuthColor">@color/white</item>
-        <item name="disabledColor">@color/lightGrey</item>
+        <item name="disabledColor">@color/grey</item>
 
         <item name="titleColor">@color/white</item>
         <item name="titleSecondaryColor">@color/black</item>
@@ -24,19 +24,28 @@
 
         <item name="primaryButtonColor">@color/cadetBlue</item>
         <item name="primaryButtonPressedColor">@color/cadet</item>
-        <item name="primaryButtonText">@color/white</item>
+        <item name="primaryButtonTextColor">@color/white</item>
 
-        <item name="textInputBackgroundColor">@color/white</item>
-        <item name="textInputHintColor">@color/cherryRed</item>
-        <item name="textInputBoxStrokeColor">@color/cherryRed</item>
+        <item name="secondaryButtonColor">@color/white</item>
+        <item name="secondaryButtonBorderColor">@color/lightGrey</item>
+        <item name="secondaryButtonPressedColor">@color/cadetBlue</item>
+        <item name="secondaryButtonTextColor">@color/violetBlue</item>
+
+        <item name="primaryTextInputBackgroundColor">@color/white</item>
+        <item name="primaryTextInputHintColor">@color/cherryRed</item>
+        <item name="primaryTextInputBoxStrokeColor">@color/cherryRed</item>
+
+        <item name="secondaryTextInputBackgroundColor">@color/lightGrey</item>
+        <item name="secondaryTextInputHintColor">@color/violetBlue</item>
+        <item name="secondaryTextInputBoxStrokeColor">@color/violetBlue</item>
 
         <item name="bottomMenuBackgroundColor">@color/white</item>
         <item name="bottomMenuActiveColor">@color/violetBlue</item>
-        <item name="bottomMenuInactiveColor">@color/lightGrey</item>
+        <item name="bottomMenuInactiveColor">@color/grey</item>
 
-        <item name="borderColor">@color/lightGrey</item>
+        <item name="borderColor">@color/grey</item>
         <item name="playerItemBackgroundColor">@color/white</item>
-        <item name="playerItemPhotoBackgroundColor">@color/lightGrey</item>
+        <item name="playerItemPhotoBackgroundColor">@color/grey</item>
         <item name="spinnerInMainColor">@color/white</item>
         <item name="playerItemNameColor">@color/black</item>
 
@@ -60,7 +69,7 @@
 
         <item name="spinnerInLoginColor">@color/white</item>
         <item name="iconInAuthColor">@color/white</item>
-        <item name="disabledColor">@color/lightGrey</item>
+        <item name="disabledColor">@color/grey</item>
 
         <item name="titleColor">@color/white</item>
         <item name="textColor">@color/brown</item>
@@ -68,11 +77,11 @@
 
         <item name="primaryButtonColor">@color/appleGreen</item>
         <item name="primaryButtonPressedColor">@color/budGreen</item>
-        <item name="primaryButtonText">@color/white</item>
+        <item name="primaryButtonTextColor">@color/white</item>
 
-        <item name="textInputBackgroundColor">@color/white</item>
-        <item name="textInputHintColor">@color/brown</item>
-        <item name="textInputBoxStrokeColor">@color/brown</item>
+        <item name="primaryTextInputBackgroundColor">@color/white</item>
+        <item name="primaryTextInputHintColor">@color/brown</item>
+        <item name="primaryTextInputBoxStrokeColor">@color/brown</item>
     </style>
 
     <style name="Title">
@@ -109,7 +118,7 @@
 
     <style name="PrimaryButton">
         <item name="android:background">@drawable/primary_button_ripple</item>
-        <item name="android:textColor">?attr/primaryButtonText</item>
+        <item name="android:textColor">?attr/primaryButtonTextColor</item>
         <item name="android:fontFamily">@font/lato</item>
         <item name="android:textSize">16sp</item>
         <item name="android:width">250dp</item>
@@ -118,12 +127,19 @@
     </style>
 
     <style name="PrimaryTextInput" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">?attr/textInputBackgroundColor</item>
-        <item name="android:textColorHint">?attr/textInputHintColor</item>
-        <item name="hintTextColor">?attr/textInputHintColor</item>
-        <item name="boxStrokeColor">?attr/textInputBoxStrokeColor</item>
+        <item name="boxBackgroundColor">?attr/primaryTextInputBackgroundColor</item>
+        <item name="android:textColorHint">?attr/primaryTextInputHintColor</item>
+        <item name="hintTextColor">?attr/primaryTextInputHintColor</item>
+        <item name="boxStrokeColor">?attr/primaryTextInputBoxStrokeColor</item>
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
+    </style>
+
+    <style name="SecondaryTextInput" parent="PrimaryTextInput">
+        <item name="boxBackgroundColor">?attr/secondaryTextInputBackgroundColor</item>
+        <item name="android:textColorHint">?attr/secondaryTextInputHintColor</item>
+        <item name="hintTextColor">?attr/secondaryTextInputHintColor</item>
+        <item name="boxStrokeColor">?attr/secondaryTextInputBoxStrokeColor</item>
     </style>
 
     <style name="HeaderTitle">

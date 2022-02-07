@@ -14,11 +14,20 @@
 
     <attr name="primaryButtonColor" format="color" />
     <attr name="primaryButtonPressedColor" format="color" />
-    <attr name="primaryButtonText" format="color" />
+    <attr name="primaryButtonTextColor" format="color" />
 
-    <attr name="textInputBackgroundColor" format="color" />
-    <attr name="textInputHintColor" format="color" />
-    <attr name="textInputBoxStrokeColor" format="color" />
+    <attr name="secondaryButtonColor" format="color" />
+    <attr name="secondaryButtonBorderColor" format="color" />
+    <attr name="secondaryButtonPressedColor" format="color" />
+    <attr name="secondaryButtonTextColor" format="color" />
+
+    <attr name="primaryTextInputBackgroundColor" format="color" />
+    <attr name="primaryTextInputHintColor" format="color" />
+    <attr name="primaryTextInputBoxStrokeColor" format="color" />
+
+    <attr name="secondaryTextInputBackgroundColor" format="color" />
+    <attr name="secondaryTextInputHintColor" format="color" />
+    <attr name="secondaryTextInputBoxStrokeColor" format="color" />
 
     <attr name="bottomMenuBackgroundColor" format="color" />
     <attr name="bottomMenuActiveColor" format="color" />
@@ -46,6 +55,10 @@
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
+        <attr name="type" format="enum">
+            <enum name="primary" value="0" />
+            <enum name="secondary" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="SpinnerViewElement">
