@@ -2,19 +2,15 @@ package com.dauma.grokimkartu.ui.main
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.general.event.EventObserver
@@ -59,6 +55,7 @@ class ProfileFragment : Fragment() {
         binding.model = profileViewModel
         val view = binding.root
         setupObservers()
+        setupScrollView()
         if (savedInstanceState == null) {
             // TODO: Still reloads on device rotate, probably need to save state instance
             profileViewModel.loadProfile()
@@ -77,9 +74,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        profileViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
-        })
         profileViewModel.selectPhoto.observe(viewLifecycleOwner, EventObserver {
             val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             galleryResult.launch(pickIntent)
@@ -89,6 +83,12 @@ class ProfileFragment : Fragment() {
     private fun bindDefaultPhotoIfNeeded() {
         if (profileViewModel.getProfileForm().photo == null) {
             binding.photoImageView.setImageResource(R.drawable.user)
+        }
+    }
+
+    private fun setupScrollView() {
+        binding.profileScrollView.setOnScrollChangeListener { view, scrollX, scrollY, oldScrollX, oldScrollY ->
+            binding.profileHeaderViewElement.showShadow(scrollY > 0.0)
         }
     }
 }

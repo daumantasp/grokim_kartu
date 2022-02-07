@@ -106,6 +106,15 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun logoutClicked() {
+        try {
+            usersRepository.logOut()
+            _navigateToLogin.value = Event("")
+        } catch (e: AuthenticationException) {
+            Log.d(TAG, e.message ?: "Login was unsuccessful")
+        }
+    }
+
     private fun handleAuthenticationError(error: AuthenticationError) {
         when(error.message) {
             AuthenticationError.INVALID_PASSWORD -> {

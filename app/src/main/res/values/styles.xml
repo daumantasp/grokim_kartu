@@ -39,6 +39,9 @@
         <item name="secondaryTextInputHintColor">@color/violetBlue</item>
         <item name="secondaryTextInputBoxStrokeColor">@color/violetBlue</item>
 
+        <item name="selectPhotoButtonBackgroundColor">@color/cadetBlue</item>
+        <item name="selectPhotoButtonIconColor">@color/white</item>
+
         <item name="bottomMenuBackgroundColor">@color/white</item>
         <item name="bottomMenuActiveColor">@color/violetBlue</item>
         <item name="bottomMenuInactiveColor">@color/grey</item>

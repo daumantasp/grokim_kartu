@@ -20,9 +20,7 @@ class ProfileViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val profileForm: ProfileForm
 ) : ViewModel() {
-    private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _selectPhoto = MutableLiveData<Event<String>>()
-    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
 
     companion object {
@@ -80,14 +78,5 @@ class ProfileViewModel @Inject constructor(
 
     fun selectPhoto() {
         _selectPhoto.value = Event("")
-    }
-
-    fun logoutClicked() {
-        try {
-            usersRepository.logOut()
-            _navigateToLogin.value = Event("")
-        } catch (e: AuthenticationException) {
-            Log.d(TAG, e.message ?: "Login was unsuccessful")
-        }
     }
 }

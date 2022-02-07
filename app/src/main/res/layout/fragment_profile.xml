@@ -9,127 +9,139 @@
             type="com.dauma.grokimkartu.viewmodels.main.ProfileViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.main.ProfileFragment">
-
-        <TextView
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:fontFamily="@font/lato"
-            android:textSize="32sp"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="50dp"
-            android:text="@string/profile_fragment" />
+        android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/profileScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/nameTextInput"
+                    style="@style/SecondaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:enabled="false"
-                    android:layout_gravity="center">
+                    android:enabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/nameTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
+                        android:fontFamily="@font/lato"
                         android:hint="@string/profile_name"
-                        android:singleLine="true"
-                        android:text="@={model.profileForm.name}"
-                        android:maxLines="1"
                         android:lines="1"
-                        android:fontFamily="@font/lato"/>
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@={model.profileForm.name}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:id="@+id/photoImageView"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center"
-                    android:src="@{model.profileForm.photo}" />
-
-                <Button
-                    android:id="@+id/selectPhotoButton"
-                    android:layout_width="250dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:fontFamily="@font/lato"
                     android:layout_gravity="center"
-                    android:text="@string/profile_selectPhoto_button"
-                    android:onClick="@{() -> model.selectPhoto()}"/>
+                    android:layout_marginBottom="30dp">
+
+                    <ImageView
+                        android:id="@+id/photoImageView"
+                        android:layout_width="244dp"
+                        android:layout_height="253dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="25dp"
+                        android:src="@{model.profileForm.photo}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/selectPhotoButton"
+                        android:background="@drawable/select_photo_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="@{() -> model.selectPhoto()}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/instrumentTextInput"
+                    style="@style/SecondaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/instrumentTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
+                        android:fontFamily="@font/lato"
                         android:hint="@string/profile_instrument"
-                        android:singleLine="true"
-                        android:text="@={model.profileForm.instrument}"
-                        android:maxLines="1"
                         android:lines="1"
-                        android:fontFamily="@font/lato"/>
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@={model.profileForm.instrument}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/descriptionTextInput"
+                    style="@style/SecondaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="250dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="230dp"
-                        android:hint="@string/profile_desciption"
-                        android:text="@={model.profileForm.description}"
-                        android:maxLines="10"
-                        android:lines="10"
+                        android:fontFamily="@font/lato"
                         android:gravity="top"
-                        android:fontFamily="@font/lato"/>
+                        android:hint="@string/profile_desciption"
+                        android:lines="10"
+                        android:maxLines="10"
+                        android:text="@={model.profileForm.description}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/cityTextInput"
+                    style="@style/SecondaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/cityTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/profile_city"
-                        android:text="@={model.profileForm.city}"
-                        android:maxLines="1"
-                        android:lines="1"
+                        android:fontFamily="@font/lato"
                         android:gravity="top"
-                        android:fontFamily="@font/lato"/>
+                        android:hint="@string/profile_city"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:text="@={model.profileForm.city}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,31 +150,29 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <Button
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/saveChangesButton"
-                    android:layout_width="250dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="30dp"
-                    android:fontFamily="@font/lato"
-                    android:layout_gravity="center"
-                    android:text="@string/profile_saveChanges_button"
-                    android:enabled="@{model.profileForm.changed}"
-                    android:onClick="@{() -> model.saveChanges()}"/>
-
-                <Button
-                    android:id="@+id/logoutButton"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:fontFamily="@font/lato"
-                    android:layout_gravity="center"
-                    android:text="@string/profile_logout"
-                    android:onClick="@{() -> model.logoutClicked()}"/>
+                    app:enabled="@{model.profileForm.changed}"
+                    app:onClick="@{() -> model.saveChanges()}"
+                    app:text="@string/profile_saveChanges_button" />
 
             </LinearLayout>
-
         </ScrollView>
 
-    </LinearLayout>
+        <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
+            android:id="@+id/profileHeaderViewElement"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:title="@string/profile_fragment"
+            app:showBottomBorder="false"
+            app:showIcon="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

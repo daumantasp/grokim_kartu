@@ -18,11 +18,7 @@
         android:id="@+id/profileFragment"
         android:name="com.dauma.grokimkartu.ui.main.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
-        <action
-            android:id="@+id/action_profileFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.dauma.grokimkartu.ui.authentication.LoginFragment"

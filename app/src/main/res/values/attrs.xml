@@ -29,6 +29,9 @@
     <attr name="secondaryTextInputHintColor" format="color" />
     <attr name="secondaryTextInputBoxStrokeColor" format="color" />
 
+    <attr name="selectPhotoButtonBackgroundColor" format="color" />
+    <attr name="selectPhotoButtonIconColor" format="color" />
+
     <attr name="bottomMenuBackgroundColor" format="color" />
     <attr name="bottomMenuActiveColor" format="color" />
     <attr name="bottomMenuInactiveColor" format="color" />

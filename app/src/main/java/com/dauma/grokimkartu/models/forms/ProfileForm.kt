@@ -4,9 +4,10 @@ import android.graphics.Bitmap
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.general.utils.Utils
 
 //READ https://developer.android.com/topic/libraries/data-binding/two-way
-class ProfileForm: BaseObservable() {
+class ProfileForm(utils: Utils): BaseObservable() {
     private var initialInstrument: String = ""
     private var initialDescription: String = ""
     private var initialCity: String = ""
