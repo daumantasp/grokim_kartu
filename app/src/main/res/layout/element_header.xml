@@ -43,6 +43,7 @@
                 android:id="@+id/initialsViewElement"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
+                app:initialsType="oval"
                 app:textSize="7dp" />
 
             <ImageView

@@ -63,11 +63,6 @@ class ProfileFragment : Fragment() {
         return view
     }
 
-    override fun onResume() {
-        bindDefaultPhotoIfNeeded()
-        super.onResume()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -78,12 +73,17 @@ class ProfileFragment : Fragment() {
             val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             galleryResult.launch(pickIntent)
         })
-    }
-
-    private fun bindDefaultPhotoIfNeeded() {
-        if (profileViewModel.getProfileForm().photo == null) {
-            binding.photoImageView.setImageResource(R.drawable.user)
-        }
+        profileViewModel.profileLoaded.observe(viewLifecycleOwner, EventObserver {
+            if (profileViewModel.getProfileForm().photo == null) {
+                val initials = utils.stringUtils.getInitials(profileViewModel.getProfileForm().name)
+                binding.profileInitialsViewElement.setInitials(initials)
+                binding.photoImageView.visibility = View.GONE
+                binding.profileInitialsViewElement.visibility = View.VISIBLE
+            } else {
+                binding.profileInitialsViewElement.visibility = View.GONE
+                binding.photoImageView.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun setupScrollView() {

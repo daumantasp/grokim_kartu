@@ -58,6 +58,20 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="30dp">
 
+                    <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
+                        android:id="@+id/profileInitialsViewElement"
+                        android:layout_width="244dp"
+                        android:layout_height="253dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="25dp"
+                        android:visibility="invisible"
+                        app:initialsType="rectangular"
+                        app:textSize="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <ImageView
                         android:id="@+id/photoImageView"
                         android:layout_width="244dp"
@@ -65,6 +79,7 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="25dp"
                         android:src="@{model.profileForm.photo}"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

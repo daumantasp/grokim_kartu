@@ -76,6 +76,10 @@
 
     <declare-styleable name="InitialsViewElement">
         <attr name="textSize" format="dimension" />
+        <attr name="initialsType" format="enum">
+            <enum name="rectangular" value="0" />
+            <enum name="oval" value="1" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="HeaderViewElement">

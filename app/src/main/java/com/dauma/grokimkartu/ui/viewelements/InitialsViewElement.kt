@@ -21,8 +21,10 @@ class InitialsViewElement(context: Context, attrs: AttributeSet) : FrameLayout(c
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.InitialsViewElement)
         val textSize = attributes.getDimension(R.styleable.InitialsViewElement_textSize, 12f)
-        initialsTextView.textSize = textSize
+        val type = attributes.getInt(R.styleable.InitialsViewElement_initialsType, 0)
         attributes.recycle()
+        initialsTextView.textSize = textSize
+        setType(type)
 
         val typedValue = TypedValue()
         context.theme.resolveAttribute(R.attr.initialsBackgroundColor1, typedValue, true)
@@ -46,5 +48,13 @@ class InitialsViewElement(context: Context, attrs: AttributeSet) : FrameLayout(c
         val hashCode = initials.hashCode()
         val colorIdx = hashCode % colorsPalette.count()
         rootFrameLayout.backgroundTintList = ColorStateList.valueOf(colorsPalette[colorIdx])
+    }
+
+    private fun setType(type: Int) {
+        if (type == 0) {
+            // Default, Rectangular background
+        } else if (type == 1) {
+            rootFrameLayout.setBackgroundResource(R.drawable.oval_background)
+        }
     }
 }

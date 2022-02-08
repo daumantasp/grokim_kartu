@@ -1,15 +1,11 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.ProfileForm
-import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.dauma.grokimkartu.repositories.users.UsersRepository
 import com.dauma.grokimkartu.repositories.users.entities.Profile
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +17,9 @@ class ProfileViewModel @Inject constructor(
     private val profileForm: ProfileForm
 ) : ViewModel() {
     private val _selectPhoto = MutableLiveData<Event<String>>()
+    private val _profileLoaded = MutableLiveData<Event<String>>()
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
+    val profileLoaded: LiveData<Event<String>> = _profileLoaded
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -32,6 +30,14 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun loadProfile() {
+        var isProfileLoaded = false
+        var isPhotoLoaded = false
+        fun checkIfFullProfileLoaded() {
+            if (isProfileLoaded == true && isPhotoLoaded == true) {
+                _profileLoaded.value = Event("")
+            }
+        }
+
         usersRepository.getUserProfile { profile, e ->
             this.profileForm.setInitialValues(
                 profile?.name ?: "",
@@ -39,9 +45,13 @@ class ProfileViewModel @Inject constructor(
                 profile?.description ?: "",
                 profile?.city ?: ""
             )
+            isProfileLoaded = true
+            checkIfFullProfileLoaded()
         }
         usersRepository.getUserPhoto { photo, e ->
             this.profileForm.setInitialPhoto(photo)
+            isPhotoLoaded = true
+            checkIfFullProfileLoaded()
         }
     }
 
