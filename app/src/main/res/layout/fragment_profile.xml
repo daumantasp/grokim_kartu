@@ -43,7 +43,6 @@
                         android:id="@+id/nameTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:fontFamily="@font/lato"
                         android:hint="@string/profile_name"
                         android:lines="1"
                         android:maxLines="1"

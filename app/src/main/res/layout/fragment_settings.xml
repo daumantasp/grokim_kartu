@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -8,39 +9,35 @@
             type="com.dauma.grokimkartu.viewmodels.main.SettingsViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.main.SettingsFragment">
-
-        <TextView
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:fontFamily="@font/lato"
-            android:textSize="32sp"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="50dp"
-            android:text="@string/settings_fragment" />
+        android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/settingsScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailTextInput"
+                    style="@style/SecondaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:enabled="false"
-                    android:layout_gravity="center">
+                    android:enabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/nameTextInputEditText"
@@ -50,13 +47,13 @@
                         android:singleLine="true"
                         android:text="@{model.settingsForm.email}"
                         android:maxLines="1"
-                        android:lines="1"
-                        android:fontFamily="@font/lato"/>
+                        android:lines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordTextInput"
+                    style="@style/SecondaryTextInput"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_marginBottom="10dp"
@@ -71,8 +68,7 @@
                         android:singleLine="true"
                         android:maxLines="1"
                         android:lines="1"
-                        android:inputType="textPassword"
-                        android:fontFamily="@font/lato"/>
+                        android:inputType="textPassword" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -122,19 +118,29 @@
                     android:enabled="@{model.settingsForm.changed}"
                     android:onClick="@{() -> model.saveChanges()}"/>
 
-                <Button
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/logoutButton"
-                    android:layout_width="250dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
-                    android:fontFamily="@font/lato"
-                    android:onClick="@{() -> model.logoutClicked()}"
-                    android:text="@string/profile_logout" />
+                    android:layout_marginBottom="30dp"
+                    app:type="primary"
+                    app:onClick="@{() -> model.logoutClicked()}"
+                    app:text="@string/profile_logout" />
 
             </LinearLayout>
-
         </ScrollView>
 
-    </LinearLayout>
+        <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
+            android:id="@+id/settingsHeaderViewElement"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:title="@string/settings_fragment"
+            app:showBottomBorder="false"
+            app:showIcon="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
