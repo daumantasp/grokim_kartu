@@ -1,10 +1,6 @@
 package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.widget.Button
@@ -48,13 +44,19 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     private fun setType(type: Int) {
         if (type == 0) {
-            // Default
+            // Default, PrimaryInAuth
         } else if (type == 1) {
+            // Primary
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(R.attr.primaryButtonTextColor, typedValue, true)
+            button.setTextColor(typedValue.data)
+            button.setBackgroundResource(R.drawable.primary_button_ripple)
+        } else if (type == 2) {
             // Secondary
             val typedValue = TypedValue()
             context.theme.resolveAttribute(R.attr.secondaryButtonTextColor, typedValue, true)
-            button.setBackgroundResource(R.drawable.secondary_button_ripple)
             button.setTextColor(typedValue.data)
+            button.setBackgroundResource(R.drawable.secondary_button_ripple)
         }
     }
 }

@@ -22,8 +22,12 @@
         <item name="textSecondaryColor">@color/white</item>
         <item name="textThirdlyColor">@android:color/darker_gray</item>
 
-        <item name="primaryButtonColor">@color/cadetBlue</item>
-        <item name="primaryButtonPressedColor">@color/cadet</item>
+        <item name="primaryInAuthButtonColor">@color/cadetBlue</item>
+        <item name="primaryInAuthButtonPressedColor">@color/cadet</item>
+        <item name="primaryInAuthButtonTextColor">@color/white</item>
+
+        <item name="primaryButtonColor">@color/violetBlue</item>
+        <item name="primaryButtonPressedColor">@color/violet</item>
         <item name="primaryButtonTextColor">@color/white</item>
 
         <item name="secondaryButtonColor">@color/white</item>
@@ -39,7 +43,7 @@
         <item name="secondaryTextInputHintColor">@color/violetBlue</item>
         <item name="secondaryTextInputBoxStrokeColor">@color/violetBlue</item>
 
-        <item name="selectPhotoButtonBackgroundColor">@color/cadetBlue</item>
+        <item name="selectPhotoButtonBackgroundColor">@color/violetBlue</item>
         <item name="selectPhotoButtonIconColor">@color/white</item>
 
         <item name="bottomMenuBackgroundColor">@color/white</item>
@@ -78,9 +82,9 @@
         <item name="textColor">@color/brown</item>
         <item name="textSecondaryColor">@color/white</item>
 
-        <item name="primaryButtonColor">@color/appleGreen</item>
-        <item name="primaryButtonPressedColor">@color/budGreen</item>
-        <item name="primaryButtonTextColor">@color/white</item>
+        <item name="primaryInAuthButtonColor">@color/appleGreen</item>
+        <item name="primaryInAuthButtonPressedColor">@color/budGreen</item>
+        <item name="primaryInAuthButtonTextColor">@color/white</item>
 
         <item name="primaryTextInputBackgroundColor">@color/white</item>
         <item name="primaryTextInputHintColor">@color/brown</item>
@@ -120,8 +124,8 @@
     </style>
 
     <style name="PrimaryButton">
-        <item name="android:background">@drawable/primary_button_ripple</item>
-        <item name="android:textColor">?attr/primaryButtonTextColor</item>
+        <item name="android:background">@drawable/primary_in_auth_button_ripple</item>
+        <item name="android:textColor">?attr/primaryInAuthButtonTextColor</item>
         <item name="android:fontFamily">@font/lato</item>
         <item name="android:textSize">16sp</item>
         <item name="android:width">250dp</item>

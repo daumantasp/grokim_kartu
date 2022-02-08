@@ -156,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginBottom="30dp"
+                    app:type="primary"
                     app:enabled="@{model.profileForm.changed}"
                     app:onClick="@{() -> model.saveChanges()}"
                     app:text="@string/profile_saveChanges_button" />

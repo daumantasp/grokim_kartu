@@ -12,6 +12,10 @@
     <attr name="textSecondaryColor" format="color" />
     <attr name="textThirdlyColor" format="color" />
 
+    <attr name="primaryInAuthButtonColor" format="color" />
+    <attr name="primaryInAuthButtonPressedColor" format="color" />
+    <attr name="primaryInAuthButtonTextColor" format="color" />
+
     <attr name="primaryButtonColor" format="color" />
     <attr name="primaryButtonPressedColor" format="color" />
     <attr name="primaryButtonTextColor" format="color" />
@@ -59,8 +63,9 @@
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
-            <enum name="primary" value="0" />
-            <enum name="secondary" value="1" />
+            <enum name="primaryInAuth" value="0" />
+            <enum name="primary" value="1" />
+            <enum name="secondary" value="2" />
         </attr>
     </declare-styleable>
 
