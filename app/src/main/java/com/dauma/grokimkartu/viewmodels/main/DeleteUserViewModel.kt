@@ -21,9 +21,11 @@ class DeleteUserViewModel @Inject constructor(
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
+    private val _deleteInProgress = MutableLiveData<Boolean>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val passwordError: LiveData<Int> = _passwordError
+    val deleteInProgress: LiveData<Boolean> = _deleteInProgress
 
     companion object {
         private val TAG = "DeleteUserViewModel"
@@ -43,6 +45,7 @@ class DeleteUserViewModel @Inject constructor(
         }
 
         try {
+            _deleteInProgress.value = true
             usersRepository.getUserData() { user, exception ->
                 if (user?.email != null) {
                     usersRepository.reauthenticateUser(user.email, deleteUserForm.password) { isSuccessful, error ->
@@ -51,17 +54,22 @@ class DeleteUserViewModel @Inject constructor(
                                 if (isSuccessful) {
                                     _navigateToLogin.value = Event("")
                                 }
+                                _deleteInProgress.value = false
                             }
                         } else {
                             Log.d(TAG, error?.message ?: "Reauthentication was unsuccessful")
                             if (error != null) {
                                 handleAuthenticationError(error)
                             }
+                            _deleteInProgress.value = false
                         }
                     }
+                } else {
+                    _deleteInProgress.value = false
                 }
             }
         } catch (e: AuthenticationException) {
+            _deleteInProgress.value = false
             Log.d(TAG, e.message ?: "User delete was unsuccessful")
         }
     }

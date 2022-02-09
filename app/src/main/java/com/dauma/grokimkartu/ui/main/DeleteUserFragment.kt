@@ -57,5 +57,8 @@ class DeleteUserFragment : Fragment() {
         deleteUserViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
+        deleteUserViewModel.deleteInProgress.observe(viewLifecycleOwner, {
+            binding.deleteUserButton.showAnimation(it)
+        })
     }
 }
