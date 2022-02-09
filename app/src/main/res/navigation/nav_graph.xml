@@ -72,12 +72,8 @@
         android:label="ForgotPasswordFragment" />
     <fragment
         android:id="@+id/passwordChangeFragment"
-        android:name="com.dauma.grokimkartu.ui.authentication.PasswordChangeFragment"
-        android:label="PasswordChangeFragment" >
-        <action
-            android:id="@+id/action_passwordChangeFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-    </fragment>
+        android:name="com.dauma.grokimkartu.ui.main.PasswordChangeFragment"
+        android:label="PasswordChangeFragment" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.dauma.grokimkartu.ui.main.SettingsFragment"
@@ -88,7 +84,11 @@
             app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_passwordChangeFragment"
-            app:destination="@id/passwordChangeFragment" />
+            app:destination="@id/passwordChangeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_settingsFragment_to_deleteUserFragment"
             app:destination="@id/deleteUserFragment"

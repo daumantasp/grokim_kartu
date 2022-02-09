@@ -60,7 +60,7 @@ class ForgotPasswordViewModel @Inject constructor(
     private fun handleAuthenticationError(error: AuthenticationError) {
         when(error.message) {
             AuthenticationError.INVALID_EMAIL -> {
-                _emailError.value = R.string.passwordReset_invalid_email_error
+                _emailError.value = R.string.passwordChange_invalid_email_error
             }
             else -> clearAuthenticationErrors()
         }

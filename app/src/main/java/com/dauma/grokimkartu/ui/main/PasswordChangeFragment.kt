@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.ui.authentication
+package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPasswordChangeBinding
 import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.viewmodels.authentication.PasswordChangeViewModel
+import com.dauma.grokimkartu.viewmodels.main.PasswordChangeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,6 +31,9 @@ class PasswordChangeFragment : Fragment() {
         val view = binding.root
         setupObservers()
 
+        binding.changePasswordHeaderViewElement.setOnBackClick {
+            passwordChangeViewModel.backClicked()
+        }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             passwordChangeViewModel.backClicked()
         }
@@ -60,17 +62,15 @@ class PasswordChangeFragment : Fragment() {
         }
         passwordChangeViewModel.showSuccess.observe(viewLifecycleOwner, EventObserver {
             if (it) {
-                binding.oldPasswordTextInput.visibility = View.GONE
-                binding.newPasswordTextInput.visibility = View.GONE
-                binding.repeatPasswordTextInput.visibility = View.GONE
-                binding.changePasswordButton.visibility = View.GONE
-
-                binding.passwordChangedSuccessfullyTextView.visibility = View.VISIBLE
-                binding.okButton.visibility = View.VISIBLE
+                binding.inputsAndButtonLinearLayout.visibility = View.GONE
+                binding.passwordChangeSuccessfulLinearLayout.visibility = View.VISIBLE
             }
         })
-        passwordChangeViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_passwordChangeFragment_to_settingsFragment)
+        passwordChangeViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+            findNavController().popBackStack()
+        })
+        passwordChangeViewModel.changeInProgress.observe(viewLifecycleOwner, {
+            binding.changePasswordButton.showAnimation(it)
         })
     }
 }

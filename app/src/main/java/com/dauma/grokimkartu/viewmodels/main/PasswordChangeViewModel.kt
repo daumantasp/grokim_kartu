@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.viewmodels.authentication
+package com.dauma.grokimkartu.viewmodels.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -18,16 +18,18 @@ class PasswordChangeViewModel @Inject constructor(
     private val usersRepository: UsersRepository,
     private val passwordChangeForm: PasswordChangeForm
 ) : ViewModel() {
-    private val _navigateToProfile = MutableLiveData<Event<String>>()
     private val _showSuccess = MutableLiveData<Event<Boolean>>()
     private val _oldPasswordError = MutableLiveData<Int>()
     private val _newPasswordError = MutableLiveData<Int>()
     private val _repeatPasswordError = MutableLiveData<Int>()
-    val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
+    private val _changeInProgress = MutableLiveData<Boolean>()
+    private val _navigateBack = MutableLiveData<Event<String>>()
     val showSuccess: LiveData<Event<Boolean>> = _showSuccess
     val oldPasswordError: LiveData<Int> = _oldPasswordError
     val newPasswordError: LiveData<Int> = _newPasswordError
     val repeatPasswordError: LiveData<Int> = _repeatPasswordError
+    val changeInProgress: LiveData<Boolean> = _changeInProgress
+    val navigateBack: LiveData<Event<String>> = _navigateBack
 
     companion object {
         private val TAG = "PasswordChangeViewModel"
@@ -50,6 +52,7 @@ class PasswordChangeViewModel @Inject constructor(
         }
 
         try {
+            _changeInProgress.value = true
             usersRepository.getUserData { user, exception ->
                 val email = user?.email
                 if (email != null) {
@@ -65,27 +68,32 @@ class PasswordChangeViewModel @Inject constructor(
                                         handleAuthenticationError(error)
                                     }
                                 }
+                                _changeInProgress.value = false
                             }
                         } else {
                             Log.d(TAG, error?.message ?: "Reauthentication was unsuccessful")
                             if (error != null) {
                                 handleAuthenticationError(error)
                             }
+                            _changeInProgress.value = false
                         }
                     }
+                } else {
+                    _changeInProgress.value = false
                 }
             }
         } catch (e: AuthenticationException) {
+            _changeInProgress.value = false
             Log.d(TAG, e.message ?: "PasswordChange was unsuccessful")
         }
     }
 
     fun okClicked() {
-        _navigateToProfile.value = Event("")
+        _navigateBack.value = Event("")
     }
 
     fun backClicked() {
-        _navigateToProfile.value = Event("")
+        _navigateBack.value = Event("")
     }
 
     private fun handleAuthenticationError(error: AuthenticationError) {

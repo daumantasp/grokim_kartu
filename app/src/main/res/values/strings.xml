@@ -39,19 +39,19 @@
     <string name="forgotPassword_description">Norėdami atstatyti slaptažodį nurodykite el. paštą</string>
     <string name="forgotPassword_email">El. paštas</string>
     <string name="forgotPassword_reset">Atstatyti</string>
-    <string name="passwordReset_invalid_email_error">Toks vartotojas nerastas</string>
-    <string name="passwordReset_email_sent">Slaptažodžio atstatymo laiškas išsiųstas Jums į el. paštą</string>
-    <string name="passwordReset_okButton">Supratau</string>
-    <string name="passwordChange_title">Slaptažodžio keitimas</string>
+    <string name="passwordChange_invalid_email_error">Toks vartotojas nerastas</string>
+    <string name="passwordChange_email_sent">Slaptažodžio atstatymo laiškas išsiųstas Jums į el. paštą</string>
+    <string name="passwordChange_okButton">Supratau</string>
+    <string name="passwordChange_title">Keisti slaptažodį</string>
     <string name="passwordChange_oldPassword">Senas slaptažodis</string>
     <string name="passwordChange_newPassword">Naujas slaptažodis</string>
     <string name="passwordChange_repeatPassword">Pakartokite naująjį slaptažodį</string>
     <string name="passwordChange_changeButton">Keisti</string>
     <string name="passwordChange_invalid_password_error">Neteisingas slaptažodis</string>
     <string name="passwordChange_oldAndNewPasswordMustNotBeTheSame_error">Senasis ir naujasis slaptažodžiai negali sutapti</string>
-    <string name="passwordChange_newAndRepeatPasswordAreNotTheSame_error">Slaptažodžis nesutampa</string>
-    <string name="passwordChange_passwordChangedSuccessfully">Slaptažodžis sėkmingai pakeistas</string>
-    <string name="passwordChange_okButton">Slaptažodžis sėkmingai pakeistas</string>
+    <string name="passwordChange_newAndRepeatPasswordAreNotTheSame_error">Slaptažodis nesutampa</string>
+    <string name="passwordChange_passwordChangedSuccessfully">Slaptažodis sėkmingai pakeistas</string>
+    <string name="passwordChange_success">Slaptažodis sėkmingai pakeistas</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_settings_fragment">Hello from Settings fragment</string>
     <string name="settings_fragment">Nustatymai</string>
