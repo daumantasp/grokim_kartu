@@ -12,6 +12,18 @@
         android:layout_height="100dp"
         android:background="?attr/headerBackgroundColor">
 
+        <ImageButton
+            android:id="@+id/backImageButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/left_arrow"
+            android:backgroundTint="?attr/iconInHeaderColor"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <TextView
             android:id="@+id/headerTitleTextView"
             style="@style/HeaderTitle"

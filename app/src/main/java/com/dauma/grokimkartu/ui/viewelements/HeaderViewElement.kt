@@ -6,12 +6,11 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.core.widget.TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM
@@ -23,6 +22,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
     private val contentConstraintLayout: ConstraintLayout
+    private val backImageButton: ImageButton
     private val titleTextView: TextView
     private val userRelativeLayout: RelativeLayout
     private val initialsViewElement: InitialsViewElement
@@ -36,6 +36,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         inflate(context, R.layout.element_header, this)
 
         contentConstraintLayout = findViewById(R.id.contentConstraintLayout)
+        backImageButton = findViewById(R.id.backImageButton)
         titleTextView = findViewById(R.id.headerTitleTextView)
         userRelativeLayout = findViewById(R.id.userRelativeLayout)
         initialsViewElement = findViewById(R.id.initialsViewElement)
@@ -59,10 +60,12 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         val title = attributes.getString(R.styleable.HeaderViewElement_title)
         val isIconVisible = attributes.getBoolean(R.styleable.HeaderViewElement_showIcon, false)
         val isBottomBorderVisible = attributes.getBoolean(R.styleable.HeaderViewElement_showBottomBorder, false)
+        val type = attributes.getInt(R.styleable.HeaderViewElement_headerType, 0)
         attributes.recycle()
         titleTextView.text = title
         userRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE
         showShadow(isBottomBorderVisible)
+        setType(type)
     }
 
     fun setTitle(title: String) {
@@ -106,5 +109,22 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     fun setOnInitialsOrIconClick(onClick: () -> Unit) {
         userRelativeLayout.setOnClickListener { onClick() }
+    }
+
+    fun setOnBackClick(onClick: () -> Unit) {
+        backImageButton.setOnClickListener { onClick() }
+    }
+
+    private fun setType(type: Int) {
+        if (type == 0) {
+            // Default, Standart
+        } else {
+            backImageButton.visibility = View.VISIBLE
+            titleTextView.gravity = Gravity.CENTER
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(contentConstraintLayout)
+            constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.END, R.id.contentConstraintLayout, ConstraintSet.END, 0)
+            constraintSet.applyTo(contentConstraintLayout)
+        }
     }
 }

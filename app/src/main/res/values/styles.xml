@@ -66,6 +66,7 @@
         <item name="initialsBackgroundColor7">#DC2A2A</item>
 
         <item name="headerBackgroundColor">@color/white</item>
+        <item name="iconInHeaderColor">@color/black</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

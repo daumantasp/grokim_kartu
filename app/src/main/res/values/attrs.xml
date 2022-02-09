@@ -60,6 +60,8 @@
 
     <attr name="StatusBarMainColor" format="color" />
 
+    <attr name="iconInHeaderColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
@@ -86,5 +88,9 @@
         <attr name="title" format="string" />
         <attr name="showIcon" format="boolean" />
         <attr name="showBottomBorder" format="boolean" />
+        <attr name="headerType" format="enum">
+            <enum name="standart" value="0" />
+            <enum name="withBack" value="1" />
+        </attr>
     </declare-styleable>
 </resources>
