@@ -21,9 +21,11 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
     private var _initialUser: User? = null
     private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _navigateToDeleteUser = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val navigateToDeleteUser: LiveData<Event<String>> = _navigateToDeleteUser
     val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
 
@@ -45,33 +47,8 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun deleteUser() {
-        if (settingsForm.isPasswordValid() == false) {
-            return
-        }
-
-        try {
-            usersRepository.getUserData() { user, exception ->
-                if (user?.email != null) {
-                    usersRepository.reauthenticateUser(user.email, settingsForm.password) { isSuccessful, error ->
-                        if (isSuccessful) {
-                            usersRepository.deleteUser() { isSuccessful, error ->
-                                if (isSuccessful) {
-                                    _navigateToLogin.value = Event("")
-                                }
-                            }
-                        } else {
-                            Log.d(SettingsViewModel.TAG, error?.message ?: "Reauthentication was unsuccessful")
-                            if (error != null) {
-                                handleAuthenticationError(error)
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (e: AuthenticationException) {
-            Log.d(SettingsViewModel.TAG, e.message ?: "User delete was unsuccessful")
-        }
+    fun deleteUserClicked() {
+        _navigateToDeleteUser.value = Event("")
     }
 
     fun changePassword() {

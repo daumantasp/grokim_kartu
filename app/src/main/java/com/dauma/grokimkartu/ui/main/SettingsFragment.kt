@@ -44,11 +44,11 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        settingsViewModel.passwordError.observe(viewLifecycleOwner) {
-            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        }
         settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+        })
+        settingsViewModel.navigateToDeleteUser.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_settingsFragment_to_deleteUserFragment)
         })
         settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)

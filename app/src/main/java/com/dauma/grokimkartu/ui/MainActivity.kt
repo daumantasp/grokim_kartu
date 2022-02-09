@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator {
                 R.id.loginFragment,
                 R.id.registrationFragment,
                 R.id.forgotPasswordFragment,
+                R.id.deleteUserFragment,
                 R.id.passwordChangeFragment,
                 R.id.playerDetailsFragment -> showBottomNavigation(false)
                 else -> showBottomNavigation(true)

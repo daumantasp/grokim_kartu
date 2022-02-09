@@ -22,26 +22,10 @@ class SettingsForm: BaseObservable() {
             notifyPropertyChanged(BR.changed)
         }
 
-    @get:Bindable
-    var password: String = ""
-        set(value) {
-            field = value
-            notifyPropertyChanged(BR.passwordValid)
-        }
-
     fun setInitialValues(email: String, isVisible: Boolean) {
         this.email = email
         this.isVisible = isVisible
         this.initialIsVisible = isVisible
-    }
-
-    // TODO: refactor, Duplicating in registrationForm
-    @Bindable
-    fun isPasswordValid(): Boolean {
-        if (password.length < 6 || password.length > 35) {
-            return false
-        }
-        return true
     }
 
     @Bindable

@@ -121,4 +121,9 @@ class AppModule {
     fun providesPlayerDetailsForm() : PlayerDetailsForm {
         return PlayerDetailsForm()
     }
+
+    @Provides
+    fun deleteUserForm() : DeleteUserForm {
+        return DeleteUserForm()
+    }
 }
