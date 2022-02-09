@@ -185,6 +185,7 @@
             app:title="@string/profile_fragment"
             app:showBottomBorder="false"
             app:showIcon="false"
+            app:headerType="standart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

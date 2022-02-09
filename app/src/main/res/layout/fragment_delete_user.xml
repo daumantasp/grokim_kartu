@@ -19,6 +19,7 @@
             app:title="@string/delete_user_title"
             app:showBottomBorder="false"
             app:showIcon="false"
+            app:headerType="withBack"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -63,7 +64,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="30dp"
                 app:enabled="@{model.deleteUserForm.passwordValid}"
-                app:onClick="@{() -> model.deleteUser()}"
+                app:onClick="@{() -> model.deleteUserClicked()}"
                 app:text="@string/delete_user_delete_button"
                 app:type="primary" />
 

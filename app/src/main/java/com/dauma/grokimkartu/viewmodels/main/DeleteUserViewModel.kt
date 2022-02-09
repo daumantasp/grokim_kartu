@@ -19,8 +19,10 @@ class DeleteUserViewModel @Inject constructor(
     private val deleteUserForm: DeleteUserForm
 ) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _navigateBack = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val navigateBack: LiveData<Event<String>> = _navigateBack
     val passwordError: LiveData<Int> = _passwordError
 
     companion object {
@@ -31,7 +33,11 @@ class DeleteUserViewModel @Inject constructor(
         return deleteUserForm
     }
 
-    fun deleteUser() {
+    fun backClicked() {
+        _navigateBack.value = Event("")
+    }
+
+    fun deleteUserClicked() {
         if (deleteUserForm.isPasswordValid() == false) {
             return
         }
