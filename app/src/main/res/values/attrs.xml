@@ -11,6 +11,7 @@
     <attr name="textColor" format="color" />
     <attr name="textSecondaryColor" format="color" />
     <attr name="textThirdlyColor" format="color" />
+    <attr name="textForthColor" format="color" />
 
     <attr name="primaryInAuthButtonColor" format="color" />
     <attr name="primaryInAuthButtonPressedColor" format="color" />
@@ -62,6 +63,8 @@
 
     <attr name="iconInHeaderColor" format="color" />
 
+    <attr name="rowBackgroundColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
@@ -92,5 +95,11 @@
             <enum name="standart" value="0" />
             <enum name="withBack" value="1" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="RowViewElement">
+        <attr name="rowTitle" format="string" />
+        <attr name="rowValue" format="string" />
+        <attr name="rowShowArrow" format="boolean" />
     </declare-styleable>
 </resources>

@@ -16,11 +16,13 @@
         <item name="iconInAuthColor">@color/white</item>
         <item name="disabledColor">@color/grey</item>
 
+<!--        refactor texts-->
         <item name="titleColor">@color/white</item>
         <item name="titleSecondaryColor">@color/black</item>
         <item name="textColor">@color/champagnePink</item>
         <item name="textSecondaryColor">@color/white</item>
         <item name="textThirdlyColor">@android:color/darker_gray</item>
+        <item name="textForthColor">@color/black</item>
 
         <item name="primaryInAuthButtonColor">@color/cadetBlue</item>
         <item name="primaryInAuthButtonPressedColor">@color/cadet</item>
@@ -67,6 +69,8 @@
 
         <item name="headerBackgroundColor">@color/white</item>
         <item name="iconInHeaderColor">@color/black</item>
+
+        <item name="rowBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -114,6 +118,12 @@
 
     <style name="TextThirdly">
         <item name="android:textColor">?attr/textThirdlyColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextForthly">
+        <item name="android:textColor">?attr/textForthColor</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
     </style>
