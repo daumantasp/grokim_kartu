@@ -12,63 +12,69 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:id="@+id/inputAndButtonLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="60dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/passwordTextInput"
+                    style="@style/SecondaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="40dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="@string/profile_delete_user_password"
+                        android:inputType="textPassword"
+                        android:lines="1"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="@={model.deleteUserForm.password}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/deleteUserButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="30dp"
+                    app:enabled="@{model.deleteUserForm.passwordValid}"
+                    app:onClick="@{() -> model.deleteUserClicked()}"
+                    app:text="@string/delete_user_delete_button"
+                    app:type="primary" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
             android:id="@+id/deleteUserHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/delete_user_title"
-            app:showBottomBorder="false"
+            app:showBottomBorder="true"
             app:showIcon="false"
             app:headerType="withBack"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/inputAndButtonLinearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/deleteUserHeaderViewElement"
-            app:layout_constraintVertical_bias="0.2">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/passwordTextInput"
-                style="@style/SecondaryTextInput"
-                android:layout_width="300dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="40dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/passwordTextInputEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/profile_delete_user_password"
-                    android:inputType="textPassword"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:text="@={model.deleteUserForm.password}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                android:id="@+id/deleteUserButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="30dp"
-                app:enabled="@{model.deleteUserForm.passwordValid}"
-                app:onClick="@{() -> model.deleteUserClicked()}"
-                app:text="@string/delete_user_delete_button"
-                app:type="primary" />
-
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
