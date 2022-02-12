@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rowConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@drawable/row_background">
+    android:minHeight="60dp"
+    android:layout_height="match_parent"
+    android:background="@drawable/row_background_with_both_borders">
 
     <TextView
         android:id="@+id/titleTextView"
@@ -25,10 +26,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
+        android:layout_marginStart="40dp"
+        android:ellipsize="end"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="end"
+        android:lines="1"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/titleTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constrainedWidth="true"
         tools:text="Value" />
 
     <ImageView
@@ -37,6 +45,16 @@
         android:layout_height="20dp"
         android:background="@drawable/left_arrow"
         android:rotation="180"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/rowSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
