@@ -27,6 +27,7 @@
     <string name="login_invalid_email_error">Toks vartotojas nerastas</string>
     <string name="login_invalid_password_error">Neteisingas slaptažodis</string>
     <string name="login_too_many_requests_error">Luktelėkite! Per daug bandymų prisijungti.</string>
+    <string name="settings_show_me_in_list">Rodyti mane sąraše</string>
     <string name="settings_delete_user">Panaikinti vartotoją</string>
     <string name="settings_saveChanges_button">Išsaugoti</string>
     <string name="delete_user_title">Panaikinti vartotoją</string>

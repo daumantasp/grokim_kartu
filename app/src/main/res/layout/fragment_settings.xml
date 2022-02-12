@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
+            android:fillViewport="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,78 +31,70 @@
                 android:paddingBottom="20dp"
                 android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/emailTextInput"
-                    style="@style/SecondaryTextInput"
-                    android:layout_width="300dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:enabled="false">
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:rowTitle="@string/settings_email"
+                    app:value="@{model.settingsForm.email}"
+                    app:rowBorders="top"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/nameTextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:hint="@string/settings_email"
-                        android:singleLine="true"
-                        android:text="@{model.settingsForm.email}"
-                        android:maxLines="1"
-                        android:lines="1" />
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:rowTitle="@string/settings_show_me_in_list"
+                    app:rowShowSwitch="true"
+                    app:switchChecked="@={model.settingsForm.visible}"
+                    app:onClick="@{() -> model.changePassword()}"
+                    app:onSwitchChecked="@{() -> model.saveChanges()}"
+                    app:rowBorders="top"/>
 
-                </com.google.android.material.textfield.TextInputLayout>
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:rowTitle="@string/profile_change_password_button"
+                    app:rowShowArrow="true"
+                    app:onClick="@{() -> model.changePassword()}"
+                    app:rowBorders="top"/>
 
-                <Button
-                    android:id="@+id/deleteUserButton"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:fontFamily="@font/lato"
-                    android:layout_gravity="center"
-                    android:text="@string/settings_delete_user"
-                    android:onClick="@{() -> model.deleteUserClicked()}"/>
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="61dp"
+                    app:rowTitle="@string/settings_delete_user"
+                    app:rowShowArrow="true"
+                    app:onClick="@{() -> model.deleteUserClicked()}"
+                    app:rowBorders="both"/>
 
-                <Button
-                    android:id="@+id/changePasswordButton"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/profile_change_password_button"
-                    android:fontFamily="@font/lato"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="30dp"
-                    android:onClick="@{() -> model.changePassword()}"/>
-
-                <Switch
-                    android:id="@+id/showMeSwitch"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:text="Rodyti mane sąraše"
-                    android:fontFamily="@font/lato"
-                    android:layout_gravity="center"
-                    android:checked="@={model.settingsForm.visible}"/>
+<!--                <Switch-->
+<!--                    android:id="@+id/showMeSwitch"-->
+<!--                    android:layout_width="250dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Rodyti mane sąraše"-->
+<!--                    android:fontFamily="@font/lato"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:checked="@={model.settingsForm.visible}"/>-->
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <Button
-                    android:id="@+id/saveChangesButton"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30dp"
-                    android:fontFamily="@font/lato"
-                    android:layout_gravity="center"
-                    android:text="@string/settings_saveChanges_button"
-                    android:enabled="@{model.settingsForm.changed}"
-                    android:onClick="@{() -> model.saveChanges()}"/>
+<!--                <Button-->
+<!--                    android:id="@+id/saveChangesButton"-->
+<!--                    android:layout_width="250dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginBottom="30dp"-->
+<!--                    android:fontFamily="@font/lato"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:text="@string/settings_saveChanges_button"-->
+<!--                    android:enabled="@{model.settingsForm.changed}"-->
+<!--                    android:onClick="@{() -> model.saveChanges()}"/>-->
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/logoutButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="30dp"
                     app:type="primary"
                     app:onClick="@{() -> model.logoutClicked()}"
                     app:text="@string/profile_logout" />

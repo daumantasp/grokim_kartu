@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
+            android:fillViewport="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,28 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
+                android:paddingBottom="20dp"
                 android:orientation="vertical">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/nameTextInput"
-                    style="@style/SecondaryTextInput"
-                    android:layout_width="300dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:enabled="false">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/nameTextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:hint="@string/profile_name"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@={model.profileForm.name}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -95,68 +76,36 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/instrumentTextInput"
-                    style="@style/SecondaryTextInput"
-                    android:layout_width="300dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp">
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:rowTitle="@string/profile_name"
+                    app:value="@{model.profileForm.name}"
+                    app:rowBorders="top"/>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/instrumentTextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:fontFamily="@font/lato"
-                        android:hint="@string/profile_instrument"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="@={model.profileForm.instrument}" />
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:rowTitle="@string/profile_instrument"
+                    app:value="@{model.profileForm.instrument}"
+                    app:rowShowArrow="true"
+                    app:rowBorders="top"/>
 
-                </com.google.android.material.textfield.TextInputLayout>
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    app:rowTitle="@string/profile_desciption"
+                    app:value="@{model.profileForm.description}"
+                    app:rowShowArrow="true"
+                    app:rowBorders="top"/>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/descriptionTextInput"
-                    style="@style/SecondaryTextInput"
-                    android:layout_width="300dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/descriptionTextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="230dp"
-                        android:fontFamily="@font/lato"
-                        android:gravity="top"
-                        android:hint="@string/profile_desciption"
-                        android:lines="10"
-                        android:maxLines="10"
-                        android:text="@={model.profileForm.description}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cityTextInput"
-                    style="@style/SecondaryTextInput"
-                    android:layout_width="300dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/cityTextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:fontFamily="@font/lato"
-                        android:gravity="top"
-                        android:hint="@string/profile_city"
-                        android:lines="1"
-                        android:maxLines="1"
-                        android:text="@={model.profileForm.city}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="61dp"
+                    app:rowTitle="@string/profile_city"
+                    app:value="@{model.profileForm.city}"
+                    app:rowShowArrow="true"
+                    app:rowBorders="both"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -168,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="30dp"
                     app:type="primary"
                     app:enabled="@{model.profileForm.changed}"
                     app:onClick="@{() -> model.saveChanges()}"
