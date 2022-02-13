@@ -18,8 +18,10 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _selectPhoto = MutableLiveData<Event<String>>()
     private val _profileLoaded = MutableLiveData<Event<String>>()
+    private val _editDescription = MutableLiveData<Event<String>>()
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
+    val editDescription: LiveData<Event<String>> = _editDescription
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -53,6 +55,10 @@ class ProfileViewModel @Inject constructor(
             isPhotoLoaded = true
             checkIfFullProfileLoaded()
         }
+    }
+
+    fun descriptionClicked() {
+        _editDescription.value = Event("")
     }
 
     fun saveChanges() {

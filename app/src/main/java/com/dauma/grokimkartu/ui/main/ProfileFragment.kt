@@ -15,6 +15,8 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.main.dialogs.ProfileEditDialog
+import com.dauma.grokimkartu.ui.main.dialogs.ProfileEditDialogData
 import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -83,6 +85,21 @@ class ProfileFragment : Fragment() {
                 binding.profileInitialsViewElement.visibility = View.GONE
                 binding.photoImageView.visibility = View.VISIBLE
             }
+        })
+        profileViewModel.editDescription.observe(viewLifecycleOwner, EventObserver {
+            val themeId = R.style.SecondaryLightTheme
+            val data = ProfileEditDialogData(
+                "*Aprašymas*",
+                "*Kažkoks aprašymas*"
+            )
+            val descriptionEditDialog = ProfileEditDialog(requireContext(), themeId, data)
+            descriptionEditDialog.onSaveClicked = {}
+            descriptionEditDialog.onCancelClicked = {
+                descriptionEditDialog.dismiss()
+            }
+            descriptionEditDialog.setCancelable(true)
+            descriptionEditDialog.setCanceledOnTouchOutside(true)
+            descriptionEditDialog.show()
         })
     }
 

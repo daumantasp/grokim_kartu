@@ -71,6 +71,8 @@
         <item name="iconInHeaderColor">@color/black</item>
 
         <item name="rowBackgroundColor">@color/white</item>
+
+        <item name="profileEditDialogBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

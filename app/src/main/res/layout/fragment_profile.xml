@@ -96,6 +96,7 @@
                     android:layout_height="60dp"
                     app:rowTitle="@string/profile_desciption"
                     app:value="@{model.profileForm.description}"
+                    app:onClick="@{() -> model.descriptionClicked()}"
                     app:rowShowArrow="true"
                     app:rowBorders="top"/>
 
