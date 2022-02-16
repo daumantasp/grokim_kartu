@@ -67,6 +67,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_settings">Settings</string>
-    <string name="profile_edit_dialog_save_button">Išsaugoti</string>
-    <string name="profile_edit_dialog_cancel_button">Atšaukti</string>
+    <string name="bottom_dialog_save_button">Išsaugoti</string>
+    <string name="bottom_dialog_cancel_button">Atšaukti</string>
 </resources>

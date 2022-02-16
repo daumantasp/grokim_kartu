@@ -65,7 +65,10 @@
 
     <attr name="rowBackgroundColor" format="color" />
 
-    <attr name="profileEditDialogBackgroundColor" format="color" />
+    <attr name="bottomDialogBackgroundColor" format="color" />
+    <attr name="bottomDialogColor" format="color" />
+    <attr name="bottomDialogTitleColor" format="color" />
+    <attr name="bottomDialogValueColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />

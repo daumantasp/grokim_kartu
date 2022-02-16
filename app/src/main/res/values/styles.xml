@@ -72,7 +72,10 @@
 
         <item name="rowBackgroundColor">@color/white</item>
 
-        <item name="profileEditDialogBackgroundColor">@color/white</item>
+        <item name="bottomDialogBackgroundColor">@color/black50</item>
+        <item name="bottomDialogColor">@color/white</item>
+        <item name="bottomDialogTitleColor">@color/black</item>
+        <item name="bottomDialogValueColor">@android:color/darker_gray</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -168,5 +171,20 @@
         <item name="android:textSize">32sp</item>
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BottomDialogTitle">
+        <item name="android:textColor">?attr/bottomDialogTitleColor</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/raleway</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="BottomDialogValue">
+        <item name="android:textColor">?attr/bottomDialogValueColor</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:gravity">start|top</item>
     </style>
 </resources>

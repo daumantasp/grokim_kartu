@@ -11,12 +11,19 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
+enum class StatusBarTheme {
+    LOGIN,
+    MAIN
+}
+
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), CustomNavigator {
+class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
     private var bottomNavigationView: BottomNavigationView? = null
+    private var bottomDialogViewElement: BottomDialogViewElement? = null
 
     companion object {
         val TAG = "MainActivity"
@@ -26,17 +33,14 @@ class MainActivity : AppCompatActivity(), CustomNavigator {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initializeBottomNavigation()
-    }
-
-    override fun navigateToProfile() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigate(R.id.profileFragment)
+        bottomDialogViewElement =
+            findViewById<BottomDialogViewElement>(R.id.bottomDialogViewElement)
     }
 
     fun changeStatusBarTheme(theme: StatusBarTheme) {
         val typedValue = TypedValue()
-        val attributeId = if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
+        val attributeId =
+            if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
         this.theme.resolveAttribute(attributeId, typedValue, true)
         val statusBarBackgroundColor = typedValue.resourceId
 
@@ -47,11 +51,13 @@ class MainActivity : AppCompatActivity(), CustomNavigator {
                 window?.insetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
             } else {
                 @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                window.decorView.systemUiVisibility =
+                    window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             }
         } else if (theme == StatusBarTheme.MAIN) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                window?.insetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS)
+                window?.insetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS,
+                    APPEARANCE_LIGHT_STATUS_BARS)
             } else {
                 @Suppress("DEPRECATION")
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -61,7 +67,8 @@ class MainActivity : AppCompatActivity(), CustomNavigator {
 
     private fun initializeBottomNavigation() {
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         bottomNavigationView!!.setupWithNavController(navController)
 
@@ -73,7 +80,8 @@ class MainActivity : AppCompatActivity(), CustomNavigator {
                 R.id.forgotPasswordFragment,
                 R.id.deleteUserFragment,
                 R.id.passwordChangeFragment,
-                R.id.playerDetailsFragment -> showBottomNavigation(false)
+                R.id.playerDetailsFragment
+                -> showBottomNavigation(false)
                 else -> showBottomNavigation(true)
             }
         }
@@ -86,9 +94,52 @@ class MainActivity : AppCompatActivity(), CustomNavigator {
 
         bottomNavigationView!!.visibility = if (show == true) View.VISIBLE else View.GONE
     }
-}
 
-enum class StatusBarTheme {
-    LOGIN,
-    MAIN
+    // MARK: CustomNavigator
+    override fun navigateToProfile() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.profileFragment)
+    }
+
+    // MARK: DialogsManager
+    override fun showBottomDialog(data: BottomDialogData) {
+        bottomDialogViewElement?.let { dialog ->
+            val typedValue = TypedValue()
+            this.theme.resolveAttribute(R.attr.bottomDialogBackgroundColor, typedValue, true)
+            val statusBarBackgroundColor = typedValue.resourceId
+            window.statusBarColor = ContextCompat.getColor(this, statusBarBackgroundColor)
+            bottomNavigationView?.translationZ = -30.0f
+
+            dialog.reset()
+            dialog.setTitle(data.title)
+            dialog.setEditableValue(data.value)
+            dialog.setValueCharsLimit(data.valueLimit)
+            dialog.setOnSaveClick { data.onSaveClicked() }
+            dialog.setOnValueChanged { value ->
+                data.onValueChanged(value)
+            }
+            dialog.setOnCancelClick { data.onCancelClicked() }
+            dialog.setSaveButtonEnabled(false)
+            dialog.show(animated = true)
+        }
+    }
+
+    override fun hideBottomDialog() {
+        bottomDialogViewElement?.let { dialog ->
+            dialog.hide(animated = true) {
+                changeStatusBarTheme(StatusBarTheme.MAIN)
+                bottomNavigationView?.translationZ = 0.0f
+            }
+        }
+    }
+
+    override fun enableBottomDialogSaveButton(isEnabled: Boolean) {
+        bottomDialogViewElement?.setSaveButtonEnabled(isEnabled)
+    }
+
+    override fun showBottomDialogLoading(show: Boolean) {
+        bottomDialogViewElement?.showLoading(show)
+    }
 }
