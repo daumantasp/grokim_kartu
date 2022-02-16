@@ -18,10 +18,14 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _selectPhoto = MutableLiveData<Event<String>>()
     private val _profileLoaded = MutableLiveData<Event<String>>()
+    private val _editInstrument = MutableLiveData<Event<String>>()
     private val _editDescription = MutableLiveData<Event<String>>()
+    private val _editCity = MutableLiveData<Event<String>>()
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
+    val editInstrument: LiveData<Event<String>> = _editInstrument
     val editDescription: LiveData<Event<String>> = _editDescription
+    val editCity: LiveData<Event<String>> = _editCity
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -57,8 +61,16 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun instrumentClicked() {
+        _editInstrument.value = Event("")
+    }
+
     fun descriptionClicked() {
         _editDescription.value = Event("")
+    }
+
+    fun cityClicked() {
+        _editCity.value = Event("")
     }
 
     fun saveChanges(onComplete: () -> Unit = {}) {
@@ -82,14 +94,14 @@ class ProfileViewModel @Inject constructor(
                 }
                 onComplete()
             }
-
-            if (profileForm.isPhotoChanged() == true) {
-                if (profileForm.photo != null) {
-                    usersRepository.setUserPhoto(this.profileForm.photo!!) { isSuccessful, e ->
-                        this.profileForm.setInitialPhoto(this.profileForm.photo!!)
-                        onComplete()
-                    }
+        } else if (profileForm.isPhotoChanged() == true) {
+            if (profileForm.photo != null) {
+                usersRepository.setUserPhoto(this.profileForm.photo!!) { isSuccessful, e ->
+                    this.profileForm.setInitialPhoto(this.profileForm.photo!!)
+                    onComplete()
                 }
+            } else {
+                onComplete()
             }
         } else {
             onComplete()

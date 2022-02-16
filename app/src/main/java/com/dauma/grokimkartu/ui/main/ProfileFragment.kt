@@ -47,6 +47,7 @@ class ProfileFragment : Fragment() {
                     val image = utils.imageUtils.getImageWithAuthority(requireContext(), imageUri, width, height)
                     if (image != null) {
                         profileViewModel.getProfileForm().photo = image
+                        profileViewModel.saveChanges()
                     }
                 }
             }
@@ -106,6 +107,31 @@ class ProfileFragment : Fragment() {
                 binding.photoImageView.visibility = View.VISIBLE
             }
         })
+        // TODO: refactor
+        profileViewModel.editInstrument.observe(viewLifecycleOwner, EventObserver {
+            dialogsManager?.let { manager ->
+                val dialogData = BottomDialogData(
+                    title = getString(R.string.profile_instrument),
+                    value = profileViewModel.getProfileForm().instrument,
+                    valueLimit = profileViewModel.getProfileForm().instrumentLimit,
+                    onSaveClicked = { value ->
+                        manager.showBottomDialogLoading(true)
+                        profileViewModel.getProfileForm().instrument = value
+                        profileViewModel.saveChanges() {
+                            manager.showBottomDialogLoading(false)
+                            manager.hideBottomDialog()
+                        }
+                    },
+                    onValueChanged = { value ->
+                        val isSaveButtonEnabled = value != profileViewModel.getProfileForm().instrument
+                        manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
+                    },
+                    onCancelClicked = { manager.hideBottomDialog() }
+                )
+                manager.showBottomDialog(dialogData)
+                isProfileEditDialogShown = true
+            }
+        })
         profileViewModel.editDescription.observe(viewLifecycleOwner, EventObserver {
             dialogsManager?.let { manager ->
                 val dialogData = BottomDialogData(
@@ -122,6 +148,30 @@ class ProfileFragment : Fragment() {
                     },
                     onValueChanged = { value ->
                         val isSaveButtonEnabled = value != profileViewModel.getProfileForm().description
+                        manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
+                    },
+                    onCancelClicked = { manager.hideBottomDialog() }
+                )
+                manager.showBottomDialog(dialogData)
+                isProfileEditDialogShown = true
+            }
+        })
+        profileViewModel.editCity.observe(viewLifecycleOwner, EventObserver {
+            dialogsManager?.let { manager ->
+                val dialogData = BottomDialogData(
+                    title = getString(R.string.profile_city),
+                    value = profileViewModel.getProfileForm().city,
+                    valueLimit = profileViewModel.getProfileForm().cityLimit,
+                    onSaveClicked = { value ->
+                        manager.showBottomDialogLoading(true)
+                        profileViewModel.getProfileForm().city = value
+                        profileViewModel.saveChanges() {
+                            manager.showBottomDialogLoading(false)
+                            manager.hideBottomDialog()
+                        }
+                    },
+                    onValueChanged = { value ->
+                        val isSaveButtonEnabled = value != profileViewModel.getProfileForm().city
                         manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
                     },
                     onCancelClicked = { manager.hideBottomDialog() }

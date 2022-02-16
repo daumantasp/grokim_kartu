@@ -88,6 +88,7 @@
                     android:layout_height="60dp"
                     app:rowTitle="@string/profile_instrument"
                     app:value="@{model.profileForm.instrument}"
+                    app:onClick="@{() -> model.instrumentClicked()}"
                     app:rowShowArrow="true"
                     app:rowBorders="top"/>
 
@@ -105,6 +106,7 @@
                     android:layout_height="61dp"
                     app:rowTitle="@string/profile_city"
                     app:value="@{model.profileForm.city}"
+                    app:onClick="@{() -> model.cityClicked()}"
                     app:rowShowArrow="true"
                     app:rowBorders="both"/>
 
