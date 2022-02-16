@@ -111,8 +111,15 @@ class ProfileFragment : Fragment() {
                 val dialogData = BottomDialogData(
                     title = getString(R.string.profile_description),
                     value = profileViewModel.getProfileForm().description,
-                    valueLimit = 300,
-                    onSaveClicked = { profileViewModel.saveChanges() },
+                    valueLimit = profileViewModel.getProfileForm().descriptionLimit,
+                    onSaveClicked = { value ->
+                        manager.showBottomDialogLoading(true)
+                        profileViewModel.getProfileForm().description = value
+                        profileViewModel.saveChanges() {
+                            manager.showBottomDialogLoading(false)
+                            manager.hideBottomDialog()
+                        }
+                    },
                     onValueChanged = { value ->
                         val isSaveButtonEnabled = value != profileViewModel.getProfileForm().description
                         manager.enableBottomDialogSaveButton(isSaveButtonEnabled)

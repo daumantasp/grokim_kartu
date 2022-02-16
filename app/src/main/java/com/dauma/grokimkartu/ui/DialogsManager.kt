@@ -11,7 +11,7 @@ data class BottomDialogData(
     val title: String,
     val value: String,
     val valueLimit: Int,
-    val onSaveClicked: () -> Unit,
+    val onSaveClicked: (String) -> Unit,
     val onValueChanged: (String) -> Unit,
     val onCancelClicked: () -> Unit
 )

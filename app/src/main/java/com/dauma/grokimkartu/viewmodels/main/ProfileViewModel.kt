@@ -61,7 +61,7 @@ class ProfileViewModel @Inject constructor(
         _editDescription.value = Event("")
     }
 
-    fun saveChanges() {
+    fun saveChanges(onComplete: () -> Unit = {}) {
         if (profileForm.areValuesChanged() == true) {
             val newProfile = Profile(
                 profileForm.name,
@@ -80,16 +80,22 @@ class ProfileViewModel @Inject constructor(
                         newProfile.city ?: ""
                     )
                 }
+                onComplete()
             }
-        }
 
-        if (profileForm.isPhotoChanged() == true) {
-            if (profileForm.photo != null) {
-                usersRepository.setUserPhoto(this.profileForm.photo!!) { isSuccessful, e ->
-                    this.profileForm.setInitialPhoto(this.profileForm.photo!!)
+            if (profileForm.isPhotoChanged() == true) {
+                if (profileForm.photo != null) {
+                    usersRepository.setUserPhoto(this.profileForm.photo!!) { isSuccessful, e ->
+                        this.profileForm.setInitialPhoto(this.profileForm.photo!!)
+                        onComplete()
+                    }
                 }
             }
+        } else {
+            onComplete()
         }
+
+        // TODO: onComplete should be called only when all data is set
     }
 
     fun selectPhoto() {

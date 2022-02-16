@@ -113,17 +113,6 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/saveChangesButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="30dp"
-                    app:type="primary"
-                    app:enabled="@{model.profileForm.changed}"
-                    app:onClick="@{() -> model.saveChanges()}"
-                    app:text="@string/profile_saveChanges_button" />
-
             </LinearLayout>
         </ScrollView>
 

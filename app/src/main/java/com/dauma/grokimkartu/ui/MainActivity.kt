@@ -116,10 +116,8 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
             dialog.setTitle(data.title)
             dialog.setEditableValue(data.value)
             dialog.setValueCharsLimit(data.valueLimit)
-            dialog.setOnSaveClick { data.onSaveClicked() }
-            dialog.setOnValueChanged { value ->
-                data.onValueChanged(value)
-            }
+            dialog.setOnSaveClick { value -> data.onSaveClicked(value) }
+            dialog.setOnValueChanged { value -> data.onValueChanged(value) }
             dialog.setOnCancelClick { data.onCancelClicked() }
             dialog.setSaveButtonEnabled(false)
             dialog.show(animated = true)

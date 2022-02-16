@@ -20,11 +20,23 @@ class ProfileForm(): BaseObservable() {
         }
 
     @get:Bindable
+    var nameLimit: Int = 50
+        get() {
+            return field
+        }
+
+    @get:Bindable
     var instrument: String = ""
         set(value) {
             field = value
             notifyPropertyChanged(BR.instrument)
             notifyPropertyChanged(BR.changed)
+        }
+
+    @get:Bindable
+    var instrumentLimit: Int = 50
+        get() {
+            return field
         }
 
     @get:Bindable
@@ -36,11 +48,22 @@ class ProfileForm(): BaseObservable() {
         }
 
     @get:Bindable
+    var descriptionLimit: Int = 300
+        get() {
+            return field
+        }
+
+    @get:Bindable
     var city: String = ""
         set(value) {
             field = value
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
+        }
+    @get:Bindable
+    var cityLimit: Int = 50
+        get() {
+            return field
         }
 
     @get:Bindable

@@ -66,10 +66,6 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         valueEditText.setSelection(valueEditText.length())
     }
 
-    fun getValue() : String {
-        return valueEditText.text.toString()
-    }
-
     fun setSaveButtonEnabled(isEnabled: Boolean) {
         saveButton.isEnabled = isEnabled
     }
@@ -78,10 +74,10 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         saveButton.showAnimation(isLoading)
     }
 
-    fun setOnSaveClick(onClick: () -> Unit) {
+    fun setOnSaveClick(onClick: (String) -> Unit) {
         saveButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-                onClick()
+                onClick(valueEditText.text.toString())
             }
         })
     }

@@ -61,7 +61,6 @@
     <string name="profile_instrument">Instrumentas</string>
     <string name="profile_description">Aprašymas</string>
     <string name="profile_city">Miestas</string>
-    <string name="profile_saveChanges_button">Išsaugoti</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="playerDetails_title">Player Details fragment</string>
     <string name="menu_home">Home</string>
