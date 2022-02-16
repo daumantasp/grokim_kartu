@@ -59,7 +59,7 @@
     <string name="settings_email">El. paštas</string>
     <string name="profile_name">Vardas</string>
     <string name="profile_instrument">Instrumentas</string>
-    <string name="profile_desciption">Aprašymas</string>
+    <string name="profile_description">Aprašymas</string>
     <string name="profile_city">Miestas</string>
     <string name="profile_saveChanges_button">Išsaugoti</string>
     <!-- TODO: Remove or change this placeholder text -->

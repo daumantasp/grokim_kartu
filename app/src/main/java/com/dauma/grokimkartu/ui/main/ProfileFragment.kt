@@ -1,12 +1,14 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -15,8 +17,8 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.ui.main.dialogs.ProfileEditDialog
-import com.dauma.grokimkartu.ui.main.dialogs.ProfileEditDialogData
+import com.dauma.grokimkartu.ui.DialogsManager
+import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,6 +28,8 @@ class ProfileFragment : Fragment() {
     private val profileViewModel by viewModels<ProfileViewModel>()
     private var galleryResult: ActivityResultLauncher<Intent>
 //    private var cameraResult: ActivityResultLauncher<Intent>
+    private var dialogsManager: DialogsManager? = null
+    private var isProfileEditDialogShown: Boolean = false
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentProfileBinding? = null
@@ -49,6 +53,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dialogsManager = context as? DialogsManager
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,6 +71,17 @@ class ProfileFragment : Fragment() {
             // TODO: Still reloads on device rotate, probably need to save state instance
             profileViewModel.loadProfile()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (isProfileEditDialogShown == true) {
+                dialogsManager?.hideBottomDialog()
+                isProfileEditDialogShown = false
+            } else {
+                isEnabled = false
+                requireActivity().onBackPressed()
+            }
+        }
+
         return view
     }
 
@@ -87,19 +107,21 @@ class ProfileFragment : Fragment() {
             }
         })
         profileViewModel.editDescription.observe(viewLifecycleOwner, EventObserver {
-            val themeId = R.style.SecondaryLightTheme
-            val data = ProfileEditDialogData(
-                "*Aprašymas*",
-                "*Kažkoks aprašymas*"
-            )
-            val descriptionEditDialog = ProfileEditDialog(requireContext(), themeId, data)
-            descriptionEditDialog.onSaveClicked = {}
-            descriptionEditDialog.onCancelClicked = {
-                descriptionEditDialog.dismiss()
+            dialogsManager?.let { manager ->
+                val dialogData = BottomDialogData(
+                    title = getString(R.string.profile_description),
+                    value = profileViewModel.getProfileForm().description,
+                    valueLimit = 300,
+                    onSaveClicked = { profileViewModel.saveChanges() },
+                    onValueChanged = { value ->
+                        val isSaveButtonEnabled = value != profileViewModel.getProfileForm().description
+                        manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
+                    },
+                    onCancelClicked = { manager.hideBottomDialog() }
+                )
+                manager.showBottomDialog(dialogData)
+                isProfileEditDialogShown = true
             }
-            descriptionEditDialog.setCancelable(true)
-            descriptionEditDialog.setCanceledOnTouchOutside(true)
-            descriptionEditDialog.show()
         })
     }
 

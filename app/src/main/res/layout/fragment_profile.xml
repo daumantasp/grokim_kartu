@@ -94,7 +94,7 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    app:rowTitle="@string/profile_desciption"
+                    app:rowTitle="@string/profile_description"
                     app:value="@{model.profileForm.description}"
                     app:onClick="@{() -> model.descriptionClicked()}"
                     app:rowShowArrow="true"
