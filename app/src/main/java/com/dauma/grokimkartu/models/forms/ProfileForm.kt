@@ -13,24 +13,16 @@ class ProfileForm(): BaseObservable() {
     private var initialPhoto: Bitmap? = null
 
     @get:Bindable
-    var name: String = ""
-        set(value) {
-            field = value
-            notifyPropertyChanged(BR.name)
-        }
-
-    @get:Bindable
     var nameLimit: Int = 50
         get() {
             return field
         }
 
     @get:Bindable
-    var instrument: String = ""
+    var name: String = ""
         set(value) {
-            field = value
-            notifyPropertyChanged(BR.instrument)
-            notifyPropertyChanged(BR.changed)
+            field = value.take(nameLimit)
+            notifyPropertyChanged(BR.name)
         }
 
     @get:Bindable
@@ -40,10 +32,10 @@ class ProfileForm(): BaseObservable() {
         }
 
     @get:Bindable
-    var description: String = ""
+    var instrument: String = ""
         set(value) {
-            field = value
-            notifyPropertyChanged(BR.description)
+            field = value.take(instrumentLimit)
+            notifyPropertyChanged(BR.instrument)
             notifyPropertyChanged(BR.changed)
         }
 
@@ -54,16 +46,25 @@ class ProfileForm(): BaseObservable() {
         }
 
     @get:Bindable
-    var city: String = ""
+    var description: String = ""
         set(value) {
-            field = value
-            notifyPropertyChanged(BR.city)
+            field = value.take(descriptionLimit)
+            notifyPropertyChanged(BR.description)
             notifyPropertyChanged(BR.changed)
         }
+
     @get:Bindable
     var cityLimit: Int = 50
         get() {
             return field
+        }
+
+    @get:Bindable
+    var city: String = ""
+        set(value) {
+            field = value.take(cityLimit)
+            notifyPropertyChanged(BR.city)
+            notifyPropertyChanged(BR.changed)
         }
 
     @get:Bindable
