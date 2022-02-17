@@ -120,13 +120,17 @@ class ProfileFragment : Fragment() {
                         profileViewModel.saveChanges() {
                             manager.showBottomDialogLoading(false)
                             manager.hideBottomDialog()
+                            utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
                         }
                     },
                     onValueChanged = { value ->
                         val isSaveButtonEnabled = value != profileViewModel.getProfileForm().instrument
                         manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
                     },
-                    onCancelClicked = { manager.hideBottomDialog() }
+                    onCancelClicked = {
+                        manager.hideBottomDialog()
+                        utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                    }
                 )
                 manager.showBottomDialog(dialogData)
                 isProfileEditDialogShown = true
@@ -144,13 +148,17 @@ class ProfileFragment : Fragment() {
                         profileViewModel.saveChanges() {
                             manager.showBottomDialogLoading(false)
                             manager.hideBottomDialog()
+                            utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
                         }
                     },
                     onValueChanged = { value ->
                         val isSaveButtonEnabled = value != profileViewModel.getProfileForm().description
                         manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
                     },
-                    onCancelClicked = { manager.hideBottomDialog() }
+                    onCancelClicked = {
+                        manager.hideBottomDialog()
+                        utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                    }
                 )
                 manager.showBottomDialog(dialogData)
                 isProfileEditDialogShown = true
@@ -168,13 +176,17 @@ class ProfileFragment : Fragment() {
                         profileViewModel.saveChanges() {
                             manager.showBottomDialogLoading(false)
                             manager.hideBottomDialog()
+                            utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
                         }
                     },
                     onValueChanged = { value ->
                         val isSaveButtonEnabled = value != profileViewModel.getProfileForm().city
                         manager.enableBottomDialogSaveButton(isSaveButtonEnabled)
                     },
-                    onCancelClicked = { manager.hideBottomDialog() }
+                    onCancelClicked = {
+                        manager.hideBottomDialog()
+                        utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                    }
                 )
                 manager.showBottomDialog(dialogData)
                 isProfileEditDialogShown = true
