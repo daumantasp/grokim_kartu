@@ -21,7 +21,7 @@
         <item name="titleSecondaryColor">@color/black</item>
         <item name="textColor">@color/champagnePink</item>
         <item name="textSecondaryColor">@color/white</item>
-        <item name="textThirdlyColor">@android:color/darker_gray</item>
+        <item name="textThirdlyColor">@color/darkGrey</item>
         <item name="textForthColor">@color/black</item>
 
         <item name="primaryInAuthButtonColor">@color/cadetBlue</item>
@@ -75,7 +75,7 @@
         <item name="bottomDialogBackgroundColor">@color/black50</item>
         <item name="bottomDialogColor">@color/white</item>
         <item name="bottomDialogTitleColor">@color/black</item>
-        <item name="bottomDialogValueColor">@android:color/darker_gray</item>
+        <item name="bottomDialogValueColor">@color/darkGrey</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
