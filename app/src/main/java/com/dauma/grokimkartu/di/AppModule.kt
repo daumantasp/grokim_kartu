@@ -21,6 +21,8 @@ import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtilsImpl
+import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
+import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtilsImpl
 import com.dauma.grokimkartu.general.utils.string.StringUtils
 import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
@@ -44,8 +46,21 @@ class AppModule {
     }
 
     @Provides
-    fun providesUtils(imageUtils: ImageUtils, stringUtils: StringUtils) : Utils {
-        return UtilsImpl(imageUtils, stringUtils)
+    fun keyboardUtils() : KeyboardUtils {
+        return KeyboardUtilsImpl()
+    }
+
+    @Provides
+    fun providesUtils(
+        imageUtils: ImageUtils,
+        stringUtils: StringUtils,
+        keyboardUtils: KeyboardUtils,
+    ) : Utils {
+        return UtilsImpl(
+            imageUtils,
+            stringUtils,
+            keyboardUtils
+        )
     }
 
     @Provides
