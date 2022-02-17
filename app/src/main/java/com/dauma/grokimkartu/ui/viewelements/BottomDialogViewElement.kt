@@ -9,16 +9,14 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.doOnLayout
 import com.dauma.grokimkartu.R
 
 class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     : RelativeLayout(context, attrs) {
     private val rootRelativeLayout: RelativeLayout
+    private val backgroundFrameLayout: FrameLayout
     private val contentLinearLayout: LinearLayout
     private val titleTextView: TextView
     private val valueEditText: EditText
@@ -34,7 +32,8 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     init {
         inflate(context, R.layout.element_bottom_dialog, this)
 
-        rootRelativeLayout = findViewById(R.id.bottomDialogRelativeLayout)
+        rootRelativeLayout = findViewById(R.id.bottomDialogRootRelativeLayout)
+        backgroundFrameLayout = findViewById(R.id.bottomDialogBackgroundFrameLayout)
         contentLinearLayout = findViewById(R.id.dialogContentLinearLayout)
         titleTextView = findViewById(R.id.titleTextView)
         valueEditText = findViewById(R.id.valueEditText)
@@ -83,7 +82,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     }
 
     fun setOnCancelClick(onClick: () -> Unit) {
-        rootRelativeLayout.setOnClickListener { onClick() }
+        backgroundFrameLayout.setOnClickListener { onClick() }
     }
 
     fun setOnValueChanged(onValueChanged: (String) -> Unit) {
@@ -118,9 +117,10 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     fun show(animated: Boolean, onComplete: () -> Unit = {}) {
         val height = contentLinearLayout.height
         if (animated == true) {
-            val rootLayoutAlphaAnimator = ObjectAnimator.ofFloat(rootRelativeLayout, "alpha", 0.75f, 1.0f)
-            rootLayoutAlphaAnimator.addListener(object : Animator.AnimatorListener {
+            val backgroundLayoutAlphaAnimator = ObjectAnimator.ofFloat(backgroundFrameLayout, "alpha", 0.5f, 1.0f)
+            backgroundLayoutAlphaAnimator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator?) {
+                    backgroundFrameLayout.alpha = 0.5f
                     rootRelativeLayout.visibility = View.VISIBLE
                 }
                 override fun onAnimationEnd(p0: Animator?) {
@@ -131,11 +131,12 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
             })
             val contentLayoutTranslationYAnimator = ObjectAnimator.ofFloat(contentLinearLayout, "translationY", height.toFloat(), 0.0f)
             val animatorSet = AnimatorSet()
-            animatorSet.play(rootLayoutAlphaAnimator).with(contentLayoutTranslationYAnimator)
+            animatorSet.play(backgroundLayoutAlphaAnimator).with(contentLayoutTranslationYAnimator)
             animatorSet.duration = DEFAULT_ANIMATION_DURATION
             animatorSet.start()
         } else {
             contentLinearLayout.translationY = 0.0f
+            backgroundFrameLayout.alpha = 1.0f
             rootRelativeLayout.visibility = View.VISIBLE
         }
     }
@@ -143,10 +144,11 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     fun hide(animated: Boolean, onComplete: () -> Unit = {}) {
         val height = contentLinearLayout.height
         if (animated == true) {
-            val rootLayoutAlphaAnimator = ObjectAnimator.ofFloat(rootRelativeLayout, "alpha", 1.0f, 0.75f)
-            rootLayoutAlphaAnimator.addListener(object : Animator.AnimatorListener {
+            val backgroundLayoutAlphaAnimator = ObjectAnimator.ofFloat(backgroundFrameLayout, "alpha", 1.0f, 0.5f)
+            backgroundLayoutAlphaAnimator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(p0: Animator?) {}
                 override fun onAnimationEnd(p0: Animator?) {
+                    backgroundFrameLayout.alpha = 0.5f
                     rootRelativeLayout.visibility = View.GONE
                     onComplete()
                 }
@@ -155,11 +157,12 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
             })
             val contentLayoutTranslationYAnimator = ObjectAnimator.ofFloat(contentLinearLayout, "translationY", 0.0f, height.toFloat())
             val animatorSet = AnimatorSet()
-            animatorSet.play(rootLayoutAlphaAnimator).with(contentLayoutTranslationYAnimator)
+            animatorSet.play(backgroundLayoutAlphaAnimator).with(contentLayoutTranslationYAnimator)
             animatorSet.duration = DEFAULT_ANIMATION_DURATION
             animatorSet.start()
         } else {
             rootRelativeLayout.visibility = View.GONE
+            backgroundFrameLayout.alpha = 0.0f
             contentLinearLayout.translationY = height.toFloat()
         }
     }
