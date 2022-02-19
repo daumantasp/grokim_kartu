@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:paddingBottom="20dp"
+                android:paddingBottom="0dp"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,12 +109,7 @@
                     app:value="@{model.profileForm.city}"
                     app:onClick="@{() -> model.cityClicked()}"
                     app:rowShowArrow="true"
-                    app:rowBorders="both"/>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    app:rowBorders="top"/>
 
             </LinearLayout>
         </ScrollView>
