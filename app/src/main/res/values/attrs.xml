@@ -104,9 +104,10 @@
 
     <declare-styleable name="RowViewElement">
         <attr name="rowTitle" format="string" />
-        <attr name="rowShowArrow" format="boolean" />
+        <attr name="rowShowIcon" format="boolean" />
         <attr name="rowShowSwitch" format="boolean" />
         <attr name="rowMultiline" format="boolean" />
+        <attr name="rowCustomIcon" format="reference" />
         <attr name="rowBorders" format="enum">
             <enum name="top" value="0" />
             <enum name="bottom" value="1" />

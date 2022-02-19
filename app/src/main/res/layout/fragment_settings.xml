@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_change_password_button"
-                    app:rowShowArrow="true"
+                    app:rowShowIcon="true"
                     app:onClick="@{() -> model.changePassword()}"
                     app:rowBorders="top"/>
 
@@ -60,7 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_delete_user"
-                    app:rowShowArrow="true"
+                    app:rowShowIcon="true"
                     app:onClick="@{() -> model.deleteUserClicked()}"
                     app:rowBorders="both"/>
 
