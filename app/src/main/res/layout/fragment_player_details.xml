@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/playerDetails_instrument"
                     app:value="@{model.playerDetailsForm.instrument}"
-                    app:rowShowArrow="false"
+                    app:rowShowIcon="false"
                     app:rowBorders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/playerDetails_description"
                     app:value="@{model.playerDetailsForm.description}"
-                    app:rowShowArrow="false"
+                    app:rowShowIcon="false"
                     app:rowBorders="top"
                     app:rowMultiline="true"/>
 
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/playerDetails_city"
                     app:value="@{model.playerDetailsForm.city}"
-                    app:rowShowArrow="false"
+                    app:rowShowIcon="false"
                     app:rowBorders="both"/>
 
             </LinearLayout>
