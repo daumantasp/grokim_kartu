@@ -33,14 +33,14 @@
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_email"
                     app:value="@{model.settingsForm.email}"
                     app:rowBorders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_show_me_in_list"
                     app:rowShowSwitch="true"
                     app:switchChecked="@={model.settingsForm.visible}"
@@ -50,7 +50,7 @@
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_change_password_button"
                     app:rowShowArrow="true"
                     app:onClick="@{() -> model.changePassword()}"
@@ -58,7 +58,7 @@
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="61dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_delete_user"
                     app:rowShowArrow="true"
                     app:onClick="@{() -> model.deleteUserClicked()}"

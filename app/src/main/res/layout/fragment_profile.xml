@@ -78,14 +78,14 @@
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_name"
                     app:value="@{model.profileForm.name}"
                     app:rowBorders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_instrument"
                     app:value="@{model.profileForm.instrument}"
                     app:onClick="@{() -> model.instrumentClicked()}"
@@ -94,16 +94,17 @@
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_description"
                     app:value="@{model.profileForm.description}"
                     app:onClick="@{() -> model.descriptionClicked()}"
                     app:rowShowArrow="true"
-                    app:rowBorders="top"/>
+                    app:rowBorders="top"
+                    app:rowMultiline="true"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
-                    android:layout_height="61dp"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_city"
                     app:value="@{model.profileForm.city}"
                     app:onClick="@{() -> model.cityClicked()}"
