@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Grokim Kartu</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="profile_fragment">Paskyra</string>
     <string name="login_welcome">Grokim Kartu</string>
     <string name="login_email">El. paštas</string>
@@ -53,7 +52,6 @@
     <string name="passwordChange_newAndRepeatPasswordAreNotTheSame_error">Slaptažodis nesutampa</string>
     <string name="passwordChange_passwordChangedSuccessfully">Slaptažodis sėkmingai pakeistas</string>
     <string name="passwordChange_success">Slaptažodis sėkmingai pakeistas</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_settings_fragment">Hello from Settings fragment</string>
     <string name="settings_fragment">Nustatymai</string>
     <string name="settings_email">El. paštas</string>
@@ -61,8 +59,10 @@
     <string name="profile_instrument">Instrumentas</string>
     <string name="profile_description">Aprašymas</string>
     <string name="profile_city">Miestas</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="playerDetails_title">Player Details fragment</string>
+    <string name="playerDetails_name">Vardas</string>
+    <string name="playerDetails_instrument">Instrumentas</string>
+    <string name="playerDetails_description">Aprašymas</string>
+    <string name="playerDetails_city">Miestas</string>
     <string name="menu_home">Home</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_settings">Settings</string>

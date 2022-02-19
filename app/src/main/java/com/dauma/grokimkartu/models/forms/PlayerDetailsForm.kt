@@ -28,6 +28,13 @@ class PlayerDetailsForm: BaseObservable() {
         }
 
     @get:Bindable
+    var description: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.description)
+        }
+
+    @get:Bindable
     var photo: Bitmap? = null
         private set(value) {
             field = value
@@ -41,10 +48,17 @@ class PlayerDetailsForm: BaseObservable() {
             notifyPropertyChanged(BR.city)
         }
 
-    fun setInitialValues(userId: String, name: String, instrument: String, city: String) {
+    fun setInitialValues(
+        userId: String,
+        name: String,
+        instrument: String,
+        description: String,
+        city: String,
+    ) {
         this.userId = userId
         this.name = name
         this.instrument = instrument
+        this.description = description
         this.city = city
     }
 

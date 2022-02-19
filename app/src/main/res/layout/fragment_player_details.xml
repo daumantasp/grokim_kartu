@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -9,47 +10,110 @@
             />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.main.PlayerDetailsFragment">
+        android:layout_height="match_parent">
 
-        <TextView
+        <ScrollView
+            android:id="@+id/playerDetailsScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/playerDetails_title" />
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/photoImageView"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_gravity="center"
-            android:src="@{model.playerDetailsForm.photo}" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="0dp"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/userId"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="30dp">
+
+                    <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
+                        android:id="@+id/profileInitialsViewElement"
+                        android:layout_width="244dp"
+                        android:layout_height="253dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="25dp"
+                        android:visibility="invisible"
+                        app:initialsType="rectangular"
+                        app:textSize="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/photoImageView"
+                        android:layout_width="244dp"
+                        android:layout_height="253dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="25dp"
+                        android:src="@{model.playerDetailsForm.photo}"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/playerDetails_name"
+                    app:value="@{model.playerDetailsForm.name}"
+                    app:rowBorders="top"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/playerDetails_instrument"
+                    app:value="@{model.playerDetailsForm.instrument}"
+                    app:rowShowArrow="false"
+                    app:rowBorders="top"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/playerDetails_description"
+                    app:value="@{model.playerDetailsForm.description}"
+                    app:rowShowArrow="false"
+                    app:rowBorders="top"
+                    app:rowMultiline="true"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/playerDetails_city"
+                    app:value="@{model.playerDetailsForm.city}"
+                    app:rowShowArrow="false"
+                    app:rowBorders="both"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
+            android:id="@+id/playerDetailsHeaderViewElement"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{model.playerDetailsForm.userId}"/>
+            android:layout_height="110dp"
+            app:title=""
+            app:showBottomBorder="false"
+            app:showIcon="false"
+            app:headerType="withBack"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/playerName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{model.playerDetailsForm.name}"/>
-
-        <TextView
-            android:id="@+id/playerInstrument"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{model.playerDetailsForm.instrument}"/>
-
-        <TextView
-            android:id="@+id/playerCity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{model.playerDetailsForm.city}"/>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

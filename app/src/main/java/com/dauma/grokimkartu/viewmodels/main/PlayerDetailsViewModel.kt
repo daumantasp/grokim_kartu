@@ -1,7 +1,10 @@
 package com.dauma.grokimkartu.viewmodels.main
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.PlayerDetailsForm
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,9 +16,12 @@ class PlayerDetailsViewModel @Inject constructor(
     private val playerDetailsForm: PlayerDetailsForm,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
     // READ https://medium.com/@fabioCollini/android-data-binding-f9f9d3afc761
     private val userId = savedStateHandle.get<String>("userId")
+    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _detailsLoaded = MutableLiveData<Event<String>>()
+    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val detailsLoaded: LiveData<Event<String>> = _detailsLoaded
 
     companion object {
         private val TAG = "DetailsViewModel"
@@ -25,19 +31,36 @@ class PlayerDetailsViewModel @Inject constructor(
         return playerDetailsForm
     }
 
+    fun backClicked() {
+        _navigateBack.value = Event("")
+    }
+
     fun loadDetails() {
+        var isDetailsLoaded = false
+        var isPhotoLoaded = false
+        fun checkIfFullProfileLoaded() {
+            if (isDetailsLoaded == true && isPhotoLoaded == true) {
+                _detailsLoaded.value = Event("")
+            }
+        }
+
         playersRepository.getPlayerDetails(userId ?: "") { playerDetails, playersError ->
             this.playerDetailsForm.setInitialValues(
                 userId ?: "",
                 playerDetails?.name ?: "",
                 playerDetails?.instrument ?: "",
+                playerDetails?.description ?: "",
                 playerDetails?.city ?: ""
             )
+            isDetailsLoaded = true
+            checkIfFullProfileLoaded()
         }
         playersRepository.getPlayerPhoto(userId ?: "") { playerPhoto, playerError ->
             if (playerPhoto != null) {
                 this.playerDetailsForm.setInitialPhoto(playerPhoto)
             }
+            isPhotoLoaded = true
+            checkIfFullProfileLoaded()
         }
     }
 }
