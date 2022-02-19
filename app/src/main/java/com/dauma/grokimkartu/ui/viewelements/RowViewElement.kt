@@ -134,6 +134,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             constraintSet.connect(R.id.titleTextView, ConstraintSet.BOTTOM, R.id.titleTextView, ConstraintSet.TOP)
             constraintSet.connect(R.id.valueTextView, ConstraintSet.TOP, R.id.titleTextView, ConstraintSet.BOTTOM, marginInPxBetweenTitleAndValue)
             constraintSet.connect(R.id.valueTextView, ConstraintSet.START, R.id.rowConstraintLayout, ConstraintSet.START, marginInPxSides)
+            constraintSet.setHorizontalBias(R.id.valueTextView, 0.0f)
             constraintSet.applyTo(rowConstraintLayout)
         }
     }
