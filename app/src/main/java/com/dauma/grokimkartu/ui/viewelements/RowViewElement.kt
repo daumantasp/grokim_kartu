@@ -1,7 +1,11 @@
 package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
+import android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD
+import android.os.Build
 import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -35,6 +39,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val isArrowVisible = attributes.getBoolean(R.styleable.RowViewElement_rowShowArrow, false)
         val border = attributes.getInt(R.styleable.RowViewElement_rowBorders, 0)
         val isSwitchVisible = attributes.getBoolean(R.styleable.RowViewElement_rowShowSwitch, false)
+        val isMultiline = attributes.getBoolean(R.styleable.RowViewElement_rowMultiline, false)
         attributes.recycle()
 
         titleTextView.setText(title)
@@ -42,6 +47,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         showArrow(isArrowVisible)
         setBorder(border)
         showSwitch(isSwitchVisible)
+        setMultiline(isMultiline)
     }
 
     companion object {
@@ -109,6 +115,26 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             0 -> rowConstraintLayout.setBackgroundResource(R.drawable.row_background_with_top_border)
             1 -> rowConstraintLayout.setBackgroundResource(R.drawable.row_background_with_bottom_border)
             2 -> rowConstraintLayout.setBackgroundResource(R.drawable.row_background_with_both_borders)
+        }
+    }
+
+    private fun setMultiline(isMultiline: Boolean) {
+        if (isMultiline == true) {
+            valueTextView.maxLines = Integer.MAX_VALUE
+            valueTextView.gravity = Gravity.START
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                valueTextView.justificationMode = JUSTIFICATION_MODE_INTER_WORD
+            }
+
+            val marginInPxBetweenTitleAndValue = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10.0f, resources.displayMetrics).toInt()
+            val marginInPxSides = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.0f, resources.displayMetrics).toInt()
+
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(rowConstraintLayout)
+            constraintSet.connect(R.id.titleTextView, ConstraintSet.BOTTOM, R.id.titleTextView, ConstraintSet.TOP)
+            constraintSet.connect(R.id.valueTextView, ConstraintSet.TOP, R.id.titleTextView, ConstraintSet.BOTTOM, marginInPxBetweenTitleAndValue)
+            constraintSet.connect(R.id.valueTextView, ConstraintSet.START, R.id.rowConstraintLayout, ConstraintSet.START, marginInPxSides)
+            constraintSet.applyTo(rowConstraintLayout)
         }
     }
 }

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rowConstraintLayout"
     android:layout_width="match_parent"
-    android:minHeight="60dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/row_background_with_both_borders">
 
     <TextView
@@ -15,6 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,6 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:ellipsize="end"
         android:textSize="16sp"
         android:gravity="end"
@@ -48,8 +51,8 @@
         android:layout_marginEnd="20dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/titleTextView"
+        app:layout_constraintBottom_toBottomOf="@id/titleTextView" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/rowSwitch"
