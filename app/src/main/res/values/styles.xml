@@ -183,7 +183,7 @@
 
     <style name="BottomDialogValue">
         <item name="android:textColor">?attr/bottomDialogValueColor</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/lato</item>
         <item name="android:gravity">start|top</item>
     </style>
