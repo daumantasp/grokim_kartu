@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -29,6 +30,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     private val userIconImageView: ImageView
     private val spinnerViewElement: SpinnerViewElement
     private val photoIconBackgroundDrawable: Drawable?
+    private val rightTextView: TextView
     @Inject lateinit var utils: Utils
     private var isTranslatedZ: Boolean = false
 
@@ -42,6 +44,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         initialsViewElement = findViewById(R.id.initialsViewElement)
         userIconImageView = findViewById(R.id.userIconImageView)
         spinnerViewElement = findViewById(R.id.spinnerViewElement)
+        rightTextView = findViewById(R.id.rightTextView)
 
         photoIconBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.oval_background)?.mutate()
         val typedValue = TypedValue()
@@ -61,11 +64,15 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         val isIconVisible = attributes.getBoolean(R.styleable.HeaderViewElement_showIcon, false)
         val isBottomBorderVisible = attributes.getBoolean(R.styleable.HeaderViewElement_showBottomBorder, false)
         val type = attributes.getInt(R.styleable.HeaderViewElement_headerType, 0)
+        val textSize = attributes.getInt(R.styleable.HeaderViewElement_headerTextSize, 0)
+        val rightText = attributes.getString(R.styleable.HeaderViewElement_headerRightText)
         attributes.recycle()
         titleTextView.text = title
         userRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE
         showShadow(isBottomBorderVisible)
         setType(type)
+        setTextSize(textSize)
+        setRightTextIfNeeded(rightText)
     }
 
     fun setTitle(title: String) {
@@ -115,15 +122,45 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         backImageButton.setOnClickListener { onClick() }
     }
 
+    fun setOnRightTextClick(onClick: () -> Unit) {
+        rightTextView.setOnClickListener { onClick() }
+    }
+
     private fun setType(type: Int) {
         if (type == 0) {
-            // Default, Standart
+            // Default, change programmatically not implemented
         } else {
             backImageButton.visibility = View.VISIBLE
             titleTextView.gravity = Gravity.CENTER
             val constraintSet = ConstraintSet()
             constraintSet.clone(contentConstraintLayout)
             constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.END, R.id.contentConstraintLayout, ConstraintSet.END, 0)
+            constraintSet.applyTo(contentConstraintLayout)
+        }
+    }
+
+    private fun setTextSize(size: Int) {
+        if (size == 0) {
+            // Default, change programmatically not implemented
+        } else {
+            titleTextView.setTextSize(COMPLEX_UNIT_SP, 22.0f)
+        }
+    }
+
+    private fun setRightTextIfNeeded(text: String?) {
+        if (text == null || text == "") {
+            // Default, change programmatically not implemented
+        } else {
+            rightTextView.setText(text!!)
+            rightTextView.visibility = View.VISIBLE
+            titleTextView.gravity = Gravity.START
+            val marginInPxSides = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.0f, resources.displayMetrics).toInt()
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(contentConstraintLayout)
+            constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.END, R.id.rightTextView, ConstraintSet.START, marginInPxSides)
+            if (backImageButton.visibility == View.VISIBLE) {
+                constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.START, R.id.backImageButton, ConstraintSet.END, marginInPxSides)
+            }
             constraintSet.applyTo(contentConstraintLayout)
         }
     }

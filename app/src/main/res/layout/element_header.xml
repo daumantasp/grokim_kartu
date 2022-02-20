@@ -33,7 +33,7 @@
             android:layout_marginEnd="20dp"
             android:gravity="start|center_vertical"
             android:maxLines="1"
-            android:autoSizeTextType="uniform"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/userRelativeLayout"
             app:layout_constraintHorizontal_bias="0.0"
@@ -71,7 +71,24 @@
                 android:layout_centerInParent="true"
                 app:unitDimensions="4dp"
                 app:color="?attr/spinnerInMainColor"/>
-
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/rightTextView"
+            style="@style/HeaderRightText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="end|center_vertical"
+            android:maxLines="1"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            tools:text="Right" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

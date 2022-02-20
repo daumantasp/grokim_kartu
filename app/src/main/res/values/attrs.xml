@@ -96,9 +96,14 @@
         <attr name="title" format="string" />
         <attr name="showIcon" format="boolean" />
         <attr name="showBottomBorder" format="boolean" />
+        <attr name="headerRightText" format="string" />
         <attr name="headerType" format="enum">
             <enum name="standart" value="0" />
             <enum name="withBack" value="1" />
+        </attr>
+        <attr name="headerTextSize" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="small" value="1" />
         </attr>
     </declare-styleable>
 
