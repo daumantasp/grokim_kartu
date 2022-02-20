@@ -6,8 +6,11 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
@@ -22,8 +25,13 @@ enum class StatusBarTheme {
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
+    private var mainActivityFrameLayout: FrameLayout? = null
+    private var statusBarBackgroundFrameLayout: FrameLayout? = null
+    private var safeAreaConstraintLayout: ConstraintLayout? = null
     private var bottomNavigationView: BottomNavigationView? = null
     private var bottomDialogViewElement: BottomDialogViewElement? = null
+    private var isInitialized: Boolean = false
+    private var currentStatusBarTheme: StatusBarTheme? = null
 
     companion object {
         val TAG = "MainActivity"
@@ -32,19 +40,28 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initializeBottomNavigation()
+        mainActivityFrameLayout = findViewById<FrameLayout>(R.id.mainActivityFrameLayout)
+        statusBarBackgroundFrameLayout = findViewById<FrameLayout>(R.id.statusBarBackgroundFrameLayout)
+        safeAreaConstraintLayout = findViewById<ConstraintLayout>(R.id.safeAreaConstraintLayout)
         bottomDialogViewElement =
             findViewById<BottomDialogViewElement>(R.id.bottomDialogViewElement)
+        initializeBottomNavigation()
+        setupInsets()
     }
 
     fun changeStatusBarTheme(theme: StatusBarTheme) {
+        if (currentStatusBarTheme == theme) {
+            return
+        }
+
+        currentStatusBarTheme = theme
         val typedValue = TypedValue()
         val attributeId =
             if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
         this.theme.resolveAttribute(attributeId, typedValue, true)
         val statusBarBackgroundColor = typedValue.resourceId
 
-        window.statusBarColor = ContextCompat.getColor(this, statusBarBackgroundColor)
+        statusBarBackgroundFrameLayout?.setBackgroundColor(ContextCompat.getColor(this, statusBarBackgroundColor))
         // TODO: Check on API 30
         if (theme == StatusBarTheme.LOGIN) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
@@ -95,6 +112,32 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
         bottomNavigationView!!.visibility = if (show == true) View.VISIBLE else View.GONE
     }
 
+    private fun setupInsets() {
+        // Read more about edge to edge screen at:
+        // https://developer.android.com/training/gestures/edge-to-edge
+        // https://speakerdeck.com/dtrung98/windowinsets-the-way-for-android-app-to-offer-edge-to-edge-experience?slide=46
+        // https://stackoverflow.com/questions/60475355/right-way-to-get-insets
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        var insetTop: Int
+        var insetBottom: Int
+        ViewCompat.setOnApplyWindowInsetsListener(mainActivityFrameLayout!!.rootView) { v, windowInsets ->
+            if (isInitialized == false) {
+                isInitialized = true
+                insetTop = windowInsets.systemWindowInsetTop
+                insetBottom = windowInsets.stableInsetBottom
+                safeAreaConstraintLayout?.setPadding(0, insetTop, 0, insetBottom)
+                bottomDialogViewElement?.setPadding(0, 0, 0, insetBottom)
+                val statusBarLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, insetTop)
+                statusBarBackgroundFrameLayout?.layoutParams = statusBarLp
+            }
+
+            // NOTE: Consumes results in not passing insets to children.
+            // If insets are passed to children, bottomNavigationView gets an additional padding
+            // More read at https://stackoverflow.com/questions/67819292/android-bottomnavigationview-has-strange-bottom-padding
+            WindowInsetsCompat.CONSUMED
+        }
+    }
+
     // MARK: CustomNavigator
     override fun navigateToProfile() {
         val navHostFragment =
@@ -106,10 +149,6 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
     // MARK: DialogsManager
     override fun showBottomDialog(data: BottomDialogData) {
         bottomDialogViewElement?.let { dialog ->
-            val typedValue = TypedValue()
-            this.theme.resolveAttribute(R.attr.bottomDialogBackgroundColor, typedValue, true)
-            val statusBarBackgroundColor = typedValue.resourceId
-            window.statusBarColor = ContextCompat.getColor(this, statusBarBackgroundColor)
             bottomNavigationView?.translationZ = -30.0f
 
             dialog.reset()

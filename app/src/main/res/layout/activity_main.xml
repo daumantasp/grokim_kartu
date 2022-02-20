@@ -1,35 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainActivityFrameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:navGraph="@navigation/nav_graph" />
+    <FrameLayout
+        android:id="@+id/statusBarBackgroundFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
 
-    <!--    https://stackoverflow.com/questions/40316411/bottomnavigationview-shadow-and-ripple-effect-->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        app:itemIconTint="@color/bottom_menu_nav_color_selector"
-        app:itemTextColor="@color/bottom_menu_nav_color_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/nav_host_fragment"
-        app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment"
-        app:menu="@menu/bottom_menu_nav" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/safeAreaConstraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:navGraph="@navigation/nav_graph" />
+
+        <!--    https://stackoverflow.com/questions/40316411/bottomnavigationview-shadow-and-ripple-effect-->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:itemIconTint="@color/bottom_menu_nav_color_selector"
+            app:itemTextColor="@color/bottom_menu_nav_color_selector"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_menu_nav" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
         android:id="@+id/bottomDialogViewElement"
@@ -38,5 +52,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
