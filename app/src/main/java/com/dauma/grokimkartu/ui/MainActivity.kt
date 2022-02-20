@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
     private var safeAreaConstraintLayout: ConstraintLayout? = null
     private var bottomNavigationView: BottomNavigationView? = null
     private var bottomDialogViewElement: BottomDialogViewElement? = null
-    private var isInitialized: Boolean = false
     private var currentStatusBarTheme: StatusBarTheme? = null
 
     companion object {
@@ -121,19 +120,16 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
         var insetTop: Int
         var insetBottom: Int
         ViewCompat.setOnApplyWindowInsetsListener(mainActivityFrameLayout!!.rootView) { v, windowInsets ->
-            if (isInitialized == false) {
-                isInitialized = true
-                insetTop = windowInsets.systemWindowInsetTop
-                insetBottom = windowInsets.stableInsetBottom
-                safeAreaConstraintLayout?.setPadding(0, insetTop, 0, insetBottom)
-                bottomDialogViewElement?.setPadding(0, 0, 0, insetBottom)
-                val statusBarLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, insetTop)
-                statusBarBackgroundFrameLayout?.layoutParams = statusBarLp
-            }
+            insetTop = windowInsets.systemWindowInsetTop
+            insetBottom = windowInsets.systemWindowInsetBottom
+//            stableInsetBottom do not take into account keyboard
+//            insetBottom = windowInsets.stableInsetBottom
 
-            // NOTE: Consumes results in not passing insets to children.
-            // If insets are passed to children, bottomNavigationView gets an additional padding
-            // More read at https://stackoverflow.com/questions/67819292/android-bottomnavigationview-has-strange-bottom-padding
+            safeAreaConstraintLayout?.setPadding(0, insetTop, 0, insetBottom)
+            bottomDialogViewElement?.setPadding(0, 0, 0, insetBottom)
+            val statusBarLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, insetTop)
+            statusBarBackgroundFrameLayout?.layoutParams = statusBarLp
+
             WindowInsetsCompat.CONSUMED
         }
     }
