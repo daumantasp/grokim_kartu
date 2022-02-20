@@ -52,7 +52,7 @@ class InitialsViewElement(context: Context, attrs: AttributeSet) : FrameLayout(c
 
     private fun setType(type: Int) {
         if (type == 0) {
-            // Default, Rectangular background
+            // Default, Rectangular background, change programmatically not implemented
         } else if (type == 1) {
             rootFrameLayout.setBackgroundResource(R.drawable.oval_background)
         }

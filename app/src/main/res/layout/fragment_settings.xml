@@ -27,7 +27,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
+                android:paddingTop="0dp"
                 android:paddingBottom="20dp"
                 android:orientation="vertical">
 
@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_email"
                     app:value="@{model.settingsForm.email}"
-                    app:rowBorders="top"/>
+                    app:rowBorders="both"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
@@ -46,7 +46,7 @@
                     app:switchChecked="@={model.settingsForm.visible}"
                     app:onClick="@{() -> model.changePassword()}"
                     app:onSwitchChecked="@{() -> model.saveChanges()}"
-                    app:rowBorders="top"/>
+                    app:rowBorders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
@@ -54,7 +54,7 @@
                     app:rowTitle="@string/profile_change_password_button"
                     app:rowShowIcon="true"
                     app:onClick="@{() -> model.changePassword()}"
-                    app:rowBorders="top"/>
+                    app:rowBorders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                     app:rowTitle="@string/settings_delete_user"
                     app:rowShowIcon="true"
                     app:onClick="@{() -> model.deleteUserClicked()}"
-                    app:rowBorders="both"/>
+                    app:rowBorders="bottom"/>
 
 <!--                <Switch-->
 <!--                    android:id="@+id/showMeSwitch"-->

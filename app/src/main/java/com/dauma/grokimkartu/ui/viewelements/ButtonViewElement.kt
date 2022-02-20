@@ -44,7 +44,7 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     private fun setType(type: Int) {
         if (type == 0) {
-            // Default, PrimaryInAuth
+            // Default, PrimaryInAuth, change programmatically not implemented
         } else if (type == 1) {
             // Primary
             val typedValue = TypedValue()
