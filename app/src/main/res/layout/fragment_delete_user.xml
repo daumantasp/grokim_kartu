@@ -72,6 +72,7 @@
             app:showBottomBorder="true"
             app:showIcon="false"
             app:headerType="withBack"
+            app:headerTextSize="small"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
