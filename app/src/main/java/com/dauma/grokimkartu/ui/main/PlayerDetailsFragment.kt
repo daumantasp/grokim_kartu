@@ -41,6 +41,9 @@ class PlayerDetailsFragment : Fragment() {
         binding.playerDetailsHeaderViewElement.setOnBackClick {
             playerDetailsViewModel.backClicked()
         }
+        binding.playerDetailsHeaderViewElement.setOnRightTextClick {
+            playerDetailsViewModel.reportClicked()
+        }
 
         return view
     }

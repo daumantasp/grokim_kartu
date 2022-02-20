@@ -35,6 +35,10 @@ class PlayerDetailsViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
+    fun reportClicked() {
+        // TODO: not implemented
+    }
+
     fun loadDetails() {
         var isDetailsLoaded = false
         var isPhotoLoaded = false
