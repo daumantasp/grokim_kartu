@@ -10,12 +10,14 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
         <action
-            android:id="@+id/action_settingsFragment_to_loginFragment"
+            android:id="@+id/action_settingsFragment_to_authGraph"
             app:destination="@id/auth"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_settingsFragment_to_passwordChangeFragment"
             app:destination="@id/passwordChangeFragment"
@@ -40,11 +42,13 @@
         android:name="com.dauma.grokimkartu.ui.main.DeleteUserFragment"
         android:label="DeleteUserFragment" >
         <action
-            android:id="@+id/action_deleteUserFragment_to_loginFragment"
+            android:id="@+id/action_deleteUserFragment_to_authGraph"
             app:destination="@id/loginFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

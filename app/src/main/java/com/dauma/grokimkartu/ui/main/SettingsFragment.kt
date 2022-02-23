@@ -45,7 +45,7 @@ class SettingsFragment : Fragment() {
 
     private fun setupObservers() {
         settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+            this.findNavController().navigate(R.id.action_settingsFragment_to_authGraph)
         })
         settingsViewModel.navigateToDeleteUser.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_deleteUserFragment)

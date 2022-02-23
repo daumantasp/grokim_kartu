@@ -68,7 +68,7 @@ class LoginFragment : Fragment() {
         // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
         // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
         loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_loginFragment_to_playersFragment)
+            this.findNavController().navigate(R.id.action_loginFragment_to_homeGraph)
         })
         loginViewModel.navigateToRegistration.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)

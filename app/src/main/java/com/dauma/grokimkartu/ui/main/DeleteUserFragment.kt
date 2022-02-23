@@ -52,7 +52,7 @@ class DeleteUserFragment : Fragment() {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         }
         deleteUserViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_deleteUserFragment_to_loginFragment)
+            this.findNavController().navigate(R.id.action_deleteUserFragment_to_authGraph)
         })
         deleteUserViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()

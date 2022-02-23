@@ -44,7 +44,7 @@ class SplashFragment : Fragment() {
             this.findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
         })
         splashViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_splashFragment_to_playersFragment)
+            this.findNavController().navigate(R.id.action_splashFragment_to_homeGraph)
         })
     }
 }
