@@ -51,8 +51,10 @@ class PlayersViewModel @Inject constructor(
     }
 
     private fun loadUserProfile() {
-        usersRepository.getUserProfile { profile, e ->
-            this._userProfile.value = profile
+        usersRepository.getUserProfile() { profile, e ->
+            if (profile != null) {
+                this._userProfile.value = profile
+            }
         }
     }
 
