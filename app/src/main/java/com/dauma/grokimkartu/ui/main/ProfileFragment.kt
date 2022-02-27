@@ -89,6 +89,7 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        dialogsManager = null
     }
 
     private fun setupObservers() {
