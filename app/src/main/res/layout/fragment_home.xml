@@ -34,7 +34,7 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="Players"
+                    app:rowTitle="Grojikai"
                     app:onClick="@{() -> model.playersClicked()}"
                     app:rowBorders="top" />
 

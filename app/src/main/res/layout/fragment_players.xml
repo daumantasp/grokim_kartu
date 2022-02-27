@@ -23,12 +23,14 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/homeHeaderViewElement"
+            android:id="@+id/playersHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:showBottomBorder="false"
-            app:showIcon="true"
-            app:headerType="standart"
+            app:title="@string/players_title"
+            app:showBottomBorder="true"
+            app:showIcon="false"
+            app:headerType="withBack"
+            app:headerTextSize="small"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
