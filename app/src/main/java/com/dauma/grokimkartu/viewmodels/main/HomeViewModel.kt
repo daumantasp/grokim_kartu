@@ -36,6 +36,10 @@ class HomeViewModel @Inject constructor(
         _navigateToProfile.value = Event("")
     }
 
+    fun playersClicked() {
+        _navigateToPlayers.value = Event("")
+    }
+
     private fun loadUserIcon() {
         usersRepository.getUserIcon() { icon, e ->
             this._userIcon.value = icon

@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentHomeBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
@@ -87,6 +89,9 @@ class HomeFragment : Fragment() {
         })
         homeViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
             customNavigator?.navigateToProfile()
+        })
+        homeViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(R.id.action_homeFragment_to_playersFragment)
         })
     }
 
