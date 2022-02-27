@@ -13,7 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
+        <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
+            android:id="@+id/homeHeaderViewElement"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:showBottomBorder="false"
+            app:showIcon="true"
+            app:headerType="standart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
