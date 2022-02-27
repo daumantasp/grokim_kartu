@@ -18,13 +18,8 @@ import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
-enum class StatusBarTheme {
-    LOGIN,
-    MAIN
-}
-
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
+class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager {
     private var mainActivityFrameLayout: FrameLayout? = null
     private var statusBarBackgroundFrameLayout: FrameLayout? = null
     private var safeAreaConstraintLayout: ConstraintLayout? = null
@@ -46,39 +41,6 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
             findViewById<BottomDialogViewElement>(R.id.bottomDialogViewElement)
         initializeBottomNavigation()
         setupInsets()
-    }
-
-    fun changeStatusBarTheme(theme: StatusBarTheme) {
-        if (currentStatusBarTheme == theme) {
-            return
-        }
-
-        currentStatusBarTheme = theme
-        val typedValue = TypedValue()
-        val attributeId =
-            if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
-        this.theme.resolveAttribute(attributeId, typedValue, true)
-        val statusBarBackgroundColor = typedValue.resourceId
-
-        statusBarBackgroundFrameLayout?.setBackgroundColor(ContextCompat.getColor(this, statusBarBackgroundColor))
-        // TODO: Check on API 30
-        if (theme == StatusBarTheme.LOGIN) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                window?.insetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
-            } else {
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility =
-                    window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-            }
-        } else if (theme == StatusBarTheme.MAIN) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                window?.insetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS,
-                    APPEARANCE_LIGHT_STATUS_BARS)
-            } else {
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            }
-        }
     }
 
     private fun initializeBottomNavigation() {
@@ -139,7 +101,40 @@ class MainActivity : AppCompatActivity(), CustomNavigator, DialogsManager {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        navController.navigate(R.id.profileFragment)
+    }
+
+    // MARK: StatusBarManager
+    override fun changeStatusBarTheme(theme: StatusBarTheme) {
+        if (currentStatusBarTheme == theme) {
+            return
+        }
+
+        currentStatusBarTheme = theme
+        val typedValue = TypedValue()
+        val attributeId =
+            if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
+        this.theme.resolveAttribute(attributeId, typedValue, true)
+        val statusBarBackgroundColor = typedValue.resourceId
+
+        statusBarBackgroundFrameLayout?.setBackgroundColor(ContextCompat.getColor(this, statusBarBackgroundColor))
+        // TODO: Check on API 30
+        if (theme == StatusBarTheme.LOGIN) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                window?.insetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility =
+                    window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            }
+        } else if (theme == StatusBarTheme.MAIN) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                window?.insetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS,
+                    APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        }
     }
 
     // MARK: DialogsManager
