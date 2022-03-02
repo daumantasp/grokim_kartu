@@ -70,6 +70,11 @@
     <attr name="bottomDialogTitleColor" format="color" />
     <attr name="bottomDialogValueColor" format="color" />
 
+    <attr name="card1StartColor" format="color" />
+    <attr name="card1EndColor" format="color" />
+    <attr name="card2StartColor" format="color" />
+    <attr name="card2EndColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
@@ -118,5 +123,12 @@
             <enum name="bottom" value="1" />
             <enum name="both" value="2" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CardViewElement">
+        <attr name="cardTitle" format="string" />
+        <attr name="cardDescription" format="string" />
+        <attr name="cardStartColor" format="color" />
+        <attr name="cardEndColor" format="color" />
     </declare-styleable>
 </resources>
