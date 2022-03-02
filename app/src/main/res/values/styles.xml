@@ -76,6 +76,11 @@
         <item name="bottomDialogColor">@color/white</item>
         <item name="bottomDialogTitleColor">@color/black</item>
         <item name="bottomDialogValueColor">@color/darkGrey</item>
+
+        <item name="card1StartColor">@color/violetBlue</item>
+        <item name="card1EndColor">@color/violet</item>
+        <item name="card2StartColor">@color/cambridgeBlue</item>
+        <item name="card2EndColor">@color/cadetBlue</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

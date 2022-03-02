@@ -31,18 +31,24 @@
                 android:paddingBottom="0dp"
                 android:orientation="vertical">
 
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                <com.dauma.grokimkartu.ui.viewelements.CardViewElement
+                    android:id="@+id/playersCardViewElement"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="Grojikai"
+                    android:layout_height="200dp"
+                    app:cardTitle="Grojikai"
+                    app:cardDescription="Cia galite rasti grojikus"
                     app:onClick="@{() -> model.playersClicked()}"
-                    app:rowBorders="top" />
+                    app:cardStartColor="?attr/card1StartColor"
+                    app:cardEndColor="?attr/card1EndColor" />
 
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                <com.dauma.grokimkartu.ui.viewelements.CardViewElement
+                    android:id="@+id/thomannCardViewElement"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="Metames ant Thomann"
-                    app:rowBorders="both" />
+                    android:layout_height="150dp"
+                    app:cardTitle="Thomann"
+                    app:cardDescription="Metames ant Thomann"
+                    app:cardStartColor="?attr/card2StartColor"
+                    app:cardEndColor="?attr/card2EndColor" />
 
             </LinearLayout>
         </ScrollView>
