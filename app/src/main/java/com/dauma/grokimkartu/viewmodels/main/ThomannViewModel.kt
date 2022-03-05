@@ -17,10 +17,14 @@ class ThomannViewModel @Inject constructor(): ViewModel() {
     }
 
     fun viewIsReady() {
-
+        // TODO
     }
 
     fun backClicked() {
         _navigateBack.value = Event("")
+    }
+
+    fun thomannItemClicked(thomannId: String) {
+        // TODO
     }
 }

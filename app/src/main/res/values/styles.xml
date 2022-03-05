@@ -58,6 +58,8 @@
         <item name="spinnerInMainColor">@color/white</item>
         <item name="playerItemNameColor">@color/black</item>
 
+        <item name="thomannItemBackgroundColor">@color/white</item>
+
         <item name="initialsTextColor">@color/white</item>
         <item name="initialsBackgroundColor1">#00AA55</item>
         <item name="initialsBackgroundColor2">#009FD4</item>

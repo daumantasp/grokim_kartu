@@ -8,8 +8,11 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentThomannBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.ui.main.adapters.ThomannListAdapter
+import com.dauma.grokimkartu.ui.main.adapters.ThomannListData
 import com.dauma.grokimkartu.viewmodels.main.ThomannViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,6 +46,9 @@ class ThomannFragment : Fragment() {
             thomannViewModel.backClicked()
         }
 
+        // DEBUG
+        setupRecyclerView(listOf())
+
         thomannViewModel.viewIsReady()
         return view
     }
@@ -51,5 +57,12 @@ class ThomannFragment : Fragment() {
         thomannViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
+    }
+
+    private fun setupRecyclerView(listData: List<ThomannListData>) {
+        binding.thomannRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.thomannRecyclerView.adapter = ThomannListAdapter(listData) { thomannItemId ->
+            this.thomannViewModel.thomannItemClicked(thomannItemId)
+        }
     }
 }

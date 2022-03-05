@@ -47,6 +47,8 @@
     <attr name="borderColor" format="color" />
     <attr name="spinnerInMainColor" format="color" />
 
+    <attr name="thomannItemBackgroundColor" format="color" />
+
     <attr name="initialsTextColor" format="color" />
     <attr name="initialsBackgroundColor1" format="color" />
     <attr name="initialsBackgroundColor2" format="color" />
