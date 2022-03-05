@@ -20,6 +20,13 @@
             app:destination="@id/profile"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_homeFragment_to_thomannFragment"
+            app:destination="@id/thomannFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/playersFragment"
@@ -44,4 +51,8 @@
             app:argType="string"
             android:defaultValue="" />
     </fragment>
+    <fragment
+        android:id="@+id/thomannFragment"
+        android:name="com.dauma.grokimkartu.ui.main.ThomannFragment"
+        android:label="ThomannFragment" />
 </navigation>

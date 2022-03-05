@@ -37,7 +37,6 @@
                     android:layout_height="200dp"
                     app:cardTitle="Grojikai"
                     app:cardDescription="Cia galite rasti grojikus"
-                    app:onClick="@{() -> model.playersClicked()}"
                     app:cardStartColor="?attr/card1StartColor"
                     app:cardEndColor="?attr/card1EndColor" />
 

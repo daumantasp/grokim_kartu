@@ -62,6 +62,13 @@ class HomeFragment : Fragment() {
         }
         binding.homeHeaderViewElement.showIconLoading(true)
 
+        binding.playersCardViewElement.setOnClick {
+            homeViewModel.playersClicked()
+        }
+        binding.thomannCardViewElement.setOnClick {
+            homeViewModel.thomannClicked()
+        }
+
         homeViewModel.viewIsReady()
         return view
     }
@@ -92,6 +99,9 @@ class HomeFragment : Fragment() {
         })
         homeViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(R.id.action_homeFragment_to_playersFragment)
+        })
+        homeViewModel.navigateToThomann.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(R.id.action_homeFragment_to_thomannFragment)
         })
     }
 
