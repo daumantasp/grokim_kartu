@@ -27,4 +27,8 @@ class ThomannViewModel @Inject constructor(): ViewModel() {
     fun thomannItemClicked(thomannId: String) {
         // TODO
     }
+
+    fun createClicked() {
+        // TODO
+    }
 }
