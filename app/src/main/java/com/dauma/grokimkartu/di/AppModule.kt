@@ -17,6 +17,8 @@ import com.dauma.grokimkartu.repositories.users.UsersRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.dauma.grokimkartu.data.firestore.FirebaseStorage
+import com.dauma.grokimkartu.data.thomanns.ThomannsDao
+import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
@@ -25,6 +27,8 @@ import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtilsImpl
 import com.dauma.grokimkartu.general.utils.string.StringUtils
 import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
+import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
+import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepositoryImpl
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
 import dagger.Module
 import dagger.Provides
@@ -100,6 +104,17 @@ class AppModule {
     @Singleton
     fun providesUsersRepository(authDao: AuthDao, usersDao: UsersDao) : UsersRepository {
         return UsersRepositoryImpl(authDao, usersDao)
+    }
+
+    @Provides
+    fun providesThomannsDao(firestore: Firestore) : ThomannsDao {
+        return ThomannsDaoImpl(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun providesThomannsRepository(thomannsDao: ThomannsDao) : ThomannsRepository {
+        return ThomannsRepositoryImpl(thomannsDao)
     }
 
     @Provides
