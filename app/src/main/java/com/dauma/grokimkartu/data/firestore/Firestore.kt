@@ -1,9 +1,6 @@
 package com.dauma.grokimkartu.data.firestore
 
-import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
-import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
+import com.dauma.grokimkartu.data.firestore.entities.*
 
 // Not possible to put business logic to Firestore Cloud Storage. Even though
 // cloud functions could be used for this purpose, they are not included in free plan.
@@ -18,4 +15,8 @@ interface Firestore {
     fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit)
     fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit)
     fun getPlayerDetails(userId: String, onComplete: (FirestorePlayerDetails?, Exception?) -> Unit)
+    fun createThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)
+    fun updateThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)
+    fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit)
+    fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit)
 }

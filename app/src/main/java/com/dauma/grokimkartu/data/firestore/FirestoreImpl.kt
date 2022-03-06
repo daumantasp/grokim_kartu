@@ -1,10 +1,7 @@
 package com.dauma.grokimkartu.data.firestore
 
 import android.util.Log
-import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
-import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
+import com.dauma.grokimkartu.data.firestore.entities.*
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -17,6 +14,7 @@ class FirestoreImpl(
         private const val usersCollection = "users"
         private const val playersCollection = "players"
         private const val playerDetailsCollection = "playerDetails"
+        private const val thomannsCollection = "thomanns"
     }
 
     override fun createUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
@@ -176,6 +174,50 @@ class FirestoreImpl(
             }
     }
 
+    override fun createThomann(
+        thomann: FirestoreThomann,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        setThomann(thomann, true, onComplete)
+    }
+
+    override fun updateThomann(
+        thomann: FirestoreThomann,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        setThomann(thomann, false, onComplete)
+    }
+
+    override fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .document(thomannId)
+            .delete()
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    override fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val thomanns: MutableList<FirestoreThomann> = mutableListOf()
+                for (queryDocumentSnapshot in querySnapshot) {
+                    val thomann = queryDocumentSnapshot.toObject(FirestoreThomann::class.java)
+                    thomanns.add(thomann)
+                }
+                onComplete(true, thomanns, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, null, e)
+            }
+    }
+
     private fun setUser(user: FirestoreUser, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
         if (user.id == null) {
             Log.d(TAG, "Failed to setUser: missing user.id")
@@ -201,6 +243,42 @@ class FirestoreImpl(
                 } else {
                     onComplete(true, null)
                 }
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
+    }
+
+    private fun setThomann(thomann: FirestoreThomann, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
+        if (thomann.id == null) {
+            Log.d(TAG, "Failed to setThomann: missing thomann.id")
+            return
+        }
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (thomann.name != null) {
+            valuesToSet["name"] = thomann.name!!
+        }
+        if (thomann.city != null) {
+            valuesToSet["city"] = thomann.city!!
+        }
+        if (thomann.isLocked != null) {
+            valuesToSet["isLocked"] = thomann.isLocked!!
+        }
+        if (isCreation) {
+            valuesToSet["creationDate"] = Timestamp.now()
+        }
+        if (thomann.validUntil != null) {
+            valuesToSet["validUntil"] = thomann.validUntil!!
+        }
+
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .document(thomann.id!!)
+            // Because of the profile fields, you have to use merge
+            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
+            .set(valuesToSet, SetOptions.merge())
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)
