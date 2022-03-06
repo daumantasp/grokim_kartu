@@ -12,13 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentThomannBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.ui.main.adapters.ThomannListAdapter
-import com.dauma.grokimkartu.ui.main.adapters.ThomannListData
+import com.dauma.grokimkartu.ui.main.adapters.ThomannsListData
 import com.dauma.grokimkartu.viewmodels.main.ThomannViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ThomannFragment : Fragment() {
     private val thomannViewModel by viewModels<ThomannViewModel>()
+    private var isRecyclerViewSetup: Boolean = false
+
     private var _binding: FragmentThomannBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -46,9 +48,6 @@ class ThomannFragment : Fragment() {
             thomannViewModel.backClicked()
         }
 
-        // DEBUG
-        setupRecyclerView(listOf())
-
         thomannViewModel.viewIsReady()
         return view
     }
@@ -57,12 +56,20 @@ class ThomannFragment : Fragment() {
         thomannViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
+        thomannViewModel.thomannsListData.observe(viewLifecycleOwner, {
+            if (isRecyclerViewSetup == false) {
+                setupRecyclerView(it)
+            } else {
+                binding.thomannRecyclerView.adapter?.notifyDataSetChanged()
+            }
+        })
     }
 
-    private fun setupRecyclerView(listData: List<ThomannListData>) {
+    private fun setupRecyclerView(listData: List<ThomannsListData>) {
         binding.thomannRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.thomannRecyclerView.adapter = ThomannListAdapter(listData) { thomannItemId ->
             this.thomannViewModel.thomannItemClicked(thomannItemId)
         }
+        isRecyclerViewSetup = true
     }
 }

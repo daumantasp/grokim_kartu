@@ -31,19 +31,19 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/playerInstrument"-->
-<!--            style="@style/TextThirdly"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="5dp"/>-->
+        <TextView
+            android:id="@+id/cityTextView"
+            style="@style/TextThirdly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"/>
 
-<!--        <TextView-->
-<!--            android:id="@+id/playerCity"-->
-<!--            style="@style/TextThirdly"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="5dp"/>-->
+        <TextView
+            android:id="@+id/validUntilTextView"
+            style="@style/TextThirdly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"/>
 
     </LinearLayout>
 </LinearLayout>

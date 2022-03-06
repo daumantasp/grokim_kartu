@@ -4,20 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
+import com.dauma.grokimkartu.ui.main.adapters.ThomannsListData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ThomannViewModel @Inject constructor(): ViewModel() {
+class ThomannViewModel @Inject constructor(
+    private val thomannsRepository: ThomannsRepository
+): ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _thomannsListData = MutableLiveData<List<ThomannsListData>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
+    val thomannsListData: LiveData<List<ThomannsListData>> = _thomannsListData
 
     companion object {
         private val TAG = "ThomannViewModel"
     }
 
     fun viewIsReady() {
-        // TODO
+        loadThomanns()
     }
 
     fun backClicked() {
@@ -30,5 +36,17 @@ class ThomannViewModel @Inject constructor(): ViewModel() {
 
     fun createClicked() {
         // TODO
+    }
+
+    private fun loadThomanns() {
+        thomannsRepository.getThomanns() { isSuccessful, thomanns, e ->
+            if (isSuccessful && thomanns != null) {
+                val list: MutableList<ThomannsListData> = mutableListOf()
+                for (thomann in thomanns) {
+                    list.add(ThomannsListData(thomann))
+                }
+                _thomannsListData.value = list
+            }
+        }
     }
 }

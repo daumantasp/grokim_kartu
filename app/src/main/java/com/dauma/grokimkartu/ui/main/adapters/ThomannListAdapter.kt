@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 
 class ThomannListAdapter(
-    private val thomannListData: List<ThomannListData>,
+    private val thomannListData: List<ThomannsListData>,
     private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<ThomannListAdapter.ViewHolder>() {
 
@@ -20,7 +20,10 @@ class ThomannListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        val thomannData = thomannListData[position]
+        holder.userTextView.text = thomannData.thomann.name
+        holder.cityTextView.text = thomannData.thomann.city
+        holder.validUntilTextView.text = thomannData.thomann.validUntil.toString()
     }
 
     override fun getItemCount(): Int {
@@ -31,5 +34,7 @@ class ThomannListAdapter(
         val thomannItemLinearLayout = view.findViewById<LinearLayout>(R.id.thomannItemLinearLayout)
         val statusIconImageView = view.findViewById<ImageView>(R.id.statusIconImageView)
         val userTextView = view.findViewById<TextView>(R.id.userTextView)
+        val cityTextView = view.findViewById<TextView>(R.id.cityTextView)
+        val validUntilTextView = view.findViewById<TextView>(R.id.validUntilTextView)
     }
 }
