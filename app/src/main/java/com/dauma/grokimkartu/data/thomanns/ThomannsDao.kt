@@ -1,6 +1,6 @@
-package com.dauma.grokimkartu.data.thomann
+package com.dauma.grokimkartu.data.thomanns
 
-import com.dauma.grokimkartu.data.thomann.entities.ThomannDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 
 interface ThomannsDao {
     fun createThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit)

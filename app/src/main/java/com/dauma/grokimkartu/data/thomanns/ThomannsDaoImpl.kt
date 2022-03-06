@@ -1,8 +1,8 @@
-package com.dauma.grokimkartu.data.thomann
+package com.dauma.grokimkartu.data.thomanns
 
 import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
-import com.dauma.grokimkartu.data.thomann.entities.ThomannDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 
 class ThomannsDaoImpl(
     private val firebase: Firestore

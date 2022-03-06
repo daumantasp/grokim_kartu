@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.data.thomann.entities
+package com.dauma.grokimkartu.data.thomanns.entities
 
 import com.google.firebase.Timestamp
 
