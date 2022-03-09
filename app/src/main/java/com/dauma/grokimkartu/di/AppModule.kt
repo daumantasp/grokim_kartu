@@ -156,4 +156,9 @@ class AppModule {
     fun deleteUserForm() : DeleteUserForm {
         return DeleteUserForm()
     }
+
+    @Provides
+    fun thomannEditForm() : ThomannEditForm {
+        return ThomannEditForm()
+    }
 }

@@ -14,8 +14,10 @@ class ThomannViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository
 ): ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigateToCreation = MutableLiveData<Event<String>>()
     private val _thomannsListData = MutableLiveData<List<ThomannsListData>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigateToCreation: LiveData<Event<String>> = _navigateToCreation
     val thomannsListData: LiveData<List<ThomannsListData>> = _thomannsListData
 
     companion object {
@@ -35,7 +37,7 @@ class ThomannViewModel @Inject constructor(
     }
 
     fun createClicked() {
-        // TODO
+        _navigateToCreation.value = Event("")
     }
 
     private fun loadThomanns() {

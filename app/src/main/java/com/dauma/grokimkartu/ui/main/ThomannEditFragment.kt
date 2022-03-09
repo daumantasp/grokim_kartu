@@ -1,0 +1,59 @@
+package com.dauma.grokimkartu.ui.main
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
+import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class ThomannEditFragment : Fragment() {
+    private val thomannEditViewModel by viewModels<ThomannEditViewModel>()
+
+    private var _binding: FragmentThomannEditBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+    companion object {
+        private var TAG = "ThomannEditFragment"
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentThomannEditBinding.inflate(inflater, container, false)
+        binding.model = thomannEditViewModel
+        val view = binding.root
+        setupObservers()
+
+        binding.thomannEditHeaderViewElement.setOnBackClick {
+            thomannEditViewModel.backClicked()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            thomannEditViewModel.backClicked()
+        }
+
+        thomannEditViewModel.viewIsReady()
+        return view
+    }
+
+    private fun setupObservers() {
+        thomannEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().popBackStack()
+        })
+        thomannEditViewModel.thomannEditForm().getFormFields().observe(viewLifecycleOwner) {
+            this.thomannEditViewModel.saveClicked(it[0], it[1])
+        }
+    }
+}

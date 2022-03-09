@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.ui.main.adapters.ThomannListAdapter
@@ -55,6 +56,9 @@ class ThomannFragment : Fragment() {
     private fun setupObservers() {
         thomannViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
+        })
+        thomannViewModel.navigateToCreation.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
         })
         thomannViewModel.thomannsListData.observe(viewLifecycleOwner, {
             if (isRecyclerViewSetup == false) {

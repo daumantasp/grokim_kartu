@@ -1,7 +1,9 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.google.firebase.Timestamp
 
 class ThomannsRepositoryImpl(
     private val thomannsDao: ThomannsDao
@@ -22,6 +24,27 @@ class ThomannsRepositoryImpl(
                 onComplete(true, thomanns, null)
             } else {
                 onComplete(false, null, ThomannsError(2))
+            }
+        }
+    }
+
+    override fun saveThomann(
+        thomann: Thomann,
+        onComplete: (Boolean, ThomannsError?) -> Unit
+    ) {
+        val thomannDao = ThomannDao(
+            "[NOT IMPLEMENTED]",
+            "[NOT IMPLEMENTED]",
+            thomann.city,
+            false,
+            null,
+            Timestamp.now()
+        )
+        thomannsDao.createThomann(thomannDao) { isSuccessful, e ->
+            if (isSuccessful) {
+                onComplete(isSuccessful, null)
+            } else {
+                onComplete(isSuccessful, ThomannsError(2))
             }
         }
     }

@@ -72,4 +72,8 @@
     <string name="bottom_dialog_cancel_button">Atšaukti</string>
     <string name="thomann_title">Thomann</string>
     <string name="thomann_add_new_button">Sukurti naują</string>
+    <string name="thomann_edit_title">Redaguoti Thomann</string>
+    <string name="thomann_edit_city">Miestas</string>
+    <string name="thomann_edit_valid_until">Galioja iki</string>
+    <string name="thomann_edit_save">Išsaugoti</string>
 </resources>

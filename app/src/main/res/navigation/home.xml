@@ -54,5 +54,17 @@
     <fragment
         android:id="@+id/thomannFragment"
         android:name="com.dauma.grokimkartu.ui.main.ThomannFragment"
-        android:label="ThomannFragment" />
+        android:label="ThomannFragment" >
+        <action
+            android:id="@+id/action_thomannFragment_to_thomannEditFragment"
+            app:destination="@id/thomannEditFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/thomannEditFragment"
+        android:name="com.dauma.grokimkartu.ui.main.ThomannEditFragment"
+        android:label="ThomannEditFragment" />
 </navigation>

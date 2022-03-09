@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="model"
+            type="com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="60dp"
+                android:paddingBottom="20dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/cityTextInput"
+                        style="@style/SecondaryTextInput"
+                        android:layout_width="300dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="0dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/cityInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:text="@={model.thomannEditForm().city}"
+                            android:hint="@string/thomann_edit_city"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:lines="1"
+                            android:fontFamily="@font/lato"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/validUntilTextInput"
+                        style="@style/SecondaryTextInput"
+                        android:layout_width="300dp"
+                        android:layout_height="80dp"
+                        android:layout_marginBottom="40dp"
+                        android:layout_gravity="center">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/validUntilInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:text="@={model.thomannEditForm().validUntil}"
+                            android:hint="@string/thomann_edit_valid_until"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:lines="1"
+                            android:fontFamily="@font/lato"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                        android:id="@+id/changePasswordButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="30dp"
+                        app:enabled="@{model.thomannEditForm().isChanged}"
+                        app:onClick="@{() -> model.thomannEditForm().onClick()}"
+                        app:text="@string/thomann_edit_save"
+                        app:type="primary" />
+            </LinearLayout>
+        </ScrollView>
+
+        <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
+            android:id="@+id/thomannEditHeaderViewElement"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:title="@string/thomann_edit_title"
+            app:showBottomBorder="true"
+            app:showIcon="false"
+            app:headerType="withBack"
+            app:headerTextSize="small"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
