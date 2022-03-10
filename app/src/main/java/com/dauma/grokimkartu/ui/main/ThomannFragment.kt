@@ -40,6 +40,7 @@ class ThomannFragment : Fragment() {
         binding.model = thomannViewModel
         val view = binding.root
         setupObservers()
+        isRecyclerViewSetup = false
 
         binding.thomannHeaderViewElement.setOnBackClick {
             thomannViewModel.backClicked()
