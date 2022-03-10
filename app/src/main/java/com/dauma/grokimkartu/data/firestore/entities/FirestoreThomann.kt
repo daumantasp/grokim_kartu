@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp
 
 class FirestoreThomann(
     var id: String?,
+    var userId: String?,
     var name: String?,
     var city: String?,
     var isLocked: Boolean?,
@@ -14,5 +15,5 @@ class FirestoreThomann(
     var validUntil: Timestamp?
 ) {
     // Empty constructor is a must for Firestore
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null)
 }

@@ -41,6 +41,7 @@ class ThomannsDaoImpl(
         if (firestoreThomann != null) {
             thomannDao = ThomannDao(
                 firestoreThomann.id,
+                firestoreThomann.userId,
                 firestoreThomann.name,
                 firestoreThomann.city,
                 firestoreThomann.isLocked,
@@ -56,6 +57,7 @@ class ThomannsDaoImpl(
         if (thomannDao != null) {
             firestoreThomann = FirestoreThomann(
                 thomannDao.id,
+                thomannDao.userId,
                 thomannDao.name,
                 thomannDao.city,
                 thomannDao.isLocked,

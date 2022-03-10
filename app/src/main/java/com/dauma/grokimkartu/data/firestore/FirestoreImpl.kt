@@ -178,14 +178,69 @@ class FirestoreImpl(
         thomann: FirestoreThomann,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        setThomann(thomann, true, onComplete)
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (thomann.userId != null) {
+            valuesToSet["userId"] = thomann.userId!!
+        }
+        if (thomann.name != null) {
+            valuesToSet["name"] = thomann.name!!
+        }
+        if (thomann.city != null) {
+            valuesToSet["city"] = thomann.city!!
+        }
+        if (thomann.isLocked != null) {
+            valuesToSet["isLocked"] = thomann.isLocked!!
+        }
+        valuesToSet["creationDate"] = Timestamp.now()
+        if (thomann.validUntil != null) {
+            valuesToSet["validUntil"] = thomann.validUntil!!
+        }
+
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .add(valuesToSet)
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
     }
 
     override fun updateThomann(
         thomann: FirestoreThomann,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        setThomann(thomann, false, onComplete)
+        if (thomann.id == null) {
+            Log.d(TAG, "Failed to setThomann: missing thomann.id")
+            return
+        }
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (thomann.name != null) {
+            valuesToSet["name"] = thomann.name!!
+        }
+        if (thomann.city != null) {
+            valuesToSet["city"] = thomann.city!!
+        }
+        if (thomann.isLocked != null) {
+            valuesToSet["isLocked"] = thomann.isLocked!!
+        }
+        if (thomann.validUntil != null) {
+            valuesToSet["validUntil"] = thomann.validUntil!!
+        }
+
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .document(thomann.id!!)
+            // Because of the profile fields, you have to use merge
+            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
+            .set(valuesToSet, SetOptions.merge())
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
+            }
     }
 
     override fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit) {
@@ -243,42 +298,6 @@ class FirestoreImpl(
                 } else {
                     onComplete(true, null)
                 }
-            }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
-    }
-
-    private fun setThomann(thomann: FirestoreThomann, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
-        if (thomann.id == null) {
-            Log.d(TAG, "Failed to setThomann: missing thomann.id")
-            return
-        }
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (thomann.name != null) {
-            valuesToSet["name"] = thomann.name!!
-        }
-        if (thomann.city != null) {
-            valuesToSet["city"] = thomann.city!!
-        }
-        if (thomann.isLocked != null) {
-            valuesToSet["isLocked"] = thomann.isLocked!!
-        }
-        if (isCreation) {
-            valuesToSet["creationDate"] = Timestamp.now()
-        }
-        if (thomann.validUntil != null) {
-            valuesToSet["validUntil"] = thomann.validUntil!!
-        }
-
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .document(thomann.id!!)
-            // Because of the profile fields, you have to use merge
-            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
-            .set(valuesToSet, SetOptions.merge())
-            .addOnSuccessListener { _ ->
-                onComplete(true, null)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)

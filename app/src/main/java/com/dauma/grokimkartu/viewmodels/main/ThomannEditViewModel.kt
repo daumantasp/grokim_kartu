@@ -32,7 +32,7 @@ class ThomannEditViewModel @Inject constructor(
     }
 
     fun saveClicked(city: String, validUntil: String) {
-        val thomann = Thomann(null, null, city, null, null, null)
+        val thomann = Thomann(null, null, null, city, null, null, null)
         try {
             thomannsRepository.saveThomann(thomann) { isSuccessful, e ->
 

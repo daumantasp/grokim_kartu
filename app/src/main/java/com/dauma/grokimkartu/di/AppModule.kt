@@ -113,8 +113,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesThomannsRepository(thomannsDao: ThomannsDao) : ThomannsRepository {
-        return ThomannsRepositoryImpl(thomannsDao)
+    fun providesThomannsRepository(authDao: AuthDao, thomannsDao: ThomannsDao) : ThomannsRepository {
+        return ThomannsRepositoryImpl(authDao, thomannsDao)
     }
 
     @Provides
