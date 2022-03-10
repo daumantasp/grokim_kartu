@@ -89,5 +89,6 @@ class PlayersFragment : Fragment() {
         binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), playersListData, utils) { userId ->
             this.playersViewModel.playerClicked(userId)
         }
+        isPlayersRecyclerViewSetup = true
     }
 }
