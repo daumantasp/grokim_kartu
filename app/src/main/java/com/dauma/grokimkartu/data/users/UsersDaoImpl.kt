@@ -14,6 +14,7 @@ class UsersDaoImpl(
 ) : UsersDao {
     override fun createUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
         val firestoreUser = toFirestoreUser(user)
+        // TODO: fix !!
         firebase.createUser(firestoreUser!!, onComplete)
     }
 

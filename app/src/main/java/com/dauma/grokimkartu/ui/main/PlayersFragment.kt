@@ -45,6 +45,7 @@ class PlayersFragment : Fragment() {
         binding.model = playersViewModel
         val view = binding.root
         setupObservers()
+        isPlayersRecyclerViewSetup = false
 
         binding.playersHeaderViewElement.setOnBackClick {
             playersViewModel.backClicked()
@@ -89,5 +90,6 @@ class PlayersFragment : Fragment() {
         binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), playersListData, utils) { userId ->
             this.playersViewModel.playerClicked(userId)
         }
+        isPlayersRecyclerViewSetup = true
     }
 }
