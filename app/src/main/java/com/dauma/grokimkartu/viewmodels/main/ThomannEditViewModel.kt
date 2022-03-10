@@ -35,7 +35,9 @@ class ThomannEditViewModel @Inject constructor(
         val thomann = Thomann(null, null, null, city, null, null, null)
         try {
             thomannsRepository.saveThomann(thomann) { isSuccessful, e ->
-
+                if (isSuccessful) {
+                    _navigateBack.value = Event("")
+                }
             }
         } catch (e: Exception) {
 
