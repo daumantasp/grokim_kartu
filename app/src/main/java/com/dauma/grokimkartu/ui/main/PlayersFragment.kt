@@ -45,6 +45,7 @@ class PlayersFragment : Fragment() {
         binding.model = playersViewModel
         val view = binding.root
         setupObservers()
+        isPlayersRecyclerViewSetup = false
 
         binding.playersHeaderViewElement.setOnBackClick {
             playersViewModel.backClicked()
