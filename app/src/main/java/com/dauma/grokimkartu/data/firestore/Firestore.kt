@@ -19,4 +19,5 @@ interface Firestore {
     fun updateThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)
     fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit)
+    fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit)
 }

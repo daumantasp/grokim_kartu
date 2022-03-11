@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="model"
+            type="com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/playerDetailsScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="0dp"
+                android:orientation="vertical">
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/thomann_details_name"
+                    app:value="@{model.thomannDetailsForm.name}"
+                    app:rowBorders="top"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/thomann_details_city"
+                    app:value="@{model.thomannDetailsForm.city}"
+                    app:rowShowIcon="false"
+                    app:rowBorders="top"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/thomann_details_is_locked"
+                    app:value="@{model.thomannDetailsForm.locked}"
+                    app:rowShowIcon="false"
+                    app:rowBorders="top"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/thomann_details_creation_date"
+                    app:value="@{model.thomannDetailsForm.creationDate}"
+                    app:rowShowIcon="false"
+                    app:rowBorders="top"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:rowTitle="@string/thomann_details_valid_until"
+                    app:value="@{model.thomannDetailsForm.validUntil}"
+                    app:rowShowIcon="false"
+                    app:rowBorders="both"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
+            android:id="@+id/thomannDetailsHeaderViewElement"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:title="*Thomann Details*"
+            app:showBottomBorder="true"
+            app:showIcon="false"
+            app:headerType="withBack"
+            app:headerTextSize="small"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+

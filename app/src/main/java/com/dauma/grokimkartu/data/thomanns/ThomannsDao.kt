@@ -7,4 +7,5 @@ interface ThomannsDao {
     fun updateThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit)
     fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit)
+    fun getThomann(id: String, onComplete: (ThomannDao?, Exception?) -> Unit)
 }

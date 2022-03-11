@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ThomannListAdapter(
     private val thomannListData: List<ThomannsListData>,
@@ -23,7 +25,14 @@ class ThomannListAdapter(
         val thomannData = thomannListData[position]
         holder.userTextView.text = thomannData.thomann.name
         holder.cityTextView.text = thomannData.thomann.city
-        holder.validUntilTextView.text = thomannData.thomann.validUntil.toString()
+        // TODO: duplicate logic, refactor
+        val simpleDate = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
+        val validUntil = simpleDate.format(thomannData.thomann?.validUntil?.toDate() ?: Date())
+        holder.validUntilTextView.text = validUntil
+
+        holder.thomannItemLinearLayout.setOnClickListener {
+            this.onItemClicked(thomannData.thomann.id ?: "")
+        }
     }
 
     override fun getItemCount(): Int {

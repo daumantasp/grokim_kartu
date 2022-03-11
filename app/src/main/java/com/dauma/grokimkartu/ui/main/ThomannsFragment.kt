@@ -68,6 +68,11 @@ class ThomannsFragment : Fragment() {
                 binding.thomannsRecyclerView.adapter?.notifyDataSetChanged()
             }
         })
+        thomannsViewModel.thomannDetails.observe(viewLifecycleOwner, EventObserver {
+            val args = Bundle()
+            args.putString("thomannId", it)
+            this.findNavController().navigate(R.id.action_thomannFragment_to_thomannDetailsFragment, args)
+        })
     }
 
     private fun setupRecyclerView(listData: List<ThomannsListData>) {

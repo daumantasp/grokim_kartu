@@ -61,7 +61,8 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
                 R.id.playersFragment,
                 R.id.playerDetailsFragment,
                 R.id.thomannFragment,
-                R.id.thomannEditFragment
+                R.id.thomannEditFragment,
+                R.id.thomannDetailsFragment
                 -> showBottomNavigation(false)
                 else -> showBottomNavigation(true)
             }

@@ -263,13 +263,33 @@ class FirestoreImpl(
             .addOnSuccessListener { querySnapshot ->
                 val thomanns: MutableList<FirestoreThomann> = mutableListOf()
                 for (queryDocumentSnapshot in querySnapshot) {
-                    val thomann = queryDocumentSnapshot.toObject(FirestoreThomann::class.java)
+                    var thomann = queryDocumentSnapshot.toObject(FirestoreThomann::class.java)
+                    thomann.id = queryDocumentSnapshot.id
                     thomanns.add(thomann)
                 }
                 onComplete(true, thomanns, null)
             }
             .addOnFailureListener { e ->
                 onComplete(false, null, e)
+            }
+    }
+
+    override fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit) {
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .document(thomannId)
+            .get()
+            .addOnSuccessListener { thomannDocumentSnapshot ->
+                if (thomannDocumentSnapshot.exists()) {
+                    var thomann = thomannDocumentSnapshot.toObject(FirestoreThomann::class.java)
+                    thomann?.id = thomannId
+                    onComplete(thomann, null)
+                } else {
+                    onComplete(null, Exception("THOMANN WAS NOT FOUND"))
+                }
+            }
+            .addOnFailureListener { e ->
+                onComplete(null, e)
             }
     }
 

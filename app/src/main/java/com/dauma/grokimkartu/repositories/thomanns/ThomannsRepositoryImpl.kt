@@ -16,20 +16,21 @@ class ThomannsRepositoryImpl(
     override fun getThomanns(onComplete: (Boolean, List<Thomann>?, ThomannsError?) -> Unit) {
         thomannsDao.getThomanns() { isSuccessful, thommansDao, e ->
             if (isSuccessful && thommansDao != null) {
-                val thomanns = thommansDao.map { td ->
-                    Thomann(
-                        td.id,
-                        td.userId,
-                        td.name,
-                        td.city,
-                        td.isLocked,
-                        td.creationDate,
-                        td.validUntil
-                    )
-                }
+                val thomanns = thommansDao.map { td -> toThomann(td)!! }
                 onComplete(true, thomanns, null)
             } else {
                 onComplete(false, null, ThomannsError(2))
+            }
+        }
+    }
+
+    override fun getThomann(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit) {
+        thomannsDao.getThomann(id) { thomannDao, e ->
+            if (thomannDao != null) {
+                val thomann = toThomann(thomannDao!!)
+                onComplete(thomann, null)
+            } else {
+                onComplete(null, ThomannsError(2))
             }
         }
     }
@@ -62,6 +63,21 @@ class ThomannsRepositoryImpl(
                 onComplete(isSuccessful, ThomannsError(2))
             }
         }
+    }
+
+    private fun toThomann(thomannDao: ThomannDao?) : Thomann? {
+        if (thomannDao != null) {
+            return Thomann(
+                thomannDao.id,
+                thomannDao.userId,
+                thomannDao.name,
+                thomannDao.city,
+                thomannDao.isLocked,
+                thomannDao.creationDate,
+                thomannDao.validUntil
+            )
+        }
+        return null
     }
 }
 

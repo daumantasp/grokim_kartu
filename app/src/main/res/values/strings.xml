@@ -76,4 +76,9 @@
     <string name="thomann_edit_city">Miestas</string>
     <string name="thomann_edit_valid_until">Galioja iki</string>
     <string name="thomann_edit_save">Išsaugoti</string>
+    <string name="thomann_details_name">Vardas</string>
+    <string name="thomann_details_city">Miestas</string>
+    <string name="thomann_details_is_locked">Atrakinta</string>
+    <string name="thomann_details_creation_date">Sukūrimo data</string>
+    <string name="thomann_details_valid_until">Galioja iki</string>
 </resources>

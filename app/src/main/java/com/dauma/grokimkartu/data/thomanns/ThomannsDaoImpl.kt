@@ -36,6 +36,13 @@ class ThomannsDaoImpl(
         }
     }
 
+    override fun getThomann(id: String, onComplete: (ThomannDao?, Exception?) -> Unit) {
+        firebase.getThomann(id) { firestoreThomann, e ->
+            val thomannDao = toThomannDao(firestoreThomann)
+            onComplete(thomannDao, e)
+        }
+    }
+
     private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {
         var thomannDao: ThomannDao? = null
         if (firestoreThomann != null) {
