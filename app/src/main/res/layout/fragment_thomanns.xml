@@ -7,7 +7,7 @@
     <data>
         <variable
             name="model"
-            type="com.dauma.grokimkartu.viewmodels.main.ThomannViewModel" />
+            type="com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/thomannRecyclerView"
+            android:id="@+id/thomannsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
@@ -33,17 +33,17 @@
             android:layout_marginBottom="5dp"
             app:type="primary"
             app:onClick="@{() -> model.createClicked()}"
-            app:text="@string/thomann_add_new_button"
-            app:layout_constraintTop_toBottomOf="@id/thomannRecyclerView"
+            app:text="@string/thomanns_add_new_button"
+            app:layout_constraintTop_toBottomOf="@id/thomannsRecyclerView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/thomannHeaderViewElement"
+            android:id="@+id/thomannsHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:title="@string/thomann_title"
+            app:title="@string/thomanns_title"
             app:showBottomBorder="true"
             app:showIcon="false"
             app:headerType="withBack"

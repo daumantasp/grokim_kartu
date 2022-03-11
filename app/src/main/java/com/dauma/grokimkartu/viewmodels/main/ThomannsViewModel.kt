@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ThomannViewModel @Inject constructor(
+class ThomannsViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository
 ): ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
