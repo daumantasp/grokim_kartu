@@ -62,6 +62,8 @@
                             android:id="@+id/validUntilInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="false"
                             android:text="@={model.thomannEditForm().validUntil}"
                             android:hint="@string/thomann_edit_valid_until"
                             android:singleLine="true"

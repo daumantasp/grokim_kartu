@@ -12,6 +12,10 @@ import android.view.View
 import android.widget.*
 import androidx.core.view.doOnLayout
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.ui.BottomDialogData
+import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
+import com.dauma.grokimkartu.ui.DatePickerDate
+import java.util.*
 
 class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     : RelativeLayout(context, attrs) {
@@ -21,6 +25,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     private val titleTextView: TextView
     private val valueEditText: EditText
     private val valueLimitTextView: TextView
+    private val datePicker: DatePicker
     private val saveButton: ButtonViewElement
     private var onValueChanged: (String) -> Unit = {}
     private var valueCharsLimit: Int? = null
@@ -38,6 +43,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         titleTextView = findViewById(R.id.titleTextView)
         valueEditText = findViewById(R.id.valueEditText)
         valueLimitTextView = findViewById(R.id.valueLimitTextView)
+        datePicker = findViewById(R.id.datePicker)
         saveButton = findViewById(R.id.saveButton)
 
         contentLinearLayout.setOnClickListener {}
@@ -56,11 +62,60 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         rootRelativeLayout.doOnLayout { hide(animated = false) }
     }
 
-    fun setTitle(title: String) {
+    fun bindValueData(data: BottomDialogData) {
+        reset()
+        setTitle(data.title)
+        setEditableValue(data.value)
+        setValueCharsLimit(data.valueLimit)
+        setOnSaveClick { value -> data.onSaveClicked(value) }
+        setOnValueChanged { value -> data.onValueChanged(value) }
+        setOnCancelClick { data.onCancelClicked() }
+
+        datePicker.visibility = View.GONE
+        valueEditText.visibility = View.VISIBLE
+    }
+
+    fun bindDatePickerData(data: BottomDialogDatePickerData) {
+        reset()
+        setTitle(data.title)
+        datePicker.updateDate(data.selectedDate.year, data.selectedDate.month - 1, data.selectedDate.day)
+        datePicker.setOnDateChangedListener { _, year, month, dayOfMonth ->
+            val datePickerDate = DatePickerDate(year, month - 1, dayOfMonth)
+            data.onSelectedDateChanged(datePickerDate)
+        }
+        // TODO: refactor
+        data.minDate?.let {
+            val calendar = Calendar.getInstance()
+            calendar.set(it.year, it.month - 1, it.day)
+            datePicker.minDate = calendar.timeInMillis
+
+        }
+        data.maxDate?.let {
+            val calendar = Calendar.getInstance()
+            calendar.set(it.year, it.month - 1, it.day)
+            datePicker.maxDate = calendar.timeInMillis
+        }
+        setOnCancelClick { data.onCancelClicked() }
+        saveButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                val selectedDate = DatePickerDate(
+                    datePicker.year,
+                    datePicker.month + 1,
+                    datePicker.dayOfMonth
+                )
+                data.onSaveClicked(selectedDate)
+            }
+        })
+
+        valueEditText.visibility = View.GONE
+        datePicker.visibility = View.VISIBLE
+    }
+
+    private fun setTitle(title: String) {
         titleTextView.setText(title)
     }
 
-    fun setEditableValue(value: String) {
+    private fun setEditableValue(value: String) {
         valueEditText.setText(value)
         valueEditText.setSelection(valueEditText.length())
     }
@@ -73,7 +128,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         saveButton.showAnimation(isLoading)
     }
 
-    fun setOnSaveClick(onClick: (String) -> Unit) {
+    private fun setOnSaveClick(onClick: (String) -> Unit) {
         saveButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 onClick(valueEditText.text.toString())
@@ -81,15 +136,15 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         })
     }
 
-    fun setOnCancelClick(onClick: () -> Unit) {
+    private fun setOnCancelClick(onClick: () -> Unit) {
         backgroundFrameLayout.setOnClickListener { onClick() }
     }
 
-    fun setOnValueChanged(onValueChanged: (String) -> Unit) {
+    private fun setOnValueChanged(onValueChanged: (String) -> Unit) {
         this.onValueChanged = onValueChanged
     }
 
-    fun setValueCharsLimit(limit: Int?) {
+    private fun setValueCharsLimit(limit: Int?) {
         this.valueCharsLimit = limit
         if (limit != null) {
             valueEditText.filters = arrayOf(InputFilter.LengthFilter(limit!!))
@@ -102,7 +157,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         }
     }
 
-    fun reset() {
+    private fun reset() {
         titleTextView.text = ""
         valueEditText.setText("")
         valueEditText.filters = arrayOf()
@@ -110,6 +165,8 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         saveButton.isEnabled = true
         onValueChanged = {}
         valueCharsLimit = null
+        valueEditText.visibility = View.GONE
+        datePicker.visibility = View.GONE
         hide(animated = false)
     }
 

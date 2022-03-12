@@ -147,13 +147,17 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         bottomDialogViewElement?.let { dialog ->
             bottomNavigationView?.translationZ = -30.0f
 
-            dialog.reset()
-            dialog.setTitle(data.title)
-            dialog.setEditableValue(data.value)
-            dialog.setValueCharsLimit(data.valueLimit)
-            dialog.setOnSaveClick { value -> data.onSaveClicked(value) }
-            dialog.setOnValueChanged { value -> data.onValueChanged(value) }
-            dialog.setOnCancelClick { data.onCancelClicked() }
+            dialog.bindValueData(data)
+            dialog.setSaveButtonEnabled(false)
+            dialog.show(animated = true)
+        }
+    }
+
+    override fun showBottomDatePickerDialog(data: BottomDialogDatePickerData) {
+        bottomDialogViewElement?.let { dialog ->
+            bottomNavigationView?.translationZ = -30.0f
+
+            dialog.bindDatePickerData(data)
             dialog.setSaveButtonEnabled(false)
             dialog.show(animated = true)
         }
