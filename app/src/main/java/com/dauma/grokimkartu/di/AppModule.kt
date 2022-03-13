@@ -27,6 +27,8 @@ import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtilsImpl
 import com.dauma.grokimkartu.general.utils.string.StringUtils
 import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
+import com.dauma.grokimkartu.general.utils.time.TimeUtils
+import com.dauma.grokimkartu.general.utils.time.TimeUtilsImpl
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepositoryImpl
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
@@ -55,15 +57,22 @@ class AppModule {
     }
 
     @Provides
+    fun timeUtils() : TimeUtils {
+        return TimeUtilsImpl()
+    }
+
+    @Provides
     fun providesUtils(
         imageUtils: ImageUtils,
         stringUtils: StringUtils,
         keyboardUtils: KeyboardUtils,
+        timeUtils: TimeUtils
     ) : Utils {
         return UtilsImpl(
             imageUtils,
             stringUtils,
-            keyboardUtils
+            keyboardUtils,
+            timeUtils
         )
     }
 
