@@ -8,6 +8,6 @@ interface TimeUtils {
     fun convertToTimeInMillis(customDate: CustomDate) : Long
     fun getCurrentDate() : CustomDate
     fun addDays(customDate: CustomDate, days: Int) : CustomDate
-    fun addMonths(customDate: CustomDate, days: Int) : CustomDate
-    fun addYears(customDate: CustomDate, days: Int) : CustomDate
+    fun addMonths(customDate: CustomDate, months: Int) : CustomDate
+    fun addYears(customDate: CustomDate, years: Int) : CustomDate
 }

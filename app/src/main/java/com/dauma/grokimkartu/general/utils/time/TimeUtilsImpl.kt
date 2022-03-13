@@ -47,8 +47,7 @@ class TimeUtilsImpl : TimeUtils {
 
     override fun addYears(customDate: CustomDate, years: Int): CustomDate {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val localDate = convertCustomDateToLocalDate(customDate)
-            localDate.plusYears(years.toLong())
+            val localDate = convertCustomDateToLocalDate(customDate).plusYears(years.toLong())
             return convertLocalDateToCustomDate(localDate)
         } else {
             val date = convertCustomDateToDate(customDate)
@@ -61,8 +60,7 @@ class TimeUtilsImpl : TimeUtils {
 
     override fun addMonths(customDate: CustomDate, months: Int): CustomDate {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val localDate = convertCustomDateToLocalDate(customDate)
-            localDate.plusMonths(months.toLong())
+            val localDate = convertCustomDateToLocalDate(customDate).plusMonths(months.toLong())
             return convertLocalDateToCustomDate(localDate)
         } else {
             val date = convertCustomDateToDate(customDate)
@@ -75,8 +73,7 @@ class TimeUtilsImpl : TimeUtils {
 
     override fun addDays(customDate: CustomDate, days: Int): CustomDate {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val localDate = convertCustomDateToLocalDate(customDate)
-            localDate.plusDays(days.toLong())
+            val localDate = convertCustomDateToLocalDate(customDate).plusDays(days.toLong())
             return convertLocalDateToCustomDate(localDate)
         } else {
             val date = convertCustomDateToDate(customDate)
