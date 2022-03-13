@@ -35,4 +35,10 @@ class TimeUtilsImpl : TimeUtils {
         )
         return format(customDate)
     }
+
+    override fun convertToTimeInMillis(customDate: CustomDate): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(customDate.year, customDate.month - 1, customDate.dayOfMonth)
+        return calendar.timeInMillis
+    }
 }
