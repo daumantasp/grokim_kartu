@@ -12,11 +12,15 @@ import android.view.View
 import android.widget.*
 import androidx.core.view.doOnLayout
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDate
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     : RelativeLayout(context, attrs) {
     private val rootRelativeLayout: RelativeLayout
@@ -29,6 +33,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     private val saveButton: ButtonViewElement
     private var onValueChanged: (String) -> Unit = {}
     private var valueCharsLimit: Int? = null
+    @Inject lateinit var utils: Utils
 
     companion object {
         private const val DEFAULT_ANIMATION_DURATION: Long = 300L
@@ -83,17 +88,11 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
             val datePickerDate = CustomDate(year, month - 1, dayOfMonth)
             data.onSelectedDateChanged(datePickerDate)
         }
-        // TODO: refactor
-        data.minDate?.let {
-            val calendar = Calendar.getInstance()
-            calendar.set(it.year, it.month - 1, it.dayOfMonth)
-            datePicker.minDate = calendar.timeInMillis
-
+        if (data.minDate != null) {
+            datePicker.minDate = utils.timeUtils.convertToTimeInMillis(data.minDate!!)
         }
-        data.maxDate?.let {
-            val calendar = Calendar.getInstance()
-            calendar.set(it.year, it.month - 1, it.dayOfMonth)
-            datePicker.maxDate = calendar.timeInMillis
+        if (data.maxDate != null) {
+            datePicker.maxDate = utils.timeUtils.convertToTimeInMillis(data.maxDate!!)
         }
         setOnCancelClick { data.onCancelClicked() }
         saveButton.setOnClick(object : View.OnClickListener {

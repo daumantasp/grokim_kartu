@@ -1,7 +1,6 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,18 +12,18 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.utils.time.CustomDate
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
-import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ThomannEditFragment : Fragment() {
     private val thomannEditViewModel by viewModels<ThomannEditViewModel>()
     private var dialogsManager: DialogsManager? = null
+    @Inject lateinit var utils: Utils
 
     private var _binding: FragmentThomannEditBinding? = null
     // This property is only valid between onCreateView and
@@ -71,45 +70,9 @@ class ThomannEditFragment : Fragment() {
             this.findNavController().popBackStack()
         })
         thomannEditViewModel.validUndtil.observe(viewLifecycleOwner, EventObserver {
-            val currentDate: CustomDate
-            val minDate: CustomDate
-            val maxDate: CustomDate
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val currentLocalDateTime = LocalDateTime.now()
-                val minLocalDateTime = currentLocalDateTime.plusDays(1L)
-                val maxLocalDateTime = currentLocalDateTime.plusYears(1L)
-                currentDate = CustomDate(
-                    currentLocalDateTime.year,
-                    currentLocalDateTime.monthValue,
-                    currentLocalDateTime.dayOfMonth)
-                minDate = CustomDate(
-                    minLocalDateTime.year,
-                    minLocalDateTime.monthValue,
-                    minLocalDateTime.dayOfMonth)
-                maxDate = CustomDate(
-                    maxLocalDateTime.year,
-                    maxLocalDateTime.monthValue,
-                    maxLocalDateTime.dayOfMonth)
-            } else {
-                val date = Date()
-                val calendar = Calendar.getInstance()
-                calendar.time = date
-                currentDate = CustomDate(date.year, date.month + 1, date.day)
-                calendar.add(Calendar.DATE, 1)
-                minDate = CustomDate(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-                calendar.time = date
-                calendar.add(Calendar.YEAR, 1)
-                maxDate = CustomDate(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-            }
-
+            val currentDate = it[0]
+            val minDate = it[1]
+            val maxDate = it[2]
             this.dialogsManager?.let { manager ->
                 manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
                     title = getString(R.string.thomann_edit_valid_until),
@@ -117,9 +80,8 @@ class ThomannEditFragment : Fragment() {
                     minDate = minDate,
                     maxDate = maxDate,
                     onSaveClicked = { selectedDate ->
-                        // temporary
-                        val dateString = "${selectedDate.year}-${selectedDate.month}-${selectedDate.dayOfMonth}"
-                        thomannEditViewModel.thomannEditForm().validUntil = dateString
+                        val formattedDate = this.utils.timeUtils.format(selectedDate)
+                        thomannEditViewModel.thomannEditForm().validUntil = formattedDate
                         manager.hideBottomDialog()
                     },
                     onSelectedDateChanged = { selectedDate ->
