@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.general.utils.time
 
 import android.os.Build
+import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -14,7 +15,7 @@ class TimeUtilsImpl : TimeUtils {
 
     override fun format(customDate: CustomDate): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val localDate = LocalDate.of(customDate.year, customDate.month, customDate.dayOfMonth)
+            val localDate = convertCustomDateToLocalDate(customDate)
             val dateTimeFormatter = DateTimeFormatter.ofPattern(dateFormatPattern)
             return localDate.format(dateTimeFormatter)
         } else {
@@ -44,6 +45,53 @@ class TimeUtilsImpl : TimeUtils {
         }
     }
 
+    override fun addYears(customDate: CustomDate, years: Int): CustomDate {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val localDate = convertCustomDateToLocalDate(customDate)
+            localDate.plusYears(years.toLong())
+            return convertLocalDateToCustomDate(localDate)
+        } else {
+            val date = convertCustomDateToDate(customDate)
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+            calendar.add(Calendar.YEAR, years)
+            return convertDateToCustomDate(calendar.time)
+        }
+    }
+
+    override fun addMonths(customDate: CustomDate, months: Int): CustomDate {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val localDate = convertCustomDateToLocalDate(customDate)
+            localDate.plusMonths(months.toLong())
+            return convertLocalDateToCustomDate(localDate)
+        } else {
+            val date = convertCustomDateToDate(customDate)
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+            calendar.add(Calendar.MONTH, months)
+            return convertDateToCustomDate(calendar.time)
+        }
+    }
+
+    override fun addDays(customDate: CustomDate, days: Int): CustomDate {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val localDate = convertCustomDateToLocalDate(customDate)
+            localDate.plusDays(days.toLong())
+            return convertLocalDateToCustomDate(localDate)
+        } else {
+            val date = convertCustomDateToDate(customDate)
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+            calendar.add(Calendar.DAY_OF_MONTH, days)
+            return convertDateToCustomDate(calendar.time)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun convertLocalDateToCustomDate(localDate: LocalDate) : CustomDate {
+        return CustomDate(localDate.year, localDate.monthValue, localDate.dayOfMonth)
+    }
+
     private fun convertDateToCustomDate(date: Date) : CustomDate {
         val calendar = Calendar.getInstance()
         calendar.time = date
@@ -52,6 +100,11 @@ class TimeUtilsImpl : TimeUtils {
             calendar.get(Calendar.MONTH) + 1,
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun convertCustomDateToLocalDate(customDate: CustomDate) : LocalDate {
+        return LocalDate.of(customDate.year, customDate.month, customDate.dayOfMonth)
     }
 
     private fun convertCustomDateToDate(customDate: CustomDate) : Date {
