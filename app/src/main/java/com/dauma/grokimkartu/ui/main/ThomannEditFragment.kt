@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.utils.time.CustomDate
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
-import com.dauma.grokimkartu.ui.DatePickerDate
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,22 +71,22 @@ class ThomannEditFragment : Fragment() {
             this.findNavController().popBackStack()
         })
         thomannEditViewModel.validUndtil.observe(viewLifecycleOwner, EventObserver {
-            val currentDate: DatePickerDate
-            val minDate: DatePickerDate
-            val maxDate: DatePickerDate
+            val currentDate: CustomDate
+            val minDate: CustomDate
+            val maxDate: CustomDate
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val currentLocalDateTime = LocalDateTime.now()
                 val minLocalDateTime = currentLocalDateTime.plusDays(1L)
                 val maxLocalDateTime = currentLocalDateTime.plusYears(1L)
-                currentDate = DatePickerDate(
+                currentDate = CustomDate(
                     currentLocalDateTime.year,
                     currentLocalDateTime.monthValue,
                     currentLocalDateTime.dayOfMonth)
-                minDate = DatePickerDate(
+                minDate = CustomDate(
                     minLocalDateTime.year,
                     minLocalDateTime.monthValue,
                     minLocalDateTime.dayOfMonth)
-                maxDate = DatePickerDate(
+                maxDate = CustomDate(
                     maxLocalDateTime.year,
                     maxLocalDateTime.monthValue,
                     maxLocalDateTime.dayOfMonth)
@@ -94,16 +94,16 @@ class ThomannEditFragment : Fragment() {
                 val date = Date()
                 val calendar = Calendar.getInstance()
                 calendar.time = date
-                currentDate = DatePickerDate(date.year, date.month + 1, date.day)
+                currentDate = CustomDate(date.year, date.month + 1, date.day)
                 calendar.add(Calendar.DATE, 1)
-                minDate = DatePickerDate(
+                minDate = CustomDate(
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
                 calendar.time = date
                 calendar.add(Calendar.YEAR, 1)
-                maxDate = DatePickerDate(
+                maxDate = CustomDate(
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH)
@@ -118,7 +118,7 @@ class ThomannEditFragment : Fragment() {
                     maxDate = maxDate,
                     onSaveClicked = { selectedDate ->
                         // temporary
-                        val dateString = "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}"
+                        val dateString = "${selectedDate.year}-${selectedDate.month}-${selectedDate.dayOfMonth}"
                         thomannEditViewModel.thomannEditForm().validUntil = dateString
                         manager.hideBottomDialog()
                     },

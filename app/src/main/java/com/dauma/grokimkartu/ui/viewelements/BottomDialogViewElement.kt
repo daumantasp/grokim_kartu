@@ -12,9 +12,9 @@ import android.view.View
 import android.widget.*
 import androidx.core.view.doOnLayout
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.utils.time.CustomDate
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
-import com.dauma.grokimkartu.ui.DatePickerDate
 import java.util.*
 
 class BottomDialogViewElement(context: Context, attrs: AttributeSet)
@@ -78,27 +78,27 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     fun bindDatePickerData(data: BottomDialogDatePickerData) {
         reset()
         setTitle(data.title)
-        datePicker.updateDate(data.selectedDate.year, data.selectedDate.month - 1, data.selectedDate.day)
+        datePicker.updateDate(data.selectedDate.year, data.selectedDate.month - 1, data.selectedDate.dayOfMonth)
         datePicker.setOnDateChangedListener { _, year, month, dayOfMonth ->
-            val datePickerDate = DatePickerDate(year, month - 1, dayOfMonth)
+            val datePickerDate = CustomDate(year, month - 1, dayOfMonth)
             data.onSelectedDateChanged(datePickerDate)
         }
         // TODO: refactor
         data.minDate?.let {
             val calendar = Calendar.getInstance()
-            calendar.set(it.year, it.month - 1, it.day)
+            calendar.set(it.year, it.month - 1, it.dayOfMonth)
             datePicker.minDate = calendar.timeInMillis
 
         }
         data.maxDate?.let {
             val calendar = Calendar.getInstance()
-            calendar.set(it.year, it.month - 1, it.day)
+            calendar.set(it.year, it.month - 1, it.dayOfMonth)
             datePicker.maxDate = calendar.timeInMillis
         }
         setOnCancelClick { data.onCancelClicked() }
         saveButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-                val selectedDate = DatePickerDate(
+                val selectedDate = CustomDate(
                     datePicker.year,
                     datePicker.month + 1,
                     datePicker.dayOfMonth

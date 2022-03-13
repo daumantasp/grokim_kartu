@@ -8,11 +8,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ThomannListAdapter(
     private val thomannListData: List<ThomannsListData>,
+    private val timeUtils: TimeUtils,
     private val onItemClicked: (String) -> Unit
 ) : RecyclerView.Adapter<ThomannListAdapter.ViewHolder>() {
 
@@ -25,9 +27,7 @@ class ThomannListAdapter(
         val thomannData = thomannListData[position]
         holder.userTextView.text = thomannData.thomann.name
         holder.cityTextView.text = thomannData.thomann.city
-        // TODO: duplicate logic, refactor
-        val simpleDate = SimpleDateFormat("dd/MM/yyyy hh:mm:ss")
-        val validUntil = simpleDate.format(thomannData.thomann?.validUntil?.toDate() ?: Date())
+        val validUntil = this.timeUtils.format(thomannData.thomann.validUntil?.toDate() ?: Date())
         holder.validUntilTextView.text = validUntil
 
         holder.thomannItemLinearLayout.setOnClickListener {
