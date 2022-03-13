@@ -17,7 +17,9 @@ class ThomannEditViewModel @Inject constructor(
     private val thomannEditForm: ThomannEditForm
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _validUntil = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
+    val validUndtil: LiveData<Event<String>> = _validUntil
 
     fun thomannEditForm(): ThomannEditForm {
         return thomannEditForm
@@ -29,6 +31,10 @@ class ThomannEditViewModel @Inject constructor(
 
     fun backClicked() {
         _navigateBack.value = Event("")
+    }
+
+    fun validUntilClicked() {
+        _validUntil.value = Event("")
     }
 
     fun saveClicked(city: String, validUntil: String) {

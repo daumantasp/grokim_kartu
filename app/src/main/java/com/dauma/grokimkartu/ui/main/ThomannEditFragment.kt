@@ -18,10 +18,7 @@ import com.dauma.grokimkartu.ui.DatePickerDate
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 @AndroidEntryPoint
@@ -62,6 +59,18 @@ class ThomannEditFragment : Fragment() {
         }
 
         binding.validUntilInputEditText.setOnClickListener {
+            thomannEditViewModel.validUntilClicked()
+        }
+
+        thomannEditViewModel.viewIsReady()
+        return view
+    }
+
+    private fun setupObservers() {
+        thomannEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().popBackStack()
+        })
+        thomannEditViewModel.validUndtil.observe(viewLifecycleOwner, EventObserver {
             val currentDate: DatePickerDate
             val minDate: DatePickerDate
             val maxDate: DatePickerDate
@@ -119,15 +128,6 @@ class ThomannEditFragment : Fragment() {
                     onCancelClicked = { manager.hideBottomDialog() }
                 ))
             }
-        }
-
-        thomannEditViewModel.viewIsReady()
-        return view
-    }
-
-    private fun setupObservers() {
-        thomannEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
         })
         thomannEditViewModel.thomannEditForm().getFormFields().observe(viewLifecycleOwner) {
             this.thomannEditViewModel.saveClicked(it[0], it[1])
