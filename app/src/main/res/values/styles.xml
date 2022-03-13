@@ -83,6 +83,8 @@
         <item name="card1EndColor">@color/violet</item>
         <item name="card2StartColor">@color/cambridgeBlue</item>
         <item name="card2EndColor">@color/cadetBlue</item>
+
+        <item name="datePickerDividerColor">@color/violetBlue</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -212,5 +214,8 @@
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">center</item>
+    </style>
+    <style name="DatePicker">
+        <item name="colorControlNormal">?attr/datePickerDividerColor</item>
     </style>
 </resources>

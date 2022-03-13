@@ -77,6 +77,8 @@
     <attr name="card2StartColor" format="color" />
     <attr name="card2EndColor" format="color" />
 
+    <attr name="datePickerDividerColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
