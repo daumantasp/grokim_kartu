@@ -18,27 +18,45 @@ class TimeUtilsImpl : TimeUtils {
             val dateTimeFormatter = DateTimeFormatter.ofPattern(dateFormatPattern)
             return localDate.format(dateTimeFormatter)
         } else {
-            val calendar = Calendar.getInstance()
-            calendar.set(customDate.year, customDate.month - 1, customDate.dayOfMonth)
+            val date = convertCustomDateToDate(customDate)
             val simpleDateFormatter = SimpleDateFormat(dateFormatPattern)
-            return simpleDateFormatter.format(calendar.time)
+            return simpleDateFormatter.format(date)
         }
     }
 
     override fun format(date: Date): String {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        val customDate = CustomDate(
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
+        val customDate = convertDateToCustomDate(date)
         return format(customDate)
     }
 
     override fun convertToTimeInMillis(customDate: CustomDate): Long {
+        val date = convertCustomDateToDate(customDate)
+        val dateInMillis = date.time
+        return dateInMillis
+    }
+
+    override fun getCurrentDate(): CustomDate {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val currentLocalDate = LocalDate.now()
+            return CustomDate(currentLocalDate.year, currentLocalDate.monthValue, currentLocalDate.dayOfMonth)
+        } else {
+            return convertDateToCustomDate(Date())
+        }
+    }
+
+    private fun convertDateToCustomDate(date: Date) : CustomDate {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        return CustomDate(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    private fun convertCustomDateToDate(customDate: CustomDate) : Date {
         val calendar = Calendar.getInstance()
         calendar.set(customDate.year, customDate.month - 1, customDate.dayOfMonth)
-        return calendar.timeInMillis
+        return calendar.time
     }
 }
