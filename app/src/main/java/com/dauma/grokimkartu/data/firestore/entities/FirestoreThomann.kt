@@ -12,8 +12,9 @@ class FirestoreThomann(
     @ServerTimestamp
     var creationDate: Timestamp?,
     @ServerTimestamp
-    var validUntil: Timestamp?
+    var validUntil: Timestamp?,
+    var users: ArrayList<FirestoreThomannUser>?
 ) {
     // Empty constructor is a must for Firestore
-    constructor() : this(null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null)
 }

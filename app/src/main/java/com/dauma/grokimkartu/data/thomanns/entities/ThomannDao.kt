@@ -9,5 +9,6 @@ data class ThomannDao(
     var city: String?,
     var isLocked: Boolean?,
     var creationDate: Timestamp?,
-    var validUntil: Timestamp?
+    var validUntil: Timestamp?,
+    var users: List<ThomannUserDao>?
 )

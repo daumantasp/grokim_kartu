@@ -2,7 +2,9 @@ package com.dauma.grokimkartu.data.thomanns
 
 import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 
 class ThomannsDaoImpl(
     private val firebase: Firestore
@@ -53,7 +55,8 @@ class ThomannsDaoImpl(
                 firestoreThomann.city,
                 firestoreThomann.isLocked,
                 firestoreThomann.creationDate,
-                firestoreThomann.validUntil
+                firestoreThomann.validUntil,
+                firestoreThomann.users?.map { ftu -> toThomannUserDao(ftu)!! }
             )
         }
         return thomannDao
@@ -62,6 +65,12 @@ class ThomannsDaoImpl(
     private fun toFirestoreThomann(thomannDao: ThomannDao?) : FirestoreThomann? {
         var firestoreThomann: FirestoreThomann? = null
         if (thomannDao != null) {
+            val firestoreThomannUsers = ArrayList<FirestoreThomannUser>()
+            if (thomannDao.users != null) {
+                for (thomannUserDao in thomannDao.users!!) {
+                    firestoreThomannUsers.add(toFirestoreThomannUser(thomannUserDao)!!)
+                }
+            }
             firestoreThomann = FirestoreThomann(
                 thomannDao.id,
                 thomannDao.userId,
@@ -69,9 +78,34 @@ class ThomannsDaoImpl(
                 thomannDao.city,
                 thomannDao.isLocked,
                 thomannDao.creationDate,
-                thomannDao.validUntil
+                thomannDao.validUntil,
+                firestoreThomannUsers
             )
         }
         return firestoreThomann
+    }
+
+    private fun toFirestoreThomannUser(thomannUserDao: ThomannUserDao?) : FirestoreThomannUser? {
+        var firestoreThomannUser: FirestoreThomannUser? = null
+        if (thomannUserDao != null) {
+            firestoreThomannUser = FirestoreThomannUser(
+                thomannUserDao.userId,
+                thomannUserDao.userName,
+                thomannUserDao.amount
+            )
+        }
+        return firestoreThomannUser
+    }
+
+    private fun toThomannUserDao(firestoreThomannUser: FirestoreThomannUser?) : ThomannUserDao? {
+        var thomannUserDao: ThomannUserDao? = null
+        if (firestoreThomannUser != null) {
+            thomannUserDao = ThomannUserDao(
+                firestoreThomannUser.userId,
+                firestoreThomannUser.userName,
+                firestoreThomannUser.amount
+            )
+        }
+        return thomannUserDao
     }
 }

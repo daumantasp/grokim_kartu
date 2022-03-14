@@ -4,7 +4,9 @@ import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import com.google.firebase.Timestamp
@@ -54,7 +56,8 @@ class ThomannsRepositoryImpl(
             thomann.city,
             false,
             null,
-            Timestamp.now()
+            Timestamp.now(),
+            listOf()
         )
         thomannsDao.createThomann(thomannDao) { isSuccessful, e ->
             if (isSuccessful) {
@@ -74,6 +77,10 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun join(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit) {
+
+    }
+
     private fun isUserLoggedIn(): Boolean {
         return authDao.getUserId() != null
     }
@@ -87,7 +94,19 @@ class ThomannsRepositoryImpl(
                 thomannDao.city,
                 thomannDao.isLocked,
                 thomannDao.creationDate,
-                thomannDao.validUntil
+                thomannDao.validUntil,
+                thomannDao.users?.map { tud -> toThomannUser(tud)!! }
+            )
+        }
+        return null
+    }
+
+    private fun toThomannUser(thomannUserDao: ThomannUserDao?) : ThomannUser? {
+        if (thomannUserDao != null) {
+            return ThomannUser(
+                thomannUserDao.userId,
+                thomannUserDao.userName,
+                thomannUserDao.amount
             )
         }
         return null
