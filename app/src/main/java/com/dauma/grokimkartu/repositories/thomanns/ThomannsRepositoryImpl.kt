@@ -67,7 +67,7 @@ class ThomannsRepositoryImpl(
 
     override fun isJoinPossible(thomann: Thomann): Boolean {
         if (isUserLoggedIn() == true) {
-            return thomann.userId != authDao.getUserId()
+            return thomann.isLocked == false && thomann.userId != authDao.getUserId()
         } else {
             val error = ThomannsError(3)
             throw ThomannsException(error)
