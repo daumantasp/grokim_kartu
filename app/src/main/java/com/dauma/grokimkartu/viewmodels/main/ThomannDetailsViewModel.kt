@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.models.forms.ThomannDetailsForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
+import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ThomannDetailsViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository,
+    private val usersRepository: UsersRepository,
     private val thomannDetailsForm: ThomannDetailsForm,
     private val timeUtils: TimeUtils,
     savedStateHandle: SavedStateHandle
@@ -35,19 +37,26 @@ class ThomannDetailsViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
+    fun joinClicked() {
+
+    }
+
     fun loadDetails() {
         thomannsRepository.getThomann(thomannId ?: "") { thomann, thomannsError ->
-            val currentTime = Date()
-            val creationDate = this.timeUtils.format(thomann?.creationDate?.toDate() ?: currentTime)
-            val validUntilDate = this.timeUtils.format(thomann?.validUntil?.toDate() ?: currentTime)
-            this.thomannDetailsForm.setInitialValues(
-                thomannId ?: "",
-                thomann?.name ?: "",
-                thomann?.city ?: "",
-                thomann?.isLocked ?: false,
-                creationDate,
-                validUntilDate
-            )
+            if (thomann != null) {
+                val currentTime = Date()
+                val creationDate = this.timeUtils.format(thomann.creationDate?.toDate() ?: currentTime)
+                val validUntilDate = this.timeUtils.format(thomann.validUntil?.toDate() ?: currentTime)
+                this.thomannDetailsForm.setInitialValues(
+                    thomannId ?: "",
+                    thomann.name ?: "",
+                    thomann.city ?: "",
+                    thomann.isLocked ?: false,
+                    creationDate,
+                    validUntilDate,
+                    this.thomannsRepository.isJoinPossible(thomann)
+                )
+            }
         }
     }
 }

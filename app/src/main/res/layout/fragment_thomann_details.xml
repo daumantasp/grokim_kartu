@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="model"
             type="com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel" />
@@ -69,6 +70,23 @@
                     app:value="@{model.thomannDetailsForm.validUntil}"
                     app:rowShowIcon="false"
                     app:rowBorders="both"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/joinThomannButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:visibility="@{model.thomannDetailsForm.joinPossible ? View.VISIBLE : View.GONE}"
+                    app:type="primary"
+                    app:onClick="@{() -> model.joinClicked()}"
+                    app:text="@string/thomann_details_join" />
 
             </LinearLayout>
         </ScrollView>

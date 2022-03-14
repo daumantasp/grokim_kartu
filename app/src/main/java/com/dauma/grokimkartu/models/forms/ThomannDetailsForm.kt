@@ -46,13 +46,21 @@ class ThomannDetailsForm: BaseObservable() {
             notifyPropertyChanged(BR.validUntil)
         }
 
+    @get:Bindable
+    var isJoinPossible: Boolean = false
+        private set(value) {
+            field = value
+            notifyPropertyChanged(BR.joinPossible)
+        }
+
     fun setInitialValues(
         userId: String,
         name: String,
         city: String,
         isLocked: Boolean,
         creationDate: String,
-        validUntil: String
+        validUntil: String,
+        isJoinPossible: Boolean
     ) {
         this.userId = userId
         this.name = name
@@ -60,5 +68,6 @@ class ThomannDetailsForm: BaseObservable() {
         this._isLocked = isLocked
         this.creationDate = creationDate
         this.validUntil = validUntil
+        this.isJoinPossible = isJoinPossible
     }
 }

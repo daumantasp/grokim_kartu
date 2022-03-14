@@ -81,4 +81,5 @@
     <string name="thomann_details_is_locked">Atrakinta</string>
     <string name="thomann_details_creation_date">Sukūrimo data</string>
     <string name="thomann_details_valid_until">Galioja iki</string>
+    <string name="thomann_details_join">Prisijungti</string>
 </resources>
