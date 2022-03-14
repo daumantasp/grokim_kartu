@@ -65,6 +65,19 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun isJoinPossible(thomann: Thomann): Boolean {
+        if (isUserLoggedIn() == true) {
+            return thomann.userId != authDao.getUserId()
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        return authDao.getUserId() != null
+    }
+
     private fun toThomann(thomannDao: ThomannDao?) : Thomann? {
         if (thomannDao != null) {
             return Thomann(
@@ -88,11 +101,13 @@ class ThomannsError(val code: Int) {
     val message: String = when(code) {
         1 -> THOMANN_NOT_FOUND
         2 -> SOMETHING_FAILED
+        3 -> USER_NOT_LOGGED_IN
         else -> ""
     }
 
     companion object {
         const val THOMANN_NOT_FOUND = "Thomann was not found!"
         const val SOMETHING_FAILED = "Something failed"
+        const val USER_NOT_LOGGED_IN = "User is not logged in!"
     }
 }
