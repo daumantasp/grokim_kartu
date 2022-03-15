@@ -7,5 +7,5 @@ interface ThomannsRepository {
     fun getThomann(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit)
     fun saveThomann(thomann: Thomann, onComplete: (Boolean, ThomannsError?) -> Unit)
     fun isJoinPossible(thomann: Thomann): Boolean
-    fun join(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit)
+    fun join(id: String, amount: Double, onComplete: (Boolean, ThomannsError?) -> Unit)
 }

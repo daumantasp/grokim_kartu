@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.models.forms.ThomannDetailsForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
 import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
@@ -38,7 +39,13 @@ class ThomannDetailsViewModel @Inject constructor(
     }
 
     fun joinClicked() {
+        thomannsRepository.join(thomannId ?: "", 20.0) { isSuccessful, e ->
+            if (isSuccessful) {
 
+            } else {
+
+            }
+        }
     }
 
     fun loadDetails() {

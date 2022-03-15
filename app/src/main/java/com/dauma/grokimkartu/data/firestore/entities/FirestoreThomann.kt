@@ -8,7 +8,7 @@ class FirestoreThomann(
     var userId: String?,
     var name: String?,
     var city: String?,
-    var isLocked: Boolean?,
+    var locked: Boolean?,
     @ServerTimestamp
     var creationDate: Timestamp?,
     @ServerTimestamp

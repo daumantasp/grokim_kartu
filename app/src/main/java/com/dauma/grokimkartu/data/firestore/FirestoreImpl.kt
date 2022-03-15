@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.firestore
 import android.util.Log
 import com.dauma.grokimkartu.data.firestore.entities.*
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
@@ -188,8 +189,8 @@ class FirestoreImpl(
         if (thomann.city != null) {
             valuesToSet["city"] = thomann.city!!
         }
-        if (thomann.isLocked != null) {
-            valuesToSet["isLocked"] = thomann.isLocked!!
+        if (thomann.locked != null) {
+            valuesToSet["isLocked"] = thomann.locked!!
         }
         valuesToSet["creationDate"] = Timestamp.now()
         if (thomann.validUntil != null) {
@@ -222,8 +223,8 @@ class FirestoreImpl(
         if (thomann.city != null) {
             valuesToSet["city"] = thomann.city!!
         }
-        if (thomann.isLocked != null) {
-            valuesToSet["isLocked"] = thomann.isLocked!!
+        if (thomann.locked != null) {
+            valuesToSet["isLocked"] = thomann.locked!!
         }
         if (thomann.validUntil != null) {
             valuesToSet["validUntil"] = thomann.validUntil!!
@@ -290,6 +291,23 @@ class FirestoreImpl(
             }
             .addOnFailureListener { e ->
                 onComplete(null, e)
+            }
+    }
+
+    override fun joinThomann(
+        thomannId: String,
+        user: FirestoreThomannUser,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebaseFirestore
+            .collection(thomannsCollection)
+            .document(thomannId)
+            .update("users", FieldValue.arrayUnion(user))
+            .addOnSuccessListener { _ ->
+                onComplete(true, null)
+            }
+            .addOnFailureListener { e ->
+                onComplete(false, e)
             }
     }
 

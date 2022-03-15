@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.data.thomanns
 
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 
 interface ThomannsDao {
     fun createThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit)
@@ -8,4 +9,5 @@ interface ThomannsDao {
     fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit)
     fun getThomann(id: String, onComplete: (ThomannDao?, Exception?) -> Unit)
+    fun joinThomann(id: String, user: ThomannUserDao, onComplete: (Boolean, Exception?) -> Unit)
 }

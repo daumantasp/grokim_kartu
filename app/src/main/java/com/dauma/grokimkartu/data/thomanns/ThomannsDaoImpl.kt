@@ -45,6 +45,15 @@ class ThomannsDaoImpl(
         }
     }
 
+    override fun joinThomann(
+        id: String,
+        user: ThomannUserDao,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        val firestoreThomannUser = toFirestoreThomannUser(user)!!
+        firebase.joinThomann(id, firestoreThomannUser, onComplete)
+    }
+
     private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {
         var thomannDao: ThomannDao? = null
         if (firestoreThomann != null) {
@@ -53,7 +62,7 @@ class ThomannsDaoImpl(
                 firestoreThomann.userId,
                 firestoreThomann.name,
                 firestoreThomann.city,
-                firestoreThomann.isLocked,
+                firestoreThomann.locked,
                 firestoreThomann.creationDate,
                 firestoreThomann.validUntil,
                 firestoreThomann.users?.map { ftu -> toThomannUserDao(ftu)!! }

@@ -77,8 +77,30 @@ class ThomannsRepositoryImpl(
         }
     }
 
-    override fun join(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit) {
-
+    override fun join(id: String, amount: Double, onComplete: (Boolean, ThomannsError?) -> Unit) {
+        if (isUserLoggedIn() == true) {
+            val userDataProfiles = authDao.getUserDataProfiles()
+            var authUser: AuthUser? = null
+            if (userDataProfiles.count() > 0) {
+                authUser = userDataProfiles[0]
+            } else {
+                val error = AuthenticationError(5)
+                throw AuthenticationException(error)
+            }
+            val thomannUser = ThomannUser(authUser.id, authUser.name, amount)
+            val thomannUserDao = toThomannUserDao(thomannUser)!!
+            thomannsDao.joinThomann(id, thomannUserDao) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error = ThomannsError(2)
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
     }
 
     private fun isUserLoggedIn(): Boolean {
@@ -107,6 +129,17 @@ class ThomannsRepositoryImpl(
                 thomannUserDao.userId,
                 thomannUserDao.userName,
                 thomannUserDao.amount
+            )
+        }
+        return null
+    }
+
+    private fun toThomannUserDao(thomannUser: ThomannUser?) : ThomannUserDao? {
+        if (thomannUser != null) {
+            return ThomannUserDao(
+                thomannUser.userId,
+                thomannUser.userName,
+                thomannUser.amount
             )
         }
         return null
