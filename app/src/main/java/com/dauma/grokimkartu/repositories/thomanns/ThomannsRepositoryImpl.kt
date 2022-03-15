@@ -68,9 +68,33 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    // TODO: consider getting thomann from DB instead of passing it as an parameter
+    // Also should be implemented at DB level
     override fun isJoinPossible(thomann: Thomann): Boolean {
         if (isUserLoggedIn() == true) {
-            return thomann.isLocked == false && thomann.userId != authDao.getUserId()
+            val userId = authDao.getUserId()
+            val isCreator = thomann.userId == userId
+            return thomann.isLocked == false && isCreator == false && hasAlreadyJoined(thomann) == false
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
+    }
+
+    // TODO: consider getting thomann from DB instead of passing it as an parameter
+    override fun hasAlreadyJoined(thomann: Thomann): Boolean {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId()
+            var hasAlreadyJoined = false
+            if (thomann.users != null) {
+                for (user in thomann.users!!) {
+                    if (user.userId == userId) {
+                        hasAlreadyJoined = true
+                        break
+                    }
+                }
+            }
+            return hasAlreadyJoined
         } else {
             val error = ThomannsError(3)
             throw ThomannsException(error)
