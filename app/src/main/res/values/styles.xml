@@ -85,6 +85,10 @@
         <item name="card2EndColor">@color/cadetBlue</item>
 
         <item name="datePickerDividerColor">@color/violetBlue</item>
+
+        <item name="lockedIconBackgroundColor">@color/cherryRed</item>
+        <item name="unlockedIconBackgroundColor">@color/cadetBlue</item>
+        <item name="lockedIconColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

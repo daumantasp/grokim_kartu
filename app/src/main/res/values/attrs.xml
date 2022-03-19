@@ -79,6 +79,10 @@
 
     <attr name="datePickerDividerColor" format="color" />
 
+    <attr name="lockedIconBackgroundColor" format="color" />
+    <attr name="unlockedIconBackgroundColor" format="color" />
+    <attr name="lockedIconColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">

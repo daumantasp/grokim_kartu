@@ -39,6 +39,13 @@
             app:unitDimensions="7dp"
             app:color="?attr/spinnerInMainColor"/>
 
+        <ImageView
+            android:id="@+id/lockedUnlockedIconImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"/>
+
     </RelativeLayout>
 
     <LinearLayout

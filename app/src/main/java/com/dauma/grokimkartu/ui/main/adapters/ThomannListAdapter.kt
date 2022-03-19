@@ -55,6 +55,11 @@ class ThomannListAdapter(
         holder.cityTextView.text = thomannData.thomann.city
         val validUntil = this.utils.timeUtils.format(thomannData.thomann.validUntil?.toDate() ?: Date())
         holder.validUntilTextView.text = validUntil
+        if (thomannData.thomann.isLocked == true) {
+            holder.lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
+        } else {
+            holder.lockedUnlockedIconImageView.setImageResource(R.drawable.unlocked_icon)
+        }
 
         holder.thomannItemLinearLayout.setOnClickListener {
             this.onItemClicked(thomannData.thomann.id ?: "")
@@ -113,5 +118,6 @@ class ThomannListAdapter(
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
         val photoIcon = view.findViewById<ImageView>(R.id.thomannPlayerIconImageView)
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.lockedUnlockedIconImageView)
     }
 }
