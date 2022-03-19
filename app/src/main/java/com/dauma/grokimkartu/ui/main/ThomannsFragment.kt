@@ -80,7 +80,7 @@ class ThomannsFragment : Fragment() {
 
     private fun setupRecyclerView(listData: List<ThomannsListData>) {
         binding.thomannsRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.thomannsRecyclerView.adapter = ThomannListAdapter(listData, utils.timeUtils) { thomannItemId ->
+        binding.thomannsRecyclerView.adapter = ThomannListAdapter(requireContext(), listData, utils) { thomannItemId ->
             this.thomannsViewModel.thomannItemClicked(thomannItemId)
         }
         isRecyclerViewSetup = true

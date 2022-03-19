@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
+import android.graphics.Bitmap
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 
 interface ThomannsRepository {

@@ -1,11 +1,14 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
+import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
+import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIcon
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
@@ -13,12 +16,19 @@ import com.google.firebase.Timestamp
 
 class ThomannsRepositoryImpl(
     private val authDao: AuthDao,
-    private val thomannsDao: ThomannsDao
+    private val thomannsDao: ThomannsDao,
+    private val playersDao: PlayersDao
 ) : ThomannsRepository {
     override fun getThomanns(onComplete: (Boolean, List<Thomann>?, ThomannsError?) -> Unit) {
         thomannsDao.getThomanns() { isSuccessful, thommansDao, e ->
             if (isSuccessful && thommansDao != null) {
-                val thomanns = thommansDao.map { td -> toThomann(td)!! }
+                val thomanns = thommansDao.map { td ->
+                    val loader = { onComplete: (Bitmap?, ThomannsError?) -> Unit ->
+                        this.getPlayerIcon(td.userId ?: "", onComplete)
+                    }
+                    val thomannPlayerIcon = ThomannPlayerIcon(loader)
+                    toThomann(td, thomannPlayerIcon)!!
+                }
                 onComplete(true, thomanns, null)
             } else {
                 onComplete(false, null, ThomannsError(2))
@@ -29,7 +39,11 @@ class ThomannsRepositoryImpl(
     override fun getThomann(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit) {
         thomannsDao.getThomann(id) { thomannDao, e ->
             if (thomannDao != null) {
-                val thomann = toThomann(thomannDao!!)
+                val loader = { onComplete: (Bitmap?, ThomannsError?) -> Unit ->
+                    this.getPlayerIcon(thomannDao.userId ?: "", onComplete)
+                }
+                val thomannPlayerIcon = ThomannPlayerIcon(loader)
+                val thomann = toThomann(thomannDao!!, thomannPlayerIcon)
                 onComplete(thomann, null)
             } else {
                 onComplete(null, ThomannsError(2))
@@ -64,6 +78,16 @@ class ThomannsRepositoryImpl(
                 onComplete(isSuccessful, null)
             } else {
                 onComplete(isSuccessful, ThomannsError(2))
+            }
+        }
+    }
+
+    private fun getPlayerIcon(userId: String, onComplete: (Bitmap?, ThomannsError?) -> Unit) {
+        playersDao.getPlayerIcon(userId) { playerIcon, e ->
+            if (playerIcon != null) {
+                onComplete(playerIcon, null)
+            } else {
+                onComplete(null, ThomannsError(2))
             }
         }
     }
@@ -131,7 +155,7 @@ class ThomannsRepositoryImpl(
         return authDao.getUserId() != null
     }
 
-    private fun toThomann(thomannDao: ThomannDao?) : Thomann? {
+    private fun toThomann(thomannDao: ThomannDao?, thomannPlayerIcon: ThomannPlayerIcon?) : Thomann? {
         if (thomannDao != null) {
             return Thomann(
                 thomannDao.id,
@@ -141,7 +165,8 @@ class ThomannsRepositoryImpl(
                 thomannDao.isLocked,
                 thomannDao.creationDate,
                 thomannDao.validUntil,
-                thomannDao.users?.map { tud -> toThomannUser(tud)!! }
+                thomannDao.users?.map { tud -> toThomannUser(tud)!! },
+                thomannPlayerIcon
             )
         }
         return null

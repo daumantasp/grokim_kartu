@@ -10,5 +10,6 @@ data class Thomann(
     var isLocked: Boolean?,
     var creationDate: Timestamp?,
     var validUntil: Timestamp?,
-    var users: List<ThomannUser>?
+    var users: List<ThomannUser>?,
+    val icon: ThomannPlayerIcon?
 )
