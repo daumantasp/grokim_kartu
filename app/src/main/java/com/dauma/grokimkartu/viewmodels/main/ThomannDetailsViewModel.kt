@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.models.forms.ThomannDetailsForm
+import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
-import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
 import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
@@ -18,13 +18,16 @@ import javax.inject.Inject
 class ThomannDetailsViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository,
     private val usersRepository: UsersRepository,
+    private val playersRepository: PlayersRepository,
     private val thomannDetailsForm: ThomannDetailsForm,
     private val timeUtils: TimeUtils,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val thomannId = savedStateHandle.get<String>("thomannId")
     private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _detailsLoaded = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
+    val detailsLoaded: LiveData<Event<String>> = _detailsLoaded
 
     companion object {
         private val TAG = "ThomannDetailsViewModel"
@@ -63,6 +66,13 @@ class ThomannDetailsViewModel @Inject constructor(
                     validUntilDate,
                     this.thomannsRepository.isJoinPossible(thomann)
                 )
+
+                playersRepository.getPlayerPhoto(thomann.userId ?: "") { playerPhoto, playerError ->
+                    if (playerPhoto != null) {
+                        this.thomannDetailsForm.setInitialPhoto(playerPhoto)
+                    }
+                    _detailsLoaded.value = Event("")
+                }
             }
         }
     }

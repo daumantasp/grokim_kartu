@@ -10,11 +10,14 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import com.dauma.grokimkartu.databinding.FragmentThomannDetailsBinding
+import com.dauma.grokimkartu.general.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ThomannDetailsFragment : Fragment() {
     private val thomannDetailsViewModel by viewModels<ThomannDetailsViewModel>()
+    @Inject lateinit var utils: Utils
 
     private var _binding: FragmentThomannDetailsBinding? = null
     // This property is only valid between onCreateView and
@@ -50,6 +53,17 @@ class ThomannDetailsFragment : Fragment() {
     private fun setupObservers() {
         thomannDetailsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
+        })
+        thomannDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner, EventObserver {
+            if (thomannDetailsViewModel.getThomannDetailsForm().photo == null) {
+                val initials = utils.stringUtils.getInitials(thomannDetailsViewModel.getThomannDetailsForm().name)
+                binding.profileInitialsViewElement.setInitials(initials)
+                binding.photoImageView.visibility = View.GONE
+                binding.profileInitialsViewElement.visibility = View.VISIBLE
+            } else {
+                binding.profileInitialsViewElement.visibility = View.GONE
+                binding.photoImageView.visibility = View.VISIBLE
+            }
         })
     }
 }
