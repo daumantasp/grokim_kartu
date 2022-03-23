@@ -35,7 +35,11 @@ class ThomannsViewModel @Inject constructor(
     }
 
     fun thomannItemClicked(thomannId: String) {
-        _thomannDetails.value = Event(thomannId)
+        thomannsRepository.isAccessible(thomannId) { _, isAccessible, e ->
+            if (isAccessible == true) {
+                _thomannDetails.value = Event(thomannId)
+            }
+        }
     }
 
     fun createClicked() {

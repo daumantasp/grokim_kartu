@@ -10,4 +10,7 @@ interface ThomannsDao {
     fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit)
     fun getThomann(id: String, onComplete: (ThomannDao?, Exception?) -> Unit)
     fun joinThomann(id: String, user: ThomannUserDao, onComplete: (Boolean, Exception?) -> Unit)
+    fun leaveThomann(id: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
+    fun isThomannJoinable(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
+    fun isThomannAccessible(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
 }

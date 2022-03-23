@@ -44,8 +44,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val customIcon = attributes.getDrawable(R.styleable.RowViewElement_rowCustomIcon)
         attributes.recycle()
 
-        titleTextView.setText(title)
-
+        setTitle(title ?: "")
         showIcon(isArrowVisible)
         setBorder(border)
         showSwitch(isSwitchVisible)
@@ -80,6 +79,10 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
                 rowView.onSwitchChecked()
             }
         }
+    }
+
+    fun setTitle(title: String) {
+        titleTextView.setText(title)
     }
 
     fun setValue(value: String) {

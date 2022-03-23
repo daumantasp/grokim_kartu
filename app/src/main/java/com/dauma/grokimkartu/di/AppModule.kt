@@ -174,9 +174,4 @@ class AppModule {
     fun thomannEditForm() : ThomannEditForm {
         return ThomannEditForm()
     }
-
-    @Provides
-    fun thomannDetailsForm() : ThomannDetailsForm {
-        return ThomannDetailsForm()
-    }
 }

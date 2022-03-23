@@ -54,6 +54,30 @@ class ThomannsDaoImpl(
         firebase.joinThomann(id, firestoreThomannUser, onComplete)
     }
 
+    override fun leaveThomann(
+        id: String,
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebase.leaveThomann(id, userId, onComplete)
+    }
+
+    override fun isThomannJoinable(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Boolean?, Exception?) -> Unit
+    ) {
+        firebase.isThomannJoinable(thomannId, userId, onComplete)
+    }
+
+    override fun isThomannAccessible(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Boolean?, Exception?) -> Unit
+    ) {
+        firebase.isThomannAccessible(thomannId, userId, onComplete)
+    }
+
     private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {
         var thomannDao: ThomannDao? = null
         if (firestoreThomann != null) {
@@ -100,7 +124,9 @@ class ThomannsDaoImpl(
             firestoreThomannUser = FirestoreThomannUser(
                 thomannUserDao.userId,
                 thomannUserDao.userName,
-                thomannUserDao.amount
+                thomannUserDao.thomannId,
+                thomannUserDao.amount,
+                thomannUserDao.joinDate
             )
         }
         return firestoreThomannUser
@@ -112,7 +138,9 @@ class ThomannsDaoImpl(
             thomannUserDao = ThomannUserDao(
                 firestoreThomannUser.userId,
                 firestoreThomannUser.userName,
-                firestoreThomannUser.amount
+                firestoreThomannUser.thomannId,
+                firestoreThomannUser.amount,
+                firestoreThomannUser.joinDate
             )
         }
         return thomannUserDao

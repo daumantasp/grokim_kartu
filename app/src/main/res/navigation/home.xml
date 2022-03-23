@@ -77,5 +77,13 @@
     <fragment
         android:id="@+id/thomannDetailsFragment"
         android:name="com.dauma.grokimkartu.ui.main.ThomannDetailsFragment"
-        android:label="ThomannDetailsFragment" />
+        android:label="ThomannDetailsFragment" >
+        <action
+            android:id="@+id/action_thomannDetailsFragment_to_playerDetailsFragment"
+            app:destination="@id/playerDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
 </navigation>

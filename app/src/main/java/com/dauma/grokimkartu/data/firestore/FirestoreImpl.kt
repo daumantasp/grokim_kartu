@@ -299,16 +299,121 @@ class FirestoreImpl(
         user: FirestoreThomannUser,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (user.userId != null) {
+            valuesToSet["userId"] = user.userId!!
+        }
+        if (user.userName != null) {
+            valuesToSet["userName"] = user.userName!!
+        }
+        if (user.thomannId != null) {
+            valuesToSet["thomannId"] = user.thomannId!!
+        }
+        if (user.amount != null) {
+            valuesToSet["amount"] = user.amount!!
+        }
+        valuesToSet["joinDate"] = Timestamp.now()
         firebaseFirestore
             .collection(thomannsCollection)
             .document(thomannId)
-            .update("users", FieldValue.arrayUnion(user))
+            .update("users", FieldValue.arrayUnion(valuesToSet))
             .addOnSuccessListener { _ ->
                 onComplete(true, null)
             }
             .addOnFailureListener { e ->
                 onComplete(false, e)
             }
+    }
+
+    override fun leaveThomann(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, e ->
+            if (firestoreThomann != null) {
+                val users = firestoreThomann.users
+                if (users != null) {
+                    val user = users.firstOrNull { ftu -> ftu.userId == userId }
+                    if (user != null) {
+                        firebaseFirestore
+                            .collection(thomannsCollection)
+                            .document(thomannId)
+                            .update("users", FieldValue.arrayRemove(user))
+                            .addOnSuccessListener { _ ->
+                                onComplete(true, null)
+                            }
+                            .addOnFailureListener { e ->
+                                onComplete(false, e)
+                            }
+                    } else {
+                        onComplete(false, Exception("THOMANN USER WITH ID=$userId NOT FOUND"))
+                    }
+                } else {
+                    onComplete(false, Exception("THOMANN USERS NOT FOUND"))
+                }
+            } else {
+                onComplete(false, e)
+            }
+        }
+    }
+
+    override fun isThomannJoinable(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Boolean?, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, e ->
+            if (firestoreThomann != null) {
+                if (firestoreThomann.userId == userId) {
+                    onComplete(true, false, null)
+                } else {
+                    val users = firestoreThomann.users
+                    if (users != null) {
+                        val user = users.firstOrNull { ftu -> ftu.userId == userId }
+                        if (user != null) {
+                            onComplete(true, false, null)
+                        } else {
+                            onComplete(true, true, null)
+                        }
+                    } else {
+                        onComplete(true, true, null)
+                    }
+                }
+            } else {
+                onComplete(false, null, e)
+            }
+        }
+    }
+
+    override fun isThomannAccessible(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Boolean?, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, e ->
+            if (firestoreThomann != null) {
+                if (firestoreThomann.locked != true) {
+                    onComplete(true, true, null)
+                } else if (firestoreThomann.userId == userId) {
+                    onComplete(true, true, null)
+                } else {
+                    val users = firestoreThomann.users
+                    if (users != null) {
+                        val user = users.firstOrNull { ftu -> ftu.userId == userId }
+                        if (user != null) {
+                            onComplete(true, true, null)
+                        } else {
+                            onComplete(true, false, null)
+                        }
+                    } else {
+                        onComplete(true, false, null)
+                    }
+                }
+            } else {
+                onComplete(false, null, e)
+            }
+        }
     }
 
     private fun setUser(user: FirestoreUser, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {

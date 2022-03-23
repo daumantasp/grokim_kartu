@@ -14,117 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
-            android:id="@+id/playerDetailsScrollView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/thomannDetailsRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="100dp"
-            android:fillViewport="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingBottom="0dp"
-                android:orientation="vertical">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="30dp">
-
-                    <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-                        android:id="@+id/profileInitialsViewElement"
-                        android:layout_width="244dp"
-                        android:layout_height="253dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="25dp"
-                        android:visibility="invisible"
-                        app:initialsType="rectangular"
-                        app:textSize="32dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:id="@+id/photoImageView"
-                        android:layout_width="244dp"
-                        android:layout_height="253dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="25dp"
-                        android:src="@{model.thomannDetailsForm.photo}"
-                        android:visibility="invisible"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="@string/thomann_details_name"
-                    app:value="@{model.thomannDetailsForm.name}"
-                    app:rowBorders="top"/>
-
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="@string/thomann_details_city"
-                    app:value="@{model.thomannDetailsForm.city}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="top"/>
-
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="@string/thomann_details_is_locked"
-                    app:value="@{model.thomannDetailsForm.locked}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="top"/>
-
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="@string/thomann_details_creation_date"
-                    app:value="@{model.thomannDetailsForm.creationDate}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="top"/>
-
-                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:rowTitle="@string/thomann_details_valid_until"
-                    app:value="@{model.thomannDetailsForm.validUntil}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="both"/>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/joinThomannButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:visibility="@{model.thomannDetailsForm.joinPossible ? View.VISIBLE : View.GONE}"
-                    app:type="primary"
-                    app:onClick="@{() -> model.joinClicked()}"
-                    app:text="@string/thomann_details_join" />
-
-            </LinearLayout>
-        </ScrollView>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
             android:id="@+id/thomannDetailsHeaderViewElement"

@@ -89,6 +89,8 @@
         <item name="lockedIconBackgroundColor">@color/cherryRed</item>
         <item name="unlockedIconBackgroundColor">@color/cadetBlue</item>
         <item name="lockedIconColor">@color/white</item>
+
+        <item name="thomannDetailsItemBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -151,6 +153,8 @@
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="ThomannDetailsUserTitle" parent="PlayerItemTitle" />
 
     <style name="PrimaryButton">
         <item name="android:background">@drawable/primary_in_auth_button_ripple</item>

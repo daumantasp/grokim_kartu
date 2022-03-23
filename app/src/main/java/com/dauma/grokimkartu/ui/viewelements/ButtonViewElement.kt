@@ -20,7 +20,7 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.ButtonViewElement)
         text = attributes.getString(R.styleable.ButtonViewElement_text) ?: ""
-        button.text = text
+        setText(text)
         val type = attributes.getInt(R.styleable.ButtonViewElement_type, 0)
         attributes.recycle()
         setType(type)
@@ -28,6 +28,10 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     override fun setEnabled(isEnabled: Boolean) {
         button.isEnabled = isEnabled
+    }
+
+    fun setText(text: String) {
+        button.text = text
     }
 
     // https://stackoverflow.com/questions/53443784/android-data-binding-missing-return-statement-in-generated-code-when-calling-cu/53475016
