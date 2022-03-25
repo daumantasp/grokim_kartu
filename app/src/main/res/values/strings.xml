@@ -87,4 +87,5 @@
     <string name="thomann_details_cancel">Atšaukti</string>
     <string name="thomann_details_lock">Užrakinti</string>
     <string name="thomann_details_unlock">Atrakinti</string>
+    <string name="thomann_details_join_dialog_title">Suma</string>
 </resources>

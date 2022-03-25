@@ -25,9 +25,11 @@ class ThomannDetailsViewModel @Inject constructor(
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _detailsLoaded = MutableLiveData<ThomannDetails>()
     private val _userDetails = MutableLiveData<Event<String>>()
+    private val _join = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val detailsLoaded: LiveData<ThomannDetails> = _detailsLoaded
     val userDetails: LiveData<Event<String>> = _userDetails
+    val join: LiveData<Event<String>> = _join
 
     companion object {
         private val TAG = "ThomannDetailsViewModel"
@@ -37,11 +39,12 @@ class ThomannDetailsViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    fun joinClicked() {
-        thomannsRepository.join(thomannId ?: "", 20.0) { isSuccessful, e ->
+    fun joinClicked(amount: Double, onComplete: () -> Unit = {}) {
+        thomannsRepository.join(thomannId ?: "", amount) { isSuccessful, e ->
             if (isSuccessful) {
                 this.loadDetails()
             }
+            onComplete()
         }
     }
 
@@ -123,7 +126,9 @@ class ThomannDetailsViewModel @Inject constructor(
 
         this.thomannsRepository.isJoinable(thomannId ?: "") { isSuccessful, isJoinable, e ->
             if (isSuccessful == true && isJoinable == true) {
-                details.onJoinButtonClick = { this.joinClicked() }
+                details.onJoinButtonClick = {
+                    this._join.value = Event("")
+                }
             }
             details.isJoinable = isJoinable ?: false
             isThomannJoinableLoaded = true

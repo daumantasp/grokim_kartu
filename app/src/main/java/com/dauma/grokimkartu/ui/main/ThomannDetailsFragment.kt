@@ -1,9 +1,11 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,6 +15,8 @@ import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import com.dauma.grokimkartu.databinding.FragmentThomannDetailsBinding
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.BottomDialogData
+import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetails
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,11 +28,18 @@ class ThomannDetailsFragment : Fragment() {
     private var isDetailsRecyclerViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
     private val recyclerViewData: MutableList<ThomannDetailsListData> = mutableListOf()
+    private var dialogsManager: DialogsManager? = null
+    private var isJoinDialogShown: Boolean = false
 
     private var _binding: FragmentThomannDetailsBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dialogsManager = context as? DialogsManager
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +56,16 @@ class ThomannDetailsFragment : Fragment() {
             thomannDetailsViewModel.loadDetails()
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (isJoinDialogShown == true) {
+                dialogsManager?.hideBottomDialog()
+                isJoinDialogShown = false
+            } else {
+                isEnabled = false
+                requireActivity().onBackPressed()
+            }
+        }
+
         binding.thomannDetailsHeaderViewElement.setOnBackClick {
             thomannDetailsViewModel.backClicked()
         }
@@ -55,6 +76,7 @@ class ThomannDetailsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        dialogsManager = null
     }
 
     private fun setupObservers() {
@@ -73,6 +95,37 @@ class ThomannDetailsFragment : Fragment() {
             val args = Bundle()
             args.putString("userId", it)
             this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_playerDetailsFragment, args)
+        })
+        thomannDetailsViewModel.join.observe(viewLifecycleOwner, EventObserver {
+            this.dialogsManager?.let { manager ->
+                val dialogData = BottomDialogData(
+                    title = getString(R.string.thomann_details_join_dialog_title),
+                    value = "",
+                    valueLimit = null,
+                    onSaveClicked = { value ->
+                        manager.showBottomDialogLoading(true)
+                        val valueAsDouble = value.toDoubleOrNull()
+                        if (valueAsDouble != null) {
+                            this.thomannDetailsViewModel.joinClicked(valueAsDouble) {
+                                manager.showBottomDialogLoading(false)
+                                manager.hideBottomDialog()
+                                this.utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                            }
+                        } else {
+                            manager.showBottomDialogLoading(false)
+                        }
+                    },
+                    onValueChanged = { value ->
+                        manager.enableBottomDialogSaveButton(value.length > 0)
+                    },
+                    onCancelClicked = {
+                        manager.hideBottomDialog()
+                        utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                    }
+                )
+                manager.showBottomDialog(dialogData)
+                isJoinDialogShown = true
+            }
         })
     }
 
