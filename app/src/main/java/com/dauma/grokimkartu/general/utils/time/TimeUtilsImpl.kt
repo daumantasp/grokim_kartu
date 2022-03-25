@@ -10,7 +10,8 @@ import java.util.*
 class TimeUtilsImpl : TimeUtils {
 
     companion object {
-        private const val dateFormatPattern = "yyyy-MM-dd"
+        private const val separator = "-"
+        private const val dateFormatPattern = "yyyy${separator}MM${separator}dd"
     }
 
     override fun format(customDate: CustomDate): String {
@@ -108,5 +109,18 @@ class TimeUtilsImpl : TimeUtils {
         val calendar = Calendar.getInstance()
         calendar.set(customDate.year, customDate.month - 1, customDate.dayOfMonth)
         return calendar.time
+    }
+
+    override fun parseToDate(date: String): CustomDate? {
+        val yearMonthDay = date.split(TimeUtilsImpl.separator)
+        if (yearMonthDay.count() == 3) {
+            val year = yearMonthDay[0].toIntOrNull()
+            val month = yearMonthDay[1].toIntOrNull()
+            val day = yearMonthDay[2].toIntOrNull()
+            if (year != null && month != null && day != null) {
+                return CustomDate(year, month, day)
+            }
+        }
+        return null
     }
 }

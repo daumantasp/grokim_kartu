@@ -10,4 +10,5 @@ interface TimeUtils {
     fun addDays(customDate: CustomDate, days: Int) : CustomDate
     fun addMonths(customDate: CustomDate, months: Int) : CustomDate
     fun addYears(customDate: CustomDate, years: Int) : CustomDate
+    fun parseToDate(date: String) : CustomDate?
 }
