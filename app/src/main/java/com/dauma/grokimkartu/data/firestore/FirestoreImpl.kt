@@ -190,7 +190,7 @@ class FirestoreImpl(
             valuesToSet["city"] = thomann.city!!
         }
         if (thomann.locked != null) {
-            valuesToSet["isLocked"] = thomann.locked!!
+            valuesToSet["locked"] = thomann.locked!!
         }
         valuesToSet["creationDate"] = Timestamp.now()
         if (thomann.validUntil != null) {
@@ -223,10 +223,10 @@ class FirestoreImpl(
         if (thomann.city != null) {
             valuesToSet["city"] = thomann.city!!
         }
-        // Use separate method for locking/unlocking
-//        if (thomann.locked != null) {
-//            valuesToSet["isLocked"] = thomann.locked!!
-//        }
+        // TODO: restrict locking/unlocking from this method?
+        if (thomann.locked != null) {
+            valuesToSet["locked"] = thomann.locked!!
+        }
         if (thomann.validUntil != null) {
             valuesToSet["validUntil"] = thomann.validUntil!!
         }

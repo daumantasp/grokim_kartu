@@ -24,6 +24,7 @@ class ThomannsFragment : Fragment() {
     private val thomannsViewModel by viewModels<ThomannsViewModel>()
     private var isRecyclerViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
+    private var thomannsRecyclerViewData: MutableList<ThomannsListData> = mutableListOf()
 
     private var _binding: FragmentThomannsBinding? = null
     // This property is only valid between onCreateView and
@@ -65,8 +66,10 @@ class ThomannsFragment : Fragment() {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
         })
         thomannsViewModel.thomannsListData.observe(viewLifecycleOwner, {
+            this.thomannsRecyclerViewData.clear()
+            this.thomannsRecyclerViewData.addAll(it)
             if (isRecyclerViewSetup == false) {
-                setupRecyclerView(it)
+                setupRecyclerView()
             } else {
                 binding.thomannsRecyclerView.adapter?.notifyDataSetChanged()
             }
@@ -78,9 +81,9 @@ class ThomannsFragment : Fragment() {
         })
     }
 
-    private fun setupRecyclerView(listData: List<ThomannsListData>) {
+    private fun setupRecyclerView() {
         binding.thomannsRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.thomannsRecyclerView.adapter = ThomannListAdapter(requireContext(), listData, utils) { thomannItemId ->
+        binding.thomannsRecyclerView.adapter = ThomannListAdapter(requireContext(), thomannsRecyclerViewData, utils) { thomannItemId ->
             this.thomannsViewModel.thomannItemClicked(thomannItemId)
         }
         isRecyclerViewSetup = true
