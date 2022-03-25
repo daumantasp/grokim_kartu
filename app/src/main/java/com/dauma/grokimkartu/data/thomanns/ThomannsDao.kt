@@ -13,6 +13,7 @@ interface ThomannsDao {
     fun leaveThomann(id: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun isThomannJoinable(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
     fun isThomannAccessible(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
+    fun isThomannUpdatable(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
     fun lockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun unlockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
 }

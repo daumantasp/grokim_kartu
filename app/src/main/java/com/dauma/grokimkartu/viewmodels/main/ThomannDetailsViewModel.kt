@@ -109,4 +109,8 @@ class ThomannDetails {
     var users: List<ThomannUser> = listOf()
     var isJoinable: Boolean = false
     var onJoinButtonClick: () -> Unit = {}
+    var isCancelable: Boolean = false
+    var onCancelButtonClick: () -> Unit = {}
+    var isLockable: Boolean = false
+    var onLockButtonClick: () -> Unit = {}
 }

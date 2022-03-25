@@ -124,6 +124,22 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun isUpdatable(id: String, onComplete: (Boolean, Boolean?, ThomannsError?) -> Unit) {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId()
+            thomannsDao.isThomannUpdatable(id, userId ?: "") { isSuccessful, isAccessible, e ->
+                if (isSuccessful == true) {
+                    onComplete(true, isAccessible ?: false, null)
+                } else {
+                    onComplete(false, null, ThomannsError(2))
+                }
+            }
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
+    }
+
     override fun join(id: String, amount: Double, onComplete: (Boolean, ThomannsError?) -> Unit) {
         if (isUserLoggedIn() == true) {
             val userDataProfiles = authDao.getUserDataProfiles()

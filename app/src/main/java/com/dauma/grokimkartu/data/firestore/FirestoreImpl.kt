@@ -427,6 +427,21 @@ class FirestoreImpl(
         }
     }
 
+    override fun isThomannUpdatable(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Boolean?, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, e ->
+            if (firestoreThomann != null) {
+                val isUpdatable = firestoreThomann.userId == userId
+                onComplete(true, isUpdatable, null)
+            } else {
+                onComplete(false, null, e)
+            }
+        }
+    }
+
     override fun lockThomann(
         thomannId: String,
         userId: String,

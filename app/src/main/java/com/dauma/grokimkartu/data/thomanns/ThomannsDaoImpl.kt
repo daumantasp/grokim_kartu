@@ -78,6 +78,14 @@ class ThomannsDaoImpl(
         firebase.isThomannAccessible(thomannId, userId, onComplete)
     }
 
+    override fun isThomannUpdatable(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Boolean?, Exception?) -> Unit
+    ) {
+        firebase.isThomannUpdatable(thomannId, userId, onComplete)
+    }
+
     override fun lockThomann(
         thomannId: String,
         userId: String,

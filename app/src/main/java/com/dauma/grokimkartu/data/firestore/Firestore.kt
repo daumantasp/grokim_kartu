@@ -15,6 +15,7 @@ interface Firestore {
     fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit)
     fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit)
     fun getPlayerDetails(userId: String, onComplete: (FirestorePlayerDetails?, Exception?) -> Unit)
+    // TODO: refactor some methods
     fun createThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)
     fun updateThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)
     fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
@@ -24,6 +25,7 @@ interface Firestore {
     fun leaveThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun isThomannJoinable(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
     fun isThomannAccessible(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
+    fun isThomannUpdatable(thomannId: String, userId: String, onComplete: (Boolean, Boolean?, Exception?) -> Unit)
     fun lockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun unlockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
     // TODO some onComplete methods have isSuccessful, value, exception and some value, exception
