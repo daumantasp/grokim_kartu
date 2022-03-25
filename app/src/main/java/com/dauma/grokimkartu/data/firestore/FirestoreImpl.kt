@@ -223,9 +223,10 @@ class FirestoreImpl(
         if (thomann.city != null) {
             valuesToSet["city"] = thomann.city!!
         }
-        if (thomann.locked != null) {
-            valuesToSet["isLocked"] = thomann.locked!!
-        }
+        // Use separate method for locking/unlocking
+//        if (thomann.locked != null) {
+//            valuesToSet["isLocked"] = thomann.locked!!
+//        }
         if (thomann.validUntil != null) {
             valuesToSet["validUntil"] = thomann.validUntil!!
         }
@@ -244,17 +245,27 @@ class FirestoreImpl(
             }
     }
 
-    override fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .document(thomannId)
-            .delete()
-            .addOnSuccessListener { _ ->
-                onComplete(true, null)
+    override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        getThomann(thomannId) { firestoreThomann, exception ->
+            if (firestoreThomann != null) {
+                if (firestoreThomann.userId == userId) {
+                    firebaseFirestore
+                        .collection(thomannsCollection)
+                        .document(thomannId)
+                        .delete()
+                        .addOnSuccessListener { _ ->
+                            onComplete(true, null)
+                        }
+                        .addOnFailureListener { e ->
+                            onComplete(false, e)
+                        }
+                } else {
+                    onComplete(false, Exception("THOMANN CANT BE DELETED BECAUSE USER IDS DO NOT MATCH"))
+                }
+            } else {
+                onComplete(false, exception)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+        }
     }
 
     override fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit) {
@@ -412,6 +423,74 @@ class FirestoreImpl(
                 }
             } else {
                 onComplete(false, null, e)
+            }
+        }
+    }
+
+    override fun lockThomann(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, exception ->
+            if (firestoreThomann != null) {
+                if (firestoreThomann.userId == userId) {
+                    val lockedFirestoreThomann = FirestoreThomann(
+                        id = thomannId,
+                        userId = null,
+                        name = null,
+                        city = null,
+                        locked = true,
+                        creationDate = null,
+                        validUntil = null,
+                        users = null
+                    )
+                    this.updateThomann(lockedFirestoreThomann) { isSuccessful, e ->
+                        if (isSuccessful) {
+                            onComplete(true, null)
+                        } else {
+                            onComplete(false, e)
+                        }
+                    }
+                } else {
+                    onComplete(false, Exception("THOMANN CANT BE LOCKED BECAUSE USER IDS DO NOT MATCH"))
+                }
+            } else {
+                onComplete(false, exception)
+            }
+        }
+    }
+
+    override fun unlockThomann(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, exception ->
+            if (firestoreThomann != null) {
+                if (firestoreThomann.userId == userId) {
+                    val lockedFirestoreThomann = FirestoreThomann(
+                        id = thomannId,
+                        userId = null,
+                        name = null,
+                        city = null,
+                        locked = false,
+                        creationDate = null,
+                        validUntil = null,
+                        users = null
+                    )
+                    this.updateThomann(lockedFirestoreThomann) { isSuccessful, e ->
+                        if (isSuccessful) {
+                            onComplete(true, null)
+                        } else {
+                            onComplete(false, e)
+                        }
+                    }
+                } else {
+                    onComplete(false, Exception("THOMANN CANT BE UNLOCKED BECAUSE USER IDS DO NOT MATCH"))
+                }
+            } else {
+                onComplete(false, exception)
             }
         }
     }

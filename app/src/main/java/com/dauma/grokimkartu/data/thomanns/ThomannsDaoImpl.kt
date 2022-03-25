@@ -27,8 +27,8 @@ class ThomannsDaoImpl(
         }
     }
 
-    override fun deleteThomann(thomannId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteThomann(thomannId, onComplete)
+    override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
+        firebase.deleteThomann(thomannId, userId, onComplete)
     }
 
     override fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit) {
@@ -76,6 +76,22 @@ class ThomannsDaoImpl(
         onComplete: (Boolean, Boolean?, Exception?) -> Unit
     ) {
         firebase.isThomannAccessible(thomannId, userId, onComplete)
+    }
+
+    override fun lockThomann(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebase.lockThomann(thomannId, userId, onComplete)
+    }
+
+    override fun unlockThomann(
+        thomannId: String,
+        userId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebase.unlockThomann(thomannId, userId, onComplete)
     }
 
     private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {

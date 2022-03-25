@@ -150,6 +150,23 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun deleteThomann(id: String, onComplete: (Boolean, ThomannsError?) -> Unit) {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId()
+            thomannsDao.deleteThomann(id, userId ?: "") { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error = ThomannsError(2)
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = ThomannsError(2)
+            onComplete(false, error)
+        }
+    }
+
     override fun leaveThomann(
         id: String,
         onComplete: (Boolean, ThomannsError?) -> Unit
@@ -157,6 +174,46 @@ class ThomannsRepositoryImpl(
         if (isUserLoggedIn() == true) {
             val userId = authDao.getUserId() ?: ""
             thomannsDao.leaveThomann(id, userId) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error = ThomannsError(2)
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
+    }
+
+    override fun lockThomann(
+        thomannId: String,
+        onComplete: (Boolean, ThomannsError?) -> Unit
+    ) {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId() ?: ""
+            thomannsDao.lockThomann(thomannId, userId) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error = ThomannsError(2)
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
+    }
+
+    override fun unlockThomann(
+        thomannId: String,
+        onComplete: (Boolean, ThomannsError?) -> Unit
+    ) {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId() ?: ""
+            thomannsDao.unlockThomann(thomannId, userId) { isSuccessful, e ->
                 if (isSuccessful) {
                     onComplete(true, null)
                 } else {
