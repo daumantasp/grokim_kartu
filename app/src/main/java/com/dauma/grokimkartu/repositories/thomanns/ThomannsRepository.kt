@@ -14,4 +14,5 @@ interface ThomannsRepository {
     fun isUpdatable(id: String, onComplete: (Boolean, Boolean?, ThomannsError?) -> Unit)
     fun lockThomann(thomannId: String, onComplete: (Boolean, ThomannsError?) -> Unit)
     fun unlockThomann(thomannId: String, onComplete: (Boolean, ThomannsError?) -> Unit)
+    fun kickUserFromThomann(thomannId: String, userToKickId: String, onComplete: (Boolean, ThomannsError?) -> Unit)
 }

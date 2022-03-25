@@ -243,6 +243,27 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun kickUserFromThomann(
+        thomannId: String,
+        userToKickId: String,
+        onComplete: (Boolean, ThomannsError?) -> Unit
+    ) {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId() ?: ""
+            thomannsDao.kickUserFromThomann(thomannId, userId, userToKickId) { isSuccessful, e ->
+                if (isSuccessful) {
+                    onComplete(true, null)
+                } else {
+                    val error = ThomannsError(2)
+                    onComplete(false, error)
+                }
+            }
+        } else {
+            val error = ThomannsError(3)
+            throw ThomannsException(error)
+        }
+    }
+
     private fun isUserLoggedIn(): Boolean {
         return authDao.getUserId() != null
     }

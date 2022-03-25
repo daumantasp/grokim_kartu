@@ -102,6 +102,15 @@ class ThomannsDaoImpl(
         firebase.unlockThomann(thomannId, userId, onComplete)
     }
 
+    override fun kickUserFromThomann(
+        thomannId: String,
+        userId: String,
+        userToKickId: String,
+        onComplete: (Boolean, Exception?) -> Unit
+    ) {
+        firebase.kickUserFromThomann(thomannId, userId, userToKickId, onComplete)
+    }
+
     private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {
         var thomannDao: ThomannDao? = null
         if (firestoreThomann != null) {
