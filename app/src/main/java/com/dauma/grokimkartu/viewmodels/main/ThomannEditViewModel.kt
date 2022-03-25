@@ -9,8 +9,10 @@ import com.dauma.grokimkartu.general.utils.time.CustomDate
 import com.dauma.grokimkartu.models.forms.ThomannEditForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,6 +46,13 @@ class ThomannEditViewModel @Inject constructor(
     }
 
     fun saveClicked(city: String, validUntil: String) {
+        val validUntilAsDate = utils.timeUtils.parseToDate(validUntil)
+        var validUntilTimestamp: Timestamp? = null
+        if (validUntilAsDate != null) {
+            val validUntilInMillis = utils.timeUtils.convertToTimeInMillis(validUntilAsDate)
+            val validUntilInSeconds = validUntilInMillis / 1000L
+            validUntilTimestamp = Timestamp(validUntilInSeconds, 0)
+        }
         val thomann = Thomann(
             id = null,
             userId = null,
@@ -51,7 +60,7 @@ class ThomannEditViewModel @Inject constructor(
             city = city,
             isLocked = null,
             creationDate = null,
-            validUntil = null,
+            validUntil = validUntilTimestamp,
             users = null,
             icon = null
         )

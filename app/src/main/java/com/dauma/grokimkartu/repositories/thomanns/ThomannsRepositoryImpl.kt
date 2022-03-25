@@ -70,7 +70,7 @@ class ThomannsRepositoryImpl(
             thomann.city,
             false,
             null,
-            Timestamp.now(),
+            thomann.validUntil,
             listOf()
         )
         thomannsDao.createThomann(thomannDao) { isSuccessful, e ->
