@@ -28,7 +28,8 @@ class ThomannDetailsAdapter(
     private val data: List<ThomannDetailsListData>,
     private val utils: Utils,
     private val onItemClicked: (String) -> Unit,
-    private val onLeaveClicked: () -> Unit
+    private val onLeaveClicked: () -> Unit,
+    private val onKickClicked: (String) -> Unit
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -57,7 +58,7 @@ class ThomannDetailsAdapter(
         } else if (viewType == ROW) {
             return RowViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_row_item, parent, false))
         } else if (viewType == USER) {
-            return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_user_item, parent, false), utils, onItemClicked, onLeaveClicked)
+            return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_user_item, parent, false), utils, onItemClicked, onLeaveClicked, onKickClicked)
         } else if (viewType == BUTTON) {
             return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_button_item, parent, false))
         }
@@ -116,10 +117,11 @@ class ThomannDetailsAdapter(
     }
 
     private class UserViewHolder(
-        view: View,
+        private val view: View,
         private val utils: Utils,
         private val onItemClicked: (String) -> Unit,
-        private val onLeaveClicked: () -> Unit
+        private val onLeaveClicked: () -> Unit,
+        private val onKickClicked: (String) -> Unit
     ) : RecyclerView.ViewHolder(view) {
         private val photoIconBackgroundDrawable: Drawable?
         val rootLayout = view.findViewById<LinearLayout>(R.id.thomannDetailsUserItemLayout)
@@ -129,7 +131,7 @@ class ThomannDetailsAdapter(
         val userNameTextView = view.findViewById<TextView>(R.id.userName)
         val userAmountTextView = view.findViewById<TextView>(R.id.userAmount)
         val userJoinedDateTextView = view.findViewById<TextView>(R.id.userJoinedDate)
-        val leaveTextView = view.findViewById<TextView>(R.id.leaveTextView)
+        val leaveOrKickTextView = view.findViewById<TextView>(R.id.leaveTextView)
 
         init {
             // You may need to call mutate() on the drawable or else all icons are affected.
@@ -153,16 +155,25 @@ class ThomannDetailsAdapter(
             }
             userJoinedDateTextView.setText(formattedJoinDate)
             if (data.user.isCurrentUser == true) {
-                leaveTextView.visibility = View.VISIBLE
+                leaveOrKickTextView.setText(view.context.getString(R.string.thomann_details_leave))
+                leaveOrKickTextView.visibility = View.VISIBLE
 
                 // TODO: should not disable onClick in viewHolder, viewModel should prevent the action
-                leaveTextView.setOnClickListener {
+                leaveOrKickTextView.setOnClickListener {
                     this.onLeaveClicked()
                 }
                 rootLayout.setOnClickListener {}
+            } else if (data.user.isUserCreator == true) {
+                leaveOrKickTextView.setText(view.context.getString(R.string.thomann_details_kick))
+                leaveOrKickTextView.visibility = View.VISIBLE
+
+                // TODO: should not disable onClick in viewHolder, viewModel should prevent the action
+                leaveOrKickTextView.setOnClickListener {
+                    this.onKickClicked(data.user.userId ?: "")
+                }
             } else {
-                leaveTextView.visibility = View.GONE
-                leaveTextView.setOnClickListener {}
+                leaveOrKickTextView.visibility = View.GONE
+                leaveOrKickTextView.setOnClickListener {}
                 rootLayout.setOnClickListener {
                     this.onItemClicked(data.user.userId ?: "")
                 }

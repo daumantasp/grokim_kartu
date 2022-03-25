@@ -150,7 +150,16 @@ class ThomannsRepositoryImpl(
                 val error = AuthenticationError(5)
                 throw AuthenticationException(error)
             }
-            val thomannUser = ThomannUser(authUser.id, authUser.name, id, amount, null, null, null)
+            val thomannUser = ThomannUser(
+                userId = authUser.id,
+                userName = authUser.name,
+                thomannId = id,
+                amount = amount,
+                isCurrentUser = null,
+                isUserCreator = null,
+                icon = null,
+                joinDate = null
+            )
             val thomannUserDao = toThomannUserDao(thomannUser)!!
             thomannsDao.joinThomann(id, thomannUserDao) { isSuccessful, e ->
                 if (isSuccessful) {
@@ -283,7 +292,7 @@ class ThomannsRepositoryImpl(
                         this.getPlayerIcon(tud.userId ?: "", onComplete)
                     }
                     val thomannPlayerUserIcon = ThomannPlayerIcon(loader)
-                    toThomannUser(tud, thomannPlayerUserIcon)!!
+                    toThomannUser(tud, thomannDao.userId ?: "", thomannPlayerUserIcon)!!
                 },
                 thomannPlayerIcon
             )
@@ -291,11 +300,13 @@ class ThomannsRepositoryImpl(
         return null
     }
 
-    private fun toThomannUser(thomannUserDao: ThomannUserDao?, thomannPlayerIcon: ThomannPlayerIcon?) : ThomannUser? {
+    private fun toThomannUser(thomannUserDao: ThomannUserDao?, creatorUserId: String, thomannPlayerIcon: ThomannPlayerIcon?) : ThomannUser? {
         if (thomannUserDao != null) {
             var isCurrentUser = false
+            var isCurrentUserCreator = false
             if (thomannUserDao.userId != null) {
                 isCurrentUser = thomannUserDao.userId == authDao.getUserId()
+                isCurrentUserCreator = creatorUserId == authDao.getUserId()
             }
             return ThomannUser(
                 thomannUserDao.userId,
@@ -303,6 +314,7 @@ class ThomannsRepositoryImpl(
                 thomannUserDao.thomannId,
                 thomannUserDao.amount,
                 isCurrentUser,
+                isCurrentUserCreator,
                 thomannPlayerIcon,
                 thomannUserDao.joinDate
             )

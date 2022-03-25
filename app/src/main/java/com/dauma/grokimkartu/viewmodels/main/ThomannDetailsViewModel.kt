@@ -53,6 +53,14 @@ class ThomannDetailsViewModel @Inject constructor(
         }
     }
 
+    fun kickClicked(userId: String) {
+        thomannsRepository.kickUserFromThomann(thomannId ?: "", userId) { isSuccessful, e ->
+            if (isSuccessful) {
+                this.loadDetails()
+            }
+        }
+    }
+
     fun cancelClicked() {
         thomannsRepository.deleteThomann(thomannId ?: "") { isSuccessful, e ->
             if (isSuccessful) {

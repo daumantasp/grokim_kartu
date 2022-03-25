@@ -83,7 +83,8 @@ class ThomannDetailsFragment : Fragment() {
             data = recyclerViewData,
             utils = utils,
             onItemClicked = { this.thomannDetailsViewModel.userClicked(it) },
-            onLeaveClicked = { this.thomannDetailsViewModel.leaveClicked() }
+            onLeaveClicked = { this.thomannDetailsViewModel.leaveClicked() },
+            onKickClicked = { userId -> this.thomannDetailsViewModel.kickClicked(userId) }
         )
         isDetailsRecyclerViewSetup = true
     }
