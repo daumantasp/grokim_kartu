@@ -103,5 +103,13 @@ class ThomannDetailsFragment : Fragment() {
         if (details.isJoinable) {
             recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_join), details.onJoinButtonClick))
         }
+        if (details.isLockable) {
+            val isLocked = details.isLocked
+            val title = if (isLocked) getString(R.string.thomann_details_unlock) else getString(R.string.thomann_details_lock)
+            recyclerViewData.add(ThomannDetailsListButtonData(title, { details.onLockButtonClick(isLocked == false) }))
+        }
+        if (details.isCancelable) {
+            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_cancel), details.onCancelButtonClick))
+        }
     }
 }

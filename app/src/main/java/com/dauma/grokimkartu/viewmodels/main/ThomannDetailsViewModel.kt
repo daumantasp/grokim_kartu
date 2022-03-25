@@ -53,6 +53,30 @@ class ThomannDetailsViewModel @Inject constructor(
         }
     }
 
+    fun cancelClicked() {
+        thomannsRepository.deleteThomann(thomannId ?: "") { isSuccessful, e ->
+            if (isSuccessful) {
+                _navigateBack.value = Event("")
+            }
+        }
+    }
+
+    fun lockClicked(lock: Boolean) {
+        if (lock == true) {
+            thomannsRepository.lockThomann(thomannId ?: "") { isSuccessful, e ->
+                if (isSuccessful) {
+                    this.loadDetails()
+                }
+            }
+        } else {
+            thomannsRepository.unlockThomann(thomannId ?: "") { isSuccessful, e ->
+                if (isSuccessful) {
+                    this.loadDetails()
+                }
+            }
+        }
+    }
+
     fun userClicked(userId: String) {
         _userDetails.value = Event(userId)
     }
@@ -61,9 +85,10 @@ class ThomannDetailsViewModel @Inject constructor(
         val details = ThomannDetails()
         var isThomannAndProfilePhotoLoaded = false
         var isThomannJoinableLoaded = false
+        var isThomannUpdatableLoaded = false
 
         fun notifyThatDetailsHaveBeenLoadedIfNeeded() {
-            if (isThomannAndProfilePhotoLoaded == true && isThomannJoinableLoaded == true) {
+            if (isThomannAndProfilePhotoLoaded == true && isThomannJoinableLoaded == true && isThomannUpdatableLoaded == true) {
                 _detailsLoaded.value = details
             }
         }
@@ -96,6 +121,17 @@ class ThomannDetailsViewModel @Inject constructor(
             isThomannJoinableLoaded = true
             notifyThatDetailsHaveBeenLoadedIfNeeded()
         }
+
+        this.thomannsRepository.isUpdatable(thomannId ?: "") { isSuccessful, isUpdatable, e ->
+            if (isSuccessful == true && isUpdatable == true) {
+                details.onCancelButtonClick = { this.cancelClicked() }
+                details.onLockButtonClick = { this.lockClicked(it) }
+            }
+            details.isCancelable = isUpdatable ?: false
+            details.isLockable = isUpdatable ?: false
+            isThomannUpdatableLoaded = true
+            notifyThatDetailsHaveBeenLoadedIfNeeded()
+        }
     }
 }
 
@@ -112,5 +148,5 @@ class ThomannDetails {
     var isCancelable: Boolean = false
     var onCancelButtonClick: () -> Unit = {}
     var isLockable: Boolean = false
-    var onLockButtonClick: () -> Unit = {}
+    var onLockButtonClick: (Boolean) -> Unit = {}
 }

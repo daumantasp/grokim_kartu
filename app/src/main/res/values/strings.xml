@@ -83,4 +83,7 @@
     <string name="thomann_details_valid_until">Galioja iki</string>
     <string name="thomann_details_join">Prisijungti</string>
     <string name="thomann_details_leave">Išeiti</string>
+    <string name="thomann_details_cancel">Atšaukti</string>
+    <string name="thomann_details_lock">Užrakinti</string>
+    <string name="thomann_details_unlock">Atrakinti</string>
 </resources>
