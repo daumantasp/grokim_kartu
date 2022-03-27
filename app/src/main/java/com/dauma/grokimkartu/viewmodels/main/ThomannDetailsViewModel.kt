@@ -95,11 +95,10 @@ class ThomannDetailsViewModel @Inject constructor(
     fun loadDetails() {
         val details = ThomannDetails()
         var isThomannAndProfilePhotoLoaded = false
-        var isThomannJoinableLoaded = false
-        var isThomannUpdatableLoaded = false
+        var areThomannActionsLoaded = false
 
         fun notifyThatDetailsHaveBeenLoadedIfNeeded() {
-            if (isThomannAndProfilePhotoLoaded == true && isThomannJoinableLoaded == true && isThomannUpdatableLoaded == true) {
+            if (isThomannAndProfilePhotoLoaded == true && areThomannActionsLoaded == true) {
                 _detailsLoaded.value = details
             }
         }
@@ -124,25 +123,22 @@ class ThomannDetailsViewModel @Inject constructor(
             }
         }
 
-        this.thomannsRepository.isJoinable(thomannId ?: "") { isSuccessful, isJoinable, e ->
-            if (isSuccessful == true && isJoinable == true) {
-                details.onJoinButtonClick = {
-                    this._join.value = Event("")
+        this.thomannsRepository.getThomannActions(thomannId ?: "") { thomannActions, e ->
+            if (thomannActions != null) {
+                if (thomannActions.isJoinable == true) {
+                    details.onJoinButtonClick = {
+                        this._join.value = Event("")
+                    }
+                }
+                if (thomannActions.isUpdatable == true) {
+                    details.onCancelButtonClick = { this.cancelClicked() }
+                    details.onLockButtonClick = { this.lockClicked(it) }
                 }
             }
-            details.isJoinable = isJoinable ?: false
-            isThomannJoinableLoaded = true
-            notifyThatDetailsHaveBeenLoadedIfNeeded()
-        }
-
-        this.thomannsRepository.isUpdatable(thomannId ?: "") { isSuccessful, isUpdatable, e ->
-            if (isSuccessful == true && isUpdatable == true) {
-                details.onCancelButtonClick = { this.cancelClicked() }
-                details.onLockButtonClick = { this.lockClicked(it) }
-            }
-            details.isCancelable = isUpdatable ?: false
-            details.isLockable = isUpdatable ?: false
-            isThomannUpdatableLoaded = true
+            details.isJoinable = thomannActions?.isJoinable ?: false
+            details.isCancelable = thomannActions?.isUpdatable ?: false
+            details.isLockable = thomannActions?.isUpdatable ?: false
+            areThomannActionsLoaded = true
             notifyThatDetailsHaveBeenLoadedIfNeeded()
         }
     }

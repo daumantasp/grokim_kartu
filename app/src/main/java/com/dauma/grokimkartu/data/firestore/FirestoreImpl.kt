@@ -305,6 +305,66 @@ class FirestoreImpl(
             }
     }
 
+    override fun getThomannActions(
+        thomannId: String,
+        userId: String,
+        onComplete: (FirestoreThomannActions?, Exception?) -> Unit
+    ) {
+        getThomann(thomannId) { firestoreThomann, e ->
+            if (firestoreThomann != null) {
+                if (firestoreThomann.userId == userId) {
+                    val actions = FirestoreThomannActions(
+                        thomannId = thomannId,
+                        isAccessible = true,
+                        isJoinable = false,
+                        isUpdatable = true
+                    )
+                    onComplete(actions, null)
+                } else if (firestoreThomann.locked == false) {
+                    val actions = FirestoreThomannActions(
+                        thomannId = thomannId,
+                        isAccessible = true,
+                        isJoinable = true,
+                        isUpdatable = false
+                    )
+                    onComplete(actions, null)
+                } else {
+                    val users = firestoreThomann.users
+                    if (users != null) {
+                        val user = users.firstOrNull { ftu -> ftu.userId == userId }
+                        if (user != null) {
+                            val actions = FirestoreThomannActions(
+                                thomannId = thomannId,
+                                isAccessible = true,
+                                isJoinable = true,
+                                isUpdatable = false
+                            )
+                            onComplete(actions, null)
+                        } else {
+                            val actions = FirestoreThomannActions(
+                                thomannId = thomannId,
+                                isAccessible = false,
+                                isJoinable = false,
+                                isUpdatable = false
+                            )
+                            onComplete(actions, null)
+                        }
+                    } else {
+                        val actions = FirestoreThomannActions(
+                            thomannId = thomannId,
+                            isAccessible = false,
+                            isJoinable = false,
+                            isUpdatable = false
+                        )
+                        onComplete(actions, null)
+                    }
+                }
+            } else {
+                onComplete(null, e)
+            }
+        }
+    }
+
     override fun joinThomann(
         thomannId: String,
         user: FirestoreThomannUser,
@@ -365,79 +425,6 @@ class FirestoreImpl(
                 }
             } else {
                 onComplete(false, e)
-            }
-        }
-    }
-
-    override fun isThomannJoinable(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Boolean?, Exception?) -> Unit
-    ) {
-        getThomann(thomannId) { firestoreThomann, e ->
-            if (firestoreThomann != null) {
-                if (firestoreThomann.userId == userId) {
-                    onComplete(true, false, null)
-                } else {
-                    val users = firestoreThomann.users
-                    if (users != null) {
-                        val user = users.firstOrNull { ftu -> ftu.userId == userId }
-                        if (user != null) {
-                            onComplete(true, false, null)
-                        } else {
-                            onComplete(true, true, null)
-                        }
-                    } else {
-                        onComplete(true, true, null)
-                    }
-                }
-            } else {
-                onComplete(false, null, e)
-            }
-        }
-    }
-
-    override fun isThomannAccessible(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Boolean?, Exception?) -> Unit
-    ) {
-        getThomann(thomannId) { firestoreThomann, e ->
-            if (firestoreThomann != null) {
-                if (firestoreThomann.locked != true) {
-                    onComplete(true, true, null)
-                } else if (firestoreThomann.userId == userId) {
-                    onComplete(true, true, null)
-                } else {
-                    val users = firestoreThomann.users
-                    if (users != null) {
-                        val user = users.firstOrNull { ftu -> ftu.userId == userId }
-                        if (user != null) {
-                            onComplete(true, true, null)
-                        } else {
-                            onComplete(true, false, null)
-                        }
-                    } else {
-                        onComplete(true, false, null)
-                    }
-                }
-            } else {
-                onComplete(false, null, e)
-            }
-        }
-    }
-
-    override fun isThomannUpdatable(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Boolean?, Exception?) -> Unit
-    ) {
-        getThomann(thomannId) { firestoreThomann, e ->
-            if (firestoreThomann != null) {
-                val isUpdatable = firestoreThomann.userId == userId
-                onComplete(true, isUpdatable, null)
-            } else {
-                onComplete(false, null, e)
             }
         }
     }

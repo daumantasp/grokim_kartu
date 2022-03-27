@@ -5,9 +5,11 @@ import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.entities.AuthUser
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannActions
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIcon
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
 import com.dauma.grokimkartu.repositories.users.AuthenticationError
@@ -51,6 +53,27 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun getThomannActions(
+        id: String,
+        onComplete: (ThomannActions?, ThomannsError?) -> Unit
+    ) {
+        if (isUserLoggedIn() == true) {
+            val userId = authDao.getUserId()
+            thomannsDao.getThomannActions(id, userId ?: "") { thomannActionsDao, e ->
+                if (thomannActionsDao != null) {
+                    val thomannActions = toThomannActions(thomannActionsDao)
+                    onComplete(thomannActions, null)
+                } else {
+                    val error = ThomannsError(2)
+                    onComplete(null, error)
+                }
+            }
+        } else {
+            val error = ThomannsError(2)
+            onComplete(null, error)
+        }
+    }
+
     override fun saveThomann(
         thomann: Thomann,
         onComplete: (Boolean, ThomannsError?) -> Unit
@@ -89,54 +112,6 @@ class ThomannsRepositoryImpl(
             } else {
                 onComplete(null, ThomannsError(2))
             }
-        }
-    }
-
-    override fun isJoinable(id: String, onComplete: (Boolean, Boolean?, ThomannsError?) -> Unit) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId()
-            thomannsDao.isThomannJoinable(id, userId ?: "") { isSuccessful, isJoinable, e ->
-                if (isSuccessful == true) {
-                    onComplete(true, isJoinable ?: false, null)
-                } else {
-                    onComplete(false, null, ThomannsError(2))
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    override fun isAccessible(id: String, onComplete: (Boolean, Boolean?, ThomannsError?) -> Unit) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId()
-            thomannsDao.isThomannAccessible(id, userId ?: "") { isSuccessful, isAccessible, e ->
-                if (isSuccessful == true) {
-                    onComplete(true, isAccessible ?: false, null)
-                } else {
-                    onComplete(false, null, ThomannsError(2))
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    override fun isUpdatable(id: String, onComplete: (Boolean, Boolean?, ThomannsError?) -> Unit) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId()
-            thomannsDao.isThomannUpdatable(id, userId ?: "") { isSuccessful, isAccessible, e ->
-                if (isSuccessful == true) {
-                    onComplete(true, isAccessible ?: false, null)
-                } else {
-                    onComplete(false, null, ThomannsError(2))
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
         }
     }
 
@@ -330,6 +305,18 @@ class ThomannsRepositoryImpl(
                 thomannUser.thomannId,
                 thomannUser.amount,
                 thomannUser.joinDate
+            )
+        }
+        return null
+    }
+
+    private fun toThomannActions(thomannActionsDao: ThomannActionsDao?) : ThomannActions? {
+        if (thomannActionsDao != null) {
+            return ThomannActions(
+                thomannActionsDao.thomannId,
+                thomannActionsDao.isAccessible,
+                thomannActionsDao.isJoinable,
+                thomannActionsDao.isUpdatable
             )
         }
         return null

@@ -2,7 +2,9 @@ package com.dauma.grokimkartu.data.thomanns
 
 import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannActions
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
+import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 
@@ -45,6 +47,17 @@ class ThomannsDaoImpl(
         }
     }
 
+    override fun getThomannActions(
+        id: String,
+        userId: String,
+        onComplete: (ThomannActionsDao?, Exception?) -> Unit
+    ) {
+        firebase.getThomannActions(id, userId) { firestoreThomannActions, e ->
+            val thomannActionsDao = toThomannActionsDao(firestoreThomannActions)
+            onComplete(thomannActionsDao, e)
+        }
+    }
+
     override fun joinThomann(
         id: String,
         user: ThomannUserDao,
@@ -60,30 +73,6 @@ class ThomannsDaoImpl(
         onComplete: (Boolean, Exception?) -> Unit
     ) {
         firebase.leaveThomann(id, userId, onComplete)
-    }
-
-    override fun isThomannJoinable(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Boolean?, Exception?) -> Unit
-    ) {
-        firebase.isThomannJoinable(thomannId, userId, onComplete)
-    }
-
-    override fun isThomannAccessible(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Boolean?, Exception?) -> Unit
-    ) {
-        firebase.isThomannAccessible(thomannId, userId, onComplete)
-    }
-
-    override fun isThomannUpdatable(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Boolean?, Exception?) -> Unit
-    ) {
-        firebase.isThomannUpdatable(thomannId, userId, onComplete)
     }
 
     override fun lockThomann(
@@ -177,5 +166,18 @@ class ThomannsDaoImpl(
             )
         }
         return thomannUserDao
+    }
+
+    private fun toThomannActionsDao(firestoreThomannActions: FirestoreThomannActions?) : ThomannActionsDao? {
+        var thomannActionsDao: ThomannActionsDao? = null
+        if (firestoreThomannActions != null) {
+            thomannActionsDao = ThomannActionsDao(
+                firestoreThomannActions.thomannId,
+                firestoreThomannActions.isAccessible,
+                firestoreThomannActions.isJoinable,
+                firestoreThomannActions.isUpdatable
+            )
+        }
+        return thomannActionsDao
     }
 }
