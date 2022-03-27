@@ -19,7 +19,7 @@ abstract class FirestoreQuery<T>(
 
     abstract fun execute()
 
-    fun withId(id: String) : FirestoreQuery<T> {
+    open fun withId(id: String) : FirestoreQuery<T> {
         this.id = id
         return this
     }
