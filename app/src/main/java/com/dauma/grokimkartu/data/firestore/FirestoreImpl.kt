@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.data.firestore
 
 import android.util.Log
 import com.dauma.grokimkartu.data.firestore.entities.*
+import com.dauma.grokimkartu.data.firestore.queries.*
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,136 +44,77 @@ class FirestoreImpl(
     }
 
     override fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .get()
-            .addOnSuccessListener { userDocumentSnapshot ->
-                if (userDocumentSnapshot.exists()) {
-                    var user = userDocumentSnapshot.toObject(FirestoreUser::class.java)
-                    user?.id = userId
-                    onComplete(user, null)
-                } else {
-                    onComplete(null, Exception("USER WAS NOT FOUND"))
-                }
+        ReadUserQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { firestoreUser ->
+                onComplete(firestoreUser, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
+            .onFailure { exception ->
+                onComplete(null, exception)
             }
+            .execute()
     }
 
     override fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (profile.name != null) {
-            valuesToSet["name"] = profile.name!!
-        }
-        if (profile.instrument != null) {
-            valuesToSet["instrument"] = profile.instrument!!
-        }
-        if (profile.description != null) {
-            valuesToSet["description"] = profile.description!!
-        }
-        if (profile.city != null) {
-            valuesToSet["city"] = profile.city!!
-        }
-
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .update("profile", valuesToSet)
-            .addOnSuccessListener { _ ->
+        UpdateProfileQuery(firebaseFirestore)
+            .withId(userId)
+            .withInputObject(profile)
+            .onSuccess { _ ->
                 this.updatePlayerWhenProfileIsUpdatedTrigger(userId, onComplete)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        val emptySet: HashMap<String, Any> = hashMapOf()
-
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .update("profile", emptySet)
-            .addOnSuccessListener { _ ->
+        DeleteProfileQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
     }
 
     override fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .get()
-            .addOnSuccessListener { userDocumentSnapshot ->
-                if (userDocumentSnapshot.exists()) {
-                    val profileDao = FirestoreProfile()
-                    val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
-                    if (profileMap != null) {
-                        for (profile in profileMap) {
-                            if (profile.key == "name") {
-                                profileDao.name = profile.value as String?
-                            } else if (profile.key == "instrument") {
-                                profileDao.instrument = profile.value as String?
-                            } else if (profile.key == "description") {
-                                profileDao.description = profile.value as String?
-                            } else if (profile.key == "city") {
-                                profileDao.city = profile.value as String?
-                            }
-                        }
-                    }
-                    onComplete(profileDao, null)
-                } else {
-                    onComplete(null, Exception("USER WAS NOT FOUND"))
-                }
+        ReadProfileQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { firestoreProfile ->
+                onComplete(firestoreProfile, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
+            .onFailure { exception ->
+                onComplete(null, exception)
             }
+            .execute()
     }
 
     override fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(playersCollection)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val players: MutableList<FirestorePlayer> = mutableListOf()
-                for (queryDocumentSnapshot in querySnapshot) {
-                    var player = queryDocumentSnapshot.toObject(FirestorePlayer::class.java)
-                    player.userId = queryDocumentSnapshot.id
-                    players.add(player)
-                }
-                onComplete(true, players, null)
+        ReadPlayersQuery(firebaseFirestore)
+            .onSuccess { firestorePlayers ->
+                onComplete(true, firestorePlayers, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, null, e)
+            .onFailure { exception ->
+                onComplete(false, null, exception)
             }
+            .execute()
     }
 
     override fun getPlayerDetails(
         userId: String,
         onComplete: (FirestorePlayerDetails?, Exception?) -> Unit
     ) {
-        firebaseFirestore
-            .collection(playerDetailsCollection)
-            .document(userId)
-            .get()
-            .addOnSuccessListener { playerDetailsDocumentSnapshot ->
-                if (playerDetailsDocumentSnapshot.exists()) {
-                    var playerDetails = playerDetailsDocumentSnapshot.toObject(FirestorePlayerDetails::class.java)
-                    playerDetails?.userId = userId
-                    onComplete(playerDetails, null)
-                } else {
-                    onComplete(null, Exception("PLAYER DETAILS WAS NOT FOUND"))
-                }
+        ReadPlayerDetailsQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { firestorePlayerDetails ->
+                onComplete(firestorePlayerDetails, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
+            .onFailure { exception ->
+                onComplete(null, exception)
             }
+            .execute()
     }
 
     override fun createThomann(
