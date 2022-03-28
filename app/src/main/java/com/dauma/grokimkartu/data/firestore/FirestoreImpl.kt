@@ -451,32 +451,22 @@ class FirestoreImpl(
                 .onFailure { exception ->
                     onComplete(false, exception)
                 }
+                .execute()
         } else {
-            if (user.id == null) {
-                Log.d(TAG, "Failed to setUser: missing user.id")
-                return
-            }
-            val valuesToSet: HashMap<String, Any> = hashMapOf()
-            if (user.visible != null) {
-                valuesToSet["visible"] = user.visible!!
-            }
-
-            firebaseFirestore
-                .collection(usersCollection)
-                .document(user.id!!)
-                // Because of the profile fields, you have to use merge
-                // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
-                .set(valuesToSet, SetOptions.merge())
-                .addOnSuccessListener { _ ->
+            UpdateUserQuery(firebaseFirestore)
+                .withId(user.id ?: "")
+                .withInput(user)
+                .onSuccess { _ ->
                     if (user.visible != null) {
                         this.addOrDeletePlayerWhenVisibilityChangesTrigger(user.id!!, user.visible!!, onComplete)
                     } else {
                         onComplete(true, null)
                     }
                 }
-                .addOnFailureListener { e ->
-                    onComplete(false, e)
+                .onFailure { exception ->
+                    onComplete(false, exception)
                 }
+                .execute()
         }
     }
 
