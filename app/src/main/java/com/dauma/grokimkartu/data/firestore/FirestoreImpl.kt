@@ -31,16 +31,15 @@ class FirestoreImpl(
         userId: String,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        firebaseFirestore
-            .collection(usersCollection)
-            .document(userId)
-            .delete()
-            .addOnSuccessListener { _ ->
+        DeleteUserQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { _ ->
                 this.deletePlayerWhenUserIsDeletedTrigger(userId, onComplete)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     override fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
