@@ -490,7 +490,7 @@ class FirestoreImpl(
                             firestoreProfile?.description ?: "",
                             firestoreProfile?.city ?: ""
                         )
-                        this.setPlayer(firestorePlayer) { isSuccessful, e ->
+                        this.setPlayer(userId, firestorePlayer) { isSuccessful, e ->
                             this.setPlayerDetails(userId, firestorePlayerDetails) { isSuccessful, e ->
                                 onComplete(true, e)
                             }
@@ -528,7 +528,7 @@ class FirestoreImpl(
                         firestoreProfile?.description ?: "",
                         firestoreProfile?.city ?: ""
                     )
-                    this.setPlayer(firestorePlayer) { isSuccessful, e ->
+                    this.setPlayer(userId, firestorePlayer) { isSuccessful, e ->
                         this.setPlayerDetails(userId, firestorePlayerDetails) { isSuccessful, e ->
                             onComplete(true, e)
                         }
@@ -549,35 +549,17 @@ class FirestoreImpl(
         }
     }
 
-    private fun setPlayer(player: FirestorePlayer, onComplete: (Boolean, Exception?) -> Unit) {
-        if (player.userId == null) {
-            Log.d(TAG, "Failed to setPlayer: missing player.userId")
-            return
-        }
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (player.name != null) {
-            valuesToSet["name"] = player.name!!
-        }
-        if (player.instrument != null) {
-            valuesToSet["instrument"] = player.instrument!!
-        }
-        if (player.description != null) {
-            valuesToSet["description"] = player.description!!
-        }
-        if (player.city != null) {
-            valuesToSet["city"] = player.city!!
-        }
-
-        firebaseFirestore
-            .collection(playersCollection)
-            .document(player.userId!!)
-            .set(valuesToSet, SetOptions.merge())
-            .addOnSuccessListener { _ ->
+    private fun setPlayer(userId: String, player: FirestorePlayer, onComplete: (Boolean, Exception?) -> Unit) {
+        UpdatePlayerQuery(firebaseFirestore)
+            .withId(userId)
+            .withInput(player)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     private fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
