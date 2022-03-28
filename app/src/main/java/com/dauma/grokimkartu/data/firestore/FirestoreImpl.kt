@@ -170,26 +170,17 @@ class FirestoreImpl(
     }
 
     override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        getThomann(thomannId) { firestoreThomann, exception ->
-            if (firestoreThomann != null) {
-                if (firestoreThomann.userId == userId) {
-                    firebaseFirestore
-                        .collection(thomannsCollection)
-                        .document(thomannId)
-                        .delete()
-                        .addOnSuccessListener { _ ->
-                            onComplete(true, null)
-                        }
-                        .addOnFailureListener { e ->
-                            onComplete(false, e)
-                        }
-                } else {
-                    onComplete(false, Exception("THOMANN CANT BE DELETED BECAUSE USER IDS DO NOT MATCH"))
-                }
-            } else {
+        val readThomannQuery = ReadThomannQuery(firebaseFirestore)
+        DeleteThomannQuery(firebaseFirestore, readThomannQuery)
+            .withId(thomannId)
+            .withInput(userId)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
                 onComplete(false, exception)
             }
-        }
+            .execute()
     }
 
     override fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit) {
