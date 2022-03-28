@@ -491,7 +491,7 @@ class FirestoreImpl(
                             firestoreProfile?.city ?: ""
                         )
                         this.setPlayer(firestorePlayer) { isSuccessful, e ->
-                            this.setPlayerDetails(firestorePlayerDetails) { isSuccessful, e ->
+                            this.setPlayerDetails(userId, firestorePlayerDetails) { isSuccessful, e ->
                                 onComplete(true, e)
                             }
                         }
@@ -529,7 +529,7 @@ class FirestoreImpl(
                         firestoreProfile?.city ?: ""
                     )
                     this.setPlayer(firestorePlayer) { isSuccessful, e ->
-                        this.setPlayerDetails(firestorePlayerDetails) { isSuccessful, e ->
+                        this.setPlayerDetails(userId, firestorePlayerDetails) { isSuccessful, e ->
                             onComplete(true, e)
                         }
                     }
@@ -592,35 +592,17 @@ class FirestoreImpl(
             .execute()
     }
 
-    private fun setPlayerDetails(playerDetails: FirestorePlayerDetails, onComplete: (Boolean, Exception?) -> Unit) {
-        if (playerDetails.userId == null) {
-            Log.d(TAG, "Failed to setPlayer: missing player.userId")
-            return
-        }
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (playerDetails.name != null) {
-            valuesToSet["name"] = playerDetails.name!!
-        }
-        if (playerDetails.instrument != null) {
-            valuesToSet["instrument"] = playerDetails.instrument!!
-        }
-        if (playerDetails.description != null) {
-            valuesToSet["description"] = playerDetails.description!!
-        }
-        if (playerDetails.city != null) {
-            valuesToSet["city"] = playerDetails.city!!
-        }
-
-        firebaseFirestore
-            .collection(playerDetailsCollection)
-            .document(playerDetails.userId!!)
-            .set(valuesToSet, SetOptions.merge())
-            .addOnSuccessListener { _ ->
+    private fun setPlayerDetails(userId: String, playerDetails: FirestorePlayerDetails, onComplete: (Boolean, Exception?) -> Unit) {
+        UpdatePlayerDetailsQuery(firebaseFirestore)
+            .withId(userId)
+            .withInput(playerDetails)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     private fun deletePlayerDetails(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
