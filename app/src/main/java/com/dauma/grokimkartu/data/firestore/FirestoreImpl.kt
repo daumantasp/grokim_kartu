@@ -204,22 +204,15 @@ class FirestoreImpl(
     }
 
     override fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .document(thomannId)
-            .get()
-            .addOnSuccessListener { thomannDocumentSnapshot ->
-                if (thomannDocumentSnapshot.exists()) {
-                    var thomann = thomannDocumentSnapshot.toObject(FirestoreThomann::class.java)
-                    thomann?.id = thomannId
-                    onComplete(thomann, null)
-                } else {
-                    onComplete(null, Exception("THOMANN WAS NOT FOUND"))
-                }
+        ReadThomannQuery(firebaseFirestore)
+            .withId(thomannId)
+            .onSuccess { firestoreThomann ->
+                onComplete(firestoreThomann, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(null, e)
+            .onFailure { exception ->
+                onComplete(null, exception)
             }
+            .execute()
     }
 
     override fun getThomannActions(
