@@ -193,21 +193,14 @@ class FirestoreImpl(
     }
 
     override fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val thomanns: MutableList<FirestoreThomann> = mutableListOf()
-                for (queryDocumentSnapshot in querySnapshot) {
-                    var thomann = queryDocumentSnapshot.toObject(FirestoreThomann::class.java)
-                    thomann.id = queryDocumentSnapshot.id
-                    thomanns.add(thomann)
-                }
-                onComplete(true, thomanns, null)
+        ReadThomannsQuery(firebaseFirestore)
+            .onSuccess { firestoreThomanns ->
+                onComplete(true, firestoreThomanns, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, null, e)
+            .onFailure { exception ->
+                onComplete(false, null, exception)
             }
+            .execute()
     }
 
     override fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit) {
