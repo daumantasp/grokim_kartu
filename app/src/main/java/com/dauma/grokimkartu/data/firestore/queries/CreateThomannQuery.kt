@@ -7,23 +7,23 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CreateThomannQuery(firebaseFirestore: FirebaseFirestore)
     : FirestoreInputQuery<Nothing, FirestoreThomann>(firebaseFirestore) {
     override fun execute() {
-        if (inputObject != null) {
+        if (input != null) {
             val valuesToSet: HashMap<String, Any> = hashMapOf()
-            if (inputObject?.userId != null) {
-                valuesToSet["userId"] = inputObject?.userId!!
+            if (input?.userId != null) {
+                valuesToSet["userId"] = input?.userId!!
             }
-            if (inputObject?.name != null) {
-                valuesToSet["name"] = inputObject?.name!!
+            if (input?.name != null) {
+                valuesToSet["name"] = input?.name!!
             }
-            if (inputObject?.city != null) {
-                valuesToSet["city"] = inputObject?.city!!
+            if (input?.city != null) {
+                valuesToSet["city"] = input?.city!!
             }
-            if (inputObject?.locked != null) {
-                valuesToSet["locked"] = inputObject?.locked!!
+            if (input?.locked != null) {
+                valuesToSet["locked"] = input?.locked!!
             }
             valuesToSet["creationDate"] = Timestamp.now()
-            if (inputObject?.validUntil != null) {
-                valuesToSet["validUntil"] = inputObject?.validUntil!!
+            if (input?.validUntil != null) {
+                valuesToSet["validUntil"] = input?.validUntil!!
             }
 
             firebaseFirestore

@@ -4,15 +4,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 abstract class FirestoreInputQuery<T, K>(firebaseFirestore: FirebaseFirestore)
     : FirestoreQuery<T>(firebaseFirestore) {
-    protected var inputObject: K? = null
+    protected var input: K? = null
 
     override fun withId(id: String): FirestoreInputQuery<T, K> {
         this.id = id
         return this
     }
 
-    fun withInputObject(inputObject: K): FirestoreInputQuery<T, K> {
-        this.inputObject = inputObject
+    fun withInput(input: K): FirestoreInputQuery<T, K> {
+        this.input = input
         return this
     }
 }

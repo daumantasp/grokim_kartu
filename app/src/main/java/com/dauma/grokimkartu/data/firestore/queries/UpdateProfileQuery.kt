@@ -8,17 +8,17 @@ class UpdateProfileQuery(firebaseFirestore: FirebaseFirestore)
     override fun execute() {
         if (id != null) {
             val valuesToSet: HashMap<String, Any> = hashMapOf()
-            if (inputObject?.name != null) {
-                valuesToSet["name"] = inputObject?.name!!
+            if (input?.name != null) {
+                valuesToSet["name"] = input?.name!!
             }
-            if (inputObject?.instrument != null) {
-                valuesToSet["instrument"] = inputObject?.instrument!!
+            if (input?.instrument != null) {
+                valuesToSet["instrument"] = input?.instrument!!
             }
-            if (inputObject?.description != null) {
-                valuesToSet["description"] = inputObject?.description!!
+            if (input?.description != null) {
+                valuesToSet["description"] = input?.description!!
             }
-            if (inputObject?.city != null) {
-                valuesToSet["city"] = inputObject?.city!!
+            if (input?.city != null) {
+                valuesToSet["city"] = input?.city!!
             }
 
             firebaseFirestore

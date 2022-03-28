@@ -58,7 +58,7 @@ class FirestoreImpl(
     override fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
         UpdateProfileQuery(firebaseFirestore)
             .withId(userId)
-            .withInputObject(profile)
+            .withInput(profile)
             .onSuccess { _ ->
                 this.updatePlayerWhenProfileIsUpdatedTrigger(userId, onComplete)
             }
@@ -122,7 +122,7 @@ class FirestoreImpl(
         onComplete: (Boolean, Exception?) -> Unit
     ) {
         CreateThomannQuery(firebaseFirestore)
-            .withInputObject(thomann)
+            .withInput(thomann)
             .onSuccess { _ ->
                 onComplete(true, null)
             }
