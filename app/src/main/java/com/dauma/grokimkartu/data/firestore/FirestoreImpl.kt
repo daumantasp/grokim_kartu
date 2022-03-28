@@ -581,16 +581,15 @@ class FirestoreImpl(
     }
 
     private fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseFirestore
-            .collection(playersCollection)
-            .document(userId)
-            .delete()
-            .addOnSuccessListener { _ ->
+        DeletePlayerQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     private fun setPlayerDetails(playerDetails: FirestorePlayerDetails, onComplete: (Boolean, Exception?) -> Unit) {
