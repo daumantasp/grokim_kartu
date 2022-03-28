@@ -121,33 +121,15 @@ class FirestoreImpl(
         thomann: FirestoreThomann,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (thomann.userId != null) {
-            valuesToSet["userId"] = thomann.userId!!
-        }
-        if (thomann.name != null) {
-            valuesToSet["name"] = thomann.name!!
-        }
-        if (thomann.city != null) {
-            valuesToSet["city"] = thomann.city!!
-        }
-        if (thomann.locked != null) {
-            valuesToSet["locked"] = thomann.locked!!
-        }
-        valuesToSet["creationDate"] = Timestamp.now()
-        if (thomann.validUntil != null) {
-            valuesToSet["validUntil"] = thomann.validUntil!!
-        }
-
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .add(valuesToSet)
-            .addOnSuccessListener { _ ->
+        CreateThomannQuery(firebaseFirestore)
+            .withInputObject(thomann)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     override fun updateThomann(
