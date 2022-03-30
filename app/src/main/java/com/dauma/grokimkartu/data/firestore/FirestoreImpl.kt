@@ -135,37 +135,16 @@ class FirestoreImpl(
         thomann: FirestoreThomann,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        if (thomann.id == null) {
-            Log.d(TAG, "Failed to setThomann: missing thomann.id")
-            return
-        }
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (thomann.name != null) {
-            valuesToSet["name"] = thomann.name!!
-        }
-        if (thomann.city != null) {
-            valuesToSet["city"] = thomann.city!!
-        }
-        // TODO: restrict locking/unlocking from this method?
-        if (thomann.locked != null) {
-            valuesToSet["locked"] = thomann.locked!!
-        }
-        if (thomann.validUntil != null) {
-            valuesToSet["validUntil"] = thomann.validUntil!!
-        }
-
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .document(thomann.id!!)
-            // Because of the profile fields, you have to use merge
-            // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
-            .set(valuesToSet, SetOptions.merge())
-            .addOnSuccessListener { _ ->
+        UpdateThomannQuery(firebaseFirestore)
+            .withId(thomann.id ?: "")
+            .withInput(thomann)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
