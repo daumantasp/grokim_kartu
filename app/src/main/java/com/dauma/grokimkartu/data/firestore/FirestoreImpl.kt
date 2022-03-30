@@ -90,32 +90,6 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit) {
-        ReadPlayersQuery(firebaseFirestore)
-            .onSuccess { firestorePlayers ->
-                onComplete(true, firestorePlayers, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, null, exception)
-            }
-            .execute()
-    }
-
-    override fun getPlayerDetails(
-        userId: String,
-        onComplete: (FirestorePlayerDetails?, Exception?) -> Unit
-    ) {
-        ReadPlayerDetailsQuery(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { firestorePlayerDetails ->
-                onComplete(firestorePlayerDetails, null)
-            }
-            .onFailure { exception ->
-                onComplete(null, exception)
-            }
-            .execute()
-    }
-
     override fun createThomann(
         thomann: FirestoreThomann,
         onComplete: (Boolean, Exception?) -> Unit

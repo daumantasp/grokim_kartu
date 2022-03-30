@@ -13,8 +13,8 @@ interface Firestore {
     fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit)
     fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit)
-    fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit)
-    fun getPlayerDetails(userId: String, onComplete: (FirestorePlayerDetails?, Exception?) -> Unit)
+//    fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit)
+//    fun getPlayerDetails(userId: String, onComplete: (FirestorePlayerDetails?, Exception?) -> Unit)
     // TODO: refactor some methods
     fun createThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)
     fun updateThomann(thomann: FirestoreThomann, onComplete: (Boolean, Exception?) -> Unit)

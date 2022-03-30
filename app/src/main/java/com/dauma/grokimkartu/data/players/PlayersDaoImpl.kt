@@ -2,22 +2,29 @@ package com.dauma.grokimkartu.data.players
 
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.firestore.FirebaseStorage
-import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
+import com.dauma.grokimkartu.data.firestore.queries.ReadPlayerDetailsQuery
+import com.dauma.grokimkartu.data.firestore.queries.ReadPlayersQuery
 import com.dauma.grokimkartu.data.players.entities.PlayerDao
 import com.dauma.grokimkartu.data.players.entities.PlayerDetailsDao
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PlayersDaoImpl(
-    private val firestore: Firestore,
+    private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ) : PlayersDao {
 
     override fun getPlayers(onComplete: (Boolean, List<PlayerDao>?, Exception?) -> Unit) {
-        firestore.getPlayers() { isSuccessful, firestorePlayersList, e ->
-            val playersDaoList = firestorePlayersList?.map { fp -> toPlayerDao(fp)!! }
-            onComplete(isSuccessful, playersDaoList, e)
-        }
+        ReadPlayersQuery(firebaseFirestore)
+            .onSuccess { firestorePlayers ->
+                val playersDaoList = firestorePlayers?.map { fp -> toPlayerDao(fp)!! }
+                onComplete(true, playersDaoList, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, null, exception)
+            }
+            .execute()
     }
 
     override fun getPlayerPhoto(userId: String, onComplete: (Bitmap?, Exception?) -> Unit) {
@@ -32,10 +39,16 @@ class PlayersDaoImpl(
         userId: String,
         onComplete: (PlayerDetailsDao?, Exception?) -> Unit
     ) {
-        firestore.getPlayerDetails(userId) { firestorePlayerDetails, e ->
-            val playerDetailsDao = toPlayerDetailsDao(firestorePlayerDetails)
-            onComplete(playerDetailsDao, e)
-        }
+        ReadPlayerDetailsQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { firestorePlayerDetails ->
+                val playerDetailsDao = toPlayerDetailsDao(firestorePlayerDetails)
+                onComplete(playerDetailsDao, null)
+            }
+            .onFailure { exception ->
+                onComplete(null, exception)
+            }
+            .execute()
     }
 
     private fun toPlayerDao(firestorePlayer: FirestorePlayer?) : PlayerDao? {

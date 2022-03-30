@@ -89,8 +89,8 @@ class AppModule {
     }
 
     @Provides
-    fun providePlayersDao(firestore: Firestore, firebaseStorage: FirebaseStorage) : PlayersDao {
-        return PlayersDaoImpl(firestore, firebaseStorage)
+    fun providePlayersDao(firebaseStorage: FirebaseStorage) : PlayersDao {
+        return PlayersDaoImpl(FirebaseFirestore.getInstance(), firebaseStorage)
     }
 
     @Provides
