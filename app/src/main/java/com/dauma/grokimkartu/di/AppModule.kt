@@ -117,7 +117,7 @@ class AppModule {
 
     @Provides
     fun providesThomannsDao(firestore: Firestore) : ThomannsDao {
-        return ThomannsDaoImpl(firestore)
+        return ThomannsDaoImpl(firestore, FirebaseFirestore.getInstance())
     }
 
     @Provides

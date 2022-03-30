@@ -79,22 +79,7 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun createThomann(
-        thomann: FirestoreThomann,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        CreateThomannQuery(firebaseFirestore)
-            .withInput(thomann)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun updateThomann(
+    private fun updateThomann(
         thomann: FirestoreThomann,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
@@ -124,18 +109,7 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit) {
-        ReadThomannsQuery(firebaseFirestore)
-            .onSuccess { firestoreThomanns ->
-                onComplete(true, firestoreThomanns, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, null, exception)
-            }
-            .execute()
-    }
-
-    override fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit) {
+    private fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit) {
         ReadThomannQuery(firebaseFirestore)
             .withId(thomannId)
             .onSuccess { firestoreThomann ->
