@@ -272,16 +272,16 @@ class FirestoreImpl(
                 if (users != null) {
                     val user = users.firstOrNull { ftu -> ftu.userId == userId }
                     if (user != null) {
-                        firebaseFirestore
-                            .collection(thomannsCollection)
-                            .document(thomannId)
-                            .update("users", FieldValue.arrayRemove(user))
-                            .addOnSuccessListener { _ ->
+                        DeleteThomannUserQuery(firebaseFirestore)
+                            .withId(thomannId)
+                            .withInput(user)
+                            .onSuccess { _ ->
                                 onComplete(true, null)
                             }
-                            .addOnFailureListener { e ->
-                                onComplete(false, e)
+                            .onFailure { exception ->
+                                onComplete(false, exception)
                             }
+                            .execute()
                     } else {
                         onComplete(false, Exception("THOMANN USER WITH ID=$userId NOT FOUND"))
                     }
