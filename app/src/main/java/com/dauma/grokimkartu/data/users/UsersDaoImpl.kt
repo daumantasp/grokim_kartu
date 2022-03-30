@@ -5,11 +5,14 @@ import com.dauma.grokimkartu.data.firestore.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
+import com.dauma.grokimkartu.data.firestore.queries.*
 import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
+import com.google.firebase.firestore.FirebaseFirestore
 
 class UsersDaoImpl(
     private val firebase: Firestore,
+    private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage,
 ) : UsersDao {
     override fun createUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
@@ -28,10 +31,16 @@ class UsersDaoImpl(
     }
 
     override fun getUser(userId: String, onComplete: (UserDao?, Exception?) -> Unit) {
-        firebase.getUser(userId) { firestoreUser, e ->
-            val usersDao = toUserDao(firestoreUser)
-            onComplete(usersDao, e)
-        }
+        ReadUserQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { firestoreUser ->
+                val usersDao = toUserDao(firestoreUser)
+                onComplete(usersDao, null)
+            }
+            .onFailure { exception ->
+                onComplete(null, exception)
+            }
+            .execute()
     }
 
     override fun updateProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
@@ -46,22 +55,30 @@ class UsersDaoImpl(
     }
 
     override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteProfile(userId) { isSuccessful, e ->
-            if (isSuccessful) {
+        DeleteProfileQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { _ ->
                 firebaseStorage.deleteProfilePhoto(userId) { isSuccessful, e ->
                     onComplete(true, null)
                 }
-            } else {
-                onComplete(false, e)
             }
-        }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun getProfile(userId: String, onComplete: (ProfileDao?, Exception?) -> Unit) {
-        firebase.getProfile(userId) { firestoreProfile, e ->
-            val profileDao = toProfileDao(firestoreProfile)
-            onComplete(profileDao, e)
-        }
+        ReadProfileQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { firestoreProfile ->
+                val profileDao = toProfileDao(firestoreProfile)
+                onComplete(profileDao, null)
+            }
+            .onFailure { exception ->
+                onComplete(null, exception)
+            }
+            .execute()
     }
 
     override fun getUserPhoto(userId: String, onComplete: (Bitmap?, Exception?) -> Unit) {

@@ -42,7 +42,7 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
+    private fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
         ReadUserQuery(firebaseFirestore)
             .withId(userId)
             .onSuccess { firestoreUser ->
@@ -67,18 +67,7 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        DeleteProfileQuery(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-    }
-
-    override fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
+    private fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
         ReadProfileQuery(firebaseFirestore)
             .withId(userId)
             .onSuccess { firestoreProfile ->

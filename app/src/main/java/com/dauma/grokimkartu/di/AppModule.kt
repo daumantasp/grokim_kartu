@@ -101,7 +101,7 @@ class AppModule {
 
     @Provides
     fun provideUsersDao(firestore: Firestore, firebaseStorage: FirebaseStorage) : UsersDao {
-        return UsersDaoImpl(firestore, firebaseStorage)
+        return UsersDaoImpl(firestore, FirebaseFirestore.getInstance(), firebaseStorage)
     }
 
     @Provides
