@@ -249,30 +249,16 @@ class FirestoreImpl(
         user: FirestoreThomannUser,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (user.userId != null) {
-            valuesToSet["userId"] = user.userId!!
-        }
-        if (user.userName != null) {
-            valuesToSet["userName"] = user.userName!!
-        }
-        if (user.thomannId != null) {
-            valuesToSet["thomannId"] = user.thomannId!!
-        }
-        if (user.amount != null) {
-            valuesToSet["amount"] = user.amount!!
-        }
-        valuesToSet["joinDate"] = Timestamp.now()
-        firebaseFirestore
-            .collection(thomannsCollection)
-            .document(thomannId)
-            .update("users", FieldValue.arrayUnion(valuesToSet))
-            .addOnSuccessListener { _ ->
+        UpdateThomannUserQuery(firebaseFirestore)
+            .withId(thomannId)
+            .withInput(user)
+            .onSuccess { _ ->
                 onComplete(true, null)
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+            .onFailure { exception ->
+                onComplete(false, exception)
             }
+            .execute()
     }
 
     override fun leaveThomann(
