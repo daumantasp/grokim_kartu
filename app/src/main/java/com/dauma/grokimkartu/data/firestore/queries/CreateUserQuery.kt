@@ -5,8 +5,8 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
-class CreateUserQuery(firestore: FirebaseFirestore)
-    : FirestoreInputQuery<Nothing, FirestoreUser>(firestore) {
+class CreateUserQuery(firebaseFirestore: FirebaseFirestore)
+    : FirestoreInputQuery<Nothing, FirestoreUser>(firebaseFirestore) {
     override fun execute() {
         if (id != null) {
             if (input != null) {

@@ -4,8 +4,8 @@ import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
-class UpdateUserQuery(firestore: FirebaseFirestore)
-    : FirestoreInputQuery<Nothing, FirestoreUser>(firestore) {
+class UpdateUserQuery(firebaseFirestore: FirebaseFirestore)
+    : FirestoreInputQuery<Nothing, FirestoreUser>(firebaseFirestore) {
     override fun execute() {
         if (id != null) {
             if (input != null) {
