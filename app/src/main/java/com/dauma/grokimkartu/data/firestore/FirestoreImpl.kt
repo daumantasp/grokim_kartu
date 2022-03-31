@@ -1,21 +1,15 @@
 package com.dauma.grokimkartu.data.firestore
 
-import android.util.Log
 import com.dauma.grokimkartu.data.firestore.entities.*
 import com.dauma.grokimkartu.data.firestore.queries.*
-import com.google.firebase.Timestamp
+import com.dauma.grokimkartu.data.firestore.queries.composite.CreatePlayerForUser
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 
 class FirestoreImpl(
     private val firebaseFirestore: FirebaseFirestore,
 ) : Firestore {
     companion object {
-        private const val TAG = "FirestoreImpl"
-        private const val usersCollection = "users"
-        private const val playersCollection = "players"
-        private const val playerDetailsCollection = "playerDetails"
         private const val thomannsCollection = "thomanns"
     }
 
@@ -379,27 +373,15 @@ class FirestoreImpl(
         if (isVisible) {
             getUser(userId) { firestoreUser, e ->
                 if (firestoreUser != null) {
-                    this.getProfile(userId) { firestoreProfile, e ->
-                        val firestorePlayer = FirestorePlayer(
-                            firestoreUser.id,
-                            firestoreProfile?.name ?: "",
-                            firestoreProfile?.instrument ?: "",
-                            firestoreProfile?.description ?: "",
-                            firestoreProfile?.city ?: ""
-                        )
-                        val firestorePlayerDetails = FirestorePlayerDetails(
-                            firestoreUser.id,
-                            firestoreProfile?.name ?: "",
-                            firestoreProfile?.instrument ?: "",
-                            firestoreProfile?.description ?: "",
-                            firestoreProfile?.city ?: ""
-                        )
-                        this.setPlayer(userId, firestorePlayer) { isSuccessful, e ->
-                            this.setPlayerDetails(userId, firestorePlayerDetails) { isSuccessful, e ->
-                                onComplete(true, e)
-                            }
+                    CreatePlayerForUser(firebaseFirestore)
+                        .withId(userId)
+                        .onSuccess { _ ->
+                            onComplete(true, null)
                         }
-                    }
+                        .onFailure { exception ->
+                            onComplete(false, exception)
+                        }
+                        .execute()
                 } else {
                     onComplete(false, e)
                 }
@@ -417,27 +399,15 @@ class FirestoreImpl(
     ) {
         getUser(userId) { firestoreUser, e ->
             if (firestoreUser?.visible ?: false) {
-                this.getProfile(userId) { firestoreProfile, e ->
-                    val firestorePlayer = FirestorePlayer(
-                        firestoreUser?.id,
-                        firestoreProfile?.name ?: "",
-                        firestoreProfile?.instrument ?: "",
-                        firestoreProfile?.description ?: "",
-                        firestoreProfile?.city ?: ""
-                    )
-                    val firestorePlayerDetails = FirestorePlayerDetails(
-                        firestoreUser?.id,
-                        firestoreProfile?.name ?: "",
-                        firestoreProfile?.instrument ?: "",
-                        firestoreProfile?.description ?: "",
-                        firestoreProfile?.city ?: ""
-                    )
-                    this.setPlayer(userId, firestorePlayer) { isSuccessful, e ->
-                        this.setPlayerDetails(userId, firestorePlayerDetails) { isSuccessful, e ->
-                            onComplete(true, e)
-                        }
+                CreatePlayerForUser(firebaseFirestore)
+                    .withId(userId)
+                    .onSuccess { _ ->
+                        onComplete(true, null)
                     }
-                }
+                    .onFailure { exception ->
+                        onComplete(false, exception)
+                    }
+                    .execute()
             } else {
                 onComplete(true, null)
             }
@@ -453,35 +423,9 @@ class FirestoreImpl(
         }
     }
 
-    private fun setPlayer(userId: String, player: FirestorePlayer, onComplete: (Boolean, Exception?) -> Unit) {
-        UpdatePlayerQuery(firebaseFirestore)
-            .withId(userId)
-            .withInput(player)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
     private fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
         DeletePlayerQuery(firebaseFirestore)
             .withId(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    private fun setPlayerDetails(userId: String, playerDetails: FirestorePlayerDetails, onComplete: (Boolean, Exception?) -> Unit) {
-        UpdatePlayerDetailsQuery(firebaseFirestore)
-            .withId(userId)
-            .withInput(playerDetails)
             .onSuccess { _ ->
                 onComplete(true, null)
             }
