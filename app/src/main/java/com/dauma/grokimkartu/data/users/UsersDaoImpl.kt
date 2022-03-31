@@ -7,6 +7,7 @@ import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.*
 import com.dauma.grokimkartu.data.firestore.queries.composite.CreateUserAndPlayerIfNeededQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.DeleteUserAndPlayerIfNeededQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.UpdateUserAndPlayerIfNeededQuery
 import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
@@ -47,7 +48,15 @@ class UsersDaoImpl(
     }
 
     override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteUser(userId, onComplete)
+        DeleteUserAndPlayerIfNeededQuery(firebaseFirestore)
+            .withId(userId)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun getUser(userId: String, onComplete: (UserDao?, Exception?) -> Unit) {

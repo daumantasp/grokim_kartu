@@ -15,21 +15,6 @@ class FirestoreImpl(
         private const val thomannsCollection = "thomanns"
     }
 
-    override fun deleteUser(
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        DeleteUserQuery(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { _ ->
-                this.deletePlayerWhenUserIsDeletedTrigger(userId, onComplete)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
     private fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
         ReadUserQuery(firebaseFirestore)
             .withId(userId)
@@ -332,38 +317,5 @@ class FirestoreImpl(
                 onComplete(true, null)
             }
         }
-    }
-
-    private fun deletePlayerWhenUserIsDeletedTrigger(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        // Try to delete, do not care if such player exist
-        deletePlayer(userId) { isSuccessful, e ->
-            this.deletePlayerDetails(userId) { isSuccessful, e ->
-                onComplete(true, e)
-            }
-        }
-    }
-
-    private fun deletePlayer(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        DeletePlayerQuery(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    private fun deletePlayerDetails(userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        DeletePlayerDetails(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
     }
 }
