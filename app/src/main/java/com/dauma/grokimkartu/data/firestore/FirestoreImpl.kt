@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.firestore
 import com.dauma.grokimkartu.data.firestore.entities.*
 import com.dauma.grokimkartu.data.firestore.queries.*
 import com.dauma.grokimkartu.data.firestore.queries.composite.CreatePlayerForUser
+import com.dauma.grokimkartu.data.firestore.queries.composite.CreateUserAndPlayerIfNeededQuery
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -57,18 +58,6 @@ class FirestoreImpl(
             }
             .onFailure { exception ->
                 onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    private fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit) {
-        ReadProfileQuery(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { firestoreProfile ->
-                onComplete(firestoreProfile, null)
-            }
-            .onFailure { exception ->
-                onComplete(null, exception)
             }
             .execute()
     }
@@ -333,15 +322,11 @@ class FirestoreImpl(
 
     private fun setUser(user: FirestoreUser, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
         if (isCreation) {
-            CreateUserQuery(firebaseFirestore)
+            CreateUserAndPlayerIfNeededQuery(firebaseFirestore)
                 .withId(user.id ?: "")
                 .withInput(user)
                 .onSuccess { _ ->
-                    if (user.visible != null) {
-                        this.addOrDeletePlayerWhenVisibilityChangesTrigger(user.id!!, user.visible!!, onComplete)
-                    } else {
-                        onComplete(true, null)
-                    }
+                    onComplete(true, null)
                 }
                 .onFailure { exception ->
                     onComplete(false, exception)
