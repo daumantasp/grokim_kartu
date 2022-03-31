@@ -117,23 +117,6 @@ class FirestoreImpl(
         }
     }
 
-    override fun joinThomann(
-        thomannId: String,
-        user: FirestoreThomannUser,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        UpdateThomannUserQuery(firebaseFirestore)
-            .withId(thomannId)
-            .withInput(user)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
     override fun leaveThomann(
         thomannId: String,
         userId: String,

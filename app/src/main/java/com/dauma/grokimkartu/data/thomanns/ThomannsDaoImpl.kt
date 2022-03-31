@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.data.firestore.queries.CreateThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannsQuery
 import com.dauma.grokimkartu.data.firestore.queries.UpdateThomannQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.JoinThomannQuery
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
@@ -90,7 +91,16 @@ class ThomannsDaoImpl(
         onComplete: (Boolean, Exception?) -> Unit
     ) {
         val firestoreThomannUser = toFirestoreThomannUser(user)!!
-        firebase.joinThomann(id, firestoreThomannUser, onComplete)
+        JoinThomannQuery(firebaseFirestore)
+            .withId(id)
+            .withInput(firestoreThomannUser)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun leaveThomann(
