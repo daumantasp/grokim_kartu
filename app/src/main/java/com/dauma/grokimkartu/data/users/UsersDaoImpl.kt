@@ -6,6 +6,8 @@ import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.*
+import com.dauma.grokimkartu.data.firestore.queries.composite.CreateUserAndPlayerIfNeededQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.UpdateUserAndPlayerIfNeededQuery
 import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,12 +20,30 @@ class UsersDaoImpl(
     override fun createUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
         val firestoreUser = toFirestoreUser(user)
         // TODO: fix !!
-        firebase.createUser(firestoreUser!!, onComplete)
+        CreateUserAndPlayerIfNeededQuery(firebaseFirestore)
+            .withId(user.id ?: "")
+            .withInput(firestoreUser!!)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun updateUser(user: UserDao, onComplete: (Boolean, Exception?) -> Unit) {
         val firestoreUser = toFirestoreUser(user)
-        firebase.updateUser(firestoreUser!!, onComplete)
+        UpdateUserAndPlayerIfNeededQuery(firebaseFirestore)
+            .withId(user.id ?: "")
+            .withInput(firestoreUser!!)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit) {

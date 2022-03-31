@@ -4,6 +4,7 @@ import com.dauma.grokimkartu.data.firestore.entities.*
 import com.dauma.grokimkartu.data.firestore.queries.*
 import com.dauma.grokimkartu.data.firestore.queries.composite.CreatePlayerForUser
 import com.dauma.grokimkartu.data.firestore.queries.composite.CreateUserAndPlayerIfNeededQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.UpdateUserAndPlayerIfNeededQuery
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -12,14 +13,6 @@ class FirestoreImpl(
 ) : Firestore {
     companion object {
         private const val thomannsCollection = "thomanns"
-    }
-
-    override fun createUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        this.setUser(user, true, onComplete)
-    }
-
-    override fun updateUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit) {
-        this.setUser(user, false, onComplete)
     }
 
     override fun deleteUser(
@@ -316,64 +309,6 @@ class FirestoreImpl(
                 }
             } else {
                 onComplete(false, e)
-            }
-        }
-    }
-
-    private fun setUser(user: FirestoreUser, isCreation: Boolean, onComplete: (Boolean, Exception?) -> Unit) {
-        if (isCreation) {
-            CreateUserAndPlayerIfNeededQuery(firebaseFirestore)
-                .withId(user.id ?: "")
-                .withInput(user)
-                .onSuccess { _ ->
-                    onComplete(true, null)
-                }
-                .onFailure { exception ->
-                    onComplete(false, exception)
-                }
-                .execute()
-        } else {
-            UpdateUserQuery(firebaseFirestore)
-                .withId(user.id ?: "")
-                .withInput(user)
-                .onSuccess { _ ->
-                    if (user.visible != null) {
-                        this.addOrDeletePlayerWhenVisibilityChangesTrigger(user.id!!, user.visible!!, onComplete)
-                    } else {
-                        onComplete(true, null)
-                    }
-                }
-                .onFailure { exception ->
-                    onComplete(false, exception)
-                }
-                .execute()
-        }
-    }
-
-    private fun addOrDeletePlayerWhenVisibilityChangesTrigger(
-        userId: String,
-        isVisible: Boolean,
-        onComplete: (Boolean, Exception?) -> Unit,
-    ) {
-        if (isVisible) {
-            getUser(userId) { firestoreUser, e ->
-                if (firestoreUser != null) {
-                    CreatePlayerForUser(firebaseFirestore)
-                        .withId(userId)
-                        .onSuccess { _ ->
-                            onComplete(true, null)
-                        }
-                        .onFailure { exception ->
-                            onComplete(false, exception)
-                        }
-                        .execute()
-                } else {
-                    onComplete(false, e)
-                }
-            }
-        } else {
-            deletePlayer(userId) { isSuccessful, e ->
-                this.deletePlayerDetails(userId, onComplete)
             }
         }
     }

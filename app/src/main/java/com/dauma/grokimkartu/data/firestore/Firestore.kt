@@ -6,8 +6,8 @@ import com.dauma.grokimkartu.data.firestore.entities.*
 // cloud functions could be used for this purpose, they are not included in free plan.
 // So here added an additional layer as an imitation for business logic in DB
 interface Firestore {
-    fun createUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
-    fun updateUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
+//    fun createUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
+//    fun updateUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
     fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit)
 //    fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit)
     fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit)
