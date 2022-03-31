@@ -9,8 +9,8 @@ import com.dauma.grokimkartu.data.firestore.queries.UpdatePlayerDetailsQuery
 import com.dauma.grokimkartu.data.firestore.queries.UpdatePlayerQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
-class CreatePlayerForUser(firestoreFirestore: FirebaseFirestore)
-    : FirestoreQuery<Nothing>(firestoreFirestore) {
+class CreatePlayerForUser(firebaseFirestore: FirebaseFirestore)
+    : FirestoreQuery<Nothing>(firebaseFirestore) {
     override fun execute() {
         if (id != null) {
             readProfile() { firestoreProfile, exception ->
