@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.*
 import com.dauma.grokimkartu.data.firestore.queries.composite.CreateUserAndPlayerIfNeededQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.DeleteUserAndPlayerIfNeededQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.UpdateProfileAndPlayerIfNeededQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.UpdateUserAndPlayerIfNeededQuery
 import com.dauma.grokimkartu.data.users.entities.ProfileDao
 import com.dauma.grokimkartu.data.users.entities.UserDao
@@ -74,13 +75,16 @@ class UsersDaoImpl(
 
     override fun updateProfile(userId: String, profile: ProfileDao, onComplete: (Boolean, Exception?) -> Unit) {
         val firestoreProfile = toFirestoreProfile(profile)
-        firebase.updateProfile(userId, firestoreProfile!!) { isSuccessful, e ->
-            if (isSuccessful) {
+        UpdateProfileAndPlayerIfNeededQuery(firebaseFirestore)
+            .withId(userId)
+            .withInput(firestoreProfile!!)
+            .onSuccess { _ ->
                 onComplete(true, null)
-            } else {
-                onComplete(false, e)
             }
-        }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit) {

@@ -1,10 +1,10 @@
 package com.dauma.grokimkartu.data.firestore
 
-import com.dauma.grokimkartu.data.firestore.entities.*
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannActions
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
+import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.*
-import com.dauma.grokimkartu.data.firestore.queries.composite.CreatePlayerForUser
-import com.dauma.grokimkartu.data.firestore.queries.composite.CreateUserAndPlayerIfNeededQuery
-import com.dauma.grokimkartu.data.firestore.queries.composite.UpdateUserAndPlayerIfNeededQuery
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -13,31 +13,6 @@ class FirestoreImpl(
 ) : Firestore {
     companion object {
         private const val thomannsCollection = "thomanns"
-    }
-
-    private fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit) {
-        ReadUserQuery(firebaseFirestore)
-            .withId(userId)
-            .onSuccess { firestoreUser ->
-                onComplete(firestoreUser, null)
-            }
-            .onFailure { exception ->
-                onComplete(null, exception)
-            }
-            .execute()
-    }
-
-    override fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit) {
-        UpdateProfileQuery(firebaseFirestore)
-            .withId(userId)
-            .withInput(profile)
-            .onSuccess { _ ->
-                this.updatePlayerWhenProfileIsUpdatedTrigger(userId, onComplete)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
     }
 
     private fun updateThomann(
@@ -294,27 +269,6 @@ class FirestoreImpl(
                 }
             } else {
                 onComplete(false, e)
-            }
-        }
-    }
-
-    private fun updatePlayerWhenProfileIsUpdatedTrigger(
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit,
-    ) {
-        getUser(userId) { firestoreUser, e ->
-            if (firestoreUser?.visible ?: false) {
-                CreatePlayerForUser(firebaseFirestore)
-                    .withId(userId)
-                    .onSuccess { _ ->
-                        onComplete(true, null)
-                    }
-                    .onFailure { exception ->
-                        onComplete(false, exception)
-                    }
-                    .execute()
-            } else {
-                onComplete(true, null)
             }
         }
     }

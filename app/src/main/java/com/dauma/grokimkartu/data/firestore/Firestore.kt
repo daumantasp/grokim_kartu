@@ -10,7 +10,7 @@ interface Firestore {
 //    fun updateUser(user: FirestoreUser, onComplete: (Boolean, Exception?) -> Unit)
 //    fun deleteUser(userId: String, onComplete: (Boolean, Exception?) -> Unit)
 //    fun getUser(userId: String, onComplete: (FirestoreUser?, Exception?) -> Unit)
-    fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit)
+//    fun updateProfile(userId: String, profile: FirestoreProfile, onComplete: (Boolean, Exception?) -> Unit)
 //    fun deleteProfile(userId: String, onComplete: (Boolean, Exception?) -> Unit)
 //    fun getProfile(userId: String, onComplete: (FirestoreProfile?, Exception?) -> Unit)
 //    fun getPlayers(onComplete: (Boolean, List<FirestorePlayer>?, Exception?) -> Unit)
