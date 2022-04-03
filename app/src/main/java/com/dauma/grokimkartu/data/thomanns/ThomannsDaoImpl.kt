@@ -4,11 +4,9 @@ import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannActions
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
-import com.dauma.grokimkartu.data.firestore.queries.CreateThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.ReadThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.ReadThomannsQuery
-import com.dauma.grokimkartu.data.firestore.queries.UpdateThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.*
+import com.dauma.grokimkartu.data.firestore.queries.thomanns.*
+import com.dauma.grokimkartu.data.firestore.queries.thomanns.inputs.KickUserFromThomanQueryInput
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao

@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.firestore.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
-import com.dauma.grokimkartu.data.firestore.queries.ReadPlayerDetailsQuery
-import com.dauma.grokimkartu.data.firestore.queries.ReadPlayersQuery
+import com.dauma.grokimkartu.data.firestore.queries.players.ReadPlayerDetailsQuery
+import com.dauma.grokimkartu.data.firestore.queries.players.ReadPlayersQuery
 import com.dauma.grokimkartu.data.players.entities.PlayerDao
 import com.dauma.grokimkartu.data.players.entities.PlayerDetailsDao
 import com.google.firebase.firestore.FirebaseFirestore
