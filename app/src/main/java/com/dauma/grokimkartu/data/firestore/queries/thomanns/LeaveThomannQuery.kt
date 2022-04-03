@@ -9,7 +9,7 @@ class LeaveThomannQuery(firebaseFirestore: FirebaseFirestore)
         if (id != null) {
             if (input != null) {
                 doesUserCanLeaveThomann() { canLeave, exception ->
-                    if (exception != null) {
+                    if (exception == null) {
                         if (canLeave == true) {
                             this.removeThomannUser() { isSuccessful, exception ->
                                 if (isSuccessful) {

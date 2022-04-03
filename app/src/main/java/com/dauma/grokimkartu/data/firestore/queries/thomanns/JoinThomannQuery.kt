@@ -10,7 +10,7 @@ class JoinThomannQuery(firebaseFirestore: FirebaseFirestore)
         if (id != null) {
             if (input != null) {
                 doesUserCanJoinThomann() { canJoin, exception ->
-                    if (exception != null) {
+                    if (exception == null) {
                         if (canJoin == true) {
                             this.updateThomannUsers() { isSuccessful, exception ->
                                 if (isSuccessful) {

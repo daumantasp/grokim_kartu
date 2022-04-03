@@ -13,7 +13,7 @@ class UpdateProfileAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                 updateProfile() { isSuccessful, exception ->
                     if (isSuccessful) {
                         this.isPlayerUpdateNeeded { isNeeded, exception ->
-                            if (exception != null) {
+                            if (exception == null) {
                                 if (isNeeded == true) {
                                     this.updatePlayer() { isSuccessful, exception ->
                                         if (isSuccessful) {
