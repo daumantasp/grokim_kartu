@@ -2,8 +2,6 @@ package com.dauma.grokimkartu.data.firestore.queries.thomanns
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.ReadThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.UpdateThomannQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UnlockThomannQuery(firebaseFirestore: FirebaseFirestore)
