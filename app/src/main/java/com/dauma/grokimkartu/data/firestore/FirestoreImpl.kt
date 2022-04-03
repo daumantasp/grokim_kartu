@@ -42,40 +42,6 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun lockThomann(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        getThomann(thomannId) { firestoreThomann, exception ->
-            if (firestoreThomann != null) {
-                if (firestoreThomann.userId == userId) {
-                    val lockedFirestoreThomann = FirestoreThomann(
-                        id = thomannId,
-                        userId = null,
-                        name = null,
-                        city = null,
-                        locked = true,
-                        creationDate = null,
-                        validUntil = null,
-                        users = null
-                    )
-                    this.updateThomann(lockedFirestoreThomann) { isSuccessful, e ->
-                        if (isSuccessful) {
-                            onComplete(true, null)
-                        } else {
-                            onComplete(false, e)
-                        }
-                    }
-                } else {
-                    onComplete(false, Exception("THOMANN CANT BE LOCKED BECAUSE USER IDS DO NOT MATCH"))
-                }
-            } else {
-                onComplete(false, exception)
-            }
-        }
-    }
-
     override fun unlockThomann(
         thomannId: String,
         userId: String,

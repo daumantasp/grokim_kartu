@@ -141,7 +141,16 @@ class ThomannsDaoImpl(
         userId: String,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        firebase.lockThomann(thomannId, userId, onComplete)
+        LockThomannQuery(firebaseFirestore)
+            .withId(thomannId)
+            .withInput(userId)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun unlockThomann(
