@@ -2,9 +2,7 @@ package com.dauma.grokimkartu.data.firestore.queries.users
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.dauma.grokimkartu.data.firestore.queries.players.CreatePlayerForUser
-import com.dauma.grokimkartu.data.firestore.queries.users.ReadUserQuery
-import com.dauma.grokimkartu.data.firestore.queries.users.UpdateProfileQuery
+import com.dauma.grokimkartu.data.firestore.queries.players.CreatePlayerForUserQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UpdateProfileAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
@@ -69,7 +67,7 @@ class UpdateProfileAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
     }
 
     private fun updatePlayer(onComplete: (Boolean, Exception?) -> Unit) {
-        CreatePlayerForUser(firebaseFirestore)
+        CreatePlayerForUserQuery(firebaseFirestore)
             .withId(id!!)
             .onSuccess { _ ->
                 onComplete(true, null)

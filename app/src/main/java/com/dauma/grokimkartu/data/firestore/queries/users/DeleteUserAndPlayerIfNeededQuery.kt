@@ -1,8 +1,7 @@
 package com.dauma.grokimkartu.data.firestore.queries.users
 
-import com.dauma.grokimkartu.data.firestore.queries.players.DeletePlayerDetails
+import com.dauma.grokimkartu.data.firestore.queries.players.DeletePlayerDetailsQuery
 import com.dauma.grokimkartu.data.firestore.queries.players.DeletePlayerQuery
-import com.dauma.grokimkartu.data.firestore.queries.users.DeleteUserQuery
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -55,7 +54,7 @@ class DeleteUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
     }
 
     private fun deletePlayerDetails(onComplete: (Boolean, Exception?) -> Unit) {
-        DeletePlayerDetails(firebaseFirestore)
+        DeletePlayerDetailsQuery(firebaseFirestore)
             .withId(id!!)
             .onSuccess { _ ->
                 onComplete(true, null)

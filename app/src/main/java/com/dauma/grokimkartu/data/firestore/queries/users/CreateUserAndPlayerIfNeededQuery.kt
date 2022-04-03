@@ -1,9 +1,8 @@
 package com.dauma.grokimkartu.data.firestore.queries.users
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
-import com.dauma.grokimkartu.data.firestore.queries.users.CreateUserQuery
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.dauma.grokimkartu.data.firestore.queries.players.CreatePlayerForUser
+import com.dauma.grokimkartu.data.firestore.queries.players.CreatePlayerForUserQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CreateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
@@ -54,7 +53,7 @@ class CreateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
     }
 
     private fun createPlayer(onComplete: (Boolean, Exception?) -> Unit) {
-        CreatePlayerForUser(firebaseFirestore)
+        CreatePlayerForUserQuery(firebaseFirestore)
             .withId(id!!)
             .onSuccess { _ ->
                 onComplete(true, null)

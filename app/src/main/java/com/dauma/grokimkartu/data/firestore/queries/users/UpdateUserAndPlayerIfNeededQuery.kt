@@ -1,11 +1,10 @@
 package com.dauma.grokimkartu.data.firestore.queries.users
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
-import com.dauma.grokimkartu.data.firestore.queries.players.DeletePlayerDetails
+import com.dauma.grokimkartu.data.firestore.queries.players.DeletePlayerDetailsQuery
 import com.dauma.grokimkartu.data.firestore.queries.players.DeletePlayerQuery
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.dauma.grokimkartu.data.firestore.queries.players.CreatePlayerForUser
-import com.dauma.grokimkartu.data.firestore.queries.users.UpdateUserQuery
+import com.dauma.grokimkartu.data.firestore.queries.players.CreatePlayerForUserQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UpdateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
@@ -68,7 +67,7 @@ class UpdateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
     }
 
     private fun updatePlayer(onComplete: (Boolean, Exception?) -> Unit) {
-        CreatePlayerForUser(firebaseFirestore)
+        CreatePlayerForUserQuery(firebaseFirestore)
             .withId(id!!)
             .onSuccess { _ ->
                 onComplete(true, null)
@@ -92,7 +91,7 @@ class UpdateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
     }
 
     private fun deletePlayerDetails(onComplete: (Boolean, Exception?) -> Unit) {
-        DeletePlayerDetails(firebaseFirestore)
+        DeletePlayerDetailsQuery(firebaseFirestore)
             .withId(id!!)
             .onSuccess { _ ->
                 onComplete(true, null)

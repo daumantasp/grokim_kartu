@@ -3,7 +3,7 @@ package com.dauma.grokimkartu.data.firestore.queries.players
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
-class DeletePlayerDetails(firebaseFirestore: FirebaseFirestore)
+class DeletePlayerDetailsQuery(firebaseFirestore: FirebaseFirestore)
     : FirestoreQuery<Nothing>(firebaseFirestore) {
     override fun execute() {
         if (id != null) {
