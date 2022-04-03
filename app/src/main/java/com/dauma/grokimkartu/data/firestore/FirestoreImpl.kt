@@ -109,42 +109,4 @@ class FirestoreImpl(
             }
         }
     }
-
-    override fun kickUserFromThomann(
-        thomannId: String,
-        userId: String,
-        userToKickId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        getThomann(thomannId) { firestoreThomann, e ->
-            if (firestoreThomann != null) {
-                if (firestoreThomann.userId == userId) {
-                    val users = firestoreThomann.users
-                    if (users != null) {
-                        val user = users.firstOrNull { ftu -> ftu.userId == userToKickId }
-                        if (user != null) {
-                            firebaseFirestore
-                                .collection(thomannsCollection)
-                                .document(thomannId)
-                                .update("users", FieldValue.arrayRemove(user))
-                                .addOnSuccessListener { _ ->
-                                    onComplete(true, null)
-                                }
-                                .addOnFailureListener { e ->
-                                    onComplete(false, e)
-                                }
-                        } else {
-                            onComplete(false, Exception("THOMANN USER WITH ID=$userId NOT FOUND"))
-                        }
-                    } else {
-                        onComplete(false, Exception("THOMANN USERS NOT FOUND"))
-                    }
-                } else {
-                    onComplete(false, Exception("THOMANN USER CAN NOT BE KICKED BECAUSE USERS IDS DO NOT MATCH"))
-                }
-            } else {
-                onComplete(false, e)
-            }
-        }
-    }
 }

@@ -8,10 +8,7 @@ import com.dauma.grokimkartu.data.firestore.queries.CreateThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannsQuery
 import com.dauma.grokimkartu.data.firestore.queries.UpdateThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.composite.DeleteThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.composite.JoinThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.composite.LeaveThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.composite.ReadThomannActionsQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.*
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
@@ -161,7 +158,16 @@ class ThomannsDaoImpl(
         userToKickId: String,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        firebase.kickUserFromThomann(thomannId, userId, userToKickId, onComplete)
+        KickUserFromThomannQuery(firebaseFirestore)
+            .withId(thomannId)
+            .withInput(KickUserFromThomanQueryInput(userId, userToKickId))
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {
