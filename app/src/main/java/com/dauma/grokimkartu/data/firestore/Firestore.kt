@@ -21,7 +21,7 @@ interface Firestore {
 //    fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
 //    fun getThomanns(onComplete: (Boolean, List<FirestoreThomann>?, Exception?) -> Unit)
 //    fun getThomann(thomannId: String, onComplete: (FirestoreThomann?, Exception?) -> Unit)
-    fun getThomannActions(thomannId: String, userId: String, onComplete: (FirestoreThomannActions?, Exception?) -> Unit)
+//    fun getThomannActions(thomannId: String, userId: String, onComplete: (FirestoreThomannActions?, Exception?) -> Unit)
 //    fun joinThomann(thomannId: String, user: FirestoreThomannUser, onComplete: (Boolean, Exception?) -> Unit)
     fun leaveThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
     fun lockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
