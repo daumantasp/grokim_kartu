@@ -17,9 +17,9 @@ class UpdateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                         if (input?.visible == true) {
                             this.updatePlayer() { isSuccessful, exception ->
                                 if (isSuccessful) {
-                                    onSuccess(null)
+                                    this.onSuccess(null)
                                 } else {
-                                    onFailure(exception)
+                                    this.onFailure(exception)
                                 }
                             }
                         } else if (input?.visible == false) {
@@ -27,9 +27,9 @@ class UpdateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                                 if (isSuccessful) {
                                     this.deletePlayerDetails() { isSuccessful, exception ->
                                         if (isSuccessful) {
-                                            onSuccess(null)
+                                            this.onSuccess(null)
                                         } else {
-                                            onFailure(exception)
+                                            this.onFailure(exception)
                                         }
                                     }
                                 } else {
@@ -37,16 +37,16 @@ class UpdateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                                     // And trying to delete a player which do not exist
                                     // could lead to an exception, so calling here onFailure
                                     // could be incorrect thing to do.
-                                    onSuccess(null)
+                                    this.onSuccess(null)
                                 }
                             }
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User is not provided")
             }
         } else {
             throw Exception("User id is not provided")

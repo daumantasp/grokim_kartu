@@ -10,28 +10,32 @@ class UpdateUserQuery(firebaseFirestore: FirebaseFirestore)
     override fun execute() {
         if (id != null) {
             if (input != null) {
-                val valuesToSet: HashMap<String, Any> = hashMapOf()
-                if (input?.visible != null) {
-                    valuesToSet["visible"] = input?.visible!!
-                }
-
+                val userToSet = getUserToSet(input!!)
                 firebaseFirestore
                     .collection(usersCollection)
                     .document(id!!)
                     // Because of the profile fields, you have to use merge
                     // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
-                    .set(valuesToSet, SetOptions.merge())
+                    .set(userToSet, SetOptions.merge())
                     .addOnSuccessListener { _ ->
-                        onSuccess(null)
+                        this.onSuccess(null)
                     }
                     .addOnFailureListener { exception ->
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User is not provided")
             }
         } else {
             throw Exception("User id is not provided")
         }
+    }
+
+    private fun getUserToSet(user: FirestoreUser) : HashMap<String, Any> {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (user.visible != null) {
+            valuesToSet["visible"] = user.visible
+        }
+        return valuesToSet
     }
 }

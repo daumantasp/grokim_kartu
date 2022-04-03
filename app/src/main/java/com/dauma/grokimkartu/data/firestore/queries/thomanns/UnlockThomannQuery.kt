@@ -18,23 +18,23 @@ class UnlockThomannQuery(firebaseFirestore: FirebaseFirestore)
                             if (firestoreThomann.locked == true) {
                                 this.unlockThomann() { isSuccessful, exception ->
                                     if (isSuccessful) {
-                                        onSuccess(null)
+                                        this.onSuccess(null)
                                     } else {
-                                        onFailure(exception)
+                                        this.onFailure(exception)
                                     }
                                 }
                             } else {
-                                onFailure(Exception("Thomann is already unlocked"))
+                                this.onFailure(Exception("Thomann is already unlocked"))
                             }
                         } else {
-                            onFailure(Exception("Thomann can not be unlocked because user does not have rights"))
+                            this.onFailure(Exception("Thomann can not be unlocked because user does not have rights"))
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User id is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")

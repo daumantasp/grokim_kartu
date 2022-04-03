@@ -16,13 +16,13 @@ class ReadUserQuery(firebaseFirestore: FirebaseFirestore)
                     if (userDocumentSnapshot.exists()) {
                         val user = userDocumentSnapshot.toObject(FirestoreUser::class.java)
                         user?.id = id
-                        onSuccess(user)
+                        this.onSuccess(user)
                     } else {
-                        onFailure(Exception("User was not found"))
+                        this.onFailure(Exception("User was not found"))
                     }
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
             throw Exception("User id is not provided")

@@ -16,13 +16,13 @@ class ReadThomannQuery(firebaseFirestore: FirebaseFirestore)
                     if (thomannDocumentSnapshot.exists()) {
                         val thomann = thomannDocumentSnapshot.toObject(FirestoreThomann::class.java)
                         thomann?.id = id
-                        onSuccess(thomann)
+                        this.onSuccess(thomann)
                     } else {
-                        onFailure(Exception("Thomann was not found"))
+                        this.onFailure(Exception("Thomann was not found"))
                     }
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
             throw Exception("Thomann id is not provided")

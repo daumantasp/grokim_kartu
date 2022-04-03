@@ -2,8 +2,6 @@ package com.dauma.grokimkartu.data.firestore.queries.thomanns
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.ReadThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.AddThomannUserQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class JoinThomannQuery(firebaseFirestore: FirebaseFirestore)
@@ -16,20 +14,20 @@ class JoinThomannQuery(firebaseFirestore: FirebaseFirestore)
                         if (canJoin == true) {
                             this.updateThomannUsers() { isSuccessful, exception ->
                                 if (isSuccessful) {
-                                    onSuccess(null)
+                                    this.onSuccess(null)
                                 } else {
-                                    onFailure(exception)
+                                    this.onFailure(exception)
                                 }
                             }
                         } else if (canJoin == false) {
-                            onFailure(Exception("User is not allowed to join thomann"))
+                            this.onFailure(Exception("User is not allowed to join thomann"))
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("Thomann User is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")
@@ -49,7 +47,7 @@ class JoinThomannQuery(firebaseFirestore: FirebaseFirestore)
                 }
             }
             .onFailure { exception ->
-                onFailure(exception)
+                this.onFailure(exception)
             }
             .execute()
     }

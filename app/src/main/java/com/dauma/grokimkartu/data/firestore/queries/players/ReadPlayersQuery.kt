@@ -17,10 +17,10 @@ class ReadPlayersQuery(firebaseFirestore: FirebaseFirestore)
                     player.userId = queryDocumentSnapshot.id
                     players.add(player)
                 }
-                onSuccess(players.toList())
+                this.onSuccess(players.toList())
             }
             .addOnFailureListener { exception ->
-                onFailure(exception)
+                this.onFailure(exception)
             }
     }
 }

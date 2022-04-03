@@ -9,35 +9,39 @@ class UpdateProfileQuery(firebaseFirestore: FirebaseFirestore)
     override fun execute() {
         if (id != null) {
             if (input != null) {
-                val valuesToSet: HashMap<String, Any> = hashMapOf()
-                if (input?.name != null) {
-                    valuesToSet["name"] = input?.name!!
-                }
-                if (input?.instrument != null) {
-                    valuesToSet["instrument"] = input?.instrument!!
-                }
-                if (input?.description != null) {
-                    valuesToSet["description"] = input?.description!!
-                }
-                if (input?.city != null) {
-                    valuesToSet["city"] = input?.city!!
-                }
-
+                val profileToSet = getProfileToSet(input!!)
                 firebaseFirestore
                     .collection(usersCollection)
                     .document(id!!)
-                    .update("profile", valuesToSet)
+                    .update("profile", profileToSet)
                     .addOnSuccessListener { _ ->
-                        onSuccess(null)
+                        this.onSuccess(null)
                     }
                     .addOnFailureListener { e ->
-                        onFailure(e)
+                        this.onFailure(e)
                     }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("Profile is not provided")
             }
         } else {
             throw Exception("User id is not provided")
         }
+    }
+
+    private fun getProfileToSet(profile: FirestoreProfile) : HashMap<String, Any> {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (profile.name != null) {
+            valuesToSet["name"] = profile.name!!
+        }
+        if (profile.instrument != null) {
+            valuesToSet["instrument"] = profile.instrument!!
+        }
+        if (profile.description != null) {
+            valuesToSet["description"] = profile.description!!
+        }
+        if (profile.city != null) {
+            valuesToSet["city"] = profile.city!!
+        }
+        return valuesToSet
     }
 }

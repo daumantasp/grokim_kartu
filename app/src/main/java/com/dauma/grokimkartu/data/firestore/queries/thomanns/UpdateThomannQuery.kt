@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.data.firestore.queries.thomanns
 
+import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,38 +11,42 @@ class UpdateThomannQuery(firebaseFirestore: FirebaseFirestore)
     override fun execute() {
         if (id != null) {
             if (input != null) {
-                val valuesToSet: HashMap<String, Any> = hashMapOf()
-                if (input?.name != null) {
-                    valuesToSet["name"] = input?.name!!
-                }
-                if (input?.city != null) {
-                    valuesToSet["city"] = input?.city!!
-                }
-                // TODO: restrict locking/unlocking from this method?
-                if (input?.locked != null) {
-                    valuesToSet["locked"] = input?.locked!!
-                }
-                if (input?.validUntil != null) {
-                    valuesToSet["validUntil"] = input?.validUntil!!
-                }
-
+                val thommanToSet = getThomannToSet(input!!)
                 firebaseFirestore
                     .collection(thomannsCollection)
                     .document(id!!)
                     // Because of the profile fields, you have to use merge
                     // READ MORE AT: https://stackoverflow.com/questions/46597327/difference-between-set-with-merge-true-and-update
-                    .set(valuesToSet, SetOptions.merge())
+                    .set(thommanToSet, SetOptions.merge())
                     .addOnSuccessListener { _ ->
-                        onSuccess(null)
+                        this.onSuccess(null)
                     }
                     .addOnFailureListener { exception ->
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("Thomann is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")
         }
+    }
+
+    private fun getThomannToSet(thomann: FirestoreThomann) : HashMap<String, Any> {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (thomann.name != null) {
+            valuesToSet["name"] = thomann.name
+        }
+        if (thomann.city != null) {
+            valuesToSet["city"] = thomann.city
+        }
+        // TODO: restrict locking/unlocking from this method?
+        if (thomann.locked != null) {
+            valuesToSet["locked"] = thomann.locked
+        }
+        if (thomann.validUntil != null) {
+            valuesToSet["validUntil"] = thomann.validUntil
+        }
+        return valuesToSet
     }
 }

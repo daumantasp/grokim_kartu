@@ -11,35 +11,40 @@ class AddThomannUserQuery(firebaseFirestore: FirebaseFirestore)
     override fun execute() {
         if (id != null) {
             if (input != null) {
-                val valuesToSet: HashMap<String, Any> = hashMapOf()
-                if (input?.userId != null) {
-                    valuesToSet["userId"] = input?.userId!!
-                }
-                if (input?.userName != null) {
-                    valuesToSet["userName"] = input?.userName!!
-                }
-                if (input?.thomannId != null) {
-                    valuesToSet["thomannId"] = input?.thomannId!!
-                }
-                if (input?.amount != null) {
-                    valuesToSet["amount"] = input?.amount!!
-                }
-                valuesToSet["joinDate"] = Timestamp.now()
+                val thomannUserToSet = getThomannUserToSet(input!!)
                 firebaseFirestore
                     .collection(thomannsCollection)
                     .document(id!!)
-                    .update("users", FieldValue.arrayUnion(valuesToSet))
+                    .update("users", FieldValue.arrayUnion(thomannUserToSet))
                     .addOnSuccessListener { _ ->
-                        onSuccess(null)
+                        this.onSuccess(null)
                     }
                     .addOnFailureListener { exception ->
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("Thomann User is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")
         }
+    }
+
+    private fun getThomannUserToSet(thomannUser: FirestoreThomannUser) : HashMap<String, Any> {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (thomannUser.userId != null) {
+            valuesToSet["userId"] = thomannUser.userId
+        }
+        if (thomannUser.userName != null) {
+            valuesToSet["userName"] = thomannUser.userName
+        }
+        if (thomannUser.thomannId != null) {
+            valuesToSet["thomannId"] = thomannUser.thomannId
+        }
+        if (thomannUser.amount != null) {
+            valuesToSet["amount"] = thomannUser.amount
+        }
+        valuesToSet["joinDate"] = Timestamp.now()
+        return valuesToSet
     }
 }

@@ -9,35 +9,39 @@ class CreateThomannQuery(firebaseFirestore: FirebaseFirestore)
     : FirestoreInputQuery<Nothing, FirestoreThomann>(firebaseFirestore) {
     override fun execute() {
         if (input != null) {
-            val valuesToSet: HashMap<String, Any> = hashMapOf()
-            if (input?.userId != null) {
-                valuesToSet["userId"] = input?.userId!!
-            }
-            if (input?.name != null) {
-                valuesToSet["name"] = input?.name!!
-            }
-            if (input?.city != null) {
-                valuesToSet["city"] = input?.city!!
-            }
-            if (input?.locked != null) {
-                valuesToSet["locked"] = input?.locked!!
-            }
-            valuesToSet["creationDate"] = Timestamp.now()
-            if (input?.validUntil != null) {
-                valuesToSet["validUntil"] = input?.validUntil!!
-            }
-
+            val thomannToSet = getThomannToSet(input!!)
             firebaseFirestore
                 .collection(thomannsCollection)
-                .add(valuesToSet)
+                .add(thomannToSet)
                 .addOnSuccessListener { _ ->
-                    onSuccess(null)
+                    this.onSuccess(null)
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
-            throw Exception("Input is not provided")
+            throw Exception("Thomann is not provided")
         }
+    }
+
+    private fun getThomannToSet(thomann: FirestoreThomann) : HashMap<String, Any> {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (thomann.userId != null) {
+            valuesToSet["userId"] = thomann.userId!!
+        }
+        if (thomann.name != null) {
+            valuesToSet["name"] = thomann.name!!
+        }
+        if (thomann.city != null) {
+            valuesToSet["city"] = thomann.city!!
+        }
+        if (thomann.locked != null) {
+            valuesToSet["locked"] = thomann.locked!!
+        }
+        valuesToSet["creationDate"] = Timestamp.now()
+        if (thomann.validUntil != null) {
+            valuesToSet["validUntil"] = thomann.validUntil!!
+        }
+        return valuesToSet
     }
 }

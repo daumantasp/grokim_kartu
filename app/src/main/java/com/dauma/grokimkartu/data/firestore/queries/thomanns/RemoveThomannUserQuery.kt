@@ -18,20 +18,20 @@ class RemoveThomannUserQuery(firebaseFirestore: FirebaseFirestore)
                         if (user != null) {
                             this.removeUser(user) { isSuccessful, exception ->
                                 if (isSuccessful) {
-                                    onSuccess(null)
+                                    this.onSuccess(null)
                                 } else {
-                                    onFailure(exception)
+                                    this.onFailure(exception)
                                 }
                             }
                         } else {
-                            onFailure(Exception("User can not be removed because he is not in the list"))
+                            this.onFailure(Exception("User can not be removed because he is not in the list"))
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User id is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")

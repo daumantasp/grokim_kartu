@@ -17,24 +17,24 @@ class UpdateProfileAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                                 if (isNeeded == true) {
                                     this.updatePlayer() { isSuccessful, exception ->
                                         if (isSuccessful) {
-                                            onSuccess(null)
+                                            this.onSuccess(null)
                                         } else {
-                                            onFailure(exception)
+                                            this.onFailure(exception)
                                         }
                                     }
                                 } else {
-                                    onSuccess(null)
+                                    this.onSuccess(null)
                                 }
                             } else {
-                                onFailure(exception)
+                                this.onFailure(exception)
                             }
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("Profile is not provided")
             }
         } else {
             throw Exception("User id is not provided")

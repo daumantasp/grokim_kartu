@@ -21,24 +21,24 @@ class KickUserFromThomannQuery(firebaseFirestore: FirebaseFirestore)
                                 if (user != null) {
                                     this.kickUser { isSuccessful, exception ->
                                         if (isSuccessful) {
-                                            onSuccess(null)
+                                            this.onSuccess(null)
                                         } else {
-                                            onFailure(exception)
+                                            this.onFailure(exception)
                                         }
                                     }
                                 } else {
-                                    onFailure(Exception("User can not be kicked because he is not in the list"))
+                                    this.onFailure(Exception("User can not be kicked because he is not in the list"))
                                 }
                             }
                         } else {
-                            onFailure(Exception("User is not a creator of Thomann and thus has no rights to kick"))
+                            this.onFailure(Exception("User is not a creator of Thomann and thus has no rights to kick"))
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("KickUserFromThomanQueryInput is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")

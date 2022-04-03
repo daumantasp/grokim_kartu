@@ -17,11 +17,11 @@ class DeleteUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                         // could lead to an exception, so calling here onFailure
                         // could be incorrect thing to do.
                         this.deletePlayerDetails { _, _ ->
-                            onSuccess(null)
+                            this.onSuccess(null)
                         }
                     }
                 } else {
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
             }
         } else {

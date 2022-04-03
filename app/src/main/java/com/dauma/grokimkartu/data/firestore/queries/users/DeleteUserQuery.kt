@@ -12,10 +12,10 @@ class DeleteUserQuery(firebaseFirestore: FirebaseFirestore)
                 .document(id!!)
                 .delete()
                 .addOnSuccessListener { _ ->
-                    onSuccess(null)
+                    this.onSuccess(null)
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
             throw Exception("User id is not provided")

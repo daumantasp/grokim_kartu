@@ -2,8 +2,6 @@ package com.dauma.grokimkartu.data.firestore.queries.thomanns
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.ReadThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.UpdateThomannQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class LockThomannQuery(firebaseFirestore: FirebaseFirestore)
@@ -18,23 +16,23 @@ class LockThomannQuery(firebaseFirestore: FirebaseFirestore)
                             if (firestoreThomann.locked != true) {
                                 this.lockThomann() { isSuccessful, exception ->
                                     if (isSuccessful) {
-                                        onSuccess(null)
+                                        this.onSuccess(null)
                                     } else {
-                                        onFailure(exception)
+                                        this.onFailure(exception)
                                     }
                                 }
                             } else {
-                                onFailure(Exception("Thomann is already locked"))
+                                this.onFailure(Exception("Thomann is already locked"))
                             }
                         } else {
-                            onFailure(Exception("Thomann can not be locked because user does not have rights"))
+                            this.onFailure(Exception("Thomann can not be locked because user does not have rights"))
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User id is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")

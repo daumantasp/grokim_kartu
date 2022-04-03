@@ -5,8 +5,6 @@ import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreQuery
 import com.dauma.grokimkartu.data.firestore.queries.users.ReadProfileQuery
-import com.dauma.grokimkartu.data.firestore.queries.players.UpdatePlayerDetailsQuery
-import com.dauma.grokimkartu.data.firestore.queries.players.UpdatePlayerQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CreatePlayerForUserQuery(firebaseFirestore: FirebaseFirestore)

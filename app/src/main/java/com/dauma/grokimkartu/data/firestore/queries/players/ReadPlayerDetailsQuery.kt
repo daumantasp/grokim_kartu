@@ -16,13 +16,13 @@ class ReadPlayerDetailsQuery(firebaseFirestore: FirebaseFirestore)
                     if (playerDetailsDocumentSnapshot.exists()) {
                         val playerDetails = playerDetailsDocumentSnapshot.toObject(FirestorePlayerDetails::class.java)
                         playerDetails?.userId = id!!
-                        onSuccess(playerDetails)
+                        this.onSuccess(playerDetails)
                     } else {
-                        onFailure(Exception("Player details was not found"))
+                        this.onFailure(Exception("Player details was not found"))
                     }
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
             throw Exception("User id is not provided")

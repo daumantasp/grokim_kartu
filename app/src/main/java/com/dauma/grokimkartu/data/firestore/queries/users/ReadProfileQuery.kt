@@ -14,31 +14,37 @@ class ReadProfileQuery(firebaseFirestore: FirebaseFirestore)
                 .get()
                 .addOnSuccessListener { userDocumentSnapshot ->
                     if (userDocumentSnapshot.exists()) {
-                        val firestoreProfile = FirestoreProfile()
-                        val profileMap = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
-                        if (profileMap != null) {
-                            for (profile in profileMap) {
-                                if (profile.key == "name") {
-                                    firestoreProfile.name = profile.value as String?
-                                } else if (profile.key == "instrument") {
-                                    firestoreProfile.instrument = profile.value as String?
-                                } else if (profile.key == "description") {
-                                    firestoreProfile.description = profile.value as String?
-                                } else if (profile.key == "city") {
-                                    firestoreProfile.city = profile.value as String?
-                                }
-                            }
+                        var firestoreProfile = FirestoreProfile()
+                        val profileEntries = userDocumentSnapshot.get("profile") as MutableMap<*, *>?
+                        if (profileEntries != null) {
+                            firestoreProfile = getFirestoreProfile(profileEntries)
                         }
-                        onSuccess(firestoreProfile)
+                        this.onSuccess(firestoreProfile)
                     } else {
-                        onFailure(Exception("User was not found"))
+                        this.onFailure(Exception("User was not found"))
                     }
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
             throw Exception("User id is not provided")
         }
+    }
+
+    fun getFirestoreProfile(entries: MutableMap<*, *>) : FirestoreProfile {
+        val profile = FirestoreProfile()
+        for (entry in entries) {
+            if (entry.key == "name") {
+                profile.name = entry.value as String?
+            } else if (entry.key == "instrument") {
+                profile.instrument = entry.value as String?
+            } else if (entry.key == "description") {
+                profile.description = entry.value as String?
+            } else if (entry.key == "city") {
+                profile.city = entry.value as String?
+            }
+        }
+        return profile
     }
 }

@@ -10,35 +10,39 @@ class UpdatePlayerDetailsQuery(firebaseFirestore: FirebaseFirestore)
     override fun execute() {
         if (id != null) {
             if (input != null) {
-                val valuesToSet: HashMap<String, Any> = hashMapOf()
-                if (input?.name != null) {
-                    valuesToSet["name"] = input?.name!!
-                }
-                if (input?.instrument != null) {
-                    valuesToSet["instrument"] = input?.instrument!!
-                }
-                if (input?.description != null) {
-                    valuesToSet["description"] = input?.description!!
-                }
-                if (input?.city != null) {
-                    valuesToSet["city"] = input?.city!!
-                }
-
+                val detailsToSet = getDetailsToSet(input!!)
                 firebaseFirestore
                     .collection(playerDetailsCollection)
                     .document(id!!)
-                    .set(valuesToSet, SetOptions.merge())
+                    .set(detailsToSet, SetOptions.merge())
                     .addOnSuccessListener { _ ->
-                        onSuccess(null)
+                        this.onSuccess(null)
                     }
                     .addOnFailureListener { exception ->
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("Player details is not provided")
             }
         } else {
             throw Exception("User id is not provided")
         }
+    }
+
+    private fun getDetailsToSet(details: FirestorePlayerDetails) : HashMap<String, Any> {
+        val valuesToSet: HashMap<String, Any> = hashMapOf()
+        if (details.name != null) {
+            valuesToSet["name"] = details.name
+        }
+        if (details.instrument != null) {
+            valuesToSet["instrument"] = details.instrument
+        }
+        if (details.description != null) {
+            valuesToSet["description"] = details.description
+        }
+        if (details.city != null) {
+            valuesToSet["city"] = details.city
+        }
+        return valuesToSet
     }
 }

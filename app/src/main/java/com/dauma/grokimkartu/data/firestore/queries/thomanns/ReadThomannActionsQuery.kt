@@ -13,13 +13,13 @@ class ReadThomannActionsQuery(firebaseFirestore: FirebaseFirestore)
                 readThomann() { firestoreThomann, exception ->
                     if (firestoreThomann != null) {
                         val actions = this.getActions(firestoreThomann)
-                        onSuccess(actions)
+                        this.onSuccess(actions)
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User id is not provided")
             }
         } else {
             throw Exception("Thomann id is not provided")

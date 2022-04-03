@@ -13,10 +13,10 @@ class DeleteProfileQuery(firebaseFirestore: FirebaseFirestore)
                 .document(id!!)
                 .update("profile", emptySet)
                 .addOnSuccessListener { _ ->
-                    onSuccess(null)
+                    this.onSuccess(null)
                 }
                 .addOnFailureListener { exception ->
-                    onFailure(exception)
+                    this.onFailure(exception)
                 }
         } else {
             throw Exception("User id is not provided")

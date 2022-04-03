@@ -17,10 +17,10 @@ class ReadThomannsQuery(firebaseFirestore: FirebaseFirestore)
                     thomann.id = queryDocumentSnapshot.id
                     thomanns.add(thomann)
                 }
-                onSuccess(thomanns)
+                this.onSuccess(thomanns)
             }
             .addOnFailureListener { exception ->
-                onFailure(exception)
+                this.onFailure(exception)
             }
     }
 }

@@ -15,20 +15,20 @@ class CreateUserAndPlayerIfNeededQuery(firebaseFirestore: FirebaseFirestore)
                         if (needPlayerToBeCreated()) {
                             this.createPlayer() { isSuccessful, exception ->
                                 if (isSuccessful) {
-                                    onSuccess(null)
+                                    this.onSuccess(null)
                                 } else {
-                                    onFailure(exception)
+                                    this.onFailure(exception)
                                 }
                             }
                         } else {
-                            onSuccess(null)
+                            this.onSuccess(null)
                         }
                     } else {
-                        onFailure(exception)
+                        this.onFailure(exception)
                     }
                 }
             } else {
-                throw Exception("Input is not provided")
+                throw Exception("User is not provided")
             }
         } else {
             throw Exception("User id is not provided")
