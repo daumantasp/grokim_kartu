@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.data.players
 
 import android.graphics.Bitmap
-import com.dauma.grokimkartu.data.firestore.FirebaseStorage
+import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayer
 import com.dauma.grokimkartu.data.firestore.entities.FirestorePlayerDetails
 import com.dauma.grokimkartu.data.firestore.queries.players.ReadPlayerDetailsQuery

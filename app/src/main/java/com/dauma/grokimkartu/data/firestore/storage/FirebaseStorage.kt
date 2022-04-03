@@ -1,4 +1,4 @@
-package com.dauma.grokimkartu.data.firestore
+package com.dauma.grokimkartu.data.firestore.storage
 
 import android.graphics.Bitmap
 

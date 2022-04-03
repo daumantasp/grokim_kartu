@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.data.users
 
 import android.graphics.Bitmap
-import com.dauma.grokimkartu.data.firestore.FirebaseStorage
+import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.users.CreateUserAndPlayerIfNeededQuery

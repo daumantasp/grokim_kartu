@@ -1,6 +1,6 @@
 package com.dauma.grokimkartu.di
 
-import FirebaseStorageImpl
+import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
@@ -14,7 +14,7 @@ import com.dauma.grokimkartu.repositories.users.UsersRepository
 import com.dauma.grokimkartu.repositories.users.UsersRepositoryImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.dauma.grokimkartu.data.firestore.FirebaseStorage
+import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
 import com.dauma.grokimkartu.general.utils.Utils

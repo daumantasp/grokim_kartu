@@ -1,15 +1,16 @@
+package com.dauma.grokimkartu.data.firestore.storage
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
 
 class FirebaseStorageImpl(
     private val firebaseStorage: FirebaseStorage,
     private val imageUtils: ImageUtils,
 )
-    : com.dauma.grokimkartu.data.firestore.FirebaseStorage {
+    : com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage {
     private val storageRef = firebaseStorage.reference
     private val usersRef = storageRef.child(usersReference)
 
