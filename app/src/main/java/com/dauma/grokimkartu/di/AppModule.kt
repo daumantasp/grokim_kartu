@@ -3,8 +3,6 @@ package com.dauma.grokimkartu.di
 import FirebaseStorageImpl
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
-import com.dauma.grokimkartu.data.firestore.Firestore
-import com.dauma.grokimkartu.data.firestore.FirestoreImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoImpl
 import com.dauma.grokimkartu.data.users.UsersDao
@@ -78,12 +76,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesFirestore() : Firestore {
-        return FirestoreImpl(FirebaseFirestore.getInstance())
-    }
-
-    @Provides
-    @Singleton
     fun providesFirebaseStorage(imageUtils: ImageUtils) : FirebaseStorage {
         return FirebaseStorageImpl(GoogleFirebaseStorage.getInstance(), imageUtils)
     }
@@ -100,8 +92,8 @@ class AppModule {
     }
 
     @Provides
-    fun provideUsersDao(firestore: Firestore, firebaseStorage: FirebaseStorage) : UsersDao {
-        return UsersDaoImpl(firestore, FirebaseFirestore.getInstance(), firebaseStorage)
+    fun provideUsersDao(firebaseStorage: FirebaseStorage) : UsersDao {
+        return UsersDaoImpl(FirebaseFirestore.getInstance(), firebaseStorage)
     }
 
     @Provides
@@ -116,8 +108,8 @@ class AppModule {
     }
 
     @Provides
-    fun providesThomannsDao(firestore: Firestore) : ThomannsDao {
-        return ThomannsDaoImpl(firestore, FirebaseFirestore.getInstance())
+    fun providesThomannsDao() : ThomannsDao {
+        return ThomannsDaoImpl(FirebaseFirestore.getInstance())
     }
 
     @Provides

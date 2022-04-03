@@ -2,7 +2,6 @@ package com.dauma.grokimkartu.data.users
 
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.firestore.FirebaseStorage
-import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.users.CreateUserAndPlayerIfNeededQuery
@@ -17,7 +16,6 @@ import com.dauma.grokimkartu.data.users.entities.UserDao
 import com.google.firebase.firestore.FirebaseFirestore
 
 class UsersDaoImpl(
-    private val firebase: Firestore,
     private val firebaseFirestore: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage,
 ) : UsersDao {

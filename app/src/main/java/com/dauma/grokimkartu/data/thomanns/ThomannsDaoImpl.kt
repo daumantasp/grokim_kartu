@@ -1,6 +1,5 @@
 package com.dauma.grokimkartu.data.thomanns
 
-import com.dauma.grokimkartu.data.firestore.Firestore
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannActions
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
@@ -13,7 +12,6 @@ import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ThomannsDaoImpl(
-    private val firebase: Firestore,
     private val firebaseFirestore: FirebaseFirestore
 ) : ThomannsDao {
     override fun createThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit) {
