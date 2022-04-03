@@ -10,6 +10,7 @@ import com.dauma.grokimkartu.data.firestore.queries.ReadThomannsQuery
 import com.dauma.grokimkartu.data.firestore.queries.UpdateThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.DeleteThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.JoinThomannQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.LeaveThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.ReadThomannActionsQuery
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
@@ -126,7 +127,16 @@ class ThomannsDaoImpl(
         userId: String,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        firebase.leaveThomann(id, userId, onComplete)
+        LeaveThomannQuery(firebaseFirestore)
+            .withId(id)
+            .withInput(userId)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun lockThomann(

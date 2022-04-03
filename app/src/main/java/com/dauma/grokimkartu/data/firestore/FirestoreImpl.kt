@@ -42,39 +42,6 @@ class FirestoreImpl(
             .execute()
     }
 
-    override fun leaveThomann(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        getThomann(thomannId) { firestoreThomann, e ->
-            if (firestoreThomann != null) {
-                val users = firestoreThomann.users
-                if (users != null) {
-                    val user = users.firstOrNull { ftu -> ftu.userId == userId }
-                    if (user != null) {
-                        DeleteThomannUserQuery(firebaseFirestore)
-                            .withId(thomannId)
-                            .withInput(user)
-                            .onSuccess { _ ->
-                                onComplete(true, null)
-                            }
-                            .onFailure { exception ->
-                                onComplete(false, exception)
-                            }
-                            .execute()
-                    } else {
-                        onComplete(false, Exception("THOMANN USER WITH ID=$userId NOT FOUND"))
-                    }
-                } else {
-                    onComplete(false, Exception("THOMANN USERS NOT FOUND"))
-                }
-            } else {
-                onComplete(false, e)
-            }
-        }
-    }
-
     override fun lockThomann(
         thomannId: String,
         userId: String,
