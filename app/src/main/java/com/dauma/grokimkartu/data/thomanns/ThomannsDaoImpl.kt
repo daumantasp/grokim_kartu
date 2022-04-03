@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.data.firestore.queries.CreateThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannsQuery
 import com.dauma.grokimkartu.data.firestore.queries.UpdateThomannQuery
+import com.dauma.grokimkartu.data.firestore.queries.composite.DeleteThomannQuery
 import com.dauma.grokimkartu.data.firestore.queries.composite.JoinThomannQuery
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
@@ -46,7 +47,16 @@ class ThomannsDaoImpl(
     }
 
     override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebase.deleteThomann(thomannId, userId, onComplete)
+        DeleteThomannQuery(firebaseFirestore)
+            .withId(thomannId)
+            .withInput(userId)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit) {

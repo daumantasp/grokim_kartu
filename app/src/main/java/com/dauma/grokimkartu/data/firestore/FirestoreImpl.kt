@@ -2,9 +2,8 @@ package com.dauma.grokimkartu.data.firestore
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannActions
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.*
+import com.dauma.grokimkartu.data.firestore.queries.composite.DeleteThomannQuery
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,20 +21,6 @@ class FirestoreImpl(
         UpdateThomannQuery(firebaseFirestore)
             .withId(thomann.id ?: "")
             .withInput(thomann)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        val readThomannQuery = ReadThomannQuery(firebaseFirestore)
-        DeleteThomannQuery(firebaseFirestore, readThomannQuery)
-            .withId(thomannId)
-            .withInput(userId)
             .onSuccess { _ ->
                 onComplete(true, null)
             }
