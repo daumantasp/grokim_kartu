@@ -5,7 +5,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
-class UpdateThomannUserQuery(firebaseFirestore: FirebaseFirestore)
+class AddThomannUserQuery(firebaseFirestore: FirebaseFirestore)
     : FirestoreInputQuery<Nothing, FirestoreThomannUser>(firebaseFirestore) {
     override fun execute() {
         if (id != null) {

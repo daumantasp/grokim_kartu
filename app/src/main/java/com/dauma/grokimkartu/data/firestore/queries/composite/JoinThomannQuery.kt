@@ -3,7 +3,7 @@ package com.dauma.grokimkartu.data.firestore.queries.composite
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
 import com.dauma.grokimkartu.data.firestore.queries.ReadThomannQuery
-import com.dauma.grokimkartu.data.firestore.queries.UpdateThomannUserQuery
+import com.dauma.grokimkartu.data.firestore.queries.AddThomannUserQuery
 import com.google.firebase.firestore.FirebaseFirestore
 
 class JoinThomannQuery(firebaseFirestore: FirebaseFirestore)
@@ -64,7 +64,7 @@ class JoinThomannQuery(firebaseFirestore: FirebaseFirestore)
     }
 
     private fun updateThomannUsers(onComplete: (Boolean, Exception?) -> Unit) {
-        UpdateThomannUserQuery(firebaseFirestore)
+        AddThomannUserQuery(firebaseFirestore)
             .withId(id!!)
             .withInput(input!!)
             .onSuccess { _ ->
