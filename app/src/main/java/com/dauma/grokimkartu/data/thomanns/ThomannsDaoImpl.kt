@@ -158,7 +158,16 @@ class ThomannsDaoImpl(
         userId: String,
         onComplete: (Boolean, Exception?) -> Unit
     ) {
-        firebase.unlockThomann(thomannId, userId, onComplete)
+        UnlockThomannQuery(firebaseFirestore)
+            .withId(thomannId)
+            .withInput(userId)
+            .onSuccess { _ ->
+                onComplete(true, null)
+            }
+            .onFailure { exception ->
+                onComplete(false, exception)
+            }
+            .execute()
     }
 
     override fun kickUserFromThomann(
