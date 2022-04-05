@@ -4,6 +4,7 @@ class FirestoreThomannActions(
     var thomannId: String?,
     var isAccessible: Boolean?,
     var isJoinable: Boolean?,
+    var isLeavable: Boolean?,
     var isUpdatable: Boolean?
 ) {
     // Empty constructor is a must for Firestore
@@ -11,6 +12,7 @@ class FirestoreThomannActions(
         thomannId = null,
         isAccessible = null,
         isJoinable = null,
+        isLeavable = null,
         isUpdatable = null
     )
 }

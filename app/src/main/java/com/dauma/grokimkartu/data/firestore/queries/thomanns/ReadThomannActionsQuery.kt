@@ -46,15 +46,29 @@ class ReadThomannActionsQuery(firebaseFirestore: FirebaseFirestore)
                 thomannId = id!!,
                 isAccessible = true,
                 isJoinable = false,
+                isLeavable = false,
                 isUpdatable = true
             )
         } else if (firestoreThomann.locked != true) {
-            actions = FirestoreThomannActions(
-                thomannId = id!!,
-                isAccessible = true,
-                isJoinable = true,
-                isUpdatable = false
-            )
+            val users = firestoreThomann.users
+            if (users != null) {
+                val user = users.firstOrNull { ftu -> ftu.userId == userId }
+                actions = FirestoreThomannActions(
+                    thomannId = id!!,
+                    isAccessible = true,
+                    isJoinable = user == null,
+                    isLeavable = user != null,
+                    isUpdatable = false
+                )
+            } else {
+                actions = FirestoreThomannActions(
+                    thomannId = id!!,
+                    isAccessible = true,
+                    isJoinable = true,
+                    isLeavable = false,
+                    isUpdatable = false
+                )
+            }
         } else {
             val users = firestoreThomann.users
             if (users != null) {
@@ -63,7 +77,8 @@ class ReadThomannActionsQuery(firebaseFirestore: FirebaseFirestore)
                     actions = FirestoreThomannActions(
                         thomannId = id!!,
                         isAccessible = true,
-                        isJoinable = true,
+                        isJoinable = false,
+                        isLeavable = true,
                         isUpdatable = false
                     )
                 } else {
@@ -71,6 +86,7 @@ class ReadThomannActionsQuery(firebaseFirestore: FirebaseFirestore)
                         thomannId = id!!,
                         isAccessible = false,
                         isJoinable = false,
+                        isLeavable = false,
                         isUpdatable = false
                     )
                 }
@@ -79,6 +95,7 @@ class ReadThomannActionsQuery(firebaseFirestore: FirebaseFirestore)
                     thomannId = id!!,
                     isAccessible = false,
                     isJoinable = false,
+                    isLeavable = false,
                     isUpdatable = false
                 )
             }

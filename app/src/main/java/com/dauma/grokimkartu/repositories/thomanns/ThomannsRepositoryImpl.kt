@@ -316,6 +316,7 @@ class ThomannsRepositoryImpl(
                 thomannActionsDao.thomannId,
                 thomannActionsDao.isAccessible,
                 thomannActionsDao.isJoinable,
+                thomannActionsDao.isLeavable,
                 thomannActionsDao.isUpdatable
             )
         }

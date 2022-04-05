@@ -4,5 +4,6 @@ data class ThomannActionsDao(
     var thomannId: String?,
     var isAccessible: Boolean?,
     var isJoinable: Boolean?,
+    var isLeavable: Boolean?,
     var isUpdatable: Boolean?
 )

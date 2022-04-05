@@ -259,6 +259,7 @@ class ThomannsDaoImpl(
                 firestoreThomannActions.thomannId,
                 firestoreThomannActions.isAccessible,
                 firestoreThomannActions.isJoinable,
+                firestoreThomannActions.isLeavable,
                 firestoreThomannActions.isUpdatable
             )
         }
