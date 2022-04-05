@@ -39,7 +39,6 @@ class UpdateThomannQuery(firebaseFirestore: FirebaseFirestore)
         if (thomann.city != null) {
             valuesToSet["city"] = thomann.city
         }
-        // TODO: restrict locking/unlocking from this method?
         if (thomann.locked != null) {
             valuesToSet["locked"] = thomann.locked
         }

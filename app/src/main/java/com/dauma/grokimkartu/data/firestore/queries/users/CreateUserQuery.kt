@@ -2,7 +2,7 @@ package com.dauma.grokimkartu.data.firestore.queries.users
 
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreUser
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
-import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
@@ -32,12 +32,12 @@ class CreateUserQuery(firebaseFirestore: FirebaseFirestore)
         }
     }
 
-    private fun getFirestoreUserToSet(user: FirestoreUser) : HashMap<String, Any> {
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
+    private fun getFirestoreUserToSet(user: FirestoreUser) : HashMap<String, Any?> {
+        val valuesToSet: HashMap<String, Any?> = hashMapOf()
         if (user.visible != null) {
             valuesToSet["visible"] = user.visible
         }
-        valuesToSet["registrationDate"] = Timestamp.now()
+        valuesToSet["registrationDate"] = FieldValue.serverTimestamp()
         return valuesToSet
     }
 }

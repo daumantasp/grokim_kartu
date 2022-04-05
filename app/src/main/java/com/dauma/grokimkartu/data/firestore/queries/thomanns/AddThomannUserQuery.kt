@@ -30,8 +30,8 @@ class AddThomannUserQuery(firebaseFirestore: FirebaseFirestore)
         }
     }
 
-    private fun getThomannUserToSet(thomannUser: FirestoreThomannUser) : HashMap<String, Any> {
-        val valuesToSet: HashMap<String, Any> = hashMapOf()
+    private fun getThomannUserToSet(thomannUser: FirestoreThomannUser) : HashMap<String, Any?> {
+        val valuesToSet: HashMap<String, Any?> = hashMapOf()
         if (thomannUser.userId != null) {
             valuesToSet["userId"] = thomannUser.userId
         }
@@ -44,6 +44,8 @@ class AddThomannUserQuery(firebaseFirestore: FirebaseFirestore)
         if (thomannUser.amount != null) {
             valuesToSet["amount"] = thomannUser.amount
         }
+        // FieldValue.serverTimestamp() can only be used with set() and update
+//        valuesToSet["joinDate"] = FieldValue.serverTimestamp()
         valuesToSet["joinDate"] = Timestamp.now()
         return valuesToSet
     }
