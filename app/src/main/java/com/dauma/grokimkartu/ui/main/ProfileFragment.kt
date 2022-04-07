@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.general.event.EventObserver
@@ -107,6 +108,9 @@ class ProfileFragment : Fragment() {
                 binding.profileInitialsViewElement.visibility = View.GONE
                 binding.photoImageView.visibility = View.VISIBLE
             }
+        })
+        profileViewModel.profileEdit.observe(viewLifecycleOwner, EventObserver{
+            this.findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)
         })
         // TODO: refactor
         profileViewModel.editInstrument.observe(viewLifecycleOwner, EventObserver {

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Grokim Kartu</string>
     <string name="profile_fragment">Paskyra</string>
+    <string name="profile_edit_fragment">Redaguoti</string>
     <string name="login_welcome">Grokim Kartu</string>
     <string name="login_email">El. paštas</string>
     <string name="login_password">Slaptažodis</string>

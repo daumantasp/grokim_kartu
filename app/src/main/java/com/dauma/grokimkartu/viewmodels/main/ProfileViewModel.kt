@@ -21,11 +21,13 @@ class ProfileViewModel @Inject constructor(
     private val _editInstrument = MutableLiveData<Event<String>>()
     private val _editDescription = MutableLiveData<Event<String>>()
     private val _editCity = MutableLiveData<Event<String>>()
+    private val _profileEdit = MutableLiveData<Event<String>>()
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
     val editInstrument: LiveData<Event<String>> = _editInstrument
     val editDescription: LiveData<Event<String>> = _editDescription
     val editCity: LiveData<Event<String>> = _editCity
+    val profileEdit: LiveData<Event<String>> = _profileEdit
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -62,7 +64,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun editClicked() {
-
+        _profileEdit.value = Event("")
     }
 
     fun instrumentClicked() {
