@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
-                android:paddingBottom="0dp"
+                android:paddingBottom="20dp"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,7 +112,22 @@
                     app:value="@{model.profileForm.city}"
                     app:onClick="@{() -> model.cityClicked()}"
                     app:rowShowIcon="true"
-                    app:rowBorders="top"/>
+                    app:rowBorders="both"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/editProfileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    app:type="primary"
+                    app:onClick="@{() -> model.editClicked()}"
+                    app:text="@string/profile_edit_button" />
 
             </LinearLayout>
         </ScrollView>

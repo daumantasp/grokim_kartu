@@ -61,6 +61,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun editClicked() {
+
+    }
+
     fun instrumentClicked() {
         _editInstrument.value = Event("")
     }
