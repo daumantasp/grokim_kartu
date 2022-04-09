@@ -226,4 +226,7 @@
     <style name="DatePicker">
         <item name="colorControlNormal">?attr/datePickerDividerColor</item>
     </style>
+    <style name="InputCounterStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/grey</item>
+    </style>
 </resources>

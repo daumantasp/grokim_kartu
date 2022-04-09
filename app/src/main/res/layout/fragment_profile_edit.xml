@@ -25,6 +25,174 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="30dp">
+
+                    <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
+                        android:id="@+id/profileInitialsViewElement"
+                        android:layout_width="244dp"
+                        android:layout_height="253dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="25dp"
+                        android:visibility="invisible"
+                        app:initialsType="rectangular"
+                        app:textSize="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/photoImageView"
+                        android:layout_width="244dp"
+                        android:layout_height="253dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="25dp"
+                        android:src="@{model.getProfileEditForm().photo}"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/selectPhotoButton"
+                        android:background="@drawable/select_photo_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:onClick="@{() -> model.selectPhoto()}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nameTextInput"
+                    style="@style/SecondaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    android:enabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nameInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@{model.getProfileEditForm().name}"
+                        android:hint="@string/profile_edit_name"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"
+                        android:enabled="false"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/instrumentTextInput"
+                    style="@style/SecondaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@{model.getProfileEditForm().instrumentMaxLength}"
+                    app:counterTextAppearance="@style/InputCounterStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/instrumentInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@={model.getProfileEditForm().instrument}"
+                        android:hint="@string/profile_edit_instrument"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"
+                        android:maxLength="@{model.getProfileEditForm().instrumentMaxLength}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/descriptionTextInput"
+                    style="@style/SecondaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="240dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@{model.getProfileEditForm().descriptionMaxLength}"
+                    app:counterTextAppearance="@style/InputCounterStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/descriptionInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:text="@={model.getProfileEditForm().description}"
+                        android:hint="@string/profile_edit_description"
+                        android:inputType="textMultiLine"
+                        android:singleLine="false"
+                        android:maxLines="8"
+                        android:lines="8"
+                        android:gravity="top|start"
+                        android:fontFamily="@font/lato"
+                        android:maxLength="@{model.getProfileEditForm().descriptionMaxLength}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cityTextInput"
+                    style="@style/SecondaryTextInput"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@{model.getProfileEditForm().cityMaxLength}"
+                    app:counterTextAppearance="@style/InputCounterStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cityInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@={model.getProfileEditForm().city}"
+                        android:hint="@string/profile_edit_city"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"
+                        android:maxLength="@{model.getProfileEditForm().cityMaxLength}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/saveChangesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:enabled="@{model.getProfileEditForm().isChanged}"
+                    app:text="@string/profile_edit_save"
+                    app:type="primary" />
+
+            </LinearLayout>
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement

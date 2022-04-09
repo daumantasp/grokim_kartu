@@ -36,6 +36,11 @@
     <string name="profile_change_password_button">Keisti slaptažodį</string>
     <string name="profile_logout">Atsijungti</string>
     <string name="profile_edit_button">Redaguoti</string>
+    <string name="profile_edit_name">Vardas</string>
+    <string name="profile_edit_instrument">Instrumentas</string>
+    <string name="profile_edit_city">Miestas</string>
+    <string name="profile_edit_description">Aprašymas</string>
+    <string name="profile_edit_save">Išsaugoti</string>
     <string name="login_email_not_verified">El. paštas nepatvirtintas</string>
     <string name="forgotPassword_title">Atstatyti slaptažodį</string>
     <string name="forgotPassword_description">Norėdami atstatyti slaptažodį nurodykite el. paštą</string>

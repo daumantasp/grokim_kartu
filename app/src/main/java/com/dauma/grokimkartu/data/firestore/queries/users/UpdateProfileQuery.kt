@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.firestore.queries.users
 import com.dauma.grokimkartu.data.firestore.entities.FirestoreProfile
 import com.dauma.grokimkartu.data.firestore.queries.FirestoreInputQuery
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class UpdateProfileQuery(firebaseFirestore: FirebaseFirestore)
     : FirestoreInputQuery<Nothing, FirestoreProfile>(firebaseFirestore) {
@@ -13,7 +14,7 @@ class UpdateProfileQuery(firebaseFirestore: FirebaseFirestore)
                 firebaseFirestore
                     .collection(usersCollection)
                     .document(id!!)
-                    .update("profile", profileToSet)
+                    .set(profileToSet, SetOptions.merge())
                     .addOnSuccessListener { _ ->
                         this.onSuccess(null)
                     }
@@ -28,8 +29,10 @@ class UpdateProfileQuery(firebaseFirestore: FirebaseFirestore)
         }
     }
 
-    private fun getProfileToSet(profile: FirestoreProfile) : HashMap<String, Any> {
+    private fun getProfileToSet(profile: FirestoreProfile) : HashMap<String, HashMap<String, Any>> {
         val valuesToSet: HashMap<String, Any> = hashMapOf()
+        val profileToSet: HashMap<String, HashMap<String, Any>> = hashMapOf()
+        profileToSet["profile"] = valuesToSet
         if (profile.name != null) {
             valuesToSet["name"] = profile.name!!
         }
@@ -42,6 +45,6 @@ class UpdateProfileQuery(firebaseFirestore: FirebaseFirestore)
         if (profile.city != null) {
             valuesToSet["city"] = profile.city!!
         }
-        return valuesToSet
+        return profileToSet
     }
 }
