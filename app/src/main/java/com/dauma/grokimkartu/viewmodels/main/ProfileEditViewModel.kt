@@ -24,6 +24,14 @@ class ProfileEditViewModel @Inject constructor(
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
 
+    fun getProfileEditForm(): ProfileEditForm {
+        return profileEditForm
+    }
+
+    fun backClicked() {
+        _navigateBack.value = Event("")
+    }
+
     fun viewIsReady() {
         loadProfile()
     }
@@ -96,13 +104,5 @@ class ProfileEditViewModel @Inject constructor(
         } else {
             onComplete()
         }
-    }
-
-    fun getProfileEditForm(): ProfileEditForm {
-        return profileEditForm
-    }
-
-    fun backClicked() {
-        _navigateBack.value = Event("")
     }
 }

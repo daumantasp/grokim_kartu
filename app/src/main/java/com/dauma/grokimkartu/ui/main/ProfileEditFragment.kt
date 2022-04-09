@@ -29,6 +29,7 @@ class ProfileEditFragment : Fragment() {
     private var dialogsManager: DialogsManager? = null
     @Inject lateinit var utils: Utils
     private var galleryResult: ActivityResultLauncher<Intent>
+    //    private var cameraResult: ActivityResultLauncher<Intent>
 
     private var _binding: FragmentProfileEditBinding? = null
     // This property is only valid between onCreateView and
