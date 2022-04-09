@@ -20,7 +20,7 @@ class ProfileEditForm: BaseObservable() {
     @get:Bindable
     var name: String = ""
         private set(value) {
-            field = value
+            field = value.take(nameMaxLength)
             notifyPropertyChanged(BR.name)
         }
 
@@ -33,7 +33,7 @@ class ProfileEditForm: BaseObservable() {
     @get:Bindable
     var instrument: String = ""
         set(value) {
-            field = value
+            field = value.take(instrumentMaxLength)
             notifyPropertyChanged(BR.instrument)
             notifyPropertyChanged(BR.changed)
         }
@@ -47,7 +47,7 @@ class ProfileEditForm: BaseObservable() {
     @get:Bindable
     var description: String = ""
         set(value) {
-            field = value
+            field = value.take(descriptionMaxLength)
             notifyPropertyChanged(BR.description)
             notifyPropertyChanged(BR.changed)
         }
@@ -61,7 +61,7 @@ class ProfileEditForm: BaseObservable() {
     @get:Bindable
     var city: String = ""
         set(value) {
-            field = value
+            field = value.take(cityMaxLength)
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
         }
