@@ -63,17 +63,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/selectPhotoButton"
-                        android:background="@drawable/select_photo_button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:onClick="@{() -> model.selectPhoto()}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
@@ -88,9 +77,6 @@
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_instrument"
                     app:value="@{model.profileForm.instrument}"
-                    app:onClick="@{() -> model.instrumentClicked()}"
-                    app:rowShowIcon="true"
-                    app:rowCustomIcon="@drawable/ic_pencil"
                     app:rowBorders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
@@ -98,20 +84,14 @@
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_description"
                     app:value="@{model.profileForm.description}"
-                    app:onClick="@{() -> model.descriptionClicked()}"
-                    app:rowShowIcon="true"
                     app:rowBorders="top"
-                    app:rowCustomIcon="@drawable/ic_pencil"
                     app:rowMultiline="true"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/profile_city"
-                    app:rowCustomIcon="@drawable/ic_pencil"
                     app:value="@{model.profileForm.city}"
-                    app:onClick="@{() -> model.cityClicked()}"
-                    app:rowShowIcon="true"
                     app:rowBorders="both"/>
 
                 <FrameLayout
