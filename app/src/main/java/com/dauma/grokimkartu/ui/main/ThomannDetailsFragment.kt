@@ -127,6 +127,11 @@ class ThomannDetailsFragment : Fragment() {
                 isJoinDialogShown = true
             }
         })
+        thomannDetailsViewModel.edit.observe(viewLifecycleOwner, EventObserver { thomannId ->
+            val args = Bundle()
+            args.putString("thomannId", thomannId)
+            this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_thomannEditFragment, args)
+        })
     }
 
     private fun setupDetailsRecyclerView() {

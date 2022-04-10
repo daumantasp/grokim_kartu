@@ -26,10 +26,12 @@ class ThomannDetailsViewModel @Inject constructor(
     private val _detailsLoaded = MutableLiveData<ThomannDetails>()
     private val _userDetails = MutableLiveData<Event<String>>()
     private val _join = MutableLiveData<Event<String>>()
+    private val _edit = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val detailsLoaded: LiveData<ThomannDetails> = _detailsLoaded
     val userDetails: LiveData<Event<String>> = _userDetails
     val join: LiveData<Event<String>> = _join
+    val edit: LiveData<Event<String>> = _edit
 
     companion object {
         private val TAG = "ThomannDetailsViewModel"
@@ -93,7 +95,7 @@ class ThomannDetailsViewModel @Inject constructor(
     }
 
     fun editClicked() {
-
+        _edit.value = Event(thomannId ?: "")
     }
 
     fun loadDetails() {
