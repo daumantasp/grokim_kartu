@@ -92,6 +92,10 @@ class ThomannDetailsViewModel @Inject constructor(
         _userDetails.value = Event(userId)
     }
 
+    fun editClicked() {
+
+    }
+
     fun loadDetails() {
         val details = ThomannDetails()
         var isThomannAndProfilePhotoLoaded = false
@@ -133,11 +137,13 @@ class ThomannDetailsViewModel @Inject constructor(
                 if (thomannActions.isUpdatable == true) {
                     details.onCancelButtonClick = { this.cancelClicked() }
                     details.onLockButtonClick = { this.lockClicked(it) }
+                    details.onEditButtonClick = { this.editClicked() }
                 }
             }
             details.isJoinable = thomannActions?.isJoinable ?: false
             details.isCancelable = thomannActions?.isUpdatable ?: false
             details.isLockable = thomannActions?.isUpdatable ?: false
+            details.isEditable = thomannActions?.isUpdatable ?: false
             areThomannActionsLoaded = true
             notifyThatDetailsHaveBeenLoadedIfNeeded()
         }
@@ -158,4 +164,6 @@ class ThomannDetails {
     var onCancelButtonClick: () -> Unit = {}
     var isLockable: Boolean = false
     var onLockButtonClick: (Boolean) -> Unit = {}
+    var isEditable: Boolean = false
+    var onEditButtonClick: () -> Unit = {}
 }
