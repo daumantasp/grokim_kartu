@@ -87,20 +87,40 @@ class ThomannsRepositoryImpl(
             throw AuthenticationException(error)
         }
         val thomannDao = ThomannDao(
-            null,
-            authUser.id,
-            authUser.name,
-            thomann.city,
-            false,
-            null,
-            thomann.validUntil,
-            listOf()
+            id = null,
+            userId = authUser.id,
+            name = authUser.name,
+            city = thomann.city,
+            isLocked = false,
+            creationDate = null,
+            validUntil = thomann.validUntil,
+            users = listOf()
         )
-        thomannsDao.createThomann(thomannDao) { isSuccessful, e ->
+        thomannsDao.createThomann(thomannDao) { isSuccessful, error ->
             if (isSuccessful) {
-                onComplete(isSuccessful, null)
+                onComplete(true, null)
             } else {
-                onComplete(isSuccessful, ThomannsError(2))
+                onComplete(false, ThomannsError(2))
+            }
+        }
+    }
+
+    override fun updateThomann(thomann: Thomann, onComplete: (Boolean, ThomannsError?) -> Unit) {
+        val thomannDao = ThomannDao(
+            id = thomann.id,
+            userId = null,
+            name = null,
+            city = thomann.city,
+            isLocked = thomann.isLocked,
+            creationDate = null,
+            validUntil = thomann.validUntil,
+            users = null
+        )
+        thomannsDao.updateThomann(thomannDao) { isSuccessful, error ->
+            if (isSuccessful) {
+                onComplete(true, null)
+            } else {
+                onComplete(false, ThomannsError(2))
             }
         }
     }

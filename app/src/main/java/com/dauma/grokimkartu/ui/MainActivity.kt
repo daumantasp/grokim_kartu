@@ -159,7 +159,6 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             bottomNavigationView?.translationZ = -30.0f
 
             dialog.bindDatePickerData(data)
-            dialog.setSaveButtonEnabled(false)
             dialog.show(animated = true)
         }
     }

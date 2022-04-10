@@ -31,6 +31,8 @@ class ThomannEditForm: BaseObservable() {
         city: String,
         validUntil: String
     ) {
+        this.initialCity = city
+        this.initialValidUntil = validUntil
         this.city = city
         this.validUntil = validUntil
     }

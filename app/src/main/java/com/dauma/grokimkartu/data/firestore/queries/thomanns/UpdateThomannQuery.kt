@@ -33,9 +33,6 @@ class UpdateThomannQuery(firebaseFirestore: FirebaseFirestore)
 
     private fun getThomannToSet(thomann: FirestoreThomann) : HashMap<String, Any> {
         val valuesToSet: HashMap<String, Any> = hashMapOf()
-        if (thomann.name != null) {
-            valuesToSet["name"] = thomann.name
-        }
         if (thomann.city != null) {
             valuesToSet["city"] = thomann.city
         }

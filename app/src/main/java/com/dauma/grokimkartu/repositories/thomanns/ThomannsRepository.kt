@@ -8,6 +8,7 @@ interface ThomannsRepository {
     fun getThomann(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit)
     fun getThomannActions(id: String, onComplete: (ThomannActions?, ThomannsError?) -> Unit)
     fun saveThomann(thomann: Thomann, onComplete: (Boolean, ThomannsError?) -> Unit)
+    fun updateThomann(thomann: Thomann, onComplete: (Boolean, ThomannsError?) -> Unit)
     fun join(id: String, amount: Double, onComplete: (Boolean, ThomannsError?) -> Unit)
     fun deleteThomann(id: String, onComplete: (Boolean, ThomannsError?) -> Unit)
     fun leaveThomann(id: String, onComplete: (Boolean, ThomannsError?) -> Unit)

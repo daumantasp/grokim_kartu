@@ -24,6 +24,7 @@ data class BottomDialogDatePickerData (
     val selectedDate: CustomDate,
     val minDate: CustomDate?,
     val maxDate: CustomDate?,
+    val isSaveButtonEnabled: Boolean,
     val onSaveClicked: (CustomDate) -> Unit,
     val onSelectedDateChanged: (CustomDate) -> Unit,
     val onCancelClicked: () -> Unit

@@ -17,7 +17,6 @@ import com.dauma.grokimkartu.general.utils.time.CustomDate
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -95,6 +94,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
             datePicker.maxDate = utils.timeUtils.convertToTimeInMillis(data.maxDate!!)
         }
         setOnCancelClick { data.onCancelClicked() }
+        setSaveButtonEnabled(data.isSaveButtonEnabled)
         saveButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 val selectedDate = CustomDate(

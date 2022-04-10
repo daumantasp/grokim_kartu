@@ -13,6 +13,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDate
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
@@ -24,6 +25,7 @@ class ThomannEditFragment : Fragment() {
     private val thomannEditViewModel by viewModels<ThomannEditViewModel>()
     private var dialogsManager: DialogsManager? = null
     @Inject lateinit var utils: Utils
+    private var isDialogShown: Boolean = false
 
     private var _binding: FragmentThomannEditBinding? = null
     // This property is only valid between onCreateView and
@@ -48,7 +50,13 @@ class ThomannEditFragment : Fragment() {
         binding.model = thomannEditViewModel
         val view = binding.root
         setupObservers()
+        setupOnClickListeners()
 
+        thomannEditViewModel.viewIsReady()
+        return view
+    }
+
+    private fun setupOnClickListeners() {
         binding.thomannEditHeaderViewElement.setOnBackClick {
             thomannEditViewModel.backClicked()
         }
@@ -60,34 +68,43 @@ class ThomannEditFragment : Fragment() {
         binding.validUntilInputEditText.setOnClickListener {
             thomannEditViewModel.validUntilClicked()
         }
-
-        thomannEditViewModel.viewIsReady()
-        return view
     }
 
     private fun setupObservers() {
         thomannEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+            if (isDialogShown == true) {
+                dialogsManager?.hideBottomDialog()
+                isDialogShown = false
+            } else {
+                this.findNavController().popBackStack()
+            }
         })
-        thomannEditViewModel.validUndtil.observe(viewLifecycleOwner, EventObserver {
-            val currentDate = it[0]
-            val minDate = it[1]
-            val maxDate = it[2]
+        thomannEditViewModel.validUntil.observe(viewLifecycleOwner, EventObserver {
+            val currentDate = it[0] as CustomDate
+            val minDate = it[1] as CustomDate
+            val maxDate = it[2] as CustomDate
+            val isSaveButtonEnabled = it[3] as Boolean
             this.dialogsManager?.let { manager ->
+                this.isDialogShown = true
                 manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
                     title = getString(R.string.thomann_edit_valid_until),
                     selectedDate = currentDate,
                     minDate = minDate,
                     maxDate = maxDate,
+                    isSaveButtonEnabled = isSaveButtonEnabled,
                     onSaveClicked = { selectedDate ->
                         val formattedDate = this.utils.timeUtils.format(selectedDate)
                         thomannEditViewModel.thomannEditForm().validUntil = formattedDate
                         manager.hideBottomDialog()
+                        this.isDialogShown = false
                     },
                     onSelectedDateChanged = { selectedDate ->
                         manager.enableBottomDialogSaveButton(true)
                     },
-                    onCancelClicked = { manager.hideBottomDialog() }
+                    onCancelClicked = {
+                        manager.hideBottomDialog()
+                        this.isDialogShown = false
+                    }
                 ))
             }
         })
