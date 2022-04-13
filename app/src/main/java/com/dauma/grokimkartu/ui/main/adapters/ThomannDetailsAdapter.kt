@@ -35,8 +35,9 @@ class ThomannDetailsAdapter(
     companion object {
         private const val PHOTO = 1
         private const val ROW = 2
-        private const val USER = 3
-        private const val BUTTON = 4
+        private const val STATUS_ROW = 3
+        private const val USER = 4
+        private const val BUTTON = 5
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -44,6 +45,8 @@ class ThomannDetailsAdapter(
             return PHOTO
         } else if (data[position] is ThomannDetailsListRowData) {
             return ROW
+        } else if (data[position] is ThomannDetailsListStatusRowData) {
+            return STATUS_ROW
         } else if (data[position] is ThomannDetailsListUserData) {
             return USER
         } else if (data[position] is ThomannDetailsListButtonData) {
@@ -57,6 +60,8 @@ class ThomannDetailsAdapter(
             return PhotoViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_photo_item, parent, false), utils)
         } else if (viewType == ROW) {
             return RowViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_row_item, parent, false))
+        } else if (viewType == STATUS_ROW) {
+            return StatusRowViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_row_item, parent, false))
         } else if (viewType == USER) {
             return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_user_item, parent, false), utils, onItemClicked, onLeaveClicked, onKickClicked)
         } else if (viewType == BUTTON) {
@@ -70,6 +75,8 @@ class ThomannDetailsAdapter(
         if (holder is PhotoViewHolder && itemData is ThomannDetailsListPhotoData) {
             holder.bind(itemData)
         } else if (holder is RowViewHolder && itemData is ThomannDetailsListRowData) {
+            holder.bind(itemData)
+        } else if (holder is StatusRowViewHolder && itemData is ThomannDetailsListStatusRowData) {
             holder.bind(itemData)
         } else if (holder is UserViewHolder && itemData is ThomannDetailsListUserData) {
             holder.bind(itemData)
@@ -104,6 +111,9 @@ class ThomannDetailsAdapter(
             } else {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.unlocked_icon)
             }
+            lockedUnlockedIconImageView.setOnClickListener {
+                data.onClick()
+            }
         }
     }
 
@@ -113,6 +123,37 @@ class ThomannDetailsAdapter(
         fun bind(data: ThomannDetailsListRowData) {
             rowViewElement.setTitle(data.title)
             rowViewElement.setValue(data.value)
+        }
+    }
+
+    private class StatusRowViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        val rowViewElement = view.findViewById<RowViewElement>(R.id.thomannDetailsRowViewElement)
+
+        fun bind(data: ThomannDetailsListStatusRowData) {
+            rowViewElement.setTitle(data.title)
+
+            val typedValue = TypedValue()
+            val statusText: String
+            val statusColor: Int
+            if (data.isLocked) {
+                statusText = view.context.getText(R.string.thomann_details_status_locked).toString()
+                view.context.theme.resolveAttribute(R.attr.lockedIconBackgroundColor, typedValue, true)
+            } else {
+                statusText = view.context.getText(R.string.thomann_details_status_unlocked).toString()
+                view.context.theme.resolveAttribute(R.attr.unlockedIconBackgroundColor, typedValue, true)
+            }
+            statusColor = typedValue.data
+
+            rowViewElement.setValue(statusText)
+            rowViewElement.setValueColor(statusColor)
+            rowViewElement.showIcon(true)
+            rowViewElement.setCustomIconIfNeeded(view.context.getDrawable(R.drawable.ic_change_lock))
+
+            rowViewElement.setOnClick(object : View.OnClickListener {
+                override fun onClick(p0: View?) {
+                    data.onClick()
+                }
+            })
         }
     }
 
@@ -148,12 +189,16 @@ class ThomannDetailsAdapter(
 
         fun bind(data: ThomannDetailsListUserData) {
             userNameTextView.setText(data.user.userName)
-            userAmountTextView.setText(data.user.amount.toString())
+            val userAmountText = view.context.getText(R.string.thomann_details_user_amount).toString()
+            val formattedUserAmountText = userAmountText.replace("{{amount}}", data.user.amount.toString())
+            userAmountTextView.setText(formattedUserAmountText)
             var formattedJoinDate = ""
             if (data.user.joinDate != null) {
                 formattedJoinDate = utils.timeUtils.format(data.user.joinDate.toDate())
             }
-            userJoinedDateTextView.setText(formattedJoinDate)
+            val joinDateText = view.context.getText(R.string.thomann_details_user_join_date).toString()
+            val formattedJoinDateText = joinDateText.replace("{{joinDate}}", formattedJoinDate)
+            userJoinedDateTextView.setText(formattedJoinDateText)
             if (data.user.isCurrentUser == true) {
                 leaveOrKickTextView.setText(view.context.getString(R.string.thomann_details_leave))
                 leaveOrKickTextView.visibility = View.VISIBLE

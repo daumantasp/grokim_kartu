@@ -84,6 +84,7 @@ class ThomannDetailsFragment : Fragment() {
             this.findNavController().popBackStack()
         })
         thomannDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner) {
+            this.binding.thomannDetailsHeaderViewElement.setTitle("${it.name} Thomann")
             setupRecyclerViewData(it)
             if (isDetailsRecyclerViewSetup == false) {
                 setupDetailsRecyclerView()
@@ -150,8 +151,15 @@ class ThomannDetailsFragment : Fragment() {
     private fun setupRecyclerViewData(details: ThomannDetails)  {
         recyclerViewData.clear()
         if (details.photo != null) {
-            recyclerViewData.add(ThomannDetailsListPhotoData(details.name, details.photo, details.isLocked))
+            recyclerViewData.add(ThomannDetailsListPhotoData(details.name, details.photo, details.isLocked, {
+                val isLocked = details.isLocked
+                details.onLockButtonClick(isLocked == false)
+            }))
         }
+        recyclerViewData.add(ThomannDetailsListStatusRowData(getString(R.string.thomann_details_status), details.isLocked, {
+            val isLocked = details.isLocked
+            details.onLockButtonClick(isLocked == false)
+        }))
         recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_name), details.name))
         recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_city), details.city))
         recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_creation_date), details.creationDate))
@@ -161,11 +169,6 @@ class ThomannDetailsFragment : Fragment() {
         }
         if (details.isJoinable) {
             recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_join), details.onJoinButtonClick))
-        }
-        if (details.isLockable) {
-            val isLocked = details.isLocked
-            val title = if (isLocked) getString(R.string.thomann_details_unlock) else getString(R.string.thomann_details_lock)
-            recyclerViewData.add(ThomannDetailsListButtonData(title, { details.onLockButtonClick(isLocked == false) }))
         }
         if (details.isEditable) {
             recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_edit), details.onEditButtonClick))

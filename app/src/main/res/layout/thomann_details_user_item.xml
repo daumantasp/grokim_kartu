@@ -65,6 +65,7 @@
             <TextView
                 android:id="@+id/leaveTextView"
                 style="@style/ThomannDetailsUserTitle"
+                android:textColor="?attr/thomannDetailsKickUserColor"
                 android:text="@string/thomann_details_leave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -91,6 +91,8 @@
         <item name="lockedIconColor">@color/white</item>
 
         <item name="thomannDetailsItemBackgroundColor">@color/white</item>
+
+        <item name="thomannDetailsKickUserColor">@color/cherryRed</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

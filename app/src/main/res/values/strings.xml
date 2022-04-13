@@ -79,21 +79,23 @@
     <string name="bottom_dialog_cancel_button">Atšaukti</string>
     <string name="thomanns_title">Thomann</string>
     <string name="thomanns_add_new_button">Sukurti naują</string>
-    <string name="thomann_edit_title">Redaguoti Thomann</string>
+    <string name="thomann_edit_title">Redaguoti</string>
     <string name="thomann_edit_city">Miestas</string>
     <string name="thomann_edit_valid_until">Galioja iki</string>
     <string name="thomann_edit_save">Išsaugoti</string>
     <string name="thomann_details_name">Vardas</string>
     <string name="thomann_details_city">Miestas</string>
-    <string name="thomann_details_is_locked">Atrakinta</string>
+    <string name="thomann_details_status">Būsena</string>
+    <string name="thomann_details_status_locked">Užrakinta</string>
+    <string name="thomann_details_status_unlocked">Atrakinta</string>
     <string name="thomann_details_creation_date">Sukūrimo data</string>
     <string name="thomann_details_valid_until">Galioja iki</string>
     <string name="thomann_details_join">Prisijungti</string>
     <string name="thomann_details_leave">Išeiti</string>
     <string name="thomann_details_kick">Išmesti</string>
+    <string name="thomann_details_user_amount">Suma: {{amount}}</string>
+    <string name="thomann_details_user_join_date">Prisijungė: {{joinDate}}</string>
     <string name="thomann_details_cancel">Atšaukti</string>
     <string name="thomann_details_edit">Redaguoti</string>
-    <string name="thomann_details_lock">Užrakinti</string>
-    <string name="thomann_details_unlock">Atrakinti</string>
     <string name="thomann_details_join_dialog_title">Suma</string>
 </resources>

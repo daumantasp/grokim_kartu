@@ -84,6 +84,7 @@
     <attr name="lockedIconColor" format="color" />
 
     <attr name="thomannDetailsItemBackgroundColor" format="color" />
+    <attr name="thomannDetailsKickUserColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
@@ -133,6 +134,7 @@
             <enum name="bottom" value="1" />
             <enum name="both" value="2" />
         </attr>
+        <attr name="rowValueColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="CardViewElement">

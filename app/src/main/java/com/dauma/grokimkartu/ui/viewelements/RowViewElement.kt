@@ -42,6 +42,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val isSwitchVisible = attributes.getBoolean(R.styleable.RowViewElement_rowShowSwitch, false)
         val isMultiline = attributes.getBoolean(R.styleable.RowViewElement_rowMultiline, false)
         val customIcon = attributes.getDrawable(R.styleable.RowViewElement_rowCustomIcon)
+        val valueColor = attributes.getInt(R.styleable.RowViewElement_rowValueColor, 0)
         attributes.recycle()
 
         setTitle(title ?: "")
@@ -50,6 +51,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         showSwitch(isSwitchVisible)
         setMultiline(isMultiline)
         setCustomIconIfNeeded(customIcon)
+        setValueColor(valueColor)
     }
 
     companion object {
@@ -99,13 +101,26 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         this.onSwitchChecked = onSwitchChecked
     }
 
-    private fun showIcon(show: Boolean) {
+    fun setValueColor(color: Int) {
+        if (color != 0) {
+            valueTextView.setTextColor(color)
+        }
+    }
+
+    fun showIcon(show: Boolean) {
         if (show) {
             iconImageView.visibility = View.VISIBLE
             val constraintSet = ConstraintSet()
             constraintSet.clone(rowConstraintLayout)
             constraintSet.connect(R.id.valueTextView, ConstraintSet.END, R.id.iconImageView, ConstraintSet.START)
             constraintSet.applyTo(rowConstraintLayout)
+        }
+    }
+
+    fun setCustomIconIfNeeded(icon: Drawable?) {
+        if (icon != null) {
+            iconImageView.background = icon!!
+            iconImageView.rotation = 0.0f
         }
     }
 
@@ -143,13 +158,6 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             constraintSet.connect(R.id.valueTextView, ConstraintSet.END, R.id.rowConstraintLayout, ConstraintSet.END, marginInPxSides)
             constraintSet.setHorizontalBias(R.id.valueTextView, 0.0f)
             constraintSet.applyTo(rowConstraintLayout)
-        }
-    }
-
-    private fun setCustomIconIfNeeded(icon: Drawable?) {
-        if (icon != null) {
-            iconImageView.background = icon!!
-            iconImageView.rotation = 0.0f
         }
     }
 }

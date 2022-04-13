@@ -27,7 +27,6 @@
             android:id="@+id/thomannDetailsHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:title="*Thomann Details*"
             app:showBottomBorder="true"
             app:showIcon="false"
             app:headerType="withBack"
