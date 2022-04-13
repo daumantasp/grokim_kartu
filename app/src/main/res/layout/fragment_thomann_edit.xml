@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
+            android:fillViewport="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,9 +34,12 @@
                         android:id="@+id/cityTextInput"
                         style="@style/SecondaryTextInput"
                         android:layout_width="300dp"
-                        android:layout_height="80dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="0dp">
+                        android:layout_marginBottom="0dp"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="@{model.thomannEditForm().cityMaxLength}"
+                        app:counterTextAppearance="@style/InputCounterStyle">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/cityInputEditText"
@@ -46,7 +50,8 @@
                             android:singleLine="true"
                             android:maxLines="1"
                             android:lines="1"
-                            android:fontFamily="@font/lato"/>
+                            android:fontFamily="@font/lato"
+                            android:maxLength="@{model.thomannEditForm().cityMaxLength}"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -54,7 +59,7 @@
                         android:id="@+id/validUntilTextInput"
                         style="@style/SecondaryTextInput"
                         android:layout_width="300dp"
-                        android:layout_height="80dp"
+                        android:layout_height="100dp"
                         android:layout_marginBottom="40dp"
                         android:layout_gravity="center">
 
@@ -73,8 +78,13 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
                     <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                        android:id="@+id/changePasswordButton"
+                        android:id="@+id/saveThomannButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

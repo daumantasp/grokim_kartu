@@ -12,9 +12,15 @@ class ThomannEditForm: BaseObservable() {
     private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
     @get:Bindable
+    var cityMaxLength: Int = 30
+        get() {
+            return field
+        }
+
+    @get:Bindable
     var city: String = ""
         set(value) {
-            field = value
+            field = value.take(cityMaxLength)
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
         }
