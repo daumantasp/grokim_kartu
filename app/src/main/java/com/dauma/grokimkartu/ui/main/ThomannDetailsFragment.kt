@@ -167,6 +167,9 @@ class ThomannDetailsFragment : Fragment() {
         for (user in details.users) {
             recyclerViewData.add(ThomannDetailsListUserData(user))
         }
+        if (details.users.count() > 0) {
+            recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_total_amount), details.totalAmount.toString()))
+        }
         if (details.isJoinable) {
             recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_join), details.onJoinButtonClick))
         }

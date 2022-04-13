@@ -95,6 +95,7 @@
     <string name="thomann_details_kick">Išmesti</string>
     <string name="thomann_details_user_amount">Suma: {{amount}}</string>
     <string name="thomann_details_user_join_date">Prisijungė: {{joinDate}}</string>
+    <string name="thomann_details_total_amount">Bendra suma</string>
     <string name="thomann_details_cancel">Atšaukti</string>
     <string name="thomann_details_edit">Redaguoti</string>
     <string name="thomann_details_join_dialog_title">Suma</string>

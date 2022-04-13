@@ -118,6 +118,11 @@ class ThomannDetailsViewModel @Inject constructor(
                 details.validUntilDate = this.timeUtils.format(thomann.validUntil?.toDate() ?: currentTime)
                 details.isLocked = thomann.isLocked ?: false
                 details.users = thomann.users ?: listOf()
+                var totalAmount: Double = 0.0
+                for (user in details.users) {
+                    totalAmount += user.amount ?: 0.0
+                }
+                details.totalAmount = totalAmount
 
                 this.playersRepository.getPlayerPhoto(thomann.userId ?: "") { playerPhoto, playerError ->
                     if (playerPhoto != null) {
@@ -160,6 +165,7 @@ class ThomannDetails {
     var photo: Bitmap? = null
     var isLocked: Boolean = false
     var users: List<ThomannUser> = listOf()
+    var totalAmount: Double = 0.0
     var isJoinable: Boolean = false
     var onJoinButtonClick: () -> Unit = {}
     var isCancelable: Boolean = false
