@@ -1,20 +1,17 @@
 package com.dauma.grokimkartu.viewmodels.authentication
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.ForgotPasswordForm
-import com.dauma.grokimkartu.repositories.users.AuthenticationError
-import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ForgotPasswordViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val authRepository: AuthRepository,
     private val forgotPasswordForm: ForgotPasswordForm
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
@@ -35,18 +32,18 @@ class ForgotPasswordViewModel @Inject constructor(
     }
 
     fun resetClicked(email: String) {
-        _passwordResetInProgress.value = true
-        usersRepository.sendPasswordResetEmail(email) { isSuccessful, error ->
-            if (isSuccessful) {
-                _showSuccess.value = Event(true)
-            } else {
-                Log.d(TAG, error?.message ?: "Password reset was unsuccessful")
-                if (error != null) {
-                    handleAuthenticationError(error)
-                }
-            }
-            _passwordResetInProgress.value = false
-        }
+//        _passwordResetInProgress.value = true
+//        authRepository.sendPasswordResetEmail(email) { isSuccessful, error ->
+//            if (isSuccessful) {
+//                _showSuccess.value = Event(true)
+//            } else {
+//                Log.d(TAG, error?.message ?: "Password reset was unsuccessful")
+//                if (error != null) {
+//                    handleAuthenticationError(error)
+//                }
+//            }
+//            _passwordResetInProgress.value = false
+//        }
     }
 
     fun okClicked() {
@@ -57,14 +54,14 @@ class ForgotPasswordViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    private fun handleAuthenticationError(error: AuthenticationError) {
-        when(error.message) {
-            AuthenticationError.INVALID_EMAIL -> {
-                _emailError.value = R.string.passwordChange_invalid_email_error
-            }
-            else -> clearAuthenticationErrors()
-        }
-    }
+//    private fun handleAuthenticationError(error: AuthenticationError) {
+//        when(error.message) {
+//            AuthenticationError.INVALID_EMAIL -> {
+//                _emailError.value = R.string.passwordChange_invalid_email_error
+//            }
+//            else -> clearAuthenticationErrors()
+//        }
+//    }
 
     private fun clearAuthenticationErrors() {
         _emailError.value = -1

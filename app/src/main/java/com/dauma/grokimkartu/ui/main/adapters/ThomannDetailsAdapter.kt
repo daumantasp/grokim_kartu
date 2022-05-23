@@ -22,14 +22,15 @@ import com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.RowViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
+import java.sql.Date
 
 class ThomannDetailsAdapter(
     private val context: Context,
     private val data: List<ThomannDetailsListData>,
     private val utils: Utils,
-    private val onItemClicked: (String) -> Unit,
+    private val onItemClicked: (Int) -> Unit,
     private val onLeaveClicked: () -> Unit,
-    private val onKickClicked: (String) -> Unit
+    private val onKickClicked: (Int) -> Unit
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -96,7 +97,7 @@ class ThomannDetailsAdapter(
 
         fun bind(data: ThomannDetailsListPhotoData) {
             if (data.photo == null) {
-                val initials = utils.stringUtils.getInitials(data.name)
+                val initials = utils.stringUtils.getInitials(data.name ?: "")
                 initialsViewElement.setInitials(initials)
                 photoImageView.visibility = View.GONE
                 initialsViewElement.visibility = View.VISIBLE
@@ -106,7 +107,7 @@ class ThomannDetailsAdapter(
                 photoImageView.visibility = View.VISIBLE
             }
 
-            if (data.isLocked) {
+            if (data.isLocked == true) {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
             } else {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.unlocked_icon)
@@ -122,7 +123,7 @@ class ThomannDetailsAdapter(
 
         fun bind(data: ThomannDetailsListRowData) {
             rowViewElement.setTitle(data.title)
-            rowViewElement.setValue(data.value)
+            rowViewElement.setValue(data.value ?: "")
         }
     }
 
@@ -135,7 +136,7 @@ class ThomannDetailsAdapter(
             val typedValue = TypedValue()
             val statusText: String
             val statusColor: Int
-            if (data.isLocked) {
+            if (data.isLocked == true) {
                 statusText = view.context.getText(R.string.thomann_details_status_locked).toString()
                 view.context.theme.resolveAttribute(R.attr.lockedIconBackgroundColor, typedValue, true)
             } else {
@@ -160,9 +161,9 @@ class ThomannDetailsAdapter(
     private class UserViewHolder(
         private val view: View,
         private val utils: Utils,
-        private val onItemClicked: (String) -> Unit,
+        private val onItemClicked: (Int) -> Unit,
         private val onLeaveClicked: () -> Unit,
-        private val onKickClicked: (String) -> Unit
+        private val onKickClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(view) {
         private val photoIconBackgroundDrawable: Drawable?
         val rootLayout = view.findViewById<LinearLayout>(R.id.thomannDetailsUserItemLayout)
@@ -188,18 +189,20 @@ class ThomannDetailsAdapter(
         }
 
         fun bind(data: ThomannDetailsListUserData) {
-            userNameTextView.setText(data.user.userName)
+            userNameTextView.setText(data.user.user?.name ?: "")
             val userAmountText = view.context.getText(R.string.thomann_details_user_amount).toString()
             val formattedUserAmountText = userAmountText.replace("{{amount}}", data.user.amount.toString())
             userAmountTextView.setText(formattedUserAmountText)
-            var formattedJoinDate = ""
-            if (data.user.joinDate != null) {
-                formattedJoinDate = utils.timeUtils.format(data.user.joinDate.toDate())
+            if (data.user.createdAt != null) {
+                val joinDate = Date(data.user.createdAt!!.time)
+                val formattedJoinDate = utils.timeUtils.format(joinDate)
+                val joinDateText = view.context.getText(R.string.thomann_details_user_join_date).toString()
+                val formattedJoinDateText = joinDateText.replace("{{joinDate}}", formattedJoinDate)
+                userJoinedDateTextView.setText(formattedJoinDateText)
+            } else {
+                userJoinedDateTextView.setText("")
             }
-            val joinDateText = view.context.getText(R.string.thomann_details_user_join_date).toString()
-            val formattedJoinDateText = joinDateText.replace("{{joinDate}}", formattedJoinDate)
-            userJoinedDateTextView.setText(formattedJoinDateText)
-            if (data.user.isCurrentUser == true) {
+            if (data.user.isCurrentUser == true && (data.user.actions ?: listOf()).contains("QUIT")) {
                 leaveOrKickTextView.setText(view.context.getString(R.string.thomann_details_leave))
                 leaveOrKickTextView.visibility = View.VISIBLE
 
@@ -208,19 +211,23 @@ class ThomannDetailsAdapter(
                     this.onLeaveClicked()
                 }
                 rootLayout.setOnClickListener {}
-            } else if (data.user.isUserCreator == true) {
+            } else if (data.user.isCurrentUser == false && (data.user.actions ?: listOf()).contains("KICK")) {
                 leaveOrKickTextView.setText(view.context.getString(R.string.thomann_details_kick))
                 leaveOrKickTextView.visibility = View.VISIBLE
 
                 // TODO: should not disable onClick in viewHolder, viewModel should prevent the action
                 leaveOrKickTextView.setOnClickListener {
-                    this.onKickClicked(data.user.userId ?: "")
+                    this.onKickClicked(data.user.user?.id ?: -1)
                 }
-            } else {
+                rootLayout.setOnClickListener {
+                    this.onItemClicked(data.user.user?.id ?: -1)
+                }
+            }
+            else {
                 leaveOrKickTextView.visibility = View.GONE
                 leaveOrKickTextView.setOnClickListener {}
                 rootLayout.setOnClickListener {
-                    this.onItemClicked(data.user.userId ?: "")
+                    this.onItemClicked(data.user.id ?: -1)
                 }
             }
 
@@ -236,7 +243,7 @@ class ThomannDetailsAdapter(
             }
             fun bindOrUnbindInitials() {
                 if (data.user.icon?.icon == null) {
-                    val initials = utils.stringUtils.getInitials(data.user.userName ?: "")
+                    val initials = utils.stringUtils.getInitials(data.user.user?.name ?: "")
                     initialsViewElement.setInitials(initials)
                     spinnerViewElement.showAnimation(false)
                     userIconImageView.visibility = View.GONE

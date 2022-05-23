@@ -1,164 +1,180 @@
 package com.dauma.grokimkartu.data.auth
 
-import com.dauma.grokimkartu.data.auth.entities.AuthUser
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
+import com.dauma.grokimkartu.data.auth.entities.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.http.*
 
-class AuthDaoImpl(private val firebaseAuth: FirebaseAuth) : AuthDao {
-    override fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit) {
-        firebaseAuth
-            .createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val id = firebaseAuth.currentUser?.uid
-                    if (id != null) {
-                        onComplete(true, id, null)
-                    } else {
-                        // This situation should never occur
-                        onComplete(false, null, Exception("MISSING REGISTERED USER ID"))
+class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
+    private val retrofitAuth: RetrofitAuth = retrofit.create(RetrofitAuth::class.java)
+
+    override fun register(
+        registrationRequest: RegistrationRequest,
+        onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit
+    ) {
+        retrofitAuth.register(registrationRequest).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(
+                call: Call<LoginResponse>,
+                response: Response<LoginResponse>
+            ) {
+                when (response.code()) {
+                    201 -> {
+                        val registrationResponse = response.body()
+                        val status = AuthDaoResponseStatus(true, null)
+                        onComplete(registrationResponse, status)
                     }
-                } else {
-                    onComplete(false, null, task.exception)
+                    422 -> {
+                        val errorBody = response.errorBody()?.string() ?: ""
+                        if (errorBody.contains("The email has already been taken.", true)) {
+                            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_TAKEN)
+                            onComplete(null, status)
+                        } else if (errorBody.contains("The email must be a valid email address.", true)) {
+                            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INVALID_EMAIL)
+                            onComplete(null, status)
+                        } else if (errorBody.contains("The password confirmation does not match.", true)) {
+                            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.PSW_CONFIRMATION_DONT_MATCH)
+                            onComplete(null, status)
+                        }
+                    }
+                    else -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
                 }
             }
-            .addOnFailureListener { e ->
-                onComplete(false, null, e)
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
             }
+        })
     }
 
-    override fun updateUser(name: String, onComplete: (Boolean, Exception?) -> Unit) {
-        val profileUpdates = UserProfileChangeRequest.Builder().apply {
-            displayName = name
-        }.build()
-
-        firebaseAuth.currentUser?.updateProfile(profileUpdates)
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
+    override fun login(
+        loginRequest: LoginRequest,
+        onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit
+    ) {
+        retrofitAuth.login(loginRequest).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                when (response.code()) {
+                    201 -> {
+                        val loginResponse = response.body()
+                        val status = AuthDaoResponseStatus(true, null)
+                        onComplete(loginResponse, status)
+                    }
+                    422 -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW)
+                        onComplete(null, status)
+                    }
+                    403 -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_NOT_VERIFIED)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
                 }
             }
-            ?.addOnFailureListener { e ->
-                    onComplete(false, e)
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
             }
+        })
     }
 
-    override fun loginUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseAuth
-            .signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
+    override fun logout(
+        accessToken: String,
+        onComplete: (AuthDaoResponseStatus) -> Unit
+    ) {
+        retrofitAuth.logout(accessToken).enqueue(object : Callback<Array<String>> {
+            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
+                when (response.code()) {
+                    200 -> {
+                        val status = AuthDaoResponseStatus(true, null)
+                        onComplete(status)
+                    }
+                    else -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(status)
+                    }
                 }
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+
+            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
+                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(status)
             }
+        })
     }
 
-    override fun getUserId(): String? {
-        // TODO: read more at https://firebase.google.com/docs/auth/android/manage-users
-        return firebaseAuth.currentUser?.uid
-    }
-
-    override fun logOut() {
-        firebaseAuth.signOut()
-    }
-
-    override fun isEmailVerified(): Boolean {
-        return firebaseAuth.currentUser?.isEmailVerified ?: false
-    }
-
-    override fun sendEmailVerification() {
-        firebaseAuth.currentUser?.sendEmailVerification()
-    }
-
-    override fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseAuth
-            .sendPasswordResetEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
+    override fun delete(
+        accessToken: String,
+        onComplete: (AuthDaoResponseStatus) -> Unit
+    ) {
+        retrofitAuth.delete(accessToken).enqueue(object : Callback<Array<String>> {
+            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
+                when (response.code()) {
+                    200 -> {
+                        val status = AuthDaoResponseStatus(true, null)
+                        onComplete(status)
+                    }
+                    else -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(status)
+                    }
                 }
             }
-            .addOnFailureListener { e ->
-                onComplete(false, e)
+
+            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
+                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(status)
             }
+        })
     }
 
-    override fun deleteUser(onComplete: (Boolean, String?, Exception?) -> Unit) {
-        val id = firebaseAuth.currentUser?.uid
-        if (id == null) {
-            // This situation should never occur
-            onComplete(false, null, Exception("MISSING LOGGED IN USER ID"))
-        }
-        firebaseAuth.currentUser
-            ?.delete()
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, id, null)
-                } else {
-                    onComplete(false, null, task.exception)
+    override fun changePassword(
+        accessToken: String,
+        changePasswordRequest: ChangePasswordRequest,
+        onComplete: (AuthDaoResponseStatus) -> Unit
+    ) {
+        retrofitAuth.changePassword(accessToken, changePasswordRequest).enqueue(object : Callback<Array<String>> {
+            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
+                when (response.code()) {
+                    200 -> {
+                        val status = AuthDaoResponseStatus(true, null)
+                        onComplete(status)
+                    }
+                    401 -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_OLD_PSW)
+                        onComplete(status)
+                    }
+                    403 -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.NEW_PSW_SIMILAR)
+                        onComplete(status)
+                    }
+                    else -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(status)
+                    }
                 }
             }
-            ?.addOnFailureListener { e ->
-                onComplete(false, null, e)
+
+            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
+                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(status)
             }
+        })
     }
 
-    override fun reauthenticateUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit) {
-        val credential = EmailAuthProvider.getCredential(email, password)
-        firebaseAuth.currentUser
-            ?.reauthenticate(credential)
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
-                }
-            }
-            ?.addOnFailureListener { e ->
-                onComplete(false, e)
-            }
-    }
-
-    override fun getUserDataProfiles(): List<AuthUser> {
-        val authenticatedUserByProfiles: MutableList<AuthUser> = mutableListOf()
-        val user = firebaseAuth.currentUser
-        user?.let {
-            for (profile in it.providerData) {
-                val authenticatedUserProfile = AuthUser(
-                    profile.providerId,
-                    profile.uid,
-                    profile.displayName,
-                    profile.email,
-                    profile.photoUrl,
-                    it.isEmailVerified
-                )
-                authenticatedUserByProfiles.add(authenticatedUserProfile)
-            }
-        }
-        return authenticatedUserByProfiles
-    }
-
-    override fun updateUserPassword(newPassword: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseAuth.currentUser
-            ?.updatePassword(newPassword)
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
-                }
-            }
-            ?.addOnFailureListener { e ->
-                onComplete(false, e)
-            }
+    private interface RetrofitAuth {
+        @POST("register") fun register(@Body registrationRequest: RegistrationRequest): Call<LoginResponse>
+        @POST("login") fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
+        @POST("logout") fun logout(@Header("Authorization") accessToken: String): Call<Array<String>>
+        @DELETE("user/delete") fun delete(@Header("Authorization") accessToken: String) : Call<Array<String>>
+        @POST("user/changepassword") fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Call<Array<String>>
     }
 }

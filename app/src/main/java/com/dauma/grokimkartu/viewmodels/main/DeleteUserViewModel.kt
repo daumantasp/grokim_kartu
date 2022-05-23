@@ -4,18 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.DeleteUserForm
-import com.dauma.grokimkartu.repositories.users.AuthenticationError
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class DeleteUserViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val authRepository: AuthRepository,
     private val deleteUserForm: DeleteUserForm
 ) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
@@ -46,27 +45,13 @@ class DeleteUserViewModel @Inject constructor(
 
         try {
             _deleteInProgress.value = true
-            usersRepository.getUserData() { user, exception ->
-                if (user?.email != null) {
-                    usersRepository.reauthenticateUser(user.email, deleteUserForm.password) { isSuccessful, error ->
-                        if (isSuccessful) {
-                            usersRepository.deleteUser() { isSuccessful, error ->
-                                if (isSuccessful) {
-                                    _navigateToLogin.value = Event("")
-                                }
-                                _deleteInProgress.value = false
-                            }
-                        } else {
-                            Log.d(TAG, error?.message ?: "Reauthentication was unsuccessful")
-                            if (error != null) {
-                                handleAuthenticationError(error)
-                            }
-                            _deleteInProgress.value = false
-                        }
-                    }
-                } else {
-                    _deleteInProgress.value = false
+            authRepository.delete { isSuccessful, authenticationErrors ->
+                if (isSuccessful) {
+                    _navigateToLogin.value = Event("")
+                } else if (authenticationErrors != null) {
+                        handleAuthenticationError(authenticationErrors)
                 }
+                _deleteInProgress.value = false
             }
         } catch (e: AuthenticationException) {
             _deleteInProgress.value = false
@@ -74,11 +59,11 @@ class DeleteUserViewModel @Inject constructor(
         }
     }
 
-    private fun handleAuthenticationError(error: AuthenticationError) {
-        when(error.message) {
-            AuthenticationError.INVALID_PASSWORD -> {
-                _passwordError.value = R.string.login_invalid_password_error
-            }
+    private fun handleAuthenticationError(error: AuthenticationErrors) {
+        when(error) {
+//            AuthenticationErrors.INVALID_PASSWORD -> {
+//                _passwordError.value = R.string.login_invalid_password_error
+//            }
             else -> clearAuthenticationErrors()
         }
     }

@@ -34,13 +34,13 @@ class ThomannEditForm: BaseObservable() {
     }
 
     fun setInitialValues(
-        city: String,
-        validUntil: String
+        city: String?,
+        validUntil: String?
     ) {
-        this.initialCity = city
-        this.initialValidUntil = validUntil
-        this.city = city
-        this.validUntil = validUntil
+        this.initialCity = city ?: ""
+        this.initialValidUntil = validUntil ?: ""
+        this.city = city ?: ""
+        this.validUntil = validUntil ?: ""
     }
 
     fun getFormFields(): LiveData<List<String>> {

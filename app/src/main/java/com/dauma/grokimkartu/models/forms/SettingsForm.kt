@@ -22,10 +22,10 @@ class SettingsForm: BaseObservable() {
             notifyPropertyChanged(BR.changed)
         }
 
-    fun setInitialValues(email: String, isVisible: Boolean) {
-        this.email = email
-        this.isVisible = isVisible
-        this.initialIsVisible = isVisible
+    fun setInitialValues(email: String?, isVisible: Boolean?) {
+        this.email = email ?: ""
+        this.isVisible = isVisible ?: false
+        this.initialIsVisible = isVisible ?: false
     }
 
     @Bindable

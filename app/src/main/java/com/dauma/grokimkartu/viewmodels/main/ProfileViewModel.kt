@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.ProfileForm
-import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val profileRepository: ProfileRepository,
     private val profileForm: ProfileForm
 ) : ViewModel() {
     private val _profileLoaded = MutableLiveData<Event<String>>()
@@ -40,17 +40,18 @@ class ProfileViewModel @Inject constructor(
             }
         }
 
-        usersRepository.getUserProfile { profile, e ->
+        profileRepository.profile { profile, profileErrors ->
             this.profileForm.setValues(
-                profile?.name ?: "",
-                profile?.instrument ?: "",
-                profile?.description ?: "",
-                profile?.city ?: ""
+                name = profile?.name,
+                instrument = profile?.instrument,
+                description = profile?.description,
+                city = profile?.city
             )
             isProfileLoaded = true
             checkIfFullProfileLoaded()
         }
-        usersRepository.getUserPhoto { photo, e ->
+
+        profileRepository.photo() { photo, profileErrors ->
             this.profileForm.photo = photo
             isPhotoLoaded = true
             checkIfFullProfileLoaded()

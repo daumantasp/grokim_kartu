@@ -1,6 +1,5 @@
 package com.dauma.grokimkartu.viewmodels.authentication
 
-import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,15 +7,15 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.LoginForm
-import com.dauma.grokimkartu.repositories.users.AuthenticationError
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val authRepository: AuthRepository,
     private val loginForm: LoginForm
 ) : ViewModel() {
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
@@ -41,12 +40,11 @@ class LoginViewModel @Inject constructor(
     fun loginUser(email: String, password: String) {
         try {
             _loginInProgress.value = true
-            usersRepository.loginUser(email, password) { isSuccessful, error ->
+            authRepository.login(email, password) { isSuccessful, error ->
                 if (isSuccessful) {
                     clearAuthenticationErrors()
                     _navigateToPlayers.value = Event("")
                 } else {
-                    Log.d(TAG, error?.message ?: "Login was unsuccessful")
                     if (error != null) {
                         handleAuthenticationError(error)
                     }
@@ -74,24 +72,20 @@ class LoginViewModel @Inject constructor(
         _closeApp.value = Event("")
     }
 
-    private fun handleAuthenticationError(error: AuthenticationError) {
-        when(error.message) {
-            AuthenticationError.INVALID_EMAIL -> {
-                _emailError.value = R.string.login_invalid_email_error
-                _passwordError.value = -1
-            }
-            AuthenticationError.INVALID_PASSWORD -> {
+    private fun handleAuthenticationError(error: AuthenticationErrors) {
+        when(error) {
+            AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW -> {
                 _emailError.value = -1
-                _passwordError.value = R.string.login_invalid_password_error
+                _passwordError.value = R.string.login_incorrect_usr_name_or_psw
             }
-            AuthenticationError.EMAIL_NOT_VERIFIED -> {
+            AuthenticationErrors.EMAIL_NOT_VERIFIED -> {
                 _emailError.value = R.string.login_email_not_verified
                 _passwordError.value = -1
             }
-            AuthenticationError.TOO_MANY_REQUESTS -> {
-                _emailError.value = R.string.login_too_many_requests_error
-                _passwordError.value = -1
-            }
+//            AuthenticationErrors.TOO_MANY_REQUESTS -> {
+//                _emailError.value = R.string.login_too_many_requests_error
+//                _passwordError.value = -1
+//            }
             else -> clearAuthenticationErrors()
         }
     }

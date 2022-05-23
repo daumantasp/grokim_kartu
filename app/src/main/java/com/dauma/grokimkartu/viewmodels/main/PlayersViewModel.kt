@@ -14,10 +14,10 @@ class PlayersViewModel @Inject constructor(
     private val playersRepository: PlayersRepository
 ) : ViewModel() {
     private val _playersListData = MutableLiveData<List<PlayersListData>>()
-    private val _playerDetails = MutableLiveData<Event<String>>()
+    private val _playerDetails = MutableLiveData<Event<Int>>()
     private val _navigateBack = MutableLiveData<Event<String>>()
     val playersListData: LiveData<List<PlayersListData>> = _playersListData
-    val playerDetails: LiveData<Event<String>> = _playerDetails
+    val playerDetails: LiveData<Event<Int>> = _playerDetails
     val navigateBack: LiveData<Event<String>> = _navigateBack
 
     companion object {
@@ -32,13 +32,13 @@ class PlayersViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    fun playerClicked(userId: String) {
+    fun playerClicked(userId: Int) {
         _playerDetails.value = Event(userId)
     }
 
     private fun loadPlayers() {
-        playersRepository.getPlayers() { isSuccessful, players, e ->
-            if (isSuccessful && players != null) {
+        playersRepository.players() { players, e ->
+            if (players != null) {
                 val list: MutableList<PlayersListData> = mutableListOf()
                 for (player in players) {
                     list.add(PlayersListData((player)))

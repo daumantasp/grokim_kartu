@@ -47,7 +47,7 @@ class ProfileFragment : Fragment() {
     private fun setupObservers() {
         profileViewModel.profileLoaded.observe(viewLifecycleOwner, EventObserver {
             if (profileViewModel.getProfileForm().photo == null) {
-                val initials = utils.stringUtils.getInitials(profileViewModel.getProfileForm().name)
+                val initials = utils.stringUtils.getInitials(profileViewModel.getProfileForm().name ?: "")
                 binding.profileInitialsViewElement.setInitials(initials)
                 binding.photoImageView.visibility = View.GONE
                 binding.profileInitialsViewElement.visibility = View.VISIBLE

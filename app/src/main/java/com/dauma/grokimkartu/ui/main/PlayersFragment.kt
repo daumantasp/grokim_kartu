@@ -68,9 +68,9 @@ class PlayersFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        playersViewModel.playerDetails.observe(viewLifecycleOwner, EventObserver {
+        playersViewModel.playerDetails.observe(viewLifecycleOwner, EventObserver { userId ->
             val args = Bundle()
-            args.putString("userId", it)
+            args.putInt("userId", userId)
             this.findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment, args)
         })
         playersViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {

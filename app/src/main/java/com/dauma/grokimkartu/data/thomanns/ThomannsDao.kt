@@ -1,19 +1,14 @@
 package com.dauma.grokimkartu.data.thomanns
 
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
+import com.dauma.grokimkartu.data.thomanns.entities.*
 
 interface ThomannsDao {
-    fun createThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit)
-    fun updateThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit)
-    fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit)
-    fun getThomann(id: String, onComplete: (ThomannDao?, Exception?) -> Unit)
-    fun getThomannActions(id: String, userId: String, onComplete: (ThomannActionsDao?, Exception?) -> Unit)
-    fun joinThomann(id: String, user: ThomannUserDao, onComplete: (Boolean, Exception?) -> Unit)
-    fun leaveThomann(id: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun lockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun unlockThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun kickUserFromThomann(thomannId: String, userId: String, userToKickId: String, onComplete: (Boolean, Exception?) -> Unit)
+    fun create(createRequest: CreateThomannRequest, accessToken: String, onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit)
+    fun update(thomannId: Int, updateRequest: UpdateThomannRequest, accessToken: String, onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit)
+    fun delete(thomannId: Int, accessToken: String, onComplete: (ThomannsDaoResponseStatus) -> Unit)
+    fun thomanns(accessToken: String, onComplete: (List<ThomannResponse>?, ThomannsDaoResponseStatus) -> Unit)
+    fun thomannDetails(thomannId: Int, accessToken: String, onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit)
+    fun join(thomannId: Int, joinRequest: JoinThomannRequest, accessToken: String, onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit)
+    fun quit(thomannId: Int, accessToken: String, onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit)
+    fun kick(thomannId: Int, kickRequest: KickThomannRequest, accessToken: String, onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit)
 }

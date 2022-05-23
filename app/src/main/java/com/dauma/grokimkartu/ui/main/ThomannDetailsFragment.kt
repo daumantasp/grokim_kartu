@@ -20,6 +20,7 @@ import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetails
 import dagger.hilt.android.AndroidEntryPoint
+import java.sql.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -84,7 +85,7 @@ class ThomannDetailsFragment : Fragment() {
             this.findNavController().popBackStack()
         })
         thomannDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner) {
-            this.binding.thomannDetailsHeaderViewElement.setTitle("${it.name} Thomann")
+            this.binding.thomannDetailsHeaderViewElement.setTitle("${it.user} Thomann")
             setupRecyclerViewData(it)
             if (isDetailsRecyclerViewSetup == false) {
                 setupDetailsRecyclerView()
@@ -92,9 +93,9 @@ class ThomannDetailsFragment : Fragment() {
                 binding.thomannDetailsRecyclerView.adapter?.notifyDataSetChanged()
             }
         }
-        thomannDetailsViewModel.userDetails.observe(viewLifecycleOwner, EventObserver {
+        thomannDetailsViewModel.userDetails.observe(viewLifecycleOwner, EventObserver { userId ->
             val args = Bundle()
-            args.putString("userId", it)
+            args.putInt("userId", userId)
             this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_playerDetailsFragment, args)
         })
         thomannDetailsViewModel.join.observe(viewLifecycleOwner, EventObserver {
@@ -130,7 +131,7 @@ class ThomannDetailsFragment : Fragment() {
         })
         thomannDetailsViewModel.edit.observe(viewLifecycleOwner, EventObserver { thomannId ->
             val args = Bundle()
-            args.putString("thomannId", thomannId)
+            args.putInt("thomannId", thomannId)
             this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_thomannEditFragment, args)
         })
     }
@@ -141,8 +142,8 @@ class ThomannDetailsFragment : Fragment() {
             context = requireContext(),
             data = recyclerViewData,
             utils = utils,
-            onItemClicked = { this.thomannDetailsViewModel.userClicked(it) },
-            onLeaveClicked = { this.thomannDetailsViewModel.leaveClicked() },
+            onItemClicked = { userId -> this.thomannDetailsViewModel.userClicked(userId) },
+            onLeaveClicked = { this.thomannDetailsViewModel.quitClicked() },
             onKickClicked = { userId -> this.thomannDetailsViewModel.kickClicked(userId) }
         )
         isDetailsRecyclerViewSetup = true
@@ -151,33 +152,43 @@ class ThomannDetailsFragment : Fragment() {
     private fun setupRecyclerViewData(details: ThomannDetails)  {
         recyclerViewData.clear()
         if (details.photo != null) {
-            recyclerViewData.add(ThomannDetailsListPhotoData(details.name, details.photo, details.isLocked, {
+            recyclerViewData.add(ThomannDetailsListPhotoData(details.user, details.photo, details.isLocked, {
                 val isLocked = details.isLocked
-                details.onLockButtonClick(isLocked == false)
+                details.onLockClicked(isLocked == false)
             }))
         }
         recyclerViewData.add(ThomannDetailsListStatusRowData(getString(R.string.thomann_details_status), details.isLocked, {
             val isLocked = details.isLocked
-            details.onLockButtonClick(isLocked == false)
+            details.onLockClicked(isLocked == false)
         }))
-        recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_name), details.name))
+        recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_name), details.user))
         recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_city), details.city))
-        recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_creation_date), details.creationDate))
-        recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_valid_until), details.validUntilDate))
-        for (user in details.users) {
-            recyclerViewData.add(ThomannDetailsListUserData(user))
+
+        if (details.createdAt != null) {
+            val createdAtFormatted = utils.timeUtils.format(Date(details.createdAt.time))
+            recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_creation_date), createdAtFormatted))
         }
-        if (details.users.count() > 0) {
-            recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_total_amount), details.totalAmount.toString()))
+
+        if (details.validUntil != null) {
+            val validUntilFormatted = utils.timeUtils.format(Date(details.validUntil.time))
+            recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_valid_until), validUntilFormatted))
         }
-        if (details.isJoinable) {
-            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_join), details.onJoinButtonClick))
+
+        if (details.users != null) {
+            for (user in details.users) {
+                recyclerViewData.add(ThomannDetailsListUserData(user))
+            }
+            if (details.users.count() > 0) {
+                recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_total_amount), details.totalAmount.toString()))
+            }
         }
-        if (details.isEditable) {
-            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_edit), details.onEditButtonClick))
+
+        if (details.isJoinable == true) {
+            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_join), details.onJoinClicked))
         }
-        if (details.isCancelable) {
-            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_cancel), details.onCancelButtonClick))
+        if (details.isOwner == true) {
+            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_edit), details.onEditClicked))
+            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_cancel), details.onCancelClicked))
         }
     }
 }

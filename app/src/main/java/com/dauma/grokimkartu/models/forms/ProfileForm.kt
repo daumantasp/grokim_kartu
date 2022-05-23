@@ -42,14 +42,14 @@ class ProfileForm(): BaseObservable() {
         }
 
     fun setValues(
-        name: String,
-        instrument: String,
-        description: String,
-        city: String
+        name: String?,
+        instrument: String?,
+        description: String?,
+        city: String?
     ) {
-        this.name = name
-        this.instrument = instrument
-        this.description = description
-        this.city = city
+        this.name = name ?: ""
+        this.instrument = instrument ?: ""
+        this.description = description ?: ""
+        this.city = city ?: ""
     }
 }

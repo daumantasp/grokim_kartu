@@ -81,10 +81,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        homeViewModel.userProfile.observe(viewLifecycleOwner, {
-            binding.homeHeaderViewElement.setTitle(it.name ?: "")
+        homeViewModel.name.observe(viewLifecycleOwner, { name ->
+            binding.homeHeaderViewElement.setTitle(name ?: "")
             binding.homeHeaderViewElement.showIconLoading(true)
-            this.userInitials = utils.stringUtils.getInitials(it.name ?: "")
+            this.userInitials = utils.stringUtils.getInitials(name ?: "")
             this.isUserProfileGot = true
             this.setPhotoOrInitialsInHeaderIfPossible()
         })

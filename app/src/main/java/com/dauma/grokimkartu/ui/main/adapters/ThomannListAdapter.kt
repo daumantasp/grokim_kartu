@@ -26,7 +26,7 @@ class ThomannListAdapter(
     val context: Context,
     private val thomannListData: List<ThomannsListData>,
     private val utils: Utils,
-    private val onItemClicked: (String) -> Unit
+    private val onItemClicked: (Int) -> Unit
 ) : RecyclerView.Adapter<ThomannListAdapter.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
 
@@ -51,9 +51,9 @@ class ThomannListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val thomannData = thomannListData[position]
-        holder.userTextView.text = thomannData.thomann.name
+        holder.userTextView.text = thomannData.thomann.user?.name
         holder.cityTextView.text = thomannData.thomann.city
-        val validUntil = this.utils.timeUtils.format(thomannData.thomann.validUntil?.toDate() ?: Date())
+        val validUntil = this.utils.timeUtils.format(thomannData.thomann.validUntil ?: Date())
         holder.validUntilTextView.text = validUntil
         if (thomannData.thomann.isLocked == true) {
             holder.lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
@@ -62,13 +62,13 @@ class ThomannListAdapter(
         }
 
         holder.thomannItemLinearLayout.setOnClickListener {
-            this.onItemClicked(thomannData.thomann.id ?: "")
+            this.onItemClicked(thomannData.thomann.id ?: -1)
         }
 
         // TODO: Duplicates in playerItem. Refactor
         fun bindOrUnbindPhoto() {
             if (thomannData.thomann.icon?.icon != null) {
-                val ovalPhoto = utils.imageUtils.getOvalBitmap(thomannData.thomann.icon.icon!!)
+                val ovalPhoto = utils.imageUtils.getOvalBitmap(thomannData.thomann.icon!!.icon!!)
                 holder.photoIcon.setImageBitmap(ovalPhoto)
                 holder.spinnerViewElement.showAnimation(false)
                 holder.initialsViewElement.visibility = View.GONE
@@ -77,7 +77,7 @@ class ThomannListAdapter(
         }
         fun bindOrUnbindInitials() {
             if (thomannData.thomann.icon?.icon == null) {
-                val initials = utils.stringUtils.getInitials(thomannData.thomann.name ?: "")
+                val initials = utils.stringUtils.getInitials(thomannData.thomann.user?.name ?: "")
                 holder.initialsViewElement.setInitials(initials)
                 holder.spinnerViewElement.showAnimation(false)
                 holder.photoIcon.visibility = View.GONE
@@ -99,7 +99,7 @@ class ThomannListAdapter(
             bindDownloadInProgress()
         } else if (iconStatus == ThomannPlayerIconStatus.NEED_TO_DOWNLOAD) {
             bindDownloadInProgress()
-            thomannData.thomann.icon.loadIfNeeded { photo, e ->
+            thomannData.thomann.icon?.loadIfNeeded { photo, e ->
                 bindOrUnbindPhoto()
                 bindOrUnbindInitials()
             }

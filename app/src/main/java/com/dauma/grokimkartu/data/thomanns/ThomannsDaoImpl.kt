@@ -1,268 +1,354 @@
 package com.dauma.grokimkartu.data.thomanns
 
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomann
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannActions
-import com.dauma.grokimkartu.data.firestore.entities.FirestoreThomannUser
-import com.dauma.grokimkartu.data.firestore.queries.composite.*
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.*
-import com.dauma.grokimkartu.data.firestore.queries.thomanns.inputs.KickUserFromThomanQueryInput
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
-import com.google.firebase.firestore.FirebaseFirestore
+import com.dauma.grokimkartu.data.thomanns.entities.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.http.*
 
-class ThomannsDaoImpl(
-    private val firebaseFirestore: FirebaseFirestore
-) : ThomannsDao {
-    override fun createThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit) {
-        val firestoreThomann = toFirestoreThomann(thomann)
-        CreateThomannQuery(firebaseFirestore)
-            .withInput(firestoreThomann!!)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
+class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
+    private val retrofitThomanns: RetrofitThomanns = retrofit.create(RetrofitThomanns::class.java)
 
-    override fun updateThomann(thomann: ThomannDao, onComplete: (Boolean, Exception?) -> Unit) {
-        val firestoreThomann = toFirestoreThomann(thomann)
-        UpdateThomannQuery(firebaseFirestore)
-            .withId(thomann.id ?: "")
-            .withInput(firestoreThomann!!)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun deleteThomann(thomannId: String, userId: String, onComplete: (Boolean, Exception?) -> Unit) {
-        DeleteThomannQuery(firebaseFirestore)
-            .withId(thomannId)
-            .withInput(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun getThomanns(onComplete: (Boolean, List<ThomannDao>?, Exception?) -> Unit) {
-        ReadThomannsQuery(firebaseFirestore)
-            .onSuccess { firestoreThomanns ->
-                val thomannsDaoList = firestoreThomanns?.map { ft -> toThomannDao(ft)!! }
-                onComplete(true, thomannsDaoList, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, null, exception)
-            }
-            .execute()
-    }
-
-    override fun getThomann(id: String, onComplete: (ThomannDao?, Exception?) -> Unit) {
-        ReadThomannQuery(firebaseFirestore)
-            .withId(id)
-            .onSuccess { firestoreThomann ->
-                val thomannDao = toThomannDao(firestoreThomann)
-                onComplete(thomannDao, null)
-            }
-            .onFailure { exception ->
-                onComplete(null, exception)
-            }
-            .execute()
-    }
-
-    override fun getThomannActions(
-        id: String,
-        userId: String,
-        onComplete: (ThomannActionsDao?, Exception?) -> Unit
+    override fun create(
+        createRequest: CreateThomannRequest,
+        accessToken: String,
+        onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit
     ) {
-        ReadThomannActionsQuery(firebaseFirestore)
-            .withId(id)
-            .withInput(userId)
-            .onSuccess { firestoreThomannActions ->
-                val thomannActionsDao = toThomannActionsDao(firestoreThomannActions)
-                onComplete(thomannActionsDao, null)
-            }
-            .onFailure { exception ->
-                onComplete(null, exception)
-            }
-            .execute()
-    }
-
-    override fun joinThomann(
-        id: String,
-        user: ThomannUserDao,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        val firestoreThomannUser = toFirestoreThomannUser(user)!!
-        JoinThomannQuery(firebaseFirestore)
-            .withId(id)
-            .withInput(firestoreThomannUser)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun leaveThomann(
-        id: String,
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        LeaveThomannQuery(firebaseFirestore)
-            .withId(id)
-            .withInput(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun lockThomann(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        LockThomannQuery(firebaseFirestore)
-            .withId(thomannId)
-            .withInput(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun unlockThomann(
-        thomannId: String,
-        userId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        UnlockThomannQuery(firebaseFirestore)
-            .withId(thomannId)
-            .withInput(userId)
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    override fun kickUserFromThomann(
-        thomannId: String,
-        userId: String,
-        userToKickId: String,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        KickUserFromThomannQuery(firebaseFirestore)
-            .withId(thomannId)
-            .withInput(KickUserFromThomanQueryInput(userId, userToKickId))
-            .onSuccess { _ ->
-                onComplete(true, null)
-            }
-            .onFailure { exception ->
-                onComplete(false, exception)
-            }
-            .execute()
-    }
-
-    private fun toThomannDao(firestoreThomann: FirestoreThomann?) : ThomannDao? {
-        var thomannDao: ThomannDao? = null
-        if (firestoreThomann != null) {
-            thomannDao = ThomannDao(
-                firestoreThomann.id,
-                firestoreThomann.userId,
-                firestoreThomann.name,
-                firestoreThomann.city,
-                firestoreThomann.locked,
-                firestoreThomann.creationDate,
-                firestoreThomann.validUntil,
-                firestoreThomann.users?.map { ftu -> toThomannUserDao(ftu)!! }
-            )
-        }
-        return thomannDao
-    }
-
-    private fun toFirestoreThomann(thomannDao: ThomannDao?) : FirestoreThomann? {
-        var firestoreThomann: FirestoreThomann? = null
-        if (thomannDao != null) {
-            val firestoreThomannUsers = ArrayList<FirestoreThomannUser>()
-            if (thomannDao.users != null) {
-                for (thomannUserDao in thomannDao.users!!) {
-                    firestoreThomannUsers.add(toFirestoreThomannUser(thomannUserDao)!!)
+        retrofitThomanns.createThomann(accessToken, createRequest).enqueue(object : Callback<ThomannDetailsResponse> {
+            override fun onResponse(
+                call: Call<ThomannDetailsResponse>,
+                response: Response<ThomannDetailsResponse>
+            ) {
+                when (response.code()) {
+                    201 -> {
+                        val thomannDetailsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannDetailsResponse, status)
+                    }
+                    400 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
                 }
             }
-            firestoreThomann = FirestoreThomann(
-                thomannDao.id,
-                thomannDao.userId,
-                thomannDao.name,
-                thomannDao.city,
-                thomannDao.isLocked,
-                thomannDao.creationDate,
-                thomannDao.validUntil,
-                firestoreThomannUsers
-            )
-        }
-        return firestoreThomann
+
+            override fun onFailure(call: Call<ThomannDetailsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
     }
 
-    private fun toFirestoreThomannUser(thomannUserDao: ThomannUserDao?) : FirestoreThomannUser? {
-        var firestoreThomannUser: FirestoreThomannUser? = null
-        if (thomannUserDao != null) {
-            firestoreThomannUser = FirestoreThomannUser(
-                thomannUserDao.userId,
-                thomannUserDao.userName,
-                thomannUserDao.thomannId,
-                thomannUserDao.amount,
-                thomannUserDao.joinDate
-            )
-        }
-        return firestoreThomannUser
+    override fun update(
+        thomannId: Int,
+        updateRequest: UpdateThomannRequest,
+        accessToken: String,
+        onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+
+        retrofitThomanns.updateThomann(accessToken, thomannId, updateRequest).enqueue(object : Callback<ThomannDetailsResponse> {
+            override fun onResponse(
+                call: Call<ThomannDetailsResponse>,
+                response: Response<ThomannDetailsResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannDetailsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannDetailsResponse, status)
+                    }
+                    400 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE)
+                        onComplete(null, status)
+                    }
+                    403 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.FORBIDDEN)
+                        onComplete(null, status)
+                    }
+                    404 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.THOMANN_NOT_FOUND)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannDetailsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
     }
 
-    private fun toThomannUserDao(firestoreThomannUser: FirestoreThomannUser?) : ThomannUserDao? {
-        var thomannUserDao: ThomannUserDao? = null
-        if (firestoreThomannUser != null) {
-            thomannUserDao = ThomannUserDao(
-                firestoreThomannUser.userId,
-                firestoreThomannUser.userName,
-                firestoreThomannUser.thomannId,
-                firestoreThomannUser.amount,
-                firestoreThomannUser.joinDate
-            )
-        }
-        return thomannUserDao
+    override fun delete(
+        thomannId: Int,
+        accessToken: String,
+        onComplete: (ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.delete(accessToken, thomannId).enqueue(object : Callback<Array<String>> {
+            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
+                when (response.code()) {
+                    200 -> {
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(status)
+                    }
+                    403 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.FORBIDDEN)
+                        onComplete(status)
+                    }
+                    404 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.THOMANN_NOT_FOUND)
+                        onComplete(status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(status)
+            }
+        })
     }
 
-    private fun toThomannActionsDao(firestoreThomannActions: FirestoreThomannActions?) : ThomannActionsDao? {
-        var thomannActionsDao: ThomannActionsDao? = null
-        if (firestoreThomannActions != null) {
-            thomannActionsDao = ThomannActionsDao(
-                firestoreThomannActions.thomannId,
-                firestoreThomannActions.isAccessible,
-                firestoreThomannActions.isJoinable,
-                firestoreThomannActions.isLeavable,
-                firestoreThomannActions.isUpdatable
-            )
-        }
-        return thomannActionsDao
+    override fun thomanns(
+        accessToken: String,
+        onComplete: (List<ThomannResponse>?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.thomanns(accessToken).enqueue(object : Callback<ThomannsDataResponse> {
+            override fun onResponse(
+                call: Call<ThomannsDataResponse>,
+                response: Response<ThomannsDataResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannsResponse?.data, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannsDataResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
+    override fun thomannDetails(
+        thomannId: Int,
+        accessToken: String,
+        onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.thomannDetails(accessToken, thomannId).enqueue(object : Callback<ThomannDetailsResponse> {
+            override fun onResponse(
+                call: Call<ThomannDetailsResponse>,
+                response: Response<ThomannDetailsResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannDetailsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannDetailsResponse, status)
+                    }
+                    403 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.FORBIDDEN)
+                        onComplete(null, status)
+                    }
+                    404 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.THOMANN_NOT_FOUND)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannDetailsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
+    override fun join(
+        thomannId: Int,
+        joinRequest: JoinThomannRequest,
+        accessToken: String,
+        onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.joinThomann(accessToken, thomannId, joinRequest).enqueue(object : Callback<ThomannDetailsResponse> {
+            override fun onResponse(
+                call: Call<ThomannDetailsResponse>,
+                response: Response<ThomannDetailsResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannDetailsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannDetailsResponse, status)
+                    }
+                    400 -> {
+                        val errorBody = response.errorBody()?.string() ?: ""
+                        if (errorBody.contains(ThomannsDaoResponseStatus.Errors.NOT_JOINABLE_FOR_OWNER.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.NOT_JOINABLE_FOR_OWNER)
+                            onComplete(null, status)
+                        } else if (errorBody.contains(ThomannsDaoResponseStatus.Errors.ALREADY_JOINED.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.ALREADY_JOINED)
+                            onComplete(null, status)
+                        } else if (errorBody.contains(ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE)
+                            onComplete(null, status)
+                        } else if (errorBody.contains(ThomannsDaoResponseStatus.Errors.INVALID_AMOUNT.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.INVALID_AMOUNT)
+                            onComplete(null, status)
+                        }
+                    }
+                    403 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.FORBIDDEN)
+                        onComplete(null, status)
+                    }
+                    404 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.THOMANN_NOT_FOUND)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannDetailsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
+    override fun quit(
+        thomannId: Int,
+        accessToken: String,
+        onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.quitThomann(accessToken, thomannId).enqueue(object : Callback<ThomannDetailsResponse> {
+            override fun onResponse(
+                call: Call<ThomannDetailsResponse>,
+                response: Response<ThomannDetailsResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannDetailsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannDetailsResponse, status)
+                    }
+                    400 -> {
+                        val errorBody = response.errorBody()?.string() ?: ""
+                        if (errorBody.contains(ThomannsDaoResponseStatus.Errors.NOT_QUITABLE_FOR_OWNER.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.NOT_QUITABLE_FOR_OWNER)
+                            onComplete(null, status)
+                        } else if (errorBody.contains(ThomannsDaoResponseStatus.Errors.NOT_A_THOMANN_USER.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.NOT_A_THOMANN_USER)
+                            onComplete(null, status)
+                        }
+                    }
+                    403 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.FORBIDDEN)
+                        onComplete(null, status)
+                    }
+                    404 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.THOMANN_NOT_FOUND)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannDetailsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
+    override fun kick(
+        thomannId: Int,
+        kickRequest: KickThomannRequest,
+        accessToken: String,
+        onComplete: (ThomannDetailsResponse?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.kickThomann(accessToken, thomannId, kickRequest).enqueue(object : Callback<ThomannDetailsResponse> {
+            override fun onResponse(
+                call: Call<ThomannDetailsResponse>,
+                response: Response<ThomannDetailsResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannDetailsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannDetailsResponse, status)
+                    }
+                    400 -> {
+                        val errorBody = response.errorBody()?.string() ?: ""
+                        if (errorBody.contains(ThomannsDaoResponseStatus.Errors.USER_ID_NOT_PROVIDED.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.USER_ID_NOT_PROVIDED)
+                            onComplete(null, status)
+                        } else if (errorBody.contains(ThomannsDaoResponseStatus.Errors.NOT_A_THOMANN_USER.toString(), true)) {
+                            val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.NOT_A_THOMANN_USER)
+                            onComplete(null, status)
+                        }
+                    }
+                    403 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.FORBIDDEN)
+                        onComplete(null, status)
+                    }
+                    404 -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.THOMANN_NOT_FOUND)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannDetailsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
+    private interface RetrofitThomanns {
+        @POST("thomann") fun createThomann(@Header("Authorization") accessToken: String, @Body createRequest: CreateThomannRequest): Call<ThomannDetailsResponse>
+        @GET("thomanns") fun thomanns(@Header("Authorization") accessToken: String): Call<ThomannsDataResponse>
+        @GET("thomann/details/{id}") fun thomannDetails(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ThomannDetailsResponse>
+        @PUT("thomann/{id}") fun updateThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body updateRequest: UpdateThomannRequest): Call<ThomannDetailsResponse>
+        @DELETE("thomann/{id}") fun delete(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<Array<String>>
+        @POST("thomann/join/{id}") fun joinThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body joinRequest: JoinThomannRequest): Call<ThomannDetailsResponse>
+        @POST("thomann/quit/{id}") fun quitThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ThomannDetailsResponse>
+        @POST("thomann/kick/{id}") fun kickThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body joinRequest: KickThomannRequest): Call<ThomannDetailsResponse>
     }
 }

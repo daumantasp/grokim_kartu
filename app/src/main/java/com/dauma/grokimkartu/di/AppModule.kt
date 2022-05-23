@@ -1,22 +1,18 @@
 package com.dauma.grokimkartu.di
 
-import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
+import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
+import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoImpl
-import com.dauma.grokimkartu.data.users.UsersDao
-import com.dauma.grokimkartu.data.users.UsersDaoImpl
-import com.dauma.grokimkartu.models.forms.*
-import com.dauma.grokimkartu.repositories.players.PlayersRepository
-import com.dauma.grokimkartu.repositories.players.PlayersRepositoryImpl
-import com.dauma.grokimkartu.repositories.users.UsersRepository
-import com.dauma.grokimkartu.repositories.users.UsersRepositoryImpl
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
+import com.dauma.grokimkartu.data.profile.ProfileDao
+import com.dauma.grokimkartu.data.profile.ProfileDaoImpl
+import com.dauma.grokimkartu.data.settings.SettingsDao
+import com.dauma.grokimkartu.data.settings.SettingsDaoImpl
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
+import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
@@ -27,14 +23,32 @@ import com.dauma.grokimkartu.general.utils.string.StringUtils
 import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
 import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.general.utils.time.TimeUtilsImpl
+import com.dauma.grokimkartu.models.forms.*
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.players.PlayersRepository
+import com.dauma.grokimkartu.repositories.players.PlayersRepositoryImpl
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
+import com.dauma.grokimkartu.repositories.profile.ProfileRepositoryImpl
+import com.dauma.grokimkartu.repositories.settings.SettingsRepository
+import com.dauma.grokimkartu.repositories.settings.SettingsRepositoryImpl
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepositoryImpl
-import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
+import com.dauma.grokimkartu.repositories.users.AuthRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
+
+val BASE_URL = "http://192.168.0.104:8000/api/"
+//val BASE_URL = "http://127.0.0.1:8000/api/"
+//val BASE_URL = "http://10.0.2.2:8000/api/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -81,45 +95,91 @@ class AppModule {
     }
 
     @Provides
-    fun providePlayersDao(firebaseStorage: FirebaseStorage) : PlayersDao {
-        return PlayersDaoImpl(FirebaseFirestore.getInstance(), firebaseStorage)
+    @Singleton
+    fun providesRetrofit() : Retrofit {
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(object : Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val original = chain.request()
+
+                val request = original.newBuilder()
+                    .header("Accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .method(original.method(), original.body())
+                    .build()
+
+                return chain.proceed(request)
+            }
+        })
+
+        val client = httpClient.build();
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
     }
 
     @Provides
     @Singleton
-    fun providePlayersRepository(playersDao: PlayersDao) : PlayersRepository {
-        return PlayersRepositoryImpl(playersDao)
+    fun providesUser() : User {
+        return User()
     }
 
     @Provides
-    fun provideUsersDao(firebaseStorage: FirebaseStorage) : UsersDao {
-        return UsersDaoImpl(FirebaseFirestore.getInstance(), firebaseStorage)
-    }
-
-    @Provides
-    fun providesAuthDao() : AuthDao {
-        return AuthDaoImpl(FirebaseAuth.getInstance())
+    fun providesAuthDao(retrofit: Retrofit) : AuthDao {
+        return AuthDaoImpl(retrofit)
     }
 
     @Provides
     @Singleton
-    fun providesUsersRepository(authDao: AuthDao, usersDao: UsersDao) : UsersRepository {
-        return UsersRepositoryImpl(authDao, usersDao)
+    fun providesAuthRepository(authDao: AuthDao, user: User) : AuthRepository {
+        return AuthRepositoryImpl(authDao, user)
     }
 
     @Provides
-    fun providesThomannsDao() : ThomannsDao {
-        return ThomannsDaoImpl(FirebaseFirestore.getInstance())
+    fun providesSettingsDao(retrofit: Retrofit): SettingsDao {
+        return SettingsDaoImpl(retrofit)
     }
 
     @Provides
     @Singleton
-    fun providesThomannsRepository(
-        authDao: AuthDao,
-        thomannsDao: ThomannsDao,
-        playersDao: PlayersDao
-    ) : ThomannsRepository {
-        return ThomannsRepositoryImpl(authDao, thomannsDao, playersDao)
+    fun providesSettingsRepository(settingsDao: SettingsDao, user: User): SettingsRepository {
+        return SettingsRepositoryImpl(settingsDao, user)
+    }
+
+    @Provides
+    fun providePlayersDao(retrofit: Retrofit) : PlayersDao {
+        return PlayersDaoImpl(retrofit)
+    }
+
+    @Provides
+    @Singleton
+    fun providePlayersRepository(playersDao: PlayersDao, user: User) : PlayersRepository {
+        return PlayersRepositoryImpl(playersDao, user)
+    }
+
+    @Provides
+    fun providesProfileDao(retrofit: Retrofit, imageUtils: ImageUtils) : ProfileDao {
+        return ProfileDaoImpl(retrofit, imageUtils)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(profileDao: ProfileDao, user: User) : ProfileRepository {
+        return ProfileRepositoryImpl(profileDao, user)
+    }
+
+    @Provides
+    fun providesThomannsDao(retrofit: Retrofit) : ThomannsDao {
+        return ThomannsDaoImpl(retrofit)
+    }
+
+    @Provides
+    @Singleton
+    fun providesThomannsRepository(thomannsDao: ThomannsDao, playersDao: PlayersDao, user: User) : ThomannsRepository {
+        return ThomannsRepositoryImpl(thomannsDao, playersDao, user)
     }
 
     @Provides

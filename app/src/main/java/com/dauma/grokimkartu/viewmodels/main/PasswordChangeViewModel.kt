@@ -7,15 +7,15 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.PasswordChangeForm
-import com.dauma.grokimkartu.repositories.users.AuthenticationError
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.repositories.users.UsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PasswordChangeViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val authRepository: AuthRepository,
     private val passwordChangeForm: PasswordChangeForm
 ) : ViewModel() {
     private val _showSuccess = MutableLiveData<Event<Boolean>>()
@@ -53,34 +53,15 @@ class PasswordChangeViewModel @Inject constructor(
 
         try {
             _changeInProgress.value = true
-            usersRepository.getUserData { user, exception ->
-                val email = user?.email
-                if (email != null) {
-                    // TODO: maybe reauthenticatge and update should be merged into single method?
-                    usersRepository.reauthenticateUser(email, oldPassword) { isSuccessful, error ->
-                        if (isSuccessful) {
-                            usersRepository.updatePassword(newPassword) { isSuccessful, error ->
-                                if (isSuccessful) {
-                                    _showSuccess.value = Event(true)
-                                } else {
-                                    Log.d(TAG, error?.message ?: "Password change was unsuccessful")
-                                    if (error != null) {
-                                        handleAuthenticationError(error)
-                                    }
-                                }
-                                _changeInProgress.value = false
-                            }
-                        } else {
-                            Log.d(TAG, error?.message ?: "Reauthentication was unsuccessful")
-                            if (error != null) {
-                                handleAuthenticationError(error)
-                            }
-                            _changeInProgress.value = false
-                        }
-                    }
+            authRepository.changePassword(oldPassword, newPassword, repeatPassword) { isSuccessful, authenticationErrors ->
+                if (isSuccessful) {
+                    _showSuccess.value = Event(true)
                 } else {
-                    _changeInProgress.value = false
+                    if (authenticationErrors != null) {
+                        handleAuthenticationError(authenticationErrors)
+                    }
                 }
+                _changeInProgress.value = false
             }
         } catch (e: AuthenticationException) {
             _changeInProgress.value = false
@@ -96,18 +77,23 @@ class PasswordChangeViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    private fun handleAuthenticationError(error: AuthenticationError) {
-        when(error.message) {
-            AuthenticationError.INVALID_PASSWORD -> {
+    private fun handleAuthenticationError(error: AuthenticationErrors) {
+        when(error) {
+            AuthenticationErrors.INCORRECT_OLD_PSW -> {
                 _oldPasswordError.value = R.string.passwordChange_invalid_password_error
                 _newPasswordError.value = -1
                 _repeatPasswordError.value = -1
             }
-            AuthenticationError.PASSWORD_TOO_WEAK -> {
+            AuthenticationErrors.NEW_PSW_SIMILAR -> {
                 _oldPasswordError.value = -1
-                _newPasswordError.value = R.string.registration_email_password_too_weak_error
+                _newPasswordError.value = R.string.passwordChange_oldAndNewPasswordMustNotBeTheSame_error
                 _repeatPasswordError.value = -1
             }
+//            AuthenticationErrors.PASSWORD_TOO_WEAK -> {
+//                _oldPasswordError.value = -1
+//                _newPasswordError.value = R.string.registration_email_password_too_weak_error
+//                _repeatPasswordError.value = -1
+//            }
             else -> clearErrors()
         }
     }

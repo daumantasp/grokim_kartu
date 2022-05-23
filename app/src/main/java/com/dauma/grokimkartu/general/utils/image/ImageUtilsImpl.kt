@@ -3,6 +3,8 @@ package com.dauma.grokimkartu.general.utils.image
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.InputStream
 
 
@@ -100,5 +102,12 @@ class ImageUtilsImpl : ImageUtils {
                 inSampleSize *= 2
             } }
         return inSampleSize
+    }
+
+    override fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val byteArray = stream.toByteArray()
+        return byteArray
     }
 }

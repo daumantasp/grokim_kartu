@@ -1,14 +1,13 @@
 package com.dauma.grokimkartu.repositories.thomanns.entities
 
-import com.google.firebase.Timestamp
+import java.sql.Timestamp
 
 data class ThomannUser(
-    var userId: String?,
-    var userName: String?,
-    var thomannId: String?,
-    var amount: Double?,
+    var id: Int?,
+    var user: ThomannUserConcise?,
+    var amount: String?,
+    var createdAt: Timestamp?,
     var isCurrentUser: Boolean?,
-    var isUserCreator: Boolean?,
-    val icon: ThomannPlayerIcon?,
-    val joinDate: Timestamp?
+    var actions: ArrayList<String>?,
+    var icon: ThomannPlayerIcon
 )

@@ -70,17 +70,17 @@ class RegistrationFragment : Fragment() {
         registrationViewModel.navigateBack.observe(viewLifecycleOwner, {
             findNavController().popBackStack()
         })
-        registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
-            binding.resendTextView.isEnabled = it
-        })
-        registrationViewModel.verificationEmailWillBeAllowedToSentInSeconds.observe(viewLifecycleOwner, {
-            val resendButtonTitle: String
-            if (it > 0) {
-                resendButtonTitle = "${requireContext().getString(R.string.registration_resendButton)} (${it}s.)"
-            } else {
-                resendButtonTitle = requireContext().getString(R.string.registration_resendButton)
-            }
-            binding.resendTextView.text = resendButtonTitle
-        })
+//        registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
+//            binding.resendTextView.isEnabled = it
+//        })
+//        registrationViewModel.verificationEmailWillBeAllowedToSentInSeconds.observe(viewLifecycleOwner, {
+//            val resendButtonTitle: String
+//            if (it > 0) {
+//                resendButtonTitle = "${requireContext().getString(R.string.registration_resendButton)} (${it}s.)"
+//            } else {
+//                resendButtonTitle = requireContext().getString(R.string.registration_resendButton)
+//            }
+//            binding.resendTextView.text = resendButtonTitle
+//        })
     }
 }

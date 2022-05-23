@@ -9,9 +9,10 @@ import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ThomannEditForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
-import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
+import java.sql.Date
+import java.sql.Timestamp
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +22,7 @@ class ThomannEditViewModel @Inject constructor(
     private val utils: Utils,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val thomannId = savedStateHandle.get<String>("thomannId")
+    private val thomannId = savedStateHandle.get<Int>("thomannId")
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _validUntil = MutableLiveData<Event<List<Any>>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
@@ -41,15 +42,17 @@ class ThomannEditViewModel @Inject constructor(
 
     fun loadDetailsIfNeeded() {
         if (thomannId != null) {
-            thomannsRepository.getThomann(thomannId) { thomann, thomannsError ->
-                var validUntilAsString = ""
-                if (thomann?.validUntil != null) {
-                    validUntilAsString = utils.timeUtils.format(thomann.validUntil!!.toDate())
+            thomannsRepository.thomannDetails(thomannId) { thomannDetails, thomannsErrors ->
+                if (thomannDetails != null) {
+                    var validUntilAsString = ""
+                    if (thomannDetails.validUntil != null) {
+                        validUntilAsString = utils.timeUtils.format(Date(thomannDetails.validUntil!!.time))
+                    }
+                    this.thomannEditForm.setInitialValues(
+                        city = thomannDetails.city,
+                        validUntil = validUntilAsString
+                    )
                 }
-                this.thomannEditForm.setInitialValues(
-                    city = thomann?.city ?: "",
-                    validUntil = validUntilAsString
-                )
             }
         }
     }
@@ -79,30 +82,29 @@ class ThomannEditViewModel @Inject constructor(
         var validUntilTimestamp: Timestamp? = null
         if (validUntilAsDate != null) {
             val validUntilInMillis = utils.timeUtils.convertToTimeInMillis(validUntilAsDate)
-            val validUntilInSeconds = validUntilInMillis / 1000L
-            validUntilTimestamp = Timestamp(validUntilInSeconds, 0)
+            validUntilTimestamp = Timestamp(validUntilInMillis)
         }
         val thomann = Thomann(
-            id = thomannId,
-            userId = null,
-            name = null,
-            city = city,
+            id = null,
+            user = null,
+            city = null,
+            isOwner = null,
             isLocked = null,
-            creationDate = null,
+            isAccessible = null,
+            createdAt = null,
             validUntil = validUntilTimestamp,
-            users = null,
             icon = null
         )
         try {
             if (thomannId == null) {
-                thomannsRepository.saveThomann(thomann) { isSuccessful, e ->
-                    if (isSuccessful) {
+                thomannsRepository.create(thomann) { thomannDetails, thomannsErrors ->
+                    if (thomannDetails != null) {
                         _navigateBack.value = Event("")
                     }
                 }
             } else {
-                thomannsRepository.updateThomann(thomann) { isSuccessful, e ->
-                    if (isSuccessful) {
+                thomannsRepository.update(thomannId!!, thomann) { thomannDetails, thomannsErrors ->
+                    if (thomannDetails != null) {
                         _navigateBack.value = Event("")
                     }
                 }

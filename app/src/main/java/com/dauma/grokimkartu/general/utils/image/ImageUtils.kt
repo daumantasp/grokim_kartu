@@ -10,4 +10,5 @@ interface ImageUtils {
     fun getSquaredBitmap(bitmap: Bitmap): Bitmap
     fun getRoundedCornerBitmap(bitmap: Bitmap, radius: Float): Bitmap
     fun getOvalBitmap(bitmap: Bitmap): Bitmap
+    fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray
 }

@@ -74,17 +74,17 @@ class ThomannsFragment : Fragment() {
                 binding.thomannsRecyclerView.adapter?.notifyDataSetChanged()
             }
         })
-        thomannsViewModel.thomannDetails.observe(viewLifecycleOwner, EventObserver {
+        thomannsViewModel.thomannDetails.observe(viewLifecycleOwner, EventObserver { thomannId ->
             val args = Bundle()
-            args.putString("thomannId", it)
+            args.putInt("thomannId", thomannId)
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannDetailsFragment, args)
         })
     }
 
     private fun setupRecyclerView() {
         binding.thomannsRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.thomannsRecyclerView.adapter = ThomannListAdapter(requireContext(), thomannsRecyclerViewData, utils) { thomannItemId ->
-            this.thomannsViewModel.thomannItemClicked(thomannItemId)
+        binding.thomannsRecyclerView.adapter = ThomannListAdapter(requireContext(), thomannsRecyclerViewData, utils) { thomannId ->
+            this.thomannsViewModel.thomannItemClicked(thomannId)
         }
         isRecyclerViewSetup = true
     }

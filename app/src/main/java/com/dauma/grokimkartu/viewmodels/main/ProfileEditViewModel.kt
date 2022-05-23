@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
-import com.dauma.grokimkartu.repositories.users.UsersRepository
-import com.dauma.grokimkartu.repositories.users.entities.Profile
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
+import com.dauma.grokimkartu.repositories.profile.entities.Profile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val profileRepository: ProfileRepository,
     private val profileEditForm: ProfileEditForm,
     private val utils: Utils
 ) : ViewModel() {
@@ -45,18 +45,21 @@ class ProfileEditViewModel @Inject constructor(
             }
         }
 
-        usersRepository.getUserProfile { profile, e ->
+        profileRepository.profile { profile, profileErrors ->
             this.profileEditForm.setInitialValues(
-                profile?.name ?: "",
-                profile?.instrument ?: "",
-                profile?.description ?: "",
-                profile?.city ?: ""
+                name = profile?.name,
+                instrument = profile?.instrument,
+                description = profile?.description,
+                city = profile?.city
             )
             isProfileLoaded = true
             checkIfFullProfileLoaded()
         }
-        usersRepository.getUserPhoto { photo, exception ->
-            this.profileEditForm.setInitialPhoto(photo)
+
+        profileRepository.photo { photo, profileErrors ->
+            if (photo != null) {
+                this.profileEditForm.setInitialPhoto(photo)
+            }
             isPhotoLoaded = true
             checkIfFullProfileLoaded()
         }
@@ -68,34 +71,31 @@ class ProfileEditViewModel @Inject constructor(
 
     fun saveChanges(onComplete: () -> Unit = {}) {
         if (profileEditForm.areValuesChanged()) {
-            val newProfile = Profile(
+            val updatedProfile = Profile(
+                userId = null,
                 name = null,
-                instrument = profileEditForm.instrument,
+                instrument = null,
                 description = profileEditForm.description,
-                city = profileEditForm.city
+                city = null,
+                createdAt = null
             )
 
-            val name = profileEditForm.name
-            usersRepository.setUserProfile(newProfile) { isSuccessful, exception ->
-                if (isSuccessful) {
-                    this.profileEditForm.setInitialValues(
-                        name = name,
-                        instrument = newProfile.instrument ?: "",
-                        description = newProfile.description ?: "",
-                        city = newProfile.city ?: ""
-                    )
-                }
-
-                // Photo uploading should be considerably longer
-                if (profileEditForm.isPhotoChanged() == false) {
-                    onComplete()
-                }
+            profileRepository.update(updatedProfile) { profile, profileErrors ->
+                this.profileEditForm.setInitialValues(
+                    name = profile?.name,
+                    instrument = profile?.instrument,
+                    description = profile?.description,
+                    city = profile?.city
+                )
             }
         }
+
         if (profileEditForm.isPhotoChanged()) {
             if (profileEditForm.photo != null) {
-                usersRepository.setUserPhoto(this.profileEditForm.photo!!) { isSuccessful, e ->
-                    this.profileEditForm.setInitialPhoto(this.profileEditForm.photo!!)
+                profileRepository.updatePhoto(profileEditForm.photo!!) { updatedPhoto, profileErrors ->
+                    if (updatedPhoto != null) {
+                        this.profileEditForm.setInitialPhoto(updatedPhoto)
+                    }
                     onComplete()
                 }
             } else {

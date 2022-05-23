@@ -25,7 +25,7 @@ class PlayersListAdapter(
     val context: Context,
     private val playersListData: List<PlayersListData>,
     private val utils: Utils,
-    private val onItemClicked: (String) -> Unit
+    private val onItemClicked: (Int) -> Unit
 ) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
 
@@ -54,7 +54,7 @@ class PlayersListAdapter(
         holder.cityTextView.text = playerData.player.city
 
         holder.playerItemContainer.setOnClickListener {
-            this.onItemClicked(playerData.player.userId ?: "")
+            this.onItemClicked(playerData.player.userId ?: -1)
         }
 
         fun bindOrUnbindPhoto() {

@@ -1,16 +1,16 @@
 package com.dauma.grokimkartu.repositories.thomanns.entities
 
 import android.graphics.Bitmap
-import com.dauma.grokimkartu.repositories.thomanns.ThomannsError
+import com.dauma.grokimkartu.repositories.thomanns.ThomannsErrors
 
 // TODO: refactor, duplicates player icon
-class ThomannPlayerIcon(private val loader: (onComplete: (Bitmap?, ThomannsError?) -> Unit) -> Unit) {
+class ThomannPlayerIcon(private val loader: (onComplete: (Bitmap?, ThomannsErrors?) -> Unit) -> Unit) {
     var icon: Bitmap? = null
         private set
     var status: ThomannPlayerIconStatus = ThomannPlayerIconStatus.NEED_TO_DOWNLOAD
         private set
 
-    fun loadIfNeeded(onComplete: (Bitmap?, ThomannsError?) -> Unit) {
+    fun loadIfNeeded(onComplete: (Bitmap?, ThomannsErrors?) -> Unit) {
         if (status == ThomannPlayerIconStatus.NEED_TO_DOWNLOAD) {
             status = ThomannPlayerIconStatus.DOWNLOAD_IN_PROGRESS
             this.loader() { photo, e ->

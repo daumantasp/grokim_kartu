@@ -5,21 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.repositories.users.UsersRepository
-import com.dauma.grokimkartu.repositories.users.entities.Profile
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val usersRepository: UsersRepository
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
-    private val _userProfile = MutableLiveData<Profile>()
+    private val _name = MutableLiveData<String?>()
     private val _userIcon = MutableLiveData<Bitmap?>()
     private val _navigateToProfile = MutableLiveData<Event<String>>()
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
     private val _navigateToThomann = MutableLiveData<Event<String>>()
-    val userProfile: LiveData<Profile> = _userProfile
+    val name: LiveData<String?> = _name
     val userIcon: LiveData<Bitmap?> = _userIcon
     val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
     val navigateToPlayers = _navigateToPlayers
@@ -47,16 +46,14 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadUserIcon() {
-        usersRepository.getUserIcon() { icon, e ->
+        profileRepository.icon() { icon, profileErrors ->
             this._userIcon.value = icon
         }
     }
 
     private fun loadUserProfile() {
-        usersRepository.getUserProfile() { profile, e ->
-            if (profile != null) {
-                this._userProfile.value = profile
-            }
+        profileRepository.profile { profile, _ ->
+            _name.value = profile?.name
         }
     }
 }

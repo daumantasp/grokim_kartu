@@ -5,7 +5,7 @@ class StringUtilsImpl : StringUtils {
         val names = fullName.split("\\s".toRegex())
         var initials = ""
         for (name in names) {
-            initials += name.first().uppercase()
+            initials += name.firstOrNull()?.uppercase()
         }
         return initials
     }

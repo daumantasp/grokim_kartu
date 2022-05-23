@@ -7,17 +7,17 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.RegistrationForm
-import com.dauma.grokimkartu.repositories.users.AuthenticationError
-import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import android.os.Handler
 import android.os.Looper
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
+import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val usersRepository: UsersRepository,
+    private val authRepository: AuthRepository,
     private val registrationForm: RegistrationForm,
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
@@ -46,14 +46,12 @@ class RegistrationViewModel @Inject constructor(
     fun createUser(name: String, email: String, password: String) {
         try {
             _registrationInProgress.value = true
-            usersRepository.registerUser(email, password, name) { isSuccessful, error ->
+            authRepository.register(email, password, name) { isSuccessful, error ->
                 if (isSuccessful) {
-                    usersRepository.sendEmailVerification()
-                    updateEmailVerificationTimer()
+//                    updateEmailVerificationTimer()
                     clearAuthenticationErrors()
                     _emailVerificationSent.value = Event(isSuccessful)
                 } else {
-                    Log.d(TAG, error?.message ?: "Registration was unsuccessful")
                     if (error != null) {
                         handleAuthenticationError(error)
                     }
@@ -75,12 +73,12 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun resendClicked() {
-        val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
-        if (timerValue == 0) {
-            usersRepository.sendEmailVerification()
-            _verificationEmailWillBeAllowedToSentInSeconds.value = 60
-            updateEmailVerificationTimer()
-        }
+//        val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
+//        if (timerValue == 0) {
+//            authRepository.sendEmailVerification()
+//            _verificationEmailWillBeAllowedToSentInSeconds.value = 60
+//            updateEmailVerificationTimer()
+//        }
     }
 
     private fun updateEmailVerificationTimer() {
@@ -97,26 +95,23 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun cleanUp() {
-        if (usersRepository.isUserLoggedIn()) {
-            usersRepository.logOut()
-        }
         _navigateBack.value = Event("")
     }
 
-    private fun handleAuthenticationError(error: AuthenticationError) {
-        when(error.message) {
-            AuthenticationError.EMAIL_ALREADY_REGISTERED -> {
+    private fun handleAuthenticationError(error: AuthenticationErrors) {
+        when(error) {
+            AuthenticationErrors.EMAIL_TAKEN -> {
                 _emailError.value = R.string.registration_email_already_exists_error
                 _passwordError.value = -1
             }
-            AuthenticationError.EMAIL_INCORRECT_FORMAT -> {
+            AuthenticationErrors.INVALID_EMAIL -> {
                 _emailError.value = R.string.registration_email_incorrect_format_error
                 _passwordError.value = -1
             }
-            AuthenticationError.PASSWORD_TOO_WEAK -> {
-                _emailError.value = -1
-                _passwordError.value = R.string.registration_email_password_too_weak_error
-            }
+//            AuthenticationErrors.PASSWORD_TOO_WEAK -> {
+//                _emailError.value = -1
+//                _passwordError.value = R.string.registration_email_password_too_weak_error
+//            }
             else -> clearAuthenticationErrors()
         }
     }

@@ -1,363 +1,254 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
 import android.graphics.Bitmap
-import com.dauma.grokimkartu.data.auth.AuthDao
-import com.dauma.grokimkartu.data.auth.entities.AuthUser
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannActionsDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannDao
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannUserDao
-import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
-import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannActions
-import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIcon
-import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
-import com.dauma.grokimkartu.repositories.users.AuthenticationError
-import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.google.firebase.Timestamp
+import com.dauma.grokimkartu.data.thomanns.ThomannsDaoResponseStatus
+import com.dauma.grokimkartu.data.thomanns.entities.*
+import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.repositories.thomanns.entities.*
 
 class ThomannsRepositoryImpl(
-    private val authDao: AuthDao,
     private val thomannsDao: ThomannsDao,
-    private val playersDao: PlayersDao
+    private val playersDao: PlayersDao,
+    private val user: User
 ) : ThomannsRepository {
-    override fun getThomanns(onComplete: (Boolean, List<Thomann>?, ThomannsError?) -> Unit) {
-        thomannsDao.getThomanns() { isSuccessful, thommansDao, e ->
-            if (isSuccessful && thommansDao != null) {
-                val thomanns = thommansDao.map { td ->
-                    val loader = { onComplete: (Bitmap?, ThomannsError?) -> Unit ->
-                        this.getPlayerIcon(td.userId ?: "", onComplete)
-                    }
-                    val thomannPlayerIcon = ThomannPlayerIcon(loader)
-                    toThomann(td, thomannPlayerIcon)!!
-                }
-                onComplete(true, thomanns, null)
-            } else {
-                onComplete(false, null, ThomannsError(2))
-            }
-        }
-    }
 
-    override fun getThomann(id: String, onComplete: (Thomann?, ThomannsError?) -> Unit) {
-        thomannsDao.getThomann(id) { thomannDao, e ->
-            if (thomannDao != null) {
-                val loader = { onComplete: (Bitmap?, ThomannsError?) -> Unit ->
-                    this.getPlayerIcon(thomannDao.userId ?: "", onComplete)
-                }
-                val thomannPlayerIcon = ThomannPlayerIcon(loader)
-                val thomann = toThomann(thomannDao!!, thomannPlayerIcon)
-                onComplete(thomann, null)
-            } else {
-                onComplete(null, ThomannsError(2))
-            }
-        }
-    }
-
-    override fun getThomannActions(
-        id: String,
-        onComplete: (ThomannActions?, ThomannsError?) -> Unit
-    ) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId()
-            thomannsDao.getThomannActions(id, userId ?: "") { thomannActionsDao, e ->
-                if (thomannActionsDao != null) {
-                    val thomannActions = toThomannActions(thomannActionsDao)
-                    onComplete(thomannActions, null)
-                } else {
-                    val error = ThomannsError(2)
-                    onComplete(null, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(2)
-            onComplete(null, error)
-        }
-    }
-
-    override fun saveThomann(
+    override fun create(
         thomann: Thomann,
-        onComplete: (Boolean, ThomannsError?) -> Unit
+        onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
     ) {
-        val userDataProfiles = authDao.getUserDataProfiles()
-        var authUser: AuthUser? = null
-        if (userDataProfiles.count() > 0) {
-            authUser = userDataProfiles[0]
-        } else {
-            val error = AuthenticationError(5)
-            throw AuthenticationException(error)
-        }
-        val thomannDao = ThomannDao(
-            id = null,
-            userId = authUser.id,
-            name = authUser.name,
-            city = thomann.city,
-            isLocked = false,
-            creationDate = null,
-            validUntil = thomann.validUntil,
-            users = listOf()
-        )
-        thomannsDao.createThomann(thomannDao) { isSuccessful, error ->
-            if (isSuccessful) {
-                onComplete(true, null)
-            } else {
-                onComplete(false, ThomannsError(2))
-            }
-        }
-    }
-
-    override fun updateThomann(thomann: Thomann, onComplete: (Boolean, ThomannsError?) -> Unit) {
-        val thomannDao = ThomannDao(
-            id = thomann.id,
-            userId = null,
-            name = null,
-            city = thomann.city,
-            isLocked = thomann.isLocked,
-            creationDate = null,
-            validUntil = thomann.validUntil,
-            users = null
-        )
-        thomannsDao.updateThomann(thomannDao) { isSuccessful, error ->
-            if (isSuccessful) {
-                onComplete(true, null)
-            } else {
-                onComplete(false, ThomannsError(2))
-            }
-        }
-    }
-
-    private fun getPlayerIcon(userId: String, onComplete: (Bitmap?, ThomannsError?) -> Unit) {
-        playersDao.getPlayerIcon(userId) { playerIcon, e ->
-            if (playerIcon != null) {
-                onComplete(playerIcon, null)
-            } else {
-                onComplete(null, ThomannsError(2))
-            }
-        }
-    }
-
-    override fun join(id: String, amount: Double, onComplete: (Boolean, ThomannsError?) -> Unit) {
-        if (isUserLoggedIn() == true) {
-            val userDataProfiles = authDao.getUserDataProfiles()
-            var authUser: AuthUser? = null
-            if (userDataProfiles.count() > 0) {
-                authUser = userDataProfiles[0]
-            } else {
-                val error = AuthenticationError(5)
-                throw AuthenticationException(error)
-            }
-            val thomannUser = ThomannUser(
-                userId = authUser.id,
-                userName = authUser.name,
-                thomannId = id,
-                amount = amount,
-                isCurrentUser = null,
-                isUserCreator = null,
-                icon = null,
-                joinDate = null
-            )
-            val thomannUserDao = toThomannUserDao(thomannUser)!!
-            thomannsDao.joinThomann(id, thomannUserDao) { isSuccessful, e ->
-                if (isSuccessful) {
-                    onComplete(true, null)
+        if (user.isUserLoggedIn()) {
+            val createThomannRequest = CreateThomannRequest(validUntil = null)
+            thomannsDao.create(createThomannRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    val thomannDetails = toThomannDetails(thomannDetailsResponse)
+                    onComplete(thomannDetails, null)
                 } else {
-                    val error = ThomannsError(2)
-                    onComplete(false, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    override fun deleteThomann(id: String, onComplete: (Boolean, ThomannsError?) -> Unit) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId()
-            thomannsDao.deleteThomann(id, userId ?: "") { isSuccessful, e ->
-                if (isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    val error = ThomannsError(2)
-                    onComplete(false, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(2)
-            onComplete(false, error)
-        }
-    }
-
-    override fun leaveThomann(
-        id: String,
-        onComplete: (Boolean, ThomannsError?) -> Unit
-    ) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId() ?: ""
-            thomannsDao.leaveThomann(id, userId) { isSuccessful, e ->
-                if (isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    val error = ThomannsError(2)
-                    onComplete(false, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    override fun lockThomann(
-        thomannId: String,
-        onComplete: (Boolean, ThomannsError?) -> Unit
-    ) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId() ?: ""
-            thomannsDao.lockThomann(thomannId, userId) { isSuccessful, e ->
-                if (isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    val error = ThomannsError(2)
-                    onComplete(false, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    override fun unlockThomann(
-        thomannId: String,
-        onComplete: (Boolean, ThomannsError?) -> Unit
-    ) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId() ?: ""
-            thomannsDao.unlockThomann(thomannId, userId) { isSuccessful, e ->
-                if (isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    val error = ThomannsError(2)
-                    onComplete(false, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    override fun kickUserFromThomann(
-        thomannId: String,
-        userToKickId: String,
-        onComplete: (Boolean, ThomannsError?) -> Unit
-    ) {
-        if (isUserLoggedIn() == true) {
-            val userId = authDao.getUserId() ?: ""
-            thomannsDao.kickUserFromThomann(thomannId, userId, userToKickId) { isSuccessful, e ->
-                if (isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    val error = ThomannsError(2)
-                    onComplete(false, error)
-                }
-            }
-        } else {
-            val error = ThomannsError(3)
-            throw ThomannsException(error)
-        }
-    }
-
-    private fun isUserLoggedIn(): Boolean {
-        return authDao.getUserId() != null
-    }
-
-    private fun toThomann(thomannDao: ThomannDao?, thomannPlayerIcon: ThomannPlayerIcon?) : Thomann? {
-        if (thomannDao != null) {
-            return Thomann(
-                thomannDao.id,
-                thomannDao.userId,
-                thomannDao.name,
-                thomannDao.city,
-                thomannDao.isLocked,
-                thomannDao.creationDate,
-                thomannDao.validUntil,
-                thomannDao.users?.map { tud ->
-                    val loader = { onComplete: (Bitmap?, ThomannsError?) -> Unit ->
-                        this.getPlayerIcon(tud.userId ?: "", onComplete)
+                    when (thomannsDaoResponseStatus.error) {
+                        ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE -> {
+                            onComplete(null, ThomannsErrors.INVALID_VALID_UNTIL_DATE)
+                        }
+                        else -> {
+                            onComplete(null, ThomannsErrors.UNKNOWN)
+                        }
                     }
-                    val thomannPlayerUserIcon = ThomannPlayerIcon(loader)
-                    toThomannUser(tud, thomannDao.userId ?: "", thomannPlayerUserIcon)!!
-                },
-                thomannPlayerIcon
-            )
-        }
-        return null
-    }
-
-    private fun toThomannUser(thomannUserDao: ThomannUserDao?, creatorUserId: String, thomannPlayerIcon: ThomannPlayerIcon?) : ThomannUser? {
-        if (thomannUserDao != null) {
-            var isCurrentUser = false
-            var isCurrentUserCreator = false
-            if (thomannUserDao.userId != null) {
-                isCurrentUser = thomannUserDao.userId == authDao.getUserId()
-                isCurrentUserCreator = creatorUserId == authDao.getUserId()
+                }
             }
-            return ThomannUser(
-                thomannUserDao.userId,
-                thomannUserDao.userName,
-                thomannUserDao.thomannId,
-                thomannUserDao.amount,
-                isCurrentUser,
-                isCurrentUserCreator,
-                thomannPlayerIcon,
-                thomannUserDao.joinDate
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun update(
+        thomannId: Int,
+        thomann: Thomann,
+        onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            // TODO: maybe pass UpdateThomannRequest to this method as a parameter
+            val updateThomannRequest = UpdateThomannRequest(
+                isLocked = thomann.isLocked,
+                validUntil = null
+            )
+            thomannsDao.update(thomannId, updateThomannRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    val thomannDetails = toThomannDetails(thomannDetailsResponse)
+                    onComplete(thomannDetails, null)
+                } else {
+                    when (thomannsDaoResponseStatus.error) {
+                        ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE -> {
+                            onComplete(null, ThomannsErrors.INVALID_VALID_UNTIL_DATE)
+                        }
+                        else -> {
+                            onComplete(null, ThomannsErrors.UNKNOWN)
+                        }
+                    }
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun delete(
+        thomannId: Int,
+        onComplete: (ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            thomannsDao.delete(thomannId, user.getBearerAccessToken()!!) { thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful) {
+                    onComplete(null)
+                } else {
+                    onComplete(ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun thomanns(onComplete: (List<Thomann>?, ThomannsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            thomannsDao.thomanns(user.getBearerAccessToken()!!) { thomannsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannsResponse != null) {
+                    val thomanns = thomannsResponse.map { td ->
+                        val loader = { onComplete: (Bitmap?, ThomannsErrors?) -> Unit ->
+                            this.playersDao.playerIcon(td.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, playersDaoResponseStatus ->
+                                onComplete(icon, null)
+                            }
+                        }
+                        val thomannPlayerIcon = ThomannPlayerIcon(loader)
+                        toThomann(td, thomannPlayerIcon)
+                    }
+                    onComplete(thomanns, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun thomannDetails(
+        thomannId: Int,
+        onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            thomannsDao.thomannDetails(thomannId, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    val thomannDetails = toThomannDetails(thomannDetailsResponse)
+                    onComplete(thomannDetails, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun join(
+        thomannId: Int,
+        amount: Double,
+        onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            val joinRequest = JoinThomannRequest(amount)
+            thomannsDao.join(thomannId, joinRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    val thomannDetails = toThomannDetails(thomannDetailsResponse)
+                    onComplete(thomannDetails, null)
+                } else {
+                    when (thomannsDaoResponseStatus.error) {
+                        ThomannsDaoResponseStatus.Errors.INVALID_VALID_UNTIL_DATE -> {
+                            onComplete(null, ThomannsErrors.INVALID_VALID_UNTIL_DATE)
+                        }
+                        ThomannsDaoResponseStatus.Errors.INVALID_AMOUNT -> {
+                            onComplete(null, ThomannsErrors.INVALID_AMOUNT)
+                        }
+                        else -> {
+                            onComplete(null, ThomannsErrors.UNKNOWN)
+                        }
+                    }
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun quit(
+        thomannId: Int,
+        onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            thomannsDao.quit(thomannId, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    val thomannDetails = toThomannDetails(thomannDetailsResponse)
+                    onComplete(thomannDetails, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun kick(
+        thomannId: Int,
+        userToKickId: Int,
+        onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            val kickRequest = KickThomannRequest(userToKickId)
+            thomannsDao.kick(thomannId, kickRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
+                if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    val thomannDetails = toThomannDetails(thomannDetailsResponse)
+                    onComplete(thomannDetails, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun toThomann(thomannResponse: ThomannResponse, icon: ThomannPlayerIcon): Thomann {
+        val thomannUserConcise = ThomannUserConcise(
+            id = thomannResponse.user?.id,
+            name = thomannResponse.user?.name
+        )
+        return Thomann(
+            id = thomannResponse.id,
+            user = thomannUserConcise,
+            city = thomannResponse.city,
+            isOwner = thomannResponse.isOwner,
+            isLocked = thomannResponse.isLocked,
+            isAccessible = thomannResponse.isAccessible,
+            createdAt = thomannResponse.createdAt,
+            validUntil = thomannResponse.validUntil,
+            icon = icon
+        )
+    }
+
+    private fun toThomannDetails(thomannDetailsResponse: ThomannDetailsResponse): ThomannDetails {
+        val thomannUsers = thomannDetailsResponse.users?.map { thomannUserResponse ->
+            val loader = { onComplete: (Bitmap?, ThomannsErrors?) -> Unit ->
+                this.playersDao.playerIcon(thomannUserResponse.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, _ ->
+                    onComplete(icon, null)
+                }
+            }
+            ThomannUser(
+                id = thomannUserResponse.id,
+                user = ThomannUserConcise(
+                    id = thomannUserResponse.user?.id,
+                    name = thomannUserResponse.user?.name
+                ),
+                amount = thomannUserResponse.amount,
+                createdAt = thomannUserResponse.createdAt,
+                isCurrentUser = thomannUserResponse.isCurrentUser,
+                actions = thomannUserResponse.actions,
+                icon = ThomannPlayerIcon(loader)
             )
         }
-        return null
-    }
-
-    private fun toThomannUserDao(thomannUser: ThomannUser?) : ThomannUserDao? {
-        if (thomannUser != null) {
-            return ThomannUserDao(
-                thomannUser.userId,
-                thomannUser.userName,
-                thomannUser.thomannId,
-                thomannUser.amount,
-                thomannUser.joinDate
-            )
-        }
-        return null
-    }
-
-    private fun toThomannActions(thomannActionsDao: ThomannActionsDao?) : ThomannActions? {
-        if (thomannActionsDao != null) {
-            return ThomannActions(
-                thomannActionsDao.thomannId,
-                thomannActionsDao.isAccessible,
-                thomannActionsDao.isJoinable,
-                thomannActionsDao.isLeavable,
-                thomannActionsDao.isUpdatable
-            )
-        }
-        return null
-    }
-}
-
-class ThomannsException(error: ThomannsError)
-    : Exception(error.message) {}
-
-class ThomannsError(val code: Int) {
-    val message: String = when(code) {
-        1 -> THOMANN_NOT_FOUND
-        2 -> SOMETHING_FAILED
-        3 -> USER_NOT_LOGGED_IN
-        else -> ""
-    }
-
-    companion object {
-        const val THOMANN_NOT_FOUND = "Thomann was not found!"
-        const val SOMETHING_FAILED = "Something failed"
-        const val USER_NOT_LOGGED_IN = "User is not logged in!"
+        return ThomannDetails(
+            id = thomannDetailsResponse.id,
+            user = ThomannUserConcise(
+                id = thomannDetailsResponse.user?.id,
+                name = thomannDetailsResponse.user?.name
+            ),
+            city = thomannDetailsResponse.city,
+            isOwner = thomannDetailsResponse.isOwner,
+            isLocked = thomannDetailsResponse.isLocked,
+            createdAt = thomannDetailsResponse.createdAt,
+            validUntil = thomannDetailsResponse.validUntil,
+            users = if (thomannUsers != null) ArrayList(thomannUsers) else null,
+            totalAmount = thomannDetailsResponse.totalAmount,
+            actions = thomannDetailsResponse.actions
+        )
     }
 }

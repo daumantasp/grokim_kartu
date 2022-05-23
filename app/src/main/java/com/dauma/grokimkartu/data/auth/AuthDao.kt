@@ -1,18 +1,11 @@
 package com.dauma.grokimkartu.data.auth
 
-import com.dauma.grokimkartu.data.auth.entities.AuthUser
+import com.dauma.grokimkartu.data.auth.entities.*
 
 interface AuthDao {
-    fun registerUser(email: String, password: String, onComplete: (Boolean, String?, Exception?) -> Unit)
-    fun updateUser(name: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun loginUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun sendPasswordResetEmail(email: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun getUserId(): String?
-    fun logOut()
-    fun isEmailVerified(): Boolean
-    fun sendEmailVerification()
-    fun deleteUser(onComplete: (Boolean, String?, Exception?) -> Unit)
-    fun reauthenticateUser(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit)
-    fun getUserDataProfiles(): List<AuthUser>
-    fun updateUserPassword(newPassword: String, onComplete: (Boolean, Exception?) -> Unit)
+    fun register(registrationRequest: RegistrationRequest, onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit)
+    fun login(loginRequest: LoginRequest, onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit)
+    fun logout(accessToken: String, onComplete: (AuthDaoResponseStatus) -> Unit)
+    fun delete(accessToken: String, onComplete: (AuthDaoResponseStatus) -> Unit)
+    fun changePassword(accessToken: String, changePasswordRequest: ChangePasswordRequest, onComplete: (AuthDaoResponseStatus) -> Unit)
 }

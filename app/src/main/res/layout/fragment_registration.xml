@@ -226,17 +226,17 @@
                     app:onClick="@{() -> model.okClicked()}"
                     app:text="@string/registration_okButton" />
 
-                <TextView
-                    android:id="@+id/resendTextView"
-                    style="@style/Text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:enabled="false"
-                    android:onClick="@{() -> model.resendClicked()}"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:text="@string/registration_resendButton" />
+<!--                <TextView-->
+<!--                    android:id="@+id/resendTextView"-->
+<!--                    style="@style/Text"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:enabled="false"-->
+<!--                    android:onClick="@{() -> model.resendClicked()}"-->
+<!--                    android:paddingTop="10dp"-->
+<!--                    android:paddingBottom="10dp"-->
+<!--                    android:text="@string/registration_resendButton" />-->
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

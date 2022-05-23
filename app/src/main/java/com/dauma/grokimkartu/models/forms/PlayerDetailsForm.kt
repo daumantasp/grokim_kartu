@@ -7,7 +7,7 @@ import com.dauma.grokimkartu.BR
 
 class PlayerDetailsForm: BaseObservable() {
     @get:Bindable
-    var userId: String = ""
+    var userId: Int = -1
         private set(value) {
             field = value
             notifyPropertyChanged(BR.userId)
@@ -49,7 +49,7 @@ class PlayerDetailsForm: BaseObservable() {
         }
 
     fun setInitialValues(
-        userId: String,
+        userId: Int,
         name: String,
         instrument: String,
         description: String,

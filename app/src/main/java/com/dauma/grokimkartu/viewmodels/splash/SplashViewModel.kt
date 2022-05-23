@@ -3,13 +3,13 @@ package com.dauma.grokimkartu.viewmodels.splash
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.repositories.users.UsersRepository
+import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val usersRepository: UsersRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
@@ -21,15 +21,15 @@ class SplashViewModel @Inject constructor(
     }
 
     fun splashCompleted() {
-        if (usersRepository.isUserLoggedIn()) {
-            if (usersRepository.isEmailVerified()) {
-                _navigateToPlayers.value = Event("")
-            } else {
-                usersRepository.logOut()
-                _navigateToLogin.value = Event("")
-            }
-        } else {
+//        if (authRepository.isUserLoggedIn()) {
+//            if (authRepository.isEmailVerified()) {
+//                _navigateToPlayers.value = Event("")
+//            } else {
+//                authRepository.logOut()
+//                _navigateToLogin.value = Event("")
+//            }
+//        } else {
             _navigateToLogin.value = Event("")
-        }
+//        }
     }
 }

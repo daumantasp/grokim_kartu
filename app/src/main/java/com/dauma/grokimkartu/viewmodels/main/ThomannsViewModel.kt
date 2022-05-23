@@ -16,11 +16,11 @@ class ThomannsViewModel @Inject constructor(
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _navigateToCreation = MutableLiveData<Event<String>>()
     private val _thomannsListData = MutableLiveData<List<ThomannsListData>>()
-    private val _thomannDetails = MutableLiveData<Event<String>>()
+    private val _thomannDetails = MutableLiveData<Event<Int>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val navigateToCreation: LiveData<Event<String>> = _navigateToCreation
     val thomannsListData: LiveData<List<ThomannsListData>> = _thomannsListData
-    val thomannDetails: LiveData<Event<String>> = _thomannDetails
+    val thomannDetails: LiveData<Event<Int>> = _thomannDetails
 
     companion object {
         private val TAG = "ThomannViewModel"
@@ -34,10 +34,11 @@ class ThomannsViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    fun thomannItemClicked(thomannId: String) {
-        thomannsRepository.getThomannActions(thomannId) { thomannActions, error ->
-            if (thomannActions?.isAccessible == true) {
+    fun thomannItemClicked(thomannId: Int) {
+        for (thomannListData in thomannsListData.value ?: listOf()) {
+            if (thomannListData.thomann.id == thomannId && thomannListData.thomann.isAccessible == true) {
                 _thomannDetails.value = Event(thomannId)
+                break
             }
         }
     }
@@ -47,8 +48,8 @@ class ThomannsViewModel @Inject constructor(
     }
 
     private fun loadThomanns() {
-        thomannsRepository.getThomanns() { isSuccessful, thomanns, e ->
-            if (isSuccessful && thomanns != null) {
+        thomannsRepository.thomanns() { thomanns, e ->
+            if (thomanns != null) {
                 val list: MutableList<ThomannsListData> = mutableListOf()
                 for (thomann in thomanns) {
                     list.add(ThomannsListData(thomann))

@@ -75,18 +75,18 @@ class ProfileEditForm: BaseObservable() {
         }
 
     fun setInitialValues(
-        name: String,
-        instrument: String,
-        description: String,
-        city: String
+        name: String?,
+        instrument: String?,
+        description: String?,
+        city: String?
     ) {
-        this.initialInstrument = instrument
-        this.initialDescription = description
-        this.initialCity = city
-        this.name = name
-        this.instrument = instrument
-        this.description = description
-        this.city = city
+        this.initialInstrument = instrument ?: ""
+        this.initialDescription = description ?: ""
+        this.initialCity = city ?: ""
+        this.name = name ?: ""
+        this.instrument = instrument ?: ""
+        this.description = description ?: ""
+        this.city = city ?: ""
     }
 
     fun setInitialPhoto(photo: Bitmap?) {

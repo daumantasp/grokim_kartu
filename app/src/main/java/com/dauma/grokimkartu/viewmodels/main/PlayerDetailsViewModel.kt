@@ -17,7 +17,7 @@ class PlayerDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     // READ https://medium.com/@fabioCollini/android-data-binding-f9f9d3afc761
-    private val userId = savedStateHandle.get<String>("userId")
+    private val userId = savedStateHandle.get<Int>("userId")
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _detailsLoaded = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
@@ -48,9 +48,9 @@ class PlayerDetailsViewModel @Inject constructor(
             }
         }
 
-        playersRepository.getPlayerDetails(userId ?: "") { playerDetails, playersError ->
+        playersRepository.playerDetails(userId ?: -1) { playerDetails, playersError ->
             this.playerDetailsForm.setInitialValues(
-                userId ?: "",
+                userId ?: -1,
                 playerDetails?.name ?: "",
                 playerDetails?.instrument ?: "",
                 playerDetails?.description ?: "",
@@ -59,7 +59,7 @@ class PlayerDetailsViewModel @Inject constructor(
             isDetailsLoaded = true
             checkIfFullProfileLoaded()
         }
-        playersRepository.getPlayerPhoto(userId ?: "") { playerPhoto, playerError ->
+        playersRepository.playerPhoto(userId ?: -1) { playerPhoto, playerError ->
             if (playerPhoto != null) {
                 this.playerDetailsForm.setInitialPhoto(playerPhoto)
             }
