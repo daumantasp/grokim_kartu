@@ -45,6 +45,9 @@
         <item name="secondaryTextInputHintColor">@color/violetBlue</item>
         <item name="secondaryTextInputBoxStrokeColor">@color/violetBlue</item>
 
+        <item name="dialogTextInputBackgroundColor">@color/lightGrey</item>
+        <item name="dialogTextInputHintColor">@color/violetBlue</item>
+
         <item name="selectPhotoButtonBackgroundColor">@color/violetBlue</item>
         <item name="selectPhotoButtonIconColor">@color/white</item>
 
@@ -93,6 +96,8 @@
         <item name="thomannDetailsItemBackgroundColor">@color/white</item>
 
         <item name="thomannDetailsKickUserColor">@color/cherryRed</item>
+
+        <item name="codeValueItemBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -182,6 +187,18 @@
         <item name="android:textColorHint">?attr/secondaryTextInputHintColor</item>
         <item name="hintTextColor">?attr/secondaryTextInputHintColor</item>
         <item name="boxStrokeColor">?attr/secondaryTextInputBoxStrokeColor</item>
+    </style>
+
+    <style name="DialogTextInput" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">?attr/dialogTextInputBackgroundColor</item>
+        <item name="android:textColorHint">?attr/dialogTextInputHintColor</item>
+        <item name="hintTextColor">?attr/dialogTextInputHintColor</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
     <style name="HeaderTitle">

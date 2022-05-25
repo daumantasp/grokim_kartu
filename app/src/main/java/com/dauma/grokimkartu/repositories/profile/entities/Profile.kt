@@ -6,7 +6,7 @@ data class Profile(
     var userId: Int?,
     var name: String?,
     var description: String?,
-    var city: String?,
+    var city: ProfileCity?,
     var instrument: String?,
     var createdAt: Timestamp?
 )

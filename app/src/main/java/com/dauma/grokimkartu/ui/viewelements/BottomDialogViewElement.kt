@@ -11,11 +11,18 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import androidx.core.view.doOnLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDate
+import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
+import com.dauma.grokimkartu.ui.main.adapters.BottomDialogCodeValueAdapter
+import com.dauma.grokimkartu.ui.main.adapters.CodeValue
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,9 +36,13 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     private val valueEditText: EditText
     private val valueLimitTextView: TextView
     private val datePicker: DatePicker
+    private val codeValueLinearLayout: LinearLayout
+    private val codeValueSearchEditText: TextInputEditText
+    private val codeValueRecyclerView: RecyclerView
     private val saveButton: ButtonViewElement
     private var onValueChanged: (String) -> Unit = {}
     private var valueCharsLimit: Int? = null
+    private var codeValues: MutableList<CodeValue> = mutableListOf()
     @Inject lateinit var utils: Utils
 
     companion object {
@@ -48,6 +59,9 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         valueEditText = findViewById(R.id.valueEditText)
         valueLimitTextView = findViewById(R.id.valueLimitTextView)
         datePicker = findViewById(R.id.datePicker)
+        codeValueLinearLayout = findViewById(R.id.codeValueLinearLayout)
+        codeValueSearchEditText = findViewById(R.id.codeValueTextInputEditText)
+        codeValueRecyclerView = findViewById(R.id.codeValueRecyclerView)
         saveButton = findViewById(R.id.saveButton)
 
         contentLinearLayout.setOnClickListener {}
@@ -59,6 +73,13 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
                 if (valueLimitTextView.visibility == View.VISIBLE) {
                     valueLimitTextView.text = getValueCharLimitsText()
                 }
+            }
+        })
+        codeValueSearchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                onValueChanged(p0.toString())
             }
         })
 
@@ -76,7 +97,9 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         setOnCancelClick { data.onCancelClicked() }
 
         datePicker.visibility = View.GONE
+        codeValueLinearLayout.visibility = View.GONE
         valueEditText.visibility = View.VISIBLE
+        saveButton.visibility = View.VISIBLE
     }
 
     fun bindDatePickerData(data: BottomDialogDatePickerData) {
@@ -107,7 +130,31 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         })
 
         valueEditText.visibility = View.GONE
+        codeValueLinearLayout.visibility = View.GONE
         datePicker.visibility = View.VISIBLE
+        saveButton.visibility = View.VISIBLE
+    }
+
+    fun bindCodeValueData(data: BottomDialogCodeValueData) {
+        reset()
+        setTitle(data.title)
+        codeValues.clear()
+        codeValues.addAll(data.codeValues)
+        setupCodeValueRecyclerView(codeValues, data.onCodeValueClicked)
+        setOnValueChanged { value ->
+                data.onSearchValueChanged(value)
+        }
+
+        valueEditText.visibility = View.GONE
+        datePicker.visibility = View.GONE
+        saveButton.visibility = View.GONE
+        codeValueLinearLayout.visibility = View.VISIBLE
+    }
+
+    fun setCodeValues(codeValues: List<CodeValue>) {
+        this.codeValues.clear()
+        this.codeValues.addAll(codeValues)
+        codeValueRecyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun setTitle(title: String) {
@@ -156,7 +203,15 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         }
     }
 
+    private fun setupCodeValueRecyclerView(codeValues: List<CodeValue>, onItemClicked: (String) -> Unit) {
+        codeValueRecyclerView.layoutManager = LinearLayoutManager(context)
+        codeValueRecyclerView.adapter = BottomDialogCodeValueAdapter(codeValues, onItemClicked)
+    }
+
     private fun reset() {
+        setOnValueChanged {}
+        setOnCancelClick {}
+        setOnCancelClick {}
         titleTextView.text = ""
         valueEditText.setText("")
         valueEditText.filters = arrayOf()
@@ -166,6 +221,8 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         valueCharsLimit = null
         valueEditText.visibility = View.GONE
         datePicker.visibility = View.GONE
+        codeValues.clear()
+        codeValueSearchEditText.setText("")
         hide(animated = false)
     }
 

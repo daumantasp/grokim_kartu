@@ -2,8 +2,12 @@ package com.dauma.grokimkartu.di
 
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
+import com.dauma.grokimkartu.data.cities.CitiesDao
+import com.dauma.grokimkartu.data.cities.CitiesDaoImpl
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
+import com.dauma.grokimkartu.data.instruments.InstrumentsDao
+import com.dauma.grokimkartu.data.instruments.InstrumentsDaoImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoImpl
 import com.dauma.grokimkartu.data.profile.ProfileDao
@@ -167,8 +171,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepository(profileDao: ProfileDao, user: User) : ProfileRepository {
-        return ProfileRepositoryImpl(profileDao, user)
+    fun provideProfileRepository(profileDao: ProfileDao, citiesDao: CitiesDao, user: User) : ProfileRepository {
+        return ProfileRepositoryImpl(profileDao, citiesDao, user)
     }
 
     @Provides
@@ -180,6 +184,16 @@ class AppModule {
     @Singleton
     fun providesThomannsRepository(thomannsDao: ThomannsDao, playersDao: PlayersDao, user: User) : ThomannsRepository {
         return ThomannsRepositoryImpl(thomannsDao, playersDao, user)
+    }
+
+    @Provides
+    fun providesCitiesDao(retrofit: Retrofit) : CitiesDao {
+        return CitiesDaoImpl(retrofit)
+    }
+
+    @Provides
+    fun providesInstrumentsDao(retrofit: Retrofit) : InstrumentsDao {
+        return InstrumentsDaoImpl(retrofit)
     }
 
     @Provides

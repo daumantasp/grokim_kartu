@@ -3,11 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable-xhdpi/code_value_item_background.xml" value="0.223" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/locked_icon.xml" value="0.199" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/player_item_background.xml" value="0.1495" />
+        <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/row_background_with_bottom_border.xml" value="0.22" />
+        <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/row_background_with_top_border.xml" value="0.22" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/select_photo_button.xml" value="0.199" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/thomann_details_item_background.xml" value="0.1495" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable/unlocked_icon.xml" value="0.199" />
+        <entry key="..\:/Development/grokim_kartu/app/src/main/res/layout/code_value_item.xml" value="0.3177083333333333" />
+        <entry key="..\:/Development/grokim_kartu/app/src/main/res/layout/element_bottom_dialog.xml" value="0.4053442028985507" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/layout/element_row.xml" value="0.21197916666666666" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/layout/fragment_login.xml" value="0.1984375" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/layout/fragment_player_details.xml" value="0.19114583333333332" />

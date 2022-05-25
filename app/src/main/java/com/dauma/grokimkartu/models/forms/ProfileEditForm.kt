@@ -4,11 +4,13 @@ import android.graphics.Bitmap
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
+import com.dauma.grokimkartu.ui.main.adapters.CodeValue
 
 class ProfileEditForm: BaseObservable() {
     private var initialInstrument: String = ""
     private var initialDescription: String = ""
-    private var initialCity: String = ""
+    private var initialCity: ProfileCity = ProfileCity()
     private var initialPhoto: Bitmap? = null
 
     @get:Bindable
@@ -59,12 +61,14 @@ class ProfileEditForm: BaseObservable() {
         }
 
     @get:Bindable
-    var city: String = ""
+    var city: ProfileCity = ProfileCity()
         set(value) {
-            field = value.take(cityMaxLength)
+            field = value
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
         }
+    var pickableCities: List<ProfileCity> = listOf()
+    var filteredPickableCities: List<ProfileCity> = listOf()
 
     @get:Bindable
     var photo: Bitmap? = null
@@ -78,15 +82,15 @@ class ProfileEditForm: BaseObservable() {
         name: String?,
         instrument: String?,
         description: String?,
-        city: String?
+        city: ProfileCity?
     ) {
         this.initialInstrument = instrument ?: ""
         this.initialDescription = description ?: ""
-        this.initialCity = city ?: ""
+        this.initialCity = city ?: ProfileCity()
         this.name = name ?: ""
         this.instrument = instrument ?: ""
         this.description = description ?: ""
-        this.city = city ?: ""
+        this.city = city ?: ProfileCity()
     }
 
     fun setInitialPhoto(photo: Bitmap?) {
@@ -102,7 +106,7 @@ class ProfileEditForm: BaseObservable() {
     fun areValuesChanged(): Boolean {
         return initialInstrument != instrument ||
                 initialDescription != description ||
-                initialCity != city
+                initialCity.id != city.id
     }
 
     fun isPhotoChanged(): Boolean {

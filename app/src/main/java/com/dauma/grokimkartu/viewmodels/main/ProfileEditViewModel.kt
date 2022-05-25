@@ -7,7 +7,7 @@ import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
-import com.dauma.grokimkartu.repositories.profile.entities.Profile
+import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -20,9 +20,11 @@ class ProfileEditViewModel @Inject constructor(
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _selectPhoto = MutableLiveData<Event<String>>()
     private val _profileLoaded = MutableLiveData<Event<String>>()
+    private val _city = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
+    val city: LiveData<Event<String>> = _city
 
     fun getProfileEditForm(): ProfileEditForm {
         return profileEditForm
@@ -34,6 +36,7 @@ class ProfileEditViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadProfile()
+        loadPickableCities()
     }
 
     fun loadProfile() {
@@ -65,19 +68,51 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
+    private fun loadPickableCities() {
+        profileRepository.cities { citiesResponse, profileErrors ->
+            if (citiesResponse != null) {
+                profileEditForm.pickableCities = citiesResponse
+                profileEditForm.filteredPickableCities = citiesResponse
+            }
+        }
+    }
+
     fun selectPhoto() {
         _selectPhoto.value = Event("")
     }
 
+    fun cityClicked() {
+        profileEditForm.filteredPickableCities = profileEditForm.pickableCities
+        _city.value = Event("")
+    }
+
+    fun searchCity(value: String, onComplete: () -> Unit) {
+        if (value.length > 2) {
+            profileRepository.searchCity(value) { citiesResponse, profileErrors ->
+                if (citiesResponse != null) {
+                    profileEditForm.filteredPickableCities = citiesResponse
+                }
+                onComplete()
+            }
+        } else {
+            profileEditForm.filteredPickableCities = profileEditForm.pickableCities
+            onComplete()
+        }
+    }
+
+    fun citySelected(id: Int) {
+        val city = profileEditForm.pickableCities.firstOrNull { cv -> cv.id == id }
+        if (city != null) {
+            profileEditForm.city = city
+        }
+    }
+
     fun saveChanges(onComplete: () -> Unit = {}) {
         if (profileEditForm.areValuesChanged()) {
-            val updatedProfile = Profile(
-                userId = null,
-                name = null,
-                instrument = null,
+            val updatedProfile = UpdateProfile(
                 description = profileEditForm.description,
-                city = null,
-                createdAt = null
+                cityId = profileEditForm.city.id,
+                instrumentId = null
             )
 
             profileRepository.update(updatedProfile) { profile, profileErrors ->

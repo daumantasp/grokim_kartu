@@ -5,19 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ProfileEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +31,7 @@ class ProfileEditFragment : Fragment() {
     @Inject lateinit var utils: Utils
     private var galleryResult: ActivityResultLauncher<Intent>
     //    private var cameraResult: ActivityResultLauncher<Intent>
+    private var isDialogShown: Boolean = false
 
     private var _binding: FragmentProfileEditBinding? = null
     // This property is only valid between onCreateView and
@@ -84,6 +86,10 @@ class ProfileEditFragment : Fragment() {
             profileEditViewModel.backClicked()
         }
 
+        binding.cityInputEditText.setOnClickListener {
+            profileEditViewModel.cityClicked()
+        }
+
         binding.saveChangesButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 binding.saveChangesButton.showAnimation(true)
@@ -96,7 +102,12 @@ class ProfileEditFragment : Fragment() {
 
     private fun setupObservers() {
         profileEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+            if (isDialogShown == true) {
+                dialogsManager?.hideBottomDialog()
+                isDialogShown = false
+            } else {
+                this.findNavController().popBackStack()
+            }
         })
         profileEditViewModel.profileLoaded.observe(viewLifecycleOwner, EventObserver {
             if (profileEditViewModel.getProfileEditForm().photo == null) {
@@ -112,6 +123,37 @@ class ProfileEditFragment : Fragment() {
         profileEditViewModel.selectPhoto.observe(viewLifecycleOwner, EventObserver {
             val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             galleryResult.launch(pickIntent)
+        })
+        profileEditViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
+            this.isDialogShown = true
+            this.dialogsManager?.let { manager ->
+                val pickableCitiesAsCodeValues = profileEditViewModel
+                    .getProfileEditForm()
+                    .filteredPickableCities
+                    .map { pc -> pc.toCodeValue() }
+
+                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                    title = getString(R.string.profile_edit_city),
+                    codeValues = pickableCitiesAsCodeValues,
+                    onSearchValueChanged = { value ->
+                        this.profileEditViewModel.searchCity(value) {
+                            val pickableCitiesAsCodeValues = profileEditViewModel
+                                .getProfileEditForm()
+                                .filteredPickableCities
+                                .map { pc -> pc.toCodeValue() }
+                            manager.setCodeValues(pickableCitiesAsCodeValues)
+                        }
+                    },
+                    onCodeValueClicked = { code ->
+                        val id = code.toIntOrNull()
+                        if (id != null) {
+                            this.profileEditViewModel.citySelected(id)
+                            manager.hideBottomDialog()
+                        }
+                    },
+                    onCancelClicked = {}
+                ))
+            }
         })
     }
 

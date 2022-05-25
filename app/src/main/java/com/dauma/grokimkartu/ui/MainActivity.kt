@@ -14,6 +14,7 @@ import androidx.core.view.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.ui.main.adapters.CodeValue
 import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -160,6 +161,21 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
 
             dialog.bindDatePickerData(data)
             dialog.show(animated = true)
+        }
+    }
+
+    override fun showBottomCodeValueDialog(data: BottomDialogCodeValueData) {
+        bottomDialogViewElement?.let { dialog ->
+            bottomNavigationView?.translationZ = -30.0f
+
+            dialog.bindCodeValueData(data)
+            dialog.show(animated = true)
+        }
+    }
+
+    override fun setCodeValues(codeValues: List<CodeValue>) {
+        bottomDialogViewElement?.let { dialog ->
+            dialog.setCodeValues(codeValues)
         }
     }
 

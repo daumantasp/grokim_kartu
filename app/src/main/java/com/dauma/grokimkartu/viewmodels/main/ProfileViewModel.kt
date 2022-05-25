@@ -45,7 +45,7 @@ class ProfileViewModel @Inject constructor(
                 name = profile?.name,
                 instrument = profile?.instrument,
                 description = profile?.description,
-                city = profile?.city
+                city = profile?.city?.name
             )
             isProfileLoaded = true
             checkIfFullProfileLoaded()

@@ -34,6 +34,9 @@
     <attr name="secondaryTextInputHintColor" format="color" />
     <attr name="secondaryTextInputBoxStrokeColor" format="color" />
 
+    <attr name="dialogTextInputBackgroundColor" format="color" />
+    <attr name="dialogTextInputHintColor" format="color" />
+
     <attr name="selectPhotoButtonBackgroundColor" format="color" />
     <attr name="selectPhotoButtonIconColor" format="color" />
 
@@ -85,6 +88,8 @@
 
     <attr name="thomannDetailsItemBackgroundColor" format="color" />
     <attr name="thomannDetailsKickUserColor" format="color" />
+
+    <attr name="codeValueItemBackgroundColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />

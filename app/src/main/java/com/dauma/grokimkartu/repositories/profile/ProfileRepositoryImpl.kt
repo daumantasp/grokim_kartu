@@ -1,15 +1,20 @@
 package com.dauma.grokimkartu.repositories.profile
 
 import android.graphics.Bitmap
+import com.dauma.grokimkartu.data.cities.CitiesDao
+import com.dauma.grokimkartu.data.cities.entities.CityResponse
 import com.dauma.grokimkartu.data.profile.ProfileDao
 import com.dauma.grokimkartu.data.profile.ProfileDaoResponseStatus
 import com.dauma.grokimkartu.data.profile.entities.ProfileResponse
 import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.profile.entities.Profile
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
+import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
+    private val citiesDao: CitiesDao,
     private val user: User
 ) : ProfileRepository {
     override fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit) {
@@ -27,12 +32,45 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun update(profile: Profile, onComplete: (Profile?, ProfileErrors?) -> Unit) {
+    override fun cities(onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            citiesDao.cities(user.getBearerAccessToken()!!) { citiesResponse, citiesDaoResponseStatus ->
+                if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
+                    val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
+                    onComplete(profileCities, null)
+                } else {
+                    onComplete(null, ProfileErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun searchCity(
+        value: String,
+        onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            citiesDao.search(value, user.getBearerAccessToken()!!) { citiesResponse, citiesDaoResponseStatus ->
+                if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
+                    val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
+                    onComplete(profileCities, null)
+                } else {
+                    onComplete(null, ProfileErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun update(updateProfile: UpdateProfile, onComplete: (Profile?, ProfileErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
             val updateProfileRequest = UpdateProfileRequest(
-                description = profile.description,
-                cityId = null,
-                instrumentId = null
+                description = updateProfile.description,
+                cityId = updateProfile.cityId,
+                instrumentId = updateProfile.instrumentId
             )
             profileDao.update(updateProfileRequest, user.getBearerAccessToken()!!) { profileResponse, profileDaoResponseStatus ->
                 if (profileDaoResponseStatus.isSuccessful && profileResponse != null) {
@@ -111,13 +149,24 @@ class ProfileRepositoryImpl(
     }
 
     private fun toProfile(profileResponse: ProfileResponse): Profile {
-         return Profile(
+        val profileCity = ProfileCity(
+            profileResponse.city?.id,
+            profileResponse.city?.name
+        )
+        return Profile(
             userId = profileResponse.user,
             name = profileResponse.name,
             description = profileResponse.description,
-            city = profileResponse.city,
+            city = profileCity,
             instrument = profileResponse.instrument,
             createdAt = profileResponse.createdAt
+        )
+    }
+
+    private fun toProfileCity(cityResponse: CityResponse): ProfileCity {
+        return ProfileCity(
+            id = cityResponse.id,
+            name = cityResponse.name
         )
     }
 }
