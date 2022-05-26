@@ -43,7 +43,7 @@ class ProfileViewModel @Inject constructor(
         profileRepository.profile { profile, profileErrors ->
             this.profileForm.setValues(
                 name = profile?.name,
-                instrument = profile?.instrument,
+                instrument = profile?.instrument?.name,
                 description = profile?.description,
                 city = profile?.city?.name
             )

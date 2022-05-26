@@ -171,8 +171,13 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideProfileRepository(profileDao: ProfileDao, citiesDao: CitiesDao, user: User) : ProfileRepository {
-        return ProfileRepositoryImpl(profileDao, citiesDao, user)
+    fun provideProfileRepository(
+        profileDao: ProfileDao,
+        citiesDao: CitiesDao,
+        instrumentsDao: InstrumentsDao,
+        user: User
+    ) : ProfileRepository {
+        return ProfileRepositoryImpl(profileDao, citiesDao, instrumentsDao, user)
     }
 
     @Provides

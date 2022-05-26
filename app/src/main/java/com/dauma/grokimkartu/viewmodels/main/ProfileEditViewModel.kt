@@ -21,10 +21,12 @@ class ProfileEditViewModel @Inject constructor(
     private val _selectPhoto = MutableLiveData<Event<String>>()
     private val _profileLoaded = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
+    private val _instrument = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
     val city: LiveData<Event<String>> = _city
+    val instrument: LiveData<Event<String>> = _instrument
 
     fun getProfileEditForm(): ProfileEditForm {
         return profileEditForm
@@ -37,6 +39,7 @@ class ProfileEditViewModel @Inject constructor(
     fun viewIsReady() {
         loadProfile()
         loadPickableCities()
+        loadPickableInstruments()
     }
 
     fun loadProfile() {
@@ -77,6 +80,15 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
+    private fun loadPickableInstruments() {
+        profileRepository.instruments { instrumentsResponse, profileErrors ->
+            if (instrumentsResponse != null) {
+                profileEditForm.pickableInstruments = instrumentsResponse
+                profileEditForm.filteredPickableInstruments = instrumentsResponse
+            }
+        }
+    }
+
     fun selectPhoto() {
         _selectPhoto.value = Event("")
     }
@@ -84,6 +96,11 @@ class ProfileEditViewModel @Inject constructor(
     fun cityClicked() {
         profileEditForm.filteredPickableCities = profileEditForm.pickableCities
         _city.value = Event("")
+    }
+
+    fun instrumentClicked() {
+        profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
+        _instrument.value = Event("")
     }
 
     fun searchCity(value: String, onComplete: () -> Unit) {
@@ -100,10 +117,31 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
+    fun searchInstrument(value: String, onComplete: () -> Unit) {
+        if (value.length > 2) {
+            profileRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
+                if (instrumentsResponse != null) {
+                    profileEditForm.filteredPickableInstruments = instrumentsResponse
+                }
+                onComplete()
+            }
+        } else {
+            profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
+            onComplete()
+        }
+    }
+
     fun citySelected(id: Int) {
-        val city = profileEditForm.pickableCities.firstOrNull { cv -> cv.id == id }
+        val city = profileEditForm.pickableCities.firstOrNull { pc -> pc.id == id }
         if (city != null) {
             profileEditForm.city = city
+        }
+    }
+
+    fun instrumentSelected(id: Int) {
+        val instrument = profileEditForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
+        if (instrument != null) {
+            profileEditForm.instrument = instrument
         }
     }
 
@@ -112,7 +150,7 @@ class ProfileEditViewModel @Inject constructor(
             val updatedProfile = UpdateProfile(
                 description = profileEditForm.description,
                 cityId = profileEditForm.city.id,
-                instrumentId = null
+                instrumentId = profileEditForm.instrument.id
             )
 
             profileRepository.update(updatedProfile) { profile, profileErrors ->

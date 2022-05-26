@@ -90,6 +90,10 @@ class ProfileEditFragment : Fragment() {
             profileEditViewModel.cityClicked()
         }
 
+        binding.instrumentInputEditText.setOnClickListener {
+            profileEditViewModel.instrumentClicked()
+        }
+
         binding.saveChangesButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 binding.saveChangesButton.showAnimation(true)
@@ -149,6 +153,39 @@ class ProfileEditFragment : Fragment() {
                         if (id != null) {
                             this.profileEditViewModel.citySelected(id)
                             manager.hideBottomDialog()
+                            this.isDialogShown = false
+                        }
+                    },
+                    onCancelClicked = {}
+                ))
+            }
+        })
+        profileEditViewModel.instrument.observe(viewLifecycleOwner, EventObserver { codeValues ->
+            this.isDialogShown = true
+            this.dialogsManager?.let { manager ->
+                val pickableInstrumentsAsCodeValues = profileEditViewModel
+                    .getProfileEditForm()
+                    .filteredPickableInstruments
+                    .map { pi -> pi.toCodeValue() }
+
+                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                    title = getString(R.string.profile_edit_instrument),
+                    codeValues = pickableInstrumentsAsCodeValues,
+                    onSearchValueChanged = { value ->
+                        this.profileEditViewModel.searchInstrument(value) {
+                            val pickableInstrumentsAsCodeValues = profileEditViewModel
+                                .getProfileEditForm()
+                                .filteredPickableInstruments
+                                .map { pi -> pi.toCodeValue() }
+                            manager.setCodeValues(pickableInstrumentsAsCodeValues)
+                        }
+                    },
+                    onCodeValueClicked = { code ->
+                        val id = code.toIntOrNull()
+                        if (id != null) {
+                            this.profileEditViewModel.instrumentSelected(id)
+                            manager.hideBottomDialog()
+                            this.isDialogShown = false
                         }
                     },
                     onCancelClicked = {}

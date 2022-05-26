@@ -5,10 +5,10 @@ import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
-import com.dauma.grokimkartu.ui.main.adapters.CodeValue
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileInstrument
 
 class ProfileEditForm: BaseObservable() {
-    private var initialInstrument: String = ""
+    private var initialInstrument: ProfileInstrument = ProfileInstrument()
     private var initialDescription: String = ""
     private var initialCity: ProfileCity = ProfileCity()
     private var initialPhoto: Bitmap? = null
@@ -33,12 +33,14 @@ class ProfileEditForm: BaseObservable() {
         }
 
     @get:Bindable
-    var instrument: String = ""
+    var instrument: ProfileInstrument = ProfileInstrument()
         set(value) {
-            field = value.take(instrumentMaxLength)
+            field = value
             notifyPropertyChanged(BR.instrument)
             notifyPropertyChanged(BR.changed)
         }
+    var pickableInstruments: List<ProfileInstrument> = listOf()
+    var filteredPickableInstruments: List<ProfileInstrument> = listOf()
 
     @get:Bindable
     var descriptionMaxLength: Int = 300
@@ -80,15 +82,15 @@ class ProfileEditForm: BaseObservable() {
 
     fun setInitialValues(
         name: String?,
-        instrument: String?,
+        instrument: ProfileInstrument?,
         description: String?,
         city: ProfileCity?
     ) {
-        this.initialInstrument = instrument ?: ""
+        this.initialInstrument = instrument ?: ProfileInstrument()
         this.initialDescription = description ?: ""
         this.initialCity = city ?: ProfileCity()
         this.name = name ?: ""
-        this.instrument = instrument ?: ""
+        this.instrument = instrument ?: ProfileInstrument()
         this.description = description ?: ""
         this.city = city ?: ProfileCity()
     }
@@ -104,7 +106,7 @@ class ProfileEditForm: BaseObservable() {
     }
 
     fun areValuesChanged(): Boolean {
-        return initialInstrument != instrument ||
+        return initialInstrument.id != instrument.id ||
                 initialDescription != description ||
                 initialCity.id != city.id
     }

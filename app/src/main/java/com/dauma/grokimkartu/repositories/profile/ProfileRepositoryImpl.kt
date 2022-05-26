@@ -3,6 +3,8 @@ package com.dauma.grokimkartu.repositories.profile
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.cities.CitiesDao
 import com.dauma.grokimkartu.data.cities.entities.CityResponse
+import com.dauma.grokimkartu.data.instruments.InstrumentsDao
+import com.dauma.grokimkartu.data.instruments.entities.InstrumentResponse
 import com.dauma.grokimkartu.data.profile.ProfileDao
 import com.dauma.grokimkartu.data.profile.ProfileDaoResponseStatus
 import com.dauma.grokimkartu.data.profile.entities.ProfileResponse
@@ -10,11 +12,13 @@ import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.profile.entities.Profile
 import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileInstrument
 import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
     private val citiesDao: CitiesDao,
+    private val instrumentsDao: InstrumentsDao,
     private val user: User
 ) : ProfileRepository {
     override fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit) {
@@ -56,6 +60,39 @@ class ProfileRepositoryImpl(
                 if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
                     val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
                     onComplete(profileCities, null)
+                } else {
+                    onComplete(null, ProfileErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun instruments(onComplete: (List<ProfileInstrument>?, ProfileErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            instrumentsDao.instruments(user.getBearerAccessToken()!!) { instrumentsResponse, instrumentsDaoResponseStatus ->
+                if (instrumentsDaoResponseStatus.isSuccessful && instrumentsResponse != null) {
+                    val profileInstruments = instrumentsResponse.map { ir -> toProfileInstrument(ir) }
+                    onComplete(profileInstruments, null)
+                } else {
+                    onComplete(null, ProfileErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun searchInstrument(
+        value: String,
+        onComplete: (List<ProfileInstrument>?, ProfileErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            instrumentsDao.search(value, user.getBearerAccessToken()!!) { instrumentsResponse, instrumentsDaoResponseStatus ->
+                if (instrumentsDaoResponseStatus.isSuccessful && instrumentsResponse != null) {
+                    val profileInstruments = instrumentsResponse.map { ir -> toProfileInstrument(ir) }
+                    onComplete(profileInstruments, null)
                 } else {
                     onComplete(null, ProfileErrors.UNKNOWN)
                 }
@@ -153,12 +190,16 @@ class ProfileRepositoryImpl(
             profileResponse.city?.id,
             profileResponse.city?.name
         )
+        val profileInstrument = ProfileInstrument(
+            profileResponse.instrument?.id,
+            profileResponse.instrument?.name
+        )
         return Profile(
             userId = profileResponse.user,
             name = profileResponse.name,
             description = profileResponse.description,
             city = profileCity,
-            instrument = profileResponse.instrument,
+            instrument = profileInstrument,
             createdAt = profileResponse.createdAt
         )
     }
@@ -167,6 +208,13 @@ class ProfileRepositoryImpl(
         return ProfileCity(
             id = cityResponse.id,
             name = cityResponse.name
+        )
+    }
+
+    private fun toProfileInstrument(instrumentResponse: InstrumentResponse): ProfileInstrument {
+        return ProfileInstrument(
+            id = instrumentResponse.id,
+            name = instrumentResponse.name
         )
     }
 }
