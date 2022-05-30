@@ -10,6 +10,7 @@ import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUser
+import com.dauma.grokimkartu.repositories.thomanns.entities.UpdateThomann
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.sql.Timestamp
 import javax.inject.Inject
@@ -85,18 +86,12 @@ class ThomannDetailsViewModel @Inject constructor(
 
     fun lockClicked(isLocked: Boolean) {
         if (thomannId != null) {
-            val thomann = Thomann(
-                id = null,
-                user = null,
-                city = null,
-                isOwner = null,
+            val updateThomann = UpdateThomann(
                 isLocked = isLocked,
-                isAccessible = null,
-                createdAt = null,
-                validUntil = null,
-                icon = null
+                cityId = null,
+                validUntil = null
             )
-            thomannsRepository.update(thomannId, thomann) { thomannDetails, thomannsErrors ->
+            thomannsRepository.update(thomannId, updateThomann) { thomannDetails, thomannsErrors ->
                 if (thomannDetails != null) {
                     this.loadDetails()
                 }
@@ -126,7 +121,7 @@ class ThomannDetailsViewModel @Inject constructor(
                 val isQuitable = thomannDetails.actions?.contains("QUIT")
                 details = ThomannDetails(
                     user = thomannDetails.user?.name,
-                    city = thomannDetails.city,
+                    city = thomannDetails.city?.name,
                     isOwner = thomannDetails.isOwner,
                     isLocked = thomannDetails.isLocked,
                     createdAt = thomannDetails.createdAt,

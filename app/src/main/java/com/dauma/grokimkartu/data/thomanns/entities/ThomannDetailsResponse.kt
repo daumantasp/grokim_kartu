@@ -1,12 +1,13 @@
 package com.dauma.grokimkartu.data.thomanns.entities
 
+import com.dauma.grokimkartu.data.cities.entities.CityResponse
 import com.google.gson.annotations.SerializedName
 import java.sql.Timestamp
 
 data class ThomannDetailsResponse(
     @SerializedName("id") var id: Int?,
     @SerializedName("user") var user: ThomannUserConciseResponse?,
-    @SerializedName("city") var city: String?,
+    @SerializedName("city") var city: CityResponse?,
     @SerializedName("is_owner") var isOwner: Boolean?,
     @SerializedName("is_locked") var isLocked: Boolean?,
     @SerializedName("created_at") var createdAt: Timestamp?,

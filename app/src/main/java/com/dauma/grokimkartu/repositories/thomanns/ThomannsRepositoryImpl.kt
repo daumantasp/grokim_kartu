@@ -1,25 +1,33 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
 import android.graphics.Bitmap
+import com.dauma.grokimkartu.data.cities.CitiesDao
+import com.dauma.grokimkartu.data.cities.entities.CityResponse
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoResponseStatus
 import com.dauma.grokimkartu.data.thomanns.entities.*
 import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.repositories.profile.ProfileErrors
+import com.dauma.grokimkartu.repositories.profile.ProfileException
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
 
 class ThomannsRepositoryImpl(
     private val thomannsDao: ThomannsDao,
     private val playersDao: PlayersDao,
+    private val citiesDao: CitiesDao,
     private val user: User
 ) : ThomannsRepository {
 
     override fun create(
-        thomann: Thomann,
+        createThomann: CreateThomann,
         onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
     ) {
         if (user.isUserLoggedIn()) {
-            val createThomannRequest = CreateThomannRequest(validUntil = null)
+            val createThomannRequest = CreateThomannRequest(
+                cityId = createThomann.cityId,
+                validUntil = createThomann.validUntil
+            )
             thomannsDao.create(createThomannRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
                 if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
                     val thomannDetails = toThomannDetails(thomannDetailsResponse)
@@ -42,14 +50,14 @@ class ThomannsRepositoryImpl(
 
     override fun update(
         thomannId: Int,
-        thomann: Thomann,
+        updateThomann: UpdateThomann,
         onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit
     ) {
         if (user.isUserLoggedIn()) {
-            // TODO: maybe pass UpdateThomannRequest to this method as a parameter
             val updateThomannRequest = UpdateThomannRequest(
-                isLocked = thomann.isLocked,
-                validUntil = null
+                isLocked = updateThomann.isLocked,
+                cityId = updateThomann.cityId,
+                validUntil = updateThomann.validUntil
             )
             thomannsDao.update(thomannId, updateThomannRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
                 if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
@@ -197,6 +205,39 @@ class ThomannsRepositoryImpl(
         }
     }
 
+    override fun cities(onComplete: (List<ThomannCity>?, ThomannsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            citiesDao.cities(user.getBearerAccessToken()!!) { citiesResponse, citiesDaoResponseStatus ->
+                if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
+                    val thomannCities = citiesResponse.map { cr -> toThomannCity(cr) }
+                    onComplete(thomannCities, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun searchCity(
+        value: String,
+        onComplete: (List<ThomannCity>?, ThomannsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            citiesDao.search(value, user.getBearerAccessToken()!!) { citiesResponse, citiesDaoResponseStatus ->
+                if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
+                    val thomannCities = citiesResponse.map { cr -> toThomannCity(cr) }
+                    onComplete(thomannCities, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
     private fun toThomann(thomannResponse: ThomannResponse, icon: ThomannPlayerIcon): Thomann {
         val thomannUserConcise = ThomannUserConcise(
             id = thomannResponse.user?.id,
@@ -241,7 +282,10 @@ class ThomannsRepositoryImpl(
                 id = thomannDetailsResponse.user?.id,
                 name = thomannDetailsResponse.user?.name
             ),
-            city = thomannDetailsResponse.city,
+            city = ThomannCity(
+                id = thomannDetailsResponse.city?.id,
+                name = thomannDetailsResponse.city?.name
+            ),
             isOwner = thomannDetailsResponse.isOwner,
             isLocked = thomannDetailsResponse.isLocked,
             createdAt = thomannDetailsResponse.createdAt,
@@ -249,6 +293,13 @@ class ThomannsRepositoryImpl(
             users = if (thomannUsers != null) ArrayList(thomannUsers) else null,
             totalAmount = thomannDetailsResponse.totalAmount,
             actions = thomannDetailsResponse.actions
+        )
+    }
+
+    private fun toThomannCity(cityResponse: CityResponse): ThomannCity {
+        return ThomannCity(
+            id = cityResponse.id,
+            name = cityResponse.name
         )
     }
 }

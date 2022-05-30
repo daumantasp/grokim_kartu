@@ -5,9 +5,10 @@ import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannCity
 
 class ThomannEditForm: BaseObservable() {
-    private var initialCity: String = ""
+    private var initialCity: ThomannCity = ThomannCity()
     private var initialValidUntil: String = ""
     private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
@@ -18,12 +19,14 @@ class ThomannEditForm: BaseObservable() {
         }
 
     @get:Bindable
-    var city: String = ""
+    var city: ThomannCity = ThomannCity()
         set(value) {
-            field = value.take(cityMaxLength)
+            field = value
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
         }
+    var pickableCities: List<ThomannCity> = listOf()
+    var filteredPickableCities: List<ThomannCity> = listOf()
 
     @get:Bindable
     var validUntil: String = ""
@@ -34,12 +37,12 @@ class ThomannEditForm: BaseObservable() {
     }
 
     fun setInitialValues(
-        city: String?,
+        city: ThomannCity?,
         validUntil: String?
     ) {
-        this.initialCity = city ?: ""
+        this.initialCity = city ?: ThomannCity()
         this.initialValidUntil = validUntil ?: ""
-        this.city = city ?: ""
+        this.city = city ?: ThomannCity()
         this.validUntil = validUntil ?: ""
     }
 
@@ -47,14 +50,8 @@ class ThomannEditForm: BaseObservable() {
         return formFields
     }
 
-    fun onClick() {
-        if (isChanged()) {
-            formFields.value = listOf(city, validUntil)
-        }
-    }
-
     @Bindable
     fun isChanged(): Boolean {
-        return initialCity != city || initialValidUntil != validUntil
+        return initialCity.id != city.id || initialValidUntil != validUntil
     }
 }

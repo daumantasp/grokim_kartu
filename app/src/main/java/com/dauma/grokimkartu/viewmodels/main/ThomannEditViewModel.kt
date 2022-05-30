@@ -8,7 +8,9 @@ import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ThomannEditForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
+import com.dauma.grokimkartu.repositories.thomanns.entities.CreateThomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.dauma.grokimkartu.repositories.thomanns.entities.UpdateThomann
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
 import java.sql.Date
@@ -24,8 +26,10 @@ class ThomannEditViewModel @Inject constructor(
 ) : ViewModel() {
     private val thomannId = savedStateHandle.get<Int>("thomannId")
     private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _city = MutableLiveData<Event<String>>()
     private val _validUntil = MutableLiveData<Event<List<Any>>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
+    val city: LiveData<Event<String>> = _city
     val validUntil: LiveData<Event<List<Any>>> = _validUntil
 
     fun thomannEditForm(): ThomannEditForm {
@@ -34,6 +38,30 @@ class ThomannEditViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadDetailsIfNeeded()
+        loadPickableCities()
+    }
+
+    private fun loadPickableCities() {
+        thomannsRepository.cities { citiesResponse, thomannErrors ->
+            if (citiesResponse != null) {
+                thomannEditForm.pickableCities = citiesResponse
+                thomannEditForm.filteredPickableCities = citiesResponse
+            }
+        }
+    }
+
+    fun searchCity(value: String, onComplete: () -> Unit) {
+        if (value.length > 2) {
+            thomannsRepository.searchCity(value) { citiesResponse, thomannErrors ->
+                if (citiesResponse != null) {
+                    thomannEditForm.filteredPickableCities = citiesResponse
+                }
+                onComplete()
+            }
+        } else {
+            thomannEditForm.filteredPickableCities = thomannEditForm.pickableCities
+            onComplete()
+        }
     }
 
     fun backClicked() {
@@ -57,6 +85,18 @@ class ThomannEditViewModel @Inject constructor(
         }
     }
 
+    fun cityClicked() {
+        thomannEditForm.filteredPickableCities = thomannEditForm.pickableCities
+        _city.value = Event("")
+    }
+
+    fun citySelected(id: Int) {
+        val city = thomannEditForm.pickableCities.firstOrNull { pc -> pc.id == id }
+        if (city != null) {
+            thomannEditForm.city = city
+        }
+    }
+
     fun validUntilClicked() {
         val currentDate = utils.timeUtils.getCurrentDate()
         val minDate = utils.timeUtils.addDays(currentDate, 1)
@@ -77,36 +117,36 @@ class ThomannEditViewModel @Inject constructor(
         _validUntil.value = Event(listOf(selectedDate, minDate, maxDate, isSaveButtonEnabled))
     }
 
-    fun saveClicked(city: String, validUntil: String) {
-        val validUntilAsDate = utils.timeUtils.parseToDate(validUntil)
+    fun saveChanges(onComplete: () -> Unit = {}) {
+        val validUntilAsDate = utils.timeUtils.parseToDate(thomannEditForm.validUntil)
         var validUntilTimestamp: Timestamp? = null
         if (validUntilAsDate != null) {
             val validUntilInMillis = utils.timeUtils.convertToTimeInMillis(validUntilAsDate)
             validUntilTimestamp = Timestamp(validUntilInMillis)
         }
-        val thomann = Thomann(
-            id = null,
-            user = null,
-            city = null,
-            isOwner = null,
-            isLocked = null,
-            isAccessible = null,
-            createdAt = null,
-            validUntil = validUntilTimestamp,
-            icon = null
-        )
         try {
             if (thomannId == null) {
-                thomannsRepository.create(thomann) { thomannDetails, thomannsErrors ->
+                val createThomann = CreateThomann(
+                    cityId = thomannEditForm.city.id,
+                    validUntil = validUntilTimestamp
+                )
+                thomannsRepository.create(createThomann) { thomannDetails, thomannsErrors ->
                     if (thomannDetails != null) {
                         _navigateBack.value = Event("")
                     }
+                    onComplete()
                 }
             } else {
-                thomannsRepository.update(thomannId!!, thomann) { thomannDetails, thomannsErrors ->
+                val updateThomann = UpdateThomann(
+                    isLocked = null,
+                    cityId = thomannEditForm.city.id,
+                    validUntil = validUntilTimestamp
+                )
+                thomannsRepository.update(thomannId!!, updateThomann) { thomannDetails, thomannsErrors ->
                     if (thomannDetails != null) {
                         _navigateBack.value = Event("")
                     }
+                    onComplete()
                 }
             }
         } catch (e: Exception) {}

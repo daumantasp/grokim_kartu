@@ -14,6 +14,7 @@ import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDate
+import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
@@ -65,9 +66,22 @@ class ThomannEditFragment : Fragment() {
             thomannEditViewModel.backClicked()
         }
 
+        binding.cityInputEditText.setOnClickListener {
+            thomannEditViewModel.cityClicked()
+        }
+
         binding.validUntilInputEditText.setOnClickListener {
             thomannEditViewModel.validUntilClicked()
         }
+
+        binding.saveThomannButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                binding.saveThomannButton.showAnimation(true)
+                thomannEditViewModel.saveChanges {
+                    binding.saveThomannButton.showAnimation(false)
+                }
+            }
+        })
     }
 
     private fun setupObservers() {
@@ -79,13 +93,45 @@ class ThomannEditFragment : Fragment() {
                 this.findNavController().popBackStack()
             }
         })
+        thomannEditViewModel.city.observe(viewLifecycleOwner, EventObserver {
+            this.isDialogShown = true
+            this.dialogsManager?.let { manager ->
+                val pickableCitiesAsCodeValues = thomannEditViewModel
+                    .thomannEditForm()
+                    .filteredPickableCities
+                    .map { pc -> pc.toCodeValue() }
+
+                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                    title = getString(R.string.thomann_edit_city),
+                    codeValues = pickableCitiesAsCodeValues,
+                    onSearchValueChanged = { value ->
+                        this.thomannEditViewModel.searchCity(value) {
+                            val pickableCitiesAsCodeValues = thomannEditViewModel
+                                .thomannEditForm()
+                                .filteredPickableCities
+                                .map { pc -> pc.toCodeValue() }
+                            manager.setCodeValues(pickableCitiesAsCodeValues)
+                        }
+                    },
+                    onCodeValueClicked = { code ->
+                        val id = code.toIntOrNull()
+                        if (id != null) {
+                            this.thomannEditViewModel.citySelected(id)
+                            manager.hideBottomDialog()
+                            this.isDialogShown = false
+                        }
+                    },
+                    onCancelClicked = {}
+                ))
+            }
+        })
         thomannEditViewModel.validUntil.observe(viewLifecycleOwner, EventObserver {
+            this.isDialogShown = true
             val currentDate = it[0] as CustomDate
             val minDate = it[1] as CustomDate
             val maxDate = it[2] as CustomDate
             val isSaveButtonEnabled = it[3] as Boolean
             this.dialogsManager?.let { manager ->
-                this.isDialogShown = true
                 manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
                     title = getString(R.string.thomann_edit_valid_until),
                     selectedDate = currentDate,
@@ -108,9 +154,6 @@ class ThomannEditFragment : Fragment() {
                 ))
             }
         })
-        thomannEditViewModel.thomannEditForm().getFormFields().observe(viewLifecycleOwner) {
-            this.thomannEditViewModel.saveClicked(it[0], it[1])
-        }
     }
 
     override fun onDestroyView() {

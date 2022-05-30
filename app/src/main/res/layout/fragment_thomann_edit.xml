@@ -45,7 +45,9 @@
                             android:id="@+id/cityInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="60dp"
-                            android:text="@={model.thomannEditForm().city}"
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:text="@{model.thomannEditForm().city.name}"
                             android:hint="@string/thomann_edit_city"
                             android:singleLine="true"
                             android:maxLines="1"
@@ -90,7 +92,6 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="30dp"
                         app:enabled="@{model.thomannEditForm().isChanged}"
-                        app:onClick="@{() -> model.thomannEditForm().onClick()}"
                         app:text="@string/thomann_edit_save"
                         app:type="primary" />
             </LinearLayout>

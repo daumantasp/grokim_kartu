@@ -5,5 +5,6 @@ import java.sql.Timestamp
 
 data class UpdateThomannRequest(
     @SerializedName("is_locked") var isLocked: Boolean?,
+    @SerializedName("city_id") var cityId: Int?,
     @SerializedName("valid_until") var validUntil: Timestamp?
 )
