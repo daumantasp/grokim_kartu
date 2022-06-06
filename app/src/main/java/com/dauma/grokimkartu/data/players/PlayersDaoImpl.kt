@@ -3,23 +3,19 @@ package com.dauma.grokimkartu.data.players
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.dauma.grokimkartu.data.players.entities.PlayerDetailsResponse
-import com.dauma.grokimkartu.data.players.entities.PlayerResponse
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Headers
-import retrofit2.http.Path
+import retrofit2.http.*
 
 class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
     private val retrofitPlayers: RetrofitPlayers = retrofit.create(RetrofitPlayers::class.java)
 
-    override fun players(accessToken: String, onComplete: (List<PlayerResponse>?, PlayersDaoResponseStatus) -> Unit) {
-        retrofitPlayers.players(accessToken).enqueue(object : Callback<PlayersResponse> {
+    override fun players(page: Int, pageSize: Int, accessToken: String, onComplete: (PlayersResponse?, PlayersDaoResponseStatus) -> Unit) {
+        retrofitPlayers.players(page, pageSize, accessToken).enqueue(object : Callback<PlayersResponse> {
             override fun onResponse(
                 call: Call<PlayersResponse>,
                 response: Response<PlayersResponse>
@@ -28,7 +24,7 @@ class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
                     200 -> {
                         val playersResponse = response.body()
                         val status = PlayersDaoResponseStatus(true, null)
-                        onComplete(playersResponse?.data, status)
+                        onComplete(playersResponse, status)
                     }
                     else -> {
                         val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
@@ -171,7 +167,13 @@ class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
     }
 
     private interface RetrofitPlayers {
-        @GET("players") fun players(@Header("Authorization") accessToken: String): Call<PlayersResponse>
+        @GET("players")
+        fun players(
+            @Query("page") page: Int,
+            @Query("page_size") pageSize: Int,
+            @Header("Authorization") accessToken: String
+        ): Call<PlayersResponse>
+
         @GET("player/details/{id}") fun playerDetails(@Header("Authorization") accessToken: String, @Path("id") id: Int) : Call<PlayerDetailsResponse>
         @GET("player/icon/{id}") fun icon(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ResponseBody>
 
