@@ -15,7 +15,6 @@ import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
-import com.dauma.grokimkartu.ui.main.adapters.PlayersListData
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -85,11 +84,14 @@ class PlayersFragment : Fragment() {
             })
     }
 
-    private fun setupPlayersRecyclerView(playersListData: List<PlayersListData>) {
+    private fun setupPlayersRecyclerView(playersListData: List<Any>) {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.playersRecyclerView.adapter = PlayersListAdapter(requireContext(), playersListData, utils) { userId ->
-            this.playersViewModel.playerClicked(userId)
-        }
+        binding.playersRecyclerView.adapter = PlayersListAdapter(
+            context = requireContext(),
+            playersListData = playersListData,
+            utils = utils,
+            onItemClicked = { userId -> this.playersViewModel.playerClicked(userId) },
+            loadNextPage = { this.playersViewModel.loadNextPlayersPage() })
         isPlayersRecyclerViewSetup = true
     }
 }

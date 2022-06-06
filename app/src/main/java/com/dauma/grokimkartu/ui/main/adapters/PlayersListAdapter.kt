@@ -23,11 +23,17 @@ import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
 class PlayersListAdapter(
     val context: Context,
-    private val playersListData: List<PlayersListData>,
+    private val playersListData: List<Any>,
     private val utils: Utils,
-    private val onItemClicked: (Int) -> Unit
-) : RecyclerView.Adapter<PlayersListAdapter.ViewHolder>() {
+    private val onItemClicked: (Int) -> Unit,
+    private val loadNextPage: () -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    companion object {
+        private const val PLAYER = 1
+        private const val LAST = 2
+    }
 
     init {
         // You may need to call mutate() on the drawable or else all icons are affected.
@@ -42,58 +48,30 @@ class PlayersListAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.player_item, parent, false))
+    override fun getItemViewType(position: Int): Int {
+        if (playersListData[position] is PlayerLastInPageData) {
+            return LAST
+        } else if (playersListData[position] is PlayersListData) {
+            return PLAYER
+        }
+        return PLAYER
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val playerData = playersListData[position]
-        holder.nameTextView.text = playerData.player.name
-        holder.instrumentTextView.text = playerData.player.instrument
-        holder.cityTextView.text = playerData.player.city
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == PLAYER) {
+            return PlayerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.player_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+        } else if (viewType == LAST) {
+            return PlayerLastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.player_last_item, parent, false), loadNextPage)
+        }
+        return PlayerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.player_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+    }
 
-        holder.playerItemContainer.setOnClickListener {
-            this.onItemClicked(playerData.player.userId ?: -1)
-        }
-
-        fun bindOrUnbindPhoto() {
-            if (playerData.player.icon.icon != null) {
-                val ovalPhoto = utils.imageUtils.getOvalBitmap(playerData.player.icon.icon!!)
-                holder.photoIcon.setImageBitmap(ovalPhoto)
-                holder.spinnerViewElement.showAnimation(false)
-                holder.initialsViewElement.visibility = View.GONE
-                holder.photoIcon.visibility = View.VISIBLE
-            }
-        }
-        fun bindOrUnbindInitials() {
-            if (playerData.player.icon.icon == null) {
-                val initials = utils.stringUtils.getInitials(playerData.player.name ?: "")
-                holder.initialsViewElement.setInitials(initials)
-                holder.spinnerViewElement.showAnimation(false)
-                holder.photoIcon.visibility = View.GONE
-                holder.initialsViewElement.visibility = View.VISIBLE
-            }
-        }
-        fun bindDownloadInProgress() {
-            holder.photoIcon.setImageDrawable(photoIconBackgroundDrawable)
-            holder.initialsViewElement.visibility = View.GONE
-            holder.photoIcon.visibility = View.VISIBLE
-            holder.spinnerViewElement.showAnimation(true)
-        }
-
-        val iconStatus = playerData.player.icon.status
-        if (iconStatus == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == PlayerIconStatus.DOWNLOADED_ICON_SET) {
-            bindOrUnbindPhoto()
-            bindOrUnbindInitials()
-        } else if (iconStatus == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
-            bindDownloadInProgress()
-        } else if (iconStatus == PlayerIconStatus.NEED_TO_DOWNLOAD) {
-            bindDownloadInProgress()
-            playerData.player.icon.loadIfNeeded { photo, e ->
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-            }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val itemData = playersListData[position]
+        if (holder is PlayerLastViewHolder && itemData is PlayerLastInPageData) {
+            holder.bind(itemData)
+        } else if (holder is PlayerViewHolder && itemData is PlayersListData) {
+            holder.bind(itemData)
         }
     }
 
@@ -101,7 +79,12 @@ class PlayersListAdapter(
         return playersListData.size
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class PlayerViewHolder(
+        val view: View,
+        private val utils: Utils,
+        private val photoIconBackgroundDrawable: Drawable?,
+        private val onItemClicked: (Int) -> Unit,
+    ) : RecyclerView.ViewHolder(view) {
         val playerItemContainer = view.findViewById<LinearLayout>(R.id.playerItemContainer)
         val nameTextView = view.findViewById<TextView>(R.id.playerName)
         val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)
@@ -109,5 +92,66 @@ class PlayersListAdapter(
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
         val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+
+        fun bind(data: PlayersListData) {
+            nameTextView.text = data.player.name
+            instrumentTextView.text = data.player.instrument
+            cityTextView.text = data.player.city
+
+            playerItemContainer.setOnClickListener {
+                this.onItemClicked(data.player.userId ?: -1)
+            }
+
+            fun bindOrUnbindPhoto() {
+                if (data.player.icon.icon != null) {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(data.player.icon.icon!!)
+                    photoIcon.setImageBitmap(ovalPhoto)
+                    spinnerViewElement.showAnimation(false)
+                    initialsViewElement.visibility = View.GONE
+                    photoIcon.visibility = View.VISIBLE
+                }
+            }
+            fun bindOrUnbindInitials() {
+                if (data.player.icon.icon == null) {
+                    val initials = utils.stringUtils.getInitials(data.player.name ?: "")
+                    initialsViewElement.setInitials(initials)
+                    spinnerViewElement.showAnimation(false)
+                    photoIcon.visibility = View.GONE
+                    initialsViewElement.visibility = View.VISIBLE
+                }
+            }
+            fun bindDownloadInProgress() {
+                photoIcon.setImageDrawable(photoIconBackgroundDrawable)
+                initialsViewElement.visibility = View.GONE
+                photoIcon.visibility = View.VISIBLE
+                spinnerViewElement.showAnimation(true)
+            }
+
+            val iconStatus = data.player.icon.status
+            if (iconStatus == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == PlayerIconStatus.DOWNLOADED_ICON_SET) {
+                bindOrUnbindPhoto()
+                bindOrUnbindInitials()
+            } else if (iconStatus == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
+                bindDownloadInProgress()
+            } else if (iconStatus == PlayerIconStatus.NEED_TO_DOWNLOAD) {
+                bindDownloadInProgress()
+                data.player.icon.loadIfNeeded { photo, e ->
+                    bindOrUnbindPhoto()
+                    bindOrUnbindInitials()
+                }
+            }
+        }
+    }
+
+    class PlayerLastViewHolder(
+        view: View,
+        private val loadNextPage: () -> Unit
+    ) : RecyclerView.ViewHolder(view) {
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+
+        fun bind(data: PlayerLastInPageData) {
+            spinnerViewElement.showAnimation(true)
+            loadNextPage()
+        }
     }
 }
