@@ -31,6 +31,8 @@ import com.dauma.grokimkartu.models.forms.*
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.players.PlayersRepositoryImpl
+import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginator
+import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginatorImpl
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import com.dauma.grokimkartu.repositories.profile.ProfileRepositoryImpl
 import com.dauma.grokimkartu.repositories.settings.SettingsRepository
@@ -50,7 +52,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
 
-val BASE_URL = "http://192.168.0.104:8000/api/"
+val BASE_URL = "http://192.168.0.105:8000/api/"
 //val BASE_URL = "http://127.0.0.1:8000/api/"
 //val BASE_URL = "http://10.0.2.2:8000/api/"
 
@@ -159,9 +161,14 @@ class AppModule {
     }
 
     @Provides
+    fun providePlayersPaginator(playersDao: PlayersDao) : PlayersPaginator {
+        return PlayersPaginatorImpl(playersDao)
+    }
+
+    @Provides
     @Singleton
-    fun providePlayersRepository(playersDao: PlayersDao, user: User) : PlayersRepository {
-        return PlayersRepositoryImpl(playersDao, user)
+    fun providePlayersRepository(playersDao: PlayersDao, paginator: PlayersPaginator, user: User) : PlayersRepository {
+        return PlayersRepositoryImpl(playersDao, paginator, user)
     }
 
     @Provides

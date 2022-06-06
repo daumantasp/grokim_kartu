@@ -3,33 +3,31 @@ package com.dauma.grokimkartu.repositories.players
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
+import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
+import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
+import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginator
 
 class PlayersRepositoryImpl(
     private val playersDao: PlayersDao,
+    private val paginator: PlayersPaginator,
     private val user: User
 ) : PlayersRepository {
-    override fun players(onComplete: (List<Player>?, PlayersErrors?) -> Unit) {
+    private val _playersPages: MutableList<PlayersPage> = mutableListOf()
+
+    override val playersPages: List<PlayersPage>
+        get() = _playersPages
+
+    override fun loadNextPage(onComplete: (PlayersPage?, PlayersErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
-            playersDao.players(user.getBearerAccessToken()!!) { playersResponse, playersDaoResponseStatus ->
-                if (playersDaoResponseStatus.isSuccessful && playersResponse != null) {
-                    val players = playersResponse.map { pr ->
-                        val loader = { onComplete: (Bitmap?, PlayersErrors?) -> Unit ->
-                            this.playerIcon(pr.id ?: -1, onComplete)
-                        }
-                        Player(
-                            userId = pr.id,
-                            name = pr.name,
-                            instrument = pr.instrument,
-                            description = "",
-                            icon = PlayerIcon(loader),
-                            city = pr.city
-                        )
-                    }
-                    onComplete(players, null)
+            paginator.loadNextPage(user.getBearerAccessToken()!!) { playersResponse, isLastPage ->
+                if (playersResponse != null) {
+                    val playersPage = toPlayersPage(playersResponse)
+                    _playersPages.add(playersPage)
+                    onComplete(playersPage, null)
                 } else {
                     onComplete(null, PlayersErrors.UNKNOWN)
                 }
@@ -115,4 +113,36 @@ class PlayersRepositoryImpl(
             throw PlayersException(PlayersErrors.USER_NOT_LOGGED_IN)
         }
     }
+
+    override fun clear() {
+        _playersPages.clear()
+        paginator.clear()
+    }
+
+    private fun toPlayersPage(playersResponse: PlayersResponse) : PlayersPage {
+        var players: List<Player> = listOf()
+        var isLastPage: Boolean = false
+
+        if (playersResponse.data != null) {
+            players = playersResponse.data!!.map { pr ->
+                val loader = { onComplete: (Bitmap?, PlayersErrors?) -> Unit ->
+                    this.playerIcon(pr.id ?: -1, onComplete)
+                }
+                Player(
+                    userId = pr.id,
+                    name = pr.name,
+                    instrument = pr.instrument,
+                    description = "",
+                    icon = PlayerIcon(loader),
+                    city = pr.city
+                )
+            }
+        }
+        if (playersResponse.pageData.currentPage != null && playersResponse.pageData.lastPage != null) {
+            isLastPage = playersResponse.pageData.currentPage == playersResponse.pageData.lastPage
+        }
+
+        return PlayersPage(players, isLastPage)
+    }
 }
+
