@@ -43,16 +43,20 @@ class PlayersViewModel @Inject constructor(
     fun loadNextPlayersPage() {
         playersRepository.loadNextPage() { playersPage, e ->
             if (playersPage?.players != null) {
-                if (this.players.lastOrNull() is PlayerLastInPageData) {
-                    this.players.removeLast()
+                val newPlayersData: MutableList<Any> = mutableListOf()
+                newPlayersData.addAll(players)
+                if (newPlayersData.lastOrNull() is PlayerLastInPageData) {
+                    newPlayersData.removeLast()
                 }
                 for (player in playersPage.players) {
-                    this.players.add(PlayersListData((player)))
+                    newPlayersData.add(PlayersListData((player)))
                 }
                 if (playersPage.isLast == false) {
-                    this.players.add(PlayerLastInPageData())
+                    newPlayersData.add(PlayerLastInPageData())
                 }
-                _playersListData.value = this.players
+
+                players = newPlayersData
+                _playersListData.value = players
             }
         }
     }

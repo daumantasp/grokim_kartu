@@ -23,7 +23,7 @@ import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
 class PlayersListAdapter(
     val context: Context,
-    private val playersListData: List<Any>,
+    var playersListData: MutableList<Any>,
     private val utils: Utils,
     private val onItemClicked: (Int) -> Unit,
     private val loadNextPage: () -> Unit

@@ -14,7 +14,9 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.main.adapters.PlayerLastInPageData
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
+import com.dauma.grokimkartu.ui.main.adapters.PlayersListData
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -54,14 +56,6 @@ class PlayersFragment : Fragment() {
             playersViewModel.backClicked()
         }
 
-//        binding.playersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                val firstItem = (binding.playersRecyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-//                binding.playersHeaderViewElement.showShadow(firstItem > 0)
-//                super.onScrolled(recyclerView, dx, dy)
-//            }
-//        })
-
         playersViewModel.viewIsReady()
         return view
     }
@@ -75,11 +69,11 @@ class PlayersFragment : Fragment() {
         playersViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
-        playersViewModel.playersListData.observe(viewLifecycleOwner, Observer {
+        playersViewModel.playersListData.observe(viewLifecycleOwner, Observer { playersListData ->
                 if (isPlayersRecyclerViewSetup == false) {
-                    setupPlayersRecyclerView(it)
+                    setupPlayersRecyclerView(playersListData)
                 } else {
-                    binding.playersRecyclerView.adapter?.notifyDataSetChanged()
+                    reloadRecyclerViewWithNewData(playersListData)
                 }
             })
     }
@@ -88,10 +82,46 @@ class PlayersFragment : Fragment() {
         binding.playersRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.playersRecyclerView.adapter = PlayersListAdapter(
             context = requireContext(),
-            playersListData = playersListData,
+            playersListData = playersListData.toMutableList(),
             utils = utils,
             onItemClicked = { userId -> this.playersViewModel.playerClicked(userId) },
             loadNextPage = { this.playersViewModel.loadNextPlayersPage() })
         isPlayersRecyclerViewSetup = true
+    }
+
+    private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
+        val adapter = binding.playersRecyclerView.adapter
+        if (adapter is PlayersListAdapter) {
+            val previousData = adapter.playersListData
+
+            var changedPosition: Int? = null
+            var firstItemInsertedPosition: Int? = null
+            var itemsInsertedCount: Int = 0
+
+            val previousDataHasLastInPage = previousData.lastOrNull() is PlayerLastInPageData
+            if (previousData.count() == newData.count()) {
+                if (previousDataHasLastInPage && newData.lastOrNull() is PlayersListData) {
+                    changedPosition = previousData.lastIndex
+                }
+            } else if (previousData.count() < newData.count()) {
+                if (previousDataHasLastInPage && newData[previousData.lastIndex] is PlayersListData) {
+                    changedPosition = previousData.lastIndex
+                }
+
+                firstItemInsertedPosition = if (changedPosition != null) changedPosition + 1 else previousData.count()
+                itemsInsertedCount = newData.count() - firstItemInsertedPosition
+            }
+
+            if (changedPosition != null) {
+                adapter.playersListData[changedPosition] = newData[changedPosition]
+                adapter.notifyItemChanged(changedPosition)
+            }
+            if (firstItemInsertedPosition != null) {
+                val toIndex = firstItemInsertedPosition + itemsInsertedCount
+                val newDataToAdd = newData.subList(firstItemInsertedPosition, toIndex)
+                adapter.playersListData.addAll(newDataToAdd)
+                adapter.notifyItemRangeInserted(firstItemInsertedPosition, itemsInsertedCount)
+            }
+        }
     }
 }
