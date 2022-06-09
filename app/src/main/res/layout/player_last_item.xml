@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         android:layout_centerInParent="true"
-        app:unitDimensions="14dp" />
+        app:unitDimensions="14dp"
+        app:color="?attr/spinnerAsLastItemColor" />
 
 </RelativeLayout>

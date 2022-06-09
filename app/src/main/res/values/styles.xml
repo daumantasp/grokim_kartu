@@ -98,6 +98,7 @@
         <item name="thomannDetailsKickUserColor">@color/cherryRed</item>
 
         <item name="codeValueItemBackgroundColor">@color/white</item>
+        <item name="spinnerAsLastItemColor">@color/violetBlue</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

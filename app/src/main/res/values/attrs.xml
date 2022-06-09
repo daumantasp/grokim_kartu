@@ -90,6 +90,7 @@
     <attr name="thomannDetailsKickUserColor" format="color" />
 
     <attr name="codeValueItemBackgroundColor" format="color" />
+    <attr name="spinnerAsLastItemColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
