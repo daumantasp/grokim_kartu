@@ -8,7 +8,7 @@ class PlayersPaginatorImpl(private val playersDao: PlayersDao) : PlayersPaginato
     private var _pages: MutableList<PlayersResponse> = mutableListOf()
     override val pages: List<PlayersResponse>
         get() = _pages
-    override val pageSize: Int = 10
+    override val pageSize: Int = 20
 
     override fun loadNextPage(accessToken: String, onComplete: (PlayersResponse?, PlayersErrors?) -> Unit) {
         if (isLastLoaded() == false) {
