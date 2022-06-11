@@ -13,8 +13,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.ui.main.adapters.ThomannListAdapter
-import com.dauma.grokimkartu.ui.main.adapters.ThomannsListData
+import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -24,7 +23,6 @@ class ThomannsFragment : Fragment() {
     private val thomannsViewModel by viewModels<ThomannsViewModel>()
     private var isRecyclerViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
-    private var thomannsRecyclerViewData: MutableList<ThomannsListData> = mutableListOf()
 
     private var _binding: FragmentThomannsBinding? = null
     // This property is only valid between onCreateView and
@@ -65,13 +63,11 @@ class ThomannsFragment : Fragment() {
         thomannsViewModel.navigateToCreation.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
         })
-        thomannsViewModel.thomannsListData.observe(viewLifecycleOwner, {
-            this.thomannsRecyclerViewData.clear()
-            this.thomannsRecyclerViewData.addAll(it)
+        thomannsViewModel.thomannsListData.observe(viewLifecycleOwner, { thomannListData ->
             if (isRecyclerViewSetup == false) {
-                setupRecyclerView()
+                setupRecyclerView(thomannListData)
             } else {
-                binding.thomannsRecyclerView.adapter?.notifyDataSetChanged()
+                reloadRecyclerViewWithNewData(thomannListData)
             }
         })
         thomannsViewModel.thomannDetails.observe(viewLifecycleOwner, EventObserver { thomannId ->
@@ -81,11 +77,50 @@ class ThomannsFragment : Fragment() {
         })
     }
 
-    private fun setupRecyclerView() {
+    private fun setupRecyclerView(thomannListData: List<Any>) {
         binding.thomannsRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.thomannsRecyclerView.adapter = ThomannListAdapter(requireContext(), thomannsRecyclerViewData, utils) { thomannId ->
-            this.thomannsViewModel.thomannItemClicked(thomannId)
-        }
+        binding.thomannsRecyclerView.adapter = ThomannListAdapter(
+            context = requireContext(),
+            thomannListData = thomannListData.toMutableList(),
+            utils = utils,
+            onItemClicked = { thomannId -> this.thomannsViewModel.thomannItemClicked(thomannId) },
+            loadNextPage = { this.thomannsViewModel.loadThomannsNextPage() })
         isRecyclerViewSetup = true
+    }
+
+    private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
+        val adapter = binding.thomannsRecyclerView.adapter
+        if (adapter is ThomannListAdapter) {
+            val previousData = adapter.thomannListData
+
+            var changedPosition: Int? = null
+            var firstItemInsertedPosition: Int? = null
+            var itemsInsertedCount: Int = 0
+
+            val previousDataHasLastInPage = previousData.lastOrNull() is ThomannLastInPageData
+            if (previousData.count() == newData.count()) {
+                if (previousDataHasLastInPage && newData.lastOrNull() is ThomannsListData) {
+                    changedPosition = previousData.lastIndex
+                }
+            } else if (previousData.count() < newData.count()) {
+                if (previousDataHasLastInPage && newData[previousData.lastIndex] is ThomannsListData) {
+                    changedPosition = previousData.lastIndex
+                }
+
+                firstItemInsertedPosition = if (changedPosition != null) changedPosition + 1 else previousData.count()
+                itemsInsertedCount = newData.count() - firstItemInsertedPosition
+            }
+
+            if (changedPosition != null) {
+                adapter.thomannListData[changedPosition] = newData[changedPosition]
+                adapter.notifyItemChanged(changedPosition)
+            }
+            if (firstItemInsertedPosition != null) {
+                val toIndex = firstItemInsertedPosition + itemsInsertedCount
+                val newDataToAdd = newData.subList(firstItemInsertedPosition, toIndex)
+                adapter.thomannListData.addAll(newDataToAdd)
+                adapter.notifyItemRangeInserted(firstItemInsertedPosition, itemsInsertedCount)
+            }
+        }
     }
 }

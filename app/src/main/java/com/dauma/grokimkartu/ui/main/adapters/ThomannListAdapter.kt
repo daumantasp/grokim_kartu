@@ -24,11 +24,17 @@ import java.util.*
 
 class ThomannListAdapter(
     val context: Context,
-    private val thomannListData: List<ThomannsListData>,
+    var thomannListData: MutableList<Any>,
     private val utils: Utils,
-    private val onItemClicked: (Int) -> Unit
-) : RecyclerView.Adapter<ThomannListAdapter.ViewHolder>() {
+    private val onItemClicked: (Int) -> Unit,
+    private val loadNextPage: () -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    companion object {
+        private const val THOMANN = 1
+        private const val LAST = 2
+    }
 
     init {
         // TODO: Duplicates in playerItem. Refactor
@@ -44,65 +50,30 @@ class ThomannListAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false)
-        return ViewHolder(view)
+    override fun getItemViewType(position: Int): Int {
+        if (thomannListData[position] is ThomannLastInPageData) {
+            return LAST
+        } else if (thomannListData[position] is ThomannsListData) {
+            return THOMANN
+        }
+        return THOMANN
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val thomannData = thomannListData[position]
-        holder.userTextView.text = thomannData.thomann.user?.name
-        holder.cityTextView.text = thomannData.thomann.city
-        val validUntil = this.utils.timeUtils.format(thomannData.thomann.validUntil ?: Date())
-        holder.validUntilTextView.text = validUntil
-        if (thomannData.thomann.isLocked == true) {
-            holder.lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
-        } else {
-            holder.lockedUnlockedIconImageView.setImageResource(R.drawable.unlocked_icon)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == THOMANN) {
+            return ThomannViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+        } else if (viewType == LAST) {
+            return ThomannLastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_last_item, parent, false), loadNextPage)
         }
+        return ThomannViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+    }
 
-        holder.thomannItemLinearLayout.setOnClickListener {
-            this.onItemClicked(thomannData.thomann.id ?: -1)
-        }
-
-        // TODO: Duplicates in playerItem. Refactor
-        fun bindOrUnbindPhoto() {
-            if (thomannData.thomann.icon?.icon != null) {
-                val ovalPhoto = utils.imageUtils.getOvalBitmap(thomannData.thomann.icon!!.icon!!)
-                holder.photoIcon.setImageBitmap(ovalPhoto)
-                holder.spinnerViewElement.showAnimation(false)
-                holder.initialsViewElement.visibility = View.GONE
-                holder.photoIcon.visibility = View.VISIBLE
-            }
-        }
-        fun bindOrUnbindInitials() {
-            if (thomannData.thomann.icon?.icon == null) {
-                val initials = utils.stringUtils.getInitials(thomannData.thomann.user?.name ?: "")
-                holder.initialsViewElement.setInitials(initials)
-                holder.spinnerViewElement.showAnimation(false)
-                holder.photoIcon.visibility = View.GONE
-                holder.initialsViewElement.visibility = View.VISIBLE
-            }
-        }
-        fun bindDownloadInProgress() {
-            holder.photoIcon.setImageDrawable(photoIconBackgroundDrawable)
-            holder.initialsViewElement.visibility = View.GONE
-            holder.photoIcon.visibility = View.VISIBLE
-            holder.spinnerViewElement.showAnimation(true)
-        }
-
-        val iconStatus = thomannData.thomann.icon?.status
-        if (iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_SET) {
-            bindOrUnbindPhoto()
-            bindOrUnbindInitials()
-        } else if (iconStatus == ThomannPlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
-            bindDownloadInProgress()
-        } else if (iconStatus == ThomannPlayerIconStatus.NEED_TO_DOWNLOAD) {
-            bindDownloadInProgress()
-            thomannData.thomann.icon?.loadIfNeeded { photo, e ->
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-            }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val itemData = thomannListData[position]
+        if (holder is ThomannLastViewHolder && itemData is ThomannLastInPageData) {
+            holder.bind(itemData)
+        } else if (holder is ThomannViewHolder && itemData is ThomannsListData) {
+            holder.bind(itemData)
         }
     }
 
@@ -110,7 +81,12 @@ class ThomannListAdapter(
         return thomannListData.size
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ThomannViewHolder(
+        val view: View,
+        private val utils: Utils,
+        private val photoIconBackgroundDrawable: Drawable?,
+        private val onItemClicked: (Int) -> Unit,
+    ) : RecyclerView.ViewHolder(view) {
         val thomannItemLinearLayout = view.findViewById<LinearLayout>(R.id.thomannItemLinearLayout)
         val userTextView = view.findViewById<TextView>(R.id.userTextView)
         val cityTextView = view.findViewById<TextView>(R.id.cityTextView)
@@ -119,5 +95,73 @@ class ThomannListAdapter(
         val photoIcon = view.findViewById<ImageView>(R.id.thomannPlayerIconImageView)
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
         val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.lockedUnlockedIconImageView)
+
+        fun bind(data: ThomannsListData) {
+            userTextView.text = data.thomann.user?.name
+            cityTextView.text = data.thomann.city
+            val validUntil = this.utils.timeUtils.format(data.thomann.validUntil ?: Date())
+            validUntilTextView.text = validUntil
+            if (data.thomann.isLocked == true) {
+                lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
+            } else {
+                lockedUnlockedIconImageView.setImageResource(R.drawable.unlocked_icon)
+            }
+
+            thomannItemLinearLayout.setOnClickListener {
+                this.onItemClicked(data.thomann.id ?: -1)
+            }
+
+            // TODO: Duplicates in playerItem. Refactor
+            fun bindOrUnbindPhoto() {
+                if (data.thomann.icon?.icon != null) {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(data.thomann.icon!!.icon!!)
+                    photoIcon.setImageBitmap(ovalPhoto)
+                    spinnerViewElement.showAnimation(false)
+                    initialsViewElement.visibility = View.GONE
+                    photoIcon.visibility = View.VISIBLE
+                }
+            }
+            fun bindOrUnbindInitials() {
+                if (data.thomann.icon?.icon == null) {
+                    val initials = utils.stringUtils.getInitials(data.thomann.user?.name ?: "")
+                    initialsViewElement.setInitials(initials)
+                    spinnerViewElement.showAnimation(false)
+                    photoIcon.visibility = View.GONE
+                    initialsViewElement.visibility = View.VISIBLE
+                }
+            }
+            fun bindDownloadInProgress() {
+                photoIcon.setImageDrawable(photoIconBackgroundDrawable)
+                initialsViewElement.visibility = View.GONE
+                photoIcon.visibility = View.VISIBLE
+                spinnerViewElement.showAnimation(true)
+            }
+
+            val iconStatus = data.thomann.icon?.status
+            if (iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_SET) {
+                bindOrUnbindPhoto()
+                bindOrUnbindInitials()
+            } else if (iconStatus == ThomannPlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
+                bindDownloadInProgress()
+            } else if (iconStatus == ThomannPlayerIconStatus.NEED_TO_DOWNLOAD) {
+                bindDownloadInProgress()
+                data.thomann.icon?.loadIfNeeded { photo, e ->
+                    bindOrUnbindPhoto()
+                    bindOrUnbindInitials()
+                }
+            }
+        }
+    }
+
+    class ThomannLastViewHolder(
+        view: View,
+        private val loadNextPage: () -> Unit
+    ) : RecyclerView.ViewHolder(view) {
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+
+        fun bind(data: ThomannLastInPageData) {
+            spinnerViewElement.showAnimation(true)
+            loadNextPage()
+        }
     }
 }
