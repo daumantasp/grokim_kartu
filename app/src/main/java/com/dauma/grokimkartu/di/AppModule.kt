@@ -39,6 +39,8 @@ import com.dauma.grokimkartu.repositories.settings.SettingsRepository
 import com.dauma.grokimkartu.repositories.settings.SettingsRepositoryImpl
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepositoryImpl
+import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
+import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginatorImpl
 import com.dauma.grokimkartu.repositories.users.AuthRepositoryImpl
 import dagger.Module
 import dagger.Provides
@@ -167,7 +169,11 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providePlayersRepository(playersDao: PlayersDao, paginator: PlayersPaginator, user: User) : PlayersRepository {
+    fun providePlayersRepository(
+        playersDao: PlayersDao,
+        paginator: PlayersPaginator,
+        user: User
+    ) : PlayersRepository {
         return PlayersRepositoryImpl(playersDao, paginator, user)
     }
 
@@ -193,9 +199,20 @@ class AppModule {
     }
 
     @Provides
+    fun provideThomannsPaginator(thomannsDao: ThomannsDao) : ThomannsPaginator {
+        return ThomannsPaginatorImpl(thomannsDao)
+    }
+
+    @Provides
     @Singleton
-    fun providesThomannsRepository(thomannsDao: ThomannsDao, playersDao: PlayersDao, citiesDao: CitiesDao, user: User) : ThomannsRepository {
-        return ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, user)
+    fun providesThomannsRepository(
+        thomannsDao: ThomannsDao,
+        playersDao: PlayersDao,
+        citiesDao: CitiesDao,
+        paginator: ThomannsPaginator,
+        user: User
+    ) : ThomannsRepository {
+        return ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, paginator, user)
     }
 
     @Provides

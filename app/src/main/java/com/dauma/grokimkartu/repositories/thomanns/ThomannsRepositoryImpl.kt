@@ -8,16 +8,36 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoResponseStatus
 import com.dauma.grokimkartu.data.thomanns.entities.*
 import com.dauma.grokimkartu.general.user.User
-import com.dauma.grokimkartu.repositories.profile.ProfileErrors
-import com.dauma.grokimkartu.repositories.profile.ProfileException
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
+import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
 
 class ThomannsRepositoryImpl(
     private val thomannsDao: ThomannsDao,
     private val playersDao: PlayersDao,
     private val citiesDao: CitiesDao,
+    private val paginator: ThomannsPaginator,
     private val user: User
 ) : ThomannsRepository {
+    private val _thomannsPages: MutableList<ThomannsPage> = mutableListOf()
+
+    override val thomannsPage: List<ThomannsPage>
+        get() = _thomannsPages
+
+    override fun loadNextPage(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            paginator.loadNextPage(user.getBearerAccessToken()!!) { thomannsResponse, isLastPage ->
+                if (thomannsResponse != null) {
+                    val thomannsPage = toThomannsPage(thomannsResponse)
+                    _thomannsPages.add(thomannsPage)
+                    onComplete(thomannsPage, null)
+                } else {
+                    onComplete(null, ThomannsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
 
     override fun create(
         createThomann: CreateThomann,
@@ -89,29 +109,6 @@ class ThomannsRepositoryImpl(
                     onComplete(null)
                 } else {
                     onComplete(ThomannsErrors.UNKNOWN)
-                }
-            }
-        } else {
-            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
-        }
-    }
-
-    override fun thomanns(onComplete: (List<Thomann>?, ThomannsErrors?) -> Unit) {
-        if (user.isUserLoggedIn()) {
-            thomannsDao.thomanns(user.getBearerAccessToken()!!) { thomannsResponse, thomannsDaoResponseStatus ->
-                if (thomannsDaoResponseStatus.isSuccessful && thomannsResponse != null) {
-                    val thomanns = thomannsResponse.map { td ->
-                        val loader = { onComplete: (Bitmap?, ThomannsErrors?) -> Unit ->
-                            this.playersDao.playerIcon(td.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, playersDaoResponseStatus ->
-                                onComplete(icon, null)
-                            }
-                        }
-                        val thomannPlayerIcon = ThomannPlayerIcon(loader)
-                        toThomann(td, thomannPlayerIcon)
-                    }
-                    onComplete(thomanns, null)
-                } else {
-                    onComplete(null, ThomannsErrors.UNKNOWN)
                 }
             }
         } else {
@@ -216,7 +213,7 @@ class ThomannsRepositoryImpl(
                 }
             }
         } else {
-            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
         }
     }
 
@@ -234,8 +231,39 @@ class ThomannsRepositoryImpl(
                 }
             }
         } else {
-            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
         }
+    }
+
+    override fun clear() {
+        if (user.isUserLoggedIn()) {
+            _thomannsPages.clear()
+            paginator.clear()
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun toThomannsPage(thomannsResponse: ThomannsResponse) : ThomannsPage {
+        var thomanns: List<Thomann> = listOf()
+        var isLastPage: Boolean = false
+
+        if (thomannsResponse.data != null) {
+            thomanns = thomannsResponse.data!!.map { tr ->
+                val loader = { onComplete: (Bitmap?, ThomannsErrors?) -> Unit ->
+                    this.playersDao.playerIcon(tr.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, playersDaoResponseStatus ->
+                        onComplete(icon, null)
+                    }
+                }
+                val icon = ThomannPlayerIcon(loader)
+                toThomann(tr, icon)
+            }
+        }
+        if (thomannsResponse.pageData?.currentPage != null && thomannsResponse.pageData?.lastPage != null) {
+            isLastPage = thomannsResponse.pageData?.currentPage == thomannsResponse.pageData?.lastPage
+        }
+
+        return ThomannsPage(thomanns, isLastPage)
     }
 
     private fun toThomann(thomannResponse: ThomannResponse, icon: ThomannPlayerIcon): Thomann {
