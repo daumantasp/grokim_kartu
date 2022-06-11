@@ -123,19 +123,21 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
     }
 
     override fun thomanns(
+        page: Int,
+        pageSize: Int,
         accessToken: String,
-        onComplete: (List<ThomannResponse>?, ThomannsDaoResponseStatus) -> Unit
+        onComplete: (ThomannsResponse?, ThomannsDaoResponseStatus) -> Unit
     ) {
-        retrofitThomanns.thomanns(accessToken).enqueue(object : Callback<ThomannsDataResponse> {
+        retrofitThomanns.thomanns(page, pageSize, accessToken).enqueue(object : Callback<ThomannsResponse> {
             override fun onResponse(
-                call: Call<ThomannsDataResponse>,
-                response: Response<ThomannsDataResponse>
+                call: Call<ThomannsResponse>,
+                response: Response<ThomannsResponse>
             ) {
                 when (response.code()) {
                     200 -> {
                         val thomannsResponse = response.body()
                         val status = ThomannsDaoResponseStatus(true, null)
-                        onComplete(thomannsResponse?.data, status)
+                        onComplete(thomannsResponse, status)
                     }
                     else -> {
                         val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
@@ -144,7 +146,7 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
                 }
             }
 
-            override fun onFailure(call: Call<ThomannsDataResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ThomannsResponse>, t: Throwable) {
                 val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
                 onComplete(null, status)
             }
@@ -343,7 +345,14 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
 
     private interface RetrofitThomanns {
         @POST("thomann") fun createThomann(@Header("Authorization") accessToken: String, @Body createRequest: CreateThomannRequest): Call<ThomannDetailsResponse>
-        @GET("thomanns") fun thomanns(@Header("Authorization") accessToken: String): Call<ThomannsDataResponse>
+
+        @GET("thomanns")
+        fun thomanns(
+            @Query("page") page: Int,
+            @Query("page_size") pageSize: Int,
+            @Header("Authorization") accessToken: String
+        ): Call<ThomannsResponse>
+
         @GET("thomann/details/{id}") fun thomannDetails(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ThomannDetailsResponse>
         @PUT("thomann/{id}") fun updateThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body updateRequest: UpdateThomannRequest): Call<ThomannDetailsResponse>
         @DELETE("thomann/{id}") fun delete(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<Array<String>>
