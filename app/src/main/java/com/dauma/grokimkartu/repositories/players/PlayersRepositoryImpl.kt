@@ -115,8 +115,12 @@ class PlayersRepositoryImpl(
     }
 
     override fun clear() {
-        _playersPages.clear()
-        paginator.clear()
+        if (user.isUserLoggedIn()) {
+            _playersPages.clear()
+            paginator.clear()
+        } else {
+            throw PlayersException(PlayersErrors.USER_NOT_LOGGED_IN)
+        }
     }
 
     private fun toPlayersPage(playersResponse: PlayersResponse) : PlayersPage {
@@ -138,8 +142,8 @@ class PlayersRepositoryImpl(
                 )
             }
         }
-        if (playersResponse.pageData.currentPage != null && playersResponse.pageData.lastPage != null) {
-            isLastPage = playersResponse.pageData.currentPage == playersResponse.pageData.lastPage
+        if (playersResponse.pageData?.currentPage != null && playersResponse.pageData?.lastPage != null) {
+            isLastPage = playersResponse.pageData?.currentPage == playersResponse.pageData?.lastPage
         }
 
         return PlayersPage(players, isLastPage)
