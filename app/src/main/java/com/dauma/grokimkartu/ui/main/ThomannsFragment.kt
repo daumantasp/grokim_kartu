@@ -154,9 +154,9 @@ class ThomannsFragment : Fragment() {
             val sortedInsertedItems = insertedItems.sorted()
             val sortedRemovedItems = removedItems.sorted()
 
-            val sortedChangedRanges = getRangesList(sortedChangedItems)
-            val sortedInsertedRanges = getRangesList(sortedInsertedItems)
-            val sortedRemovedRanges = getRangesList(sortedRemovedItems)
+            val sortedChangedRanges = utils.otherUtils.getRanges(sortedChangedItems)
+            val sortedInsertedRanges = utils.otherUtils.getRanges(sortedInsertedItems)
+            val sortedRemovedRanges = utils.otherUtils.getRanges(sortedRemovedItems)
 
             adapter.thomannListData = newData.toMutableList()
             for (range in sortedRemovedRanges.reversed()) {
@@ -169,25 +169,5 @@ class ThomannsFragment : Fragment() {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
         }
-    }
-
-    private fun getRangesList(list: List<Int>) : List<List<Int>> {
-        val result: MutableList<List<Int>> = mutableListOf()
-        if (list.isEmpty() == false) {
-            var count = 1
-            var lastItem = list[0]
-            for (i in 1 until list.count()) {
-                val item = list[i]
-                if (lastItem + 1 == item) {
-                    count += 1
-                } else {
-                    result.add(listOf(lastItem - count + 1, count))
-                    count = 1
-                }
-                lastItem = item
-            }
-            result.add(listOf(lastItem - count + 1, count))
-        }
-        return result
     }
 }

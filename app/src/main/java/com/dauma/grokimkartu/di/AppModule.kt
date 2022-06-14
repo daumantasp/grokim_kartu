@@ -23,6 +23,8 @@ import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtilsImpl
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtilsImpl
+import com.dauma.grokimkartu.general.utils.other.OtherUtils
+import com.dauma.grokimkartu.general.utils.other.OtherUtilsImpl
 import com.dauma.grokimkartu.general.utils.string.StringUtils
 import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
 import com.dauma.grokimkartu.general.utils.time.TimeUtils
@@ -82,17 +84,24 @@ class AppModule {
     }
 
     @Provides
+    fun otherUtils() : OtherUtils {
+        return OtherUtilsImpl()
+    }
+
+    @Provides
     fun providesUtils(
         imageUtils: ImageUtils,
         stringUtils: StringUtils,
         keyboardUtils: KeyboardUtils,
-        timeUtils: TimeUtils
+        timeUtils: TimeUtils,
+        otherUtils: OtherUtils
     ) : Utils {
         return UtilsImpl(
             imageUtils,
             stringUtils,
             keyboardUtils,
-            timeUtils
+            timeUtils,
+            otherUtils
         )
     }
 
