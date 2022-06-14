@@ -18,17 +18,17 @@ class ThomannsRepositoryImpl(
     private val paginator: ThomannsPaginator,
     private val user: User
 ) : ThomannsRepository {
-    private val _thomannsPages: MutableList<ThomannsPage> = mutableListOf()
+    private val _pages: MutableList<ThomannsPage> = mutableListOf()
 
-    override val thomannsPage: List<ThomannsPage>
-        get() = _thomannsPages
+    override val pages: List<ThomannsPage>
+        get() = _pages
 
     override fun loadNextPage(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
             paginator.loadNextPage(user.getBearerAccessToken()!!) { thomannsResponse, isLastPage ->
                 if (thomannsResponse != null) {
                     val thomannsPage = toThomannsPage(thomannsResponse)
-                    _thomannsPages.add(thomannsPage)
+                    _pages.add(thomannsPage)
                     onComplete(thomannsPage, null)
                 } else {
                     onComplete(null, ThomannsErrors.UNKNOWN)
@@ -50,6 +50,7 @@ class ThomannsRepositoryImpl(
             )
             thomannsDao.create(createThomannRequest, user.getBearerAccessToken()!!) { thomannDetailsResponse, thomannsDaoResponseStatus ->
                 if (thomannsDaoResponseStatus.isSuccessful && thomannDetailsResponse != null) {
+                    this.reset()
                     val thomannDetails = toThomannDetails(thomannDetailsResponse)
                     onComplete(thomannDetails, null)
                 } else {
@@ -106,6 +107,7 @@ class ThomannsRepositoryImpl(
         if (user.isUserLoggedIn()) {
             thomannsDao.delete(thomannId, user.getBearerAccessToken()!!) { thomannsDaoResponseStatus ->
                 if (thomannsDaoResponseStatus.isSuccessful) {
+                    this.reset()
                     onComplete(null)
                 } else {
                     onComplete(ThomannsErrors.UNKNOWN)
@@ -235,9 +237,9 @@ class ThomannsRepositoryImpl(
         }
     }
 
-    override fun clear() {
+    override fun reset() {
         if (user.isUserLoggedIn()) {
-            _thomannsPages.clear()
+            _pages.clear()
             paginator.clear()
         } else {
             throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)

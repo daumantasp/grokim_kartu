@@ -13,6 +13,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,11 +64,12 @@ class ThomannsFragment : Fragment() {
         thomannsViewModel.navigateToCreation.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
         })
-        thomannsViewModel.thomannsListData.observe(viewLifecycleOwner, { thomannListData ->
+        thomannsViewModel.thomannsPages.observe(viewLifecycleOwner, { thomannsPages ->
+            val data = getAllThomannsFromPages(thomannsPages)
             if (isRecyclerViewSetup == false) {
-                setupRecyclerView(thomannListData)
+                setupRecyclerView(data)
             } else {
-                reloadRecyclerViewWithNewData(thomannListData)
+                reloadRecyclerViewWithNewData(data)
             }
         })
         thomannsViewModel.thomannDetails.observe(viewLifecycleOwner, EventObserver { thomannId ->
@@ -75,6 +77,21 @@ class ThomannsFragment : Fragment() {
             args.putInt("thomannId", thomannId)
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannDetailsFragment, args)
         })
+    }
+
+    private fun getAllThomannsFromPages(pages: List<ThomannsPage>) : List<Any> {
+        val data: MutableList<Any> = mutableListOf()
+        for (page in pages) {
+            if (page.thomanns != null) {
+                for (thomann in page.thomanns) {
+                    data.add(ThomannsListData(thomann))
+                }
+            }
+        }
+        if (pages.lastOrNull()?.isLast == false) {
+            data.add(ThomannLastInPageData())
+        }
+        return data
     }
 
     private fun setupRecyclerView(thomannListData: List<Any>) {
@@ -93,34 +110,84 @@ class ThomannsFragment : Fragment() {
         if (adapter is ThomannListAdapter) {
             val previousData = adapter.thomannListData
 
-            var changedPosition: Int? = null
-            var firstItemInsertedPosition: Int? = null
-            var itemsInsertedCount: Int = 0
+            val changedItems: MutableList<Int> = mutableListOf()
+            val insertedItems: MutableList<Int> = mutableListOf()
+            val removedItems: MutableList<Int> = mutableListOf()
 
-            val previousDataHasLastInPage = previousData.lastOrNull() is ThomannLastInPageData
-            if (previousData.count() == newData.count()) {
-                if (previousDataHasLastInPage && newData.lastOrNull() is ThomannsListData) {
-                    changedPosition = previousData.lastIndex
+            if (previousData.count() <= newData.count()) {
+                for (i in 0 until previousData.count()) {
+                    val previousItem = previousData[i]
+                    val newItem = newData[i]
+                    if (previousItem is ThomannsListData && newItem is ThomannsListData) {
+                        if (previousItem.thomann.id != newItem.thomann.id) {
+                            changedItems.add(i)
+                        }
+                    } else if (previousItem is ThomannLastInPageData && newItem is ThomannLastInPageData) {
+                        // DO NOTHING
+                    } else {
+                        changedItems.add(i)
+                    }
                 }
-            } else if (previousData.count() < newData.count()) {
-                if (previousDataHasLastInPage && newData[previousData.lastIndex] is ThomannsListData) {
-                    changedPosition = previousData.lastIndex
+                for (i in previousData.count() until newData.count()) {
+                    insertedItems.add(i)
                 }
-
-                firstItemInsertedPosition = if (changedPosition != null) changedPosition + 1 else previousData.count()
-                itemsInsertedCount = newData.count() - firstItemInsertedPosition
+            } else {
+                for (i in 0 until newData.count()) {
+                    val previousItem = previousData[i]
+                    val newItem = newData[i]
+                    if (previousItem is ThomannsListData && newItem is ThomannsListData) {
+                        if (previousItem.thomann.id != newItem.thomann.id) {
+                            changedItems.add(i)
+                        }
+                    } else if (previousItem is ThomannLastInPageData && newItem is ThomannLastInPageData) {
+                        // DO NOTHING
+                    } else {
+                        changedItems.add(i)
+                    }
+                }
+                for (i in newData.count() until previousData.count()) {
+                    removedItems.add(i)
+                }
             }
 
-            if (changedPosition != null) {
-                adapter.thomannListData[changedPosition] = newData[changedPosition]
-                adapter.notifyItemChanged(changedPosition)
+            val sortedChangedItems = changedItems.sorted()
+            val sortedInsertedItems = insertedItems.sorted()
+            val sortedRemovedItems = removedItems.sorted()
+
+            val sortedChangedRanges = getRangesList(sortedChangedItems)
+            val sortedInsertedRanges = getRangesList(sortedInsertedItems)
+            val sortedRemovedRanges = getRangesList(sortedRemovedItems)
+
+            adapter.thomannListData = newData.toMutableList()
+            for (range in sortedRemovedRanges.reversed()) {
+                adapter.notifyItemRangeRemoved(range[0], range[1])
             }
-            if (firstItemInsertedPosition != null) {
-                val toIndex = firstItemInsertedPosition + itemsInsertedCount
-                val newDataToAdd = newData.subList(firstItemInsertedPosition, toIndex)
-                adapter.thomannListData.addAll(newDataToAdd)
-                adapter.notifyItemRangeInserted(firstItemInsertedPosition, itemsInsertedCount)
+            for (range in sortedInsertedRanges) {
+                adapter.notifyItemRangeInserted(range[0], range[1])
+            }
+            for (range in sortedChangedRanges) {
+                adapter.notifyItemRangeChanged(range[0], range[1])
             }
         }
+    }
+
+    private fun getRangesList(list: List<Int>) : List<List<Int>> {
+        val result: MutableList<List<Int>> = mutableListOf()
+        if (list.isEmpty() == false) {
+            var count = 1
+            var lastItem = list[0]
+            for (i in 1 until list.count()) {
+                val item = list[i]
+                if (lastItem + 1 == item) {
+                    count += 1
+                } else {
+                    result.add(listOf(lastItem - count + 1, count))
+                    count = 1
+                }
+                lastItem = item
+            }
+            result.add(listOf(lastItem - count + 1, count))
+        }
+        return result
     }
 }
