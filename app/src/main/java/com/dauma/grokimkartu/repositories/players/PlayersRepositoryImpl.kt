@@ -18,7 +18,7 @@ class PlayersRepositoryImpl(
 ) : PlayersRepository {
     private val _playersPages: MutableList<PlayersPage> = mutableListOf()
 
-    override val playersPages: List<PlayersPage>
+    override val pages: List<PlayersPage>
         get() = _playersPages
 
     override fun loadNextPage(onComplete: (PlayersPage?, PlayersErrors?) -> Unit) {
@@ -114,7 +114,7 @@ class PlayersRepositoryImpl(
         }
     }
 
-    override fun clear() {
+    override fun reset() {
         if (user.isUserLoggedIn()) {
             _playersPages.clear()
             paginator.clear()

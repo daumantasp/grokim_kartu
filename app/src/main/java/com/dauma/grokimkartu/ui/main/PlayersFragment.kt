@@ -14,6 +14,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import com.dauma.grokimkartu.ui.main.adapters.PlayerLastInPageData
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListData
@@ -69,13 +70,29 @@ class PlayersFragment : Fragment() {
         playersViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
-        playersViewModel.playersListData.observe(viewLifecycleOwner, Observer { playersListData ->
-                if (isPlayersRecyclerViewSetup == false) {
-                    setupPlayersRecyclerView(playersListData)
-                } else {
-                    reloadRecyclerViewWithNewData(playersListData)
+        playersViewModel.playersPages.observe(viewLifecycleOwner, Observer { playersPages ->
+            val data = getAllPlayersFromPages(playersPages)
+            if (isPlayersRecyclerViewSetup == false) {
+                setupPlayersRecyclerView(data)
+            } else {
+                reloadRecyclerViewWithNewData(data)
+            }
+        })
+    }
+
+    private fun getAllPlayersFromPages(pages: List<PlayersPage>) : List<Any> {
+        val data: MutableList<Any> = mutableListOf()
+        for (page in pages) {
+            if (page.players != null) {
+                for (player in page.players) {
+                    data.add(PlayersListData(player))
                 }
-            })
+            }
+        }
+        if (pages.lastOrNull()?.isLast == false) {
+            data.add(PlayerLastInPageData())
+        }
+        return data
     }
 
     private fun setupPlayersRecyclerView(playersListData: List<Any>) {
@@ -94,33 +111,63 @@ class PlayersFragment : Fragment() {
         if (adapter is PlayersListAdapter) {
             val previousData = adapter.playersListData
 
-            var changedPosition: Int? = null
-            var firstItemInsertedPosition: Int? = null
-            var itemsInsertedCount: Int = 0
+            val changedItems: MutableList<Int> = mutableListOf()
+            val insertedItems: MutableList<Int> = mutableListOf()
+            val removedItems: MutableList<Int> = mutableListOf()
 
-            val previousDataHasLastInPage = previousData.lastOrNull() is PlayerLastInPageData
-            if (previousData.count() == newData.count()) {
-                if (previousDataHasLastInPage && newData.lastOrNull() is PlayersListData) {
-                    changedPosition = previousData.lastIndex
+            if (previousData.count() <= newData.count()) {
+                for (i in 0 until previousData.count()) {
+                    val previousItem = previousData[i]
+                    val newItem = newData[i]
+                    if (previousItem is PlayersListData && newItem is PlayersListData) {
+                        if (previousItem.player.userId != newItem.player.userId) {
+                            changedItems.add(i)
+                        }
+                    } else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                        // DO NOTHING
+                    } else {
+                        changedItems.add(i)
+                    }
                 }
-            } else if (previousData.count() < newData.count()) {
-                if (previousDataHasLastInPage && newData[previousData.lastIndex] is PlayersListData) {
-                    changedPosition = previousData.lastIndex
+                for (i in previousData.count() until newData.count()) {
+                    insertedItems.add(i)
                 }
-
-                firstItemInsertedPosition = if (changedPosition != null) changedPosition + 1 else previousData.count()
-                itemsInsertedCount = newData.count() - firstItemInsertedPosition
+            } else {
+                for (i in 0 until newData.count()) {
+                    val previousItem = previousData[i]
+                    val newItem = newData[i]
+                    if (previousItem is PlayersListData && newItem is PlayersListData) {
+                        if (previousItem.player.userId != newItem.player.userId) {
+                            changedItems.add(i)
+                        }
+                    } else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                        // DO NOTHING
+                    } else {
+                        changedItems.add(i)
+                    }
+                }
+                for (i in newData.count() until previousData.count()) {
+                    removedItems.add(i)
+                }
             }
 
-            if (changedPosition != null) {
-                adapter.playersListData[changedPosition] = newData[changedPosition]
-                adapter.notifyItemChanged(changedPosition)
+            val sortedChangedItems = changedItems.sorted()
+            val sortedInsertedItems = insertedItems.sorted()
+            val sortedRemovedItems = removedItems.sorted()
+
+            val sortedChangedRanges = utils.otherUtils.getRanges(sortedChangedItems)
+            val sortedInsertedRanges = utils.otherUtils.getRanges(sortedInsertedItems)
+            val sortedRemovedRanges = utils.otherUtils.getRanges(sortedRemovedItems)
+
+            adapter.playersListData = newData.toMutableList()
+            for (range in sortedRemovedRanges.reversed()) {
+                adapter.notifyItemRangeRemoved(range[0], range[1])
             }
-            if (firstItemInsertedPosition != null) {
-                val toIndex = firstItemInsertedPosition + itemsInsertedCount
-                val newDataToAdd = newData.subList(firstItemInsertedPosition, toIndex)
-                adapter.playersListData.addAll(newDataToAdd)
-                adapter.notifyItemRangeInserted(firstItemInsertedPosition, itemsInsertedCount)
+            for (range in sortedInsertedRanges) {
+                adapter.notifyItemRangeInserted(range[0], range[1])
+            }
+            for (range in sortedChangedRanges) {
+                adapter.notifyItemRangeChanged(range[0], range[1])
             }
         }
     }
