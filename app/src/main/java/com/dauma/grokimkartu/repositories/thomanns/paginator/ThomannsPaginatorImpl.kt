@@ -8,7 +8,7 @@ class ThomannsPaginatorImpl(private val thomannsDao: ThomannsDao) : ThomannsPagi
     private var _pages: MutableList<ThomannsResponse> = mutableListOf()
     override val pages: List<ThomannsResponse>
         get() = _pages
-    override val pageSize: Int = 5
+    override val pageSize: Int = 20
 
     override fun loadNextPage(accessToken: String, onComplete: (ThomannsResponse?, ThomannsErrors?) -> Unit) {
         if (isLastLoaded() == false) {
