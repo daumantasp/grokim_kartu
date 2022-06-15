@@ -1,26 +1,25 @@
 package com.dauma.grokimkartu.general.utils.sharedstorage
 
 import android.content.Context
-import android.content.SharedPreferences
 
-class SharedStorageUtilsImpl : SharedStorageUtils {
+class SharedStorageUtilsImpl(
+    private val context: Context
+) : SharedStorageUtils {
+    private val sharedPreferences = context.getSharedPreferences(ID, Context.MODE_PRIVATE)
+
     companion object {
         private const val ID = "GK_SHARED_STORAGE"
     }
 
-    override fun save(context: Context, key: String, value: String) {
-        getSharedPreferences(context).edit().putString(key, value).apply()
+    override fun save(key: String, value: String) {
+        sharedPreferences.edit().putString(key, value).apply()
     }
 
-    override fun getEntry(context: Context, key: String): String? {
-        return getSharedPreferences(context).getString(key, null)
+    override fun getEntry(key: String): String? {
+        return sharedPreferences.getString(key, null)
     }
 
-    override fun remove(context: Context, key: String) {
-        getSharedPreferences(context).edit().remove(key).apply()
-    }
-
-    private fun getSharedPreferences(context: Context) : SharedPreferences {
-        return context.getSharedPreferences(ID, Context.MODE_PRIVATE)
+    override fun remove(key: String) {
+        sharedPreferences.edit().remove(key).apply()
     }
 }

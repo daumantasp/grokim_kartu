@@ -21,15 +21,12 @@ class SplashViewModel @Inject constructor(
     }
 
     fun splashCompleted() {
-//        if (authRepository.isUserLoggedIn()) {
-//            if (authRepository.isEmailVerified()) {
-//                _navigateToPlayers.value = Event("")
-//            } else {
-//                authRepository.logOut()
-//                _navigateToLogin.value = Event("")
-//            }
-//        } else {
-            _navigateToLogin.value = Event("")
-//        }
+        authRepository.tryReauthenticate { isSuccessful, authenticationErrors ->
+            if (isSuccessful) {
+                _navigateToPlayers.value = Event("")
+            } else {
+                _navigateToLogin.value = Event("")
+            }
+        }
     }
 }

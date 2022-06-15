@@ -86,6 +86,36 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
         })
     }
 
+    override fun reauthenticate(
+        reauthenticateRequest: ReauthenticateRequest,
+        onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit
+    ) {
+        retrofitAuth.tokenLogin(reauthenticateRequest).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                when (response.code()) {
+                    201 -> {
+                        val loginResponse = response.body()
+                        val status = AuthDaoResponseStatus(true, null)
+                        onComplete(loginResponse, status)
+                    }
+                    422 -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_ACCESS_TOKEN)
+                        onComplete(null, status)
+                    }
+                    else -> {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
     override fun logout(
         accessToken: String,
         onComplete: (AuthDaoResponseStatus) -> Unit
@@ -173,6 +203,7 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
     private interface RetrofitAuth {
         @POST("register") fun register(@Body registrationRequest: RegistrationRequest): Call<LoginResponse>
         @POST("login") fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
+        @POST("reauthenticate") fun tokenLogin(@Body reauthenticateRequest: ReauthenticateRequest): Call<LoginResponse>
         @POST("logout") fun logout(@Header("Authorization") accessToken: String): Call<Array<String>>
         @DELETE("user/delete") fun delete(@Header("Authorization") accessToken: String) : Call<Array<String>>
         @POST("user/changepassword") fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Call<Array<String>>

@@ -6,6 +6,7 @@ class AuthDaoResponseStatus (
 ) {
     enum class Errors {
         INCORRECT_USR_NAME_OR_PSW,
+        INCORRECT_ACCESS_TOKEN,
         EMAIL_NOT_VERIFIED,
         EMAIL_TAKEN,
         INVALID_EMAIL,

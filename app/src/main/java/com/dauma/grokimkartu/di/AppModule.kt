@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.di
 
+import android.content.Context
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
 import com.dauma.grokimkartu.data.cities.CitiesDao
@@ -49,6 +50,7 @@ import com.dauma.grokimkartu.repositories.users.AuthRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -86,8 +88,8 @@ class AppModule {
     }
 
     @Provides
-    fun sharedStorageUtils() : SharedStorageUtils {
-        return SharedStorageUtilsImpl()
+    fun sharedStorageUtils(@ApplicationContext appContext: Context) : SharedStorageUtils {
+        return SharedStorageUtilsImpl(appContext)
     }
 
     @Provides
@@ -160,8 +162,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesAuthRepository(authDao: AuthDao, user: User) : AuthRepository {
-        return AuthRepositoryImpl(authDao, user)
+    fun providesAuthRepository(authDao: AuthDao, user: User, utils: Utils) : AuthRepository {
+        return AuthRepositoryImpl(authDao, user, utils)
     }
 
     @Provides
