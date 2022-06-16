@@ -36,6 +36,8 @@ import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.general.utils.time.TimeUtilsImpl
 import com.dauma.grokimkartu.models.forms.*
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.notifications.NotificationsRepository
+import com.dauma.grokimkartu.repositories.notifications.NotificationsRepositoryImpl
 import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginator
 import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginatorImpl
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
@@ -257,6 +259,16 @@ class AppModule {
     @Provides
     fun providesNotificationsPaginator(notificationsDao: NotificationsDao) : NotificationsPaginator {
         return NotificationsPaginatorImpl(notificationsDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providesNotificationsRepository(
+        notificationsDao: NotificationsDao,
+        paginator: NotificationsPaginator,
+        user: User
+    ) : NotificationsRepository {
+        return NotificationsRepositoryImpl(notificationsDao, paginator, user)
     }
 
     @Provides
