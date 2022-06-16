@@ -9,6 +9,8 @@ import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
 import com.dauma.grokimkartu.data.instruments.InstrumentsDao
 import com.dauma.grokimkartu.data.instruments.InstrumentsDaoImpl
+import com.dauma.grokimkartu.data.notifications.NotificationsDao
+import com.dauma.grokimkartu.data.notifications.NotificationsDaoImpl
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoImpl
 import com.dauma.grokimkartu.data.profile.ProfileDao
@@ -243,6 +245,11 @@ class AppModule {
     @Provides
     fun providesInstrumentsDao(retrofit: Retrofit) : InstrumentsDao {
         return InstrumentsDaoImpl(retrofit)
+    }
+
+    @Provides
+    fun providesNotificationsDao(retrofit: Retrofit) : NotificationsDao {
+        return NotificationsDaoImpl(retrofit)
     }
 
     @Provides
