@@ -5,6 +5,7 @@ import com.dauma.grokimkartu.data.notifications.entities.NotificationResponse
 import com.dauma.grokimkartu.data.notifications.entities.NotificationsResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationUserConcise
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
@@ -14,12 +15,44 @@ import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsP
 class NotificationsRepositoryImpl(
     private val notificationsDao: NotificationsDao,
     private val paginator: NotificationsPaginator,
-    private val user: User
+    private val user: User,
+    private val utils: Utils
 ) : NotificationsRepository {
     private val _pages: MutableList<NotificationsPage> = mutableListOf()
+    private var _unreadCount: Int? = null
+    private val notificationsListeners: MutableMap<String, NotificationsListener> = mutableMapOf()
 
     override val pages: List<NotificationsPage>
         get() = _pages
+    override val unreadCount: Int?
+        get() = _unreadCount
+
+    companion object {
+        private const val NOTIFICATIONS_PERIODIC_RELOAD = "NOTIFICATIONS_PERIODIC_RELOAD"
+    }
+
+    init {
+        reloadUnreadCountPeriodically()
+    }
+
+    private fun reloadUnreadCountPeriodically() {
+        utils.dispatcherUtils.main.periodic(
+            operationKey = NOTIFICATIONS_PERIODIC_RELOAD,
+            period = 60.0,
+            startImmediately = true,
+            repeats = true
+        ) {
+            val previousUnreadCount = this._unreadCount
+            this.unreadCount { unreadCount, notificationsErrors ->
+                if (previousUnreadCount != unreadCount) {
+                    this.reset()
+                    this.loadNextPage { _, _ ->
+                        this.notifyListeners()
+                    }
+                }
+            }
+        }
+    }
 
     override fun loadNextPage(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
@@ -28,6 +61,21 @@ class NotificationsRepositoryImpl(
                     val notificationsPage = toNotificationsPage(notificationsResponse)
                     _pages.add(notificationsPage)
                     onComplete(notificationsPage, null)
+                } else {
+                    onComplete(null, NotificationsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun unreadCount(onComplete: (Int?, NotificationsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            notificationsDao.unreadCount(user.getBearerAccessToken()!!) { unreadCount, notificationsDaoResponseStatus ->
+                if (notificationsDaoResponseStatus.isSuccessful && unreadCount != null) {
+                    this._unreadCount = unreadCount
+                    onComplete(unreadCount, null)
                 } else {
                     onComplete(null, NotificationsErrors.UNKNOWN)
                 }
@@ -68,6 +116,14 @@ class NotificationsRepositoryImpl(
         }
     }
 
+    override fun registerListener(id: String, listener: NotificationsListener) {
+        notificationsListeners[id] = listener
+    }
+
+    override fun unregisterListener(id: String) {
+        notificationsListeners.remove(id)
+    }
+
     private fun toNotification(notificationResponse: NotificationResponse) : Notification {
         return Notification(
             id = notificationResponse.id,
@@ -94,5 +150,11 @@ class NotificationsRepositoryImpl(
         }
 
         return NotificationsPage(notifications, isLastPage)
+    }
+
+    private fun notifyListeners() {
+        for (listener in this.notificationsListeners.values) {
+            listener.notificationsChanged()
+        }
     }
 }

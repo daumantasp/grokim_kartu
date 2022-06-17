@@ -6,7 +6,11 @@ import com.dauma.grokimkartu.repositories.notifications.entities.UpdateNotificat
 
 interface NotificationsRepository {
     val pages: List<NotificationsPage>
+    val unreadCount: Int?
     fun loadNextPage(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit)
+    fun unreadCount(onComplete: (Int?, NotificationsErrors?) -> Unit)
     fun update(notificationId: Int, updateNotification: UpdateNotification, onComplete: (Notification?, NotificationsErrors?) -> Unit)
     fun reset()
+    fun registerListener(id: String, listener: NotificationsListener)
+    fun unregisterListener(id: String)
 }

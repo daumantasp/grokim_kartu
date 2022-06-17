@@ -275,9 +275,10 @@ class AppModule {
     fun providesNotificationsRepository(
         notificationsDao: NotificationsDao,
         paginator: NotificationsPaginator,
-        user: User
+        user: User,
+        utils: Utils
     ) : NotificationsRepository {
-        return NotificationsRepositoryImpl(notificationsDao, paginator, user)
+        return NotificationsRepositoryImpl(notificationsDao, paginator, user, utils)
     }
 
     @Provides
