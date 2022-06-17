@@ -22,6 +22,8 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
+import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtils
+import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtilsImpl
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
@@ -99,6 +101,11 @@ class AppModule {
     }
 
     @Provides
+    fun dispatcherUtils() : DispatcherUtils {
+        return DispatcherUtilsImpl()
+    }
+
+    @Provides
     fun otherUtils() : OtherUtils {
         return OtherUtilsImpl()
     }
@@ -110,6 +117,7 @@ class AppModule {
         keyboardUtils: KeyboardUtils,
         timeUtils: TimeUtils,
         sharedStorageUtils: SharedStorageUtils,
+        dispatcherUtils: DispatcherUtils,
         otherUtils: OtherUtils
     ) : Utils {
         return UtilsImpl(
@@ -118,6 +126,7 @@ class AppModule {
             keyboardUtils,
             timeUtils,
             sharedStorageUtils,
+            dispatcherUtils,
             otherUtils
         )
     }

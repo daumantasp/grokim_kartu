@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.general.utils
 
+import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
 import com.dauma.grokimkartu.general.utils.other.OtherUtils
@@ -13,5 +14,6 @@ interface Utils {
     val keyboardUtils: KeyboardUtils
     val timeUtils: TimeUtils
     val sharedStorageUtils: SharedStorageUtils
+    val dispatcherUtils: DispatcherUtils
     val otherUtils: OtherUtils
 }
