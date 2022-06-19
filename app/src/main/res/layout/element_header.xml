@@ -55,12 +55,13 @@
                 android:id="@+id/notificationsImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:srcCompat="@android:drawable/sym_action_email" />
+                android:layout_marginTop="7dp"
+                app:srcCompat="@drawable/ic_notifications" />
 
             <FrameLayout
                 android:id="@+id/notificationsFrameLayout"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/oval_background"

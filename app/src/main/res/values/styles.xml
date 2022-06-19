@@ -170,8 +170,9 @@
     <style name="UnreadNotifications">
         <item name="android:textColor">?attr/notificationsCountTextColor</item>
         <item name="android:fontFamily">"@font/lato"</item>
-        <item name="android:textSize">10dp</item>
+        <item name="android:textSize">12dp</item>
         <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="PrimaryButton">
