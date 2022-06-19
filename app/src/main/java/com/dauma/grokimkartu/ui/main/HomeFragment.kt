@@ -94,6 +94,11 @@ class HomeFragment : Fragment() {
             this.isUserIconGot = true
             this.setPhotoOrInitialsInHeaderIfPossible()
         })
+        homeViewModel.unreadCount.observe(viewLifecycleOwner, { unreadCount ->
+            val unreadCountNotNUll = unreadCount ?: 0
+            binding.homeHeaderViewElement.setUnreadNotificationsCount(unreadCountNotNUll.toString())
+            binding.homeHeaderViewElement.showUnreadNotificationsCount(unreadCountNotNUll > 0)
+        })
         homeViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
             customNavigator?.navigateToProfile()
         })

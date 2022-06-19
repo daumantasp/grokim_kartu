@@ -32,6 +32,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     private val photoIconBackgroundDrawable: Drawable?
     private val rightTextView: TextView
     private val notificationsRelativeLayout: RelativeLayout
+    private val notificationsFrameLayout: FrameLayout
     private val unreadNotificationsCountTextView: TextView
     @Inject lateinit var utils: Utils
     private var isTranslatedZ: Boolean = false
@@ -48,6 +49,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         spinnerViewElement = findViewById(R.id.spinnerViewElement)
         rightTextView = findViewById(R.id.rightTextView)
         notificationsRelativeLayout = findViewById(R.id.notificationsRelativeLayout)
+        notificationsFrameLayout = findViewById(R.id.notificationsFrameLayout)
         unreadNotificationsCountTextView = findViewById(R.id.unreadNotificationsCountTextView)
 
         photoIconBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.oval_background)?.mutate()
@@ -73,6 +75,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         attributes.recycle()
         titleTextView.text = title
         userRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE
+        notificationsRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE
         showShadow(isBottomBorderVisible)
         setType(type)
         setTextSize(textSize)
@@ -106,7 +109,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     fun showUnreadNotificationsCount(show: Boolean) {
         // TODO: make animated?
-        unreadNotificationsCountTextView.visibility = if (show == true) View.VISIBLE else View.GONE
+        notificationsFrameLayout.visibility = if (show == true) View.VISIBLE else View.GONE
     }
 
     fun showIconLoading(show: Boolean) {

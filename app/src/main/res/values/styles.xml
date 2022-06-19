@@ -167,6 +167,13 @@
 
     <style name="ThomannDetailsUserTitle" parent="PlayerItemTitle" />
 
+    <style name="UnreadNotifications">
+        <item name="android:textColor">?attr/notificationsCountTextColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">10dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="PrimaryButton">
         <item name="android:background">@drawable/primary_in_auth_button_ripple</item>
         <item name="android:textColor">?attr/primaryInAuthButtonTextColor</item>

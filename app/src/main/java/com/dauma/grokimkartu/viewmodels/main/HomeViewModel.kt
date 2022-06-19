@@ -5,21 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.repositories.notifications.NotificationsRepository
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val notificationsRepository: NotificationsRepository
 ) : ViewModel() {
     private val _name = MutableLiveData<String?>()
     private val _userIcon = MutableLiveData<Bitmap?>()
+    private val _unreadCount = MutableLiveData<Int?>()
     private val _navigateToProfile = MutableLiveData<Event<String>>()
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
     private val _navigateToThomann = MutableLiveData<Event<String>>()
     val name: LiveData<String?> = _name
     val userIcon: LiveData<Bitmap?> = _userIcon
+    val unreadCount: LiveData<Int?> = _unreadCount
     val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
     val navigateToPlayers = _navigateToPlayers
     val navigateToThomann = _navigateToThomann
@@ -31,6 +35,7 @@ class HomeViewModel @Inject constructor(
     fun viewIsReady() {
         loadUserProfile()
         loadUserIcon()
+        loadUnreadNotificationsCount()
     }
 
     fun userIconClicked() {
@@ -54,6 +59,12 @@ class HomeViewModel @Inject constructor(
     private fun loadUserProfile() {
         profileRepository.profile { profile, _ ->
             _name.value = profile?.name
+        }
+    }
+
+    private fun loadUnreadNotificationsCount() {
+        notificationsRepository.unreadCount { unreadCount, notificationsErrors ->
+            _unreadCount.value = unreadCount
         }
     }
 }
