@@ -35,12 +35,48 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/userRelativeLayout"
+            app:layout_constraintEnd_toStartOf="@id/notificationsRelativeLayout"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5"
             tools:text="Header Title" />
+
+        <RelativeLayout
+            android:id="@+id/notificationsRelativeLayout"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/userRelativeLayout"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/notificationsImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@android:drawable/sym_action_email" />
+
+            <FrameLayout
+                android:id="@+id/notificationsFrameLayout"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/oval_background"
+                android:backgroundTint="?attr/notificationsCountBackgroundColor"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/unreadNotificationsCountTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="?attr/notificationsCountTextColor"
+                    android:textSize="10dp"
+                    android:gravity="center" />
+
+            </FrameLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/userRelativeLayout"

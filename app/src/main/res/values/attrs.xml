@@ -92,6 +92,9 @@
     <attr name="codeValueItemBackgroundColor" format="color" />
     <attr name="spinnerAsLastItemColor" format="color" />
 
+    <attr name="notificationsCountBackgroundColor" format="color" />
+    <attr name="notificationsCountTextColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
