@@ -13,7 +13,9 @@ class NotificationsViewModel @Inject constructor(
     private val notificationsRepository: NotificationsRepository,
 ) : ViewModel() {
     private val _notificationsLoaded = MutableLiveData<Event<String>>()
+    private val _navigateBack = MutableLiveData<Event<String>>()
     val notificationsLoaded: LiveData<Event<String>> = _notificationsLoaded
+    val navigateBack: LiveData<Event<String>> = _navigateBack
 
     companion object {
         private val TAG = "NotificationsViewModelImpl"
@@ -21,6 +23,10 @@ class NotificationsViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadNotifications()
+    }
+
+    fun backClicked() {
+        _navigateBack.value = Event("")
     }
 
     private fun loadNotifications() {
