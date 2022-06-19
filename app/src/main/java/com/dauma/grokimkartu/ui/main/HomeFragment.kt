@@ -61,7 +61,9 @@ class HomeFragment : Fragment() {
             homeViewModel.userIconClicked()
         }
         binding.homeHeaderViewElement.showIconLoading(true)
-
+        binding.homeHeaderViewElement.setOnNotificationsClick {
+            homeViewModel.notificationsClicked()
+        }
         binding.playersCardViewElement.setOnClick {
             homeViewModel.playersClicked()
         }
@@ -101,6 +103,9 @@ class HomeFragment : Fragment() {
         })
         homeViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
             customNavigator?.navigateToProfile()
+        })
+        homeViewModel.navigateToNotifications.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment)
         })
         homeViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(R.id.action_homeFragment_to_playersFragment)

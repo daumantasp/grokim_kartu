@@ -19,12 +19,14 @@ class HomeViewModel @Inject constructor(
     private val _userIcon = MutableLiveData<Bitmap?>()
     private val _unreadCount = MutableLiveData<Int?>()
     private val _navigateToProfile = MutableLiveData<Event<String>>()
+    private val _navigateToNotifications = MutableLiveData<Event<String>>()
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
     private val _navigateToThomann = MutableLiveData<Event<String>>()
     val name: LiveData<String?> = _name
     val userIcon: LiveData<Bitmap?> = _userIcon
     val unreadCount: LiveData<Int?> = _unreadCount
     val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
+    val navigateToNotifications: LiveData<Event<String>> = _navigateToNotifications
     val navigateToPlayers = _navigateToPlayers
     val navigateToThomann = _navigateToThomann
 
@@ -40,6 +42,10 @@ class HomeViewModel @Inject constructor(
 
     fun userIconClicked() {
         _navigateToProfile.value = Event("")
+    }
+
+    fun notificationsClicked() {
+        _navigateToNotifications.value = Event("")
     }
 
     fun playersClicked() {
