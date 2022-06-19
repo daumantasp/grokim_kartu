@@ -102,6 +102,9 @@
 
         <item name="notificationsCountBackgroundColor">@color/cherryRed</item>
         <item name="notificationsCountTextColor">@color/white</item>
+
+        <item name="notificationItemBackgroundColor">@color/white</item>
+        <item name="notificationItemNameColor">@color/black</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

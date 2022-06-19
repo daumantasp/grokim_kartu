@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-hdpi/notification_item_background.xml" value="0.144" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/oval_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/player_item_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_button.xml" value="0.23125" />
@@ -10,6 +11,8 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_notifications.xml" value="0.1766304347826087" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_profile_edit.xml" value="0.2509057971014493" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_edit.xml" value="0.2" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/notification_item.xml" value="0.16304347826086957" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/notification_last_item.xml" value="0.20923913043478262" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/player_last_item.xml" value="0.36302083333333335" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/thomann_last_item.xml" value="0.19927536231884058" />
         <entry key="..\:/Development/grokim_kartu/app/src/main/res/drawable-xhdpi/code_value_item_background.xml" value="0.223" />

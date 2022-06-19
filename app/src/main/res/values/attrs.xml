@@ -95,6 +95,9 @@
     <attr name="notificationsCountBackgroundColor" format="color" />
     <attr name="notificationsCountTextColor" format="color" />
 
+    <attr name="notificationItemBackgroundColor" format="color" />
+    <attr name="notificationItemNameColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">

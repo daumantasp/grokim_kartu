@@ -36,7 +36,11 @@ class NotificationsViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    private fun loadNextNotificationsPage() {
+    fun notificationClicked(notificationId: Int) {
+        // TODO
+    }
+
+    fun loadNextNotificationsPage() {
         notificationsRepository.loadNextPage { _, _ ->
             _notificationsPages.value = notificationsRepository.pages
         }
