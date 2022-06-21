@@ -103,8 +103,22 @@
         <item name="notificationsCountBackgroundColor">@color/cherryRed</item>
         <item name="notificationsCountTextColor">@color/white</item>
 
-        <item name="notificationItemBackgroundColor">@color/white</item>
-        <item name="notificationItemNameColor">@color/black</item>
+        <item name="notificationsBackgroundColor">@color/white</item>
+
+        <item name="unreadNotificationBackgroundColor">@color/columbiaBlue</item>
+        <item name="unreadNotificationNameColor">@color/black</item>
+        <item name="unreadNotificationDescriptionColor">@color/black50</item>
+        <item name="unreadNotificationDateColor">@color/violetBlue</item>
+
+        <item name="inactiveNotificationBackgroundColor">@color/lightGrey</item>
+        <item name="inactiveNotificationNameColor">@color/black50</item>
+        <item name="inactiveNotificationDescriptionColor">@color/black50</item>
+        <item name="inactiveNotificationDateColor">@color/black50</item>
+
+        <item name="activeNotificationBackgroundColor">@color/white</item>
+        <item name="activeNotificationNameColor">@color/black</item>
+        <item name="activeNotificationDescriptionColor">@color/black</item>
+        <item name="activeNotificationDateColor">@color/violetBlue</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
@@ -169,6 +183,26 @@
     </style>
 
     <style name="ThomannDetailsUserTitle" parent="PlayerItemTitle" />
+
+    <style name="InactiveNotificationName">
+        <item name="android:textColor">?attr/inactiveNotificationNameColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="InactiveNotificationDate">
+        <item name="android:textColor">?attr/inactiveNotificationDateColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="InactiveNotificationDescription">
+        <item name="android:textColor">?attr/inactiveNotificationDescriptionColor</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">2</item>
+    </style>
 
     <style name="UnreadNotifications">
         <item name="android:textColor">?attr/notificationsCountTextColor</item>

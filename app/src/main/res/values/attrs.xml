@@ -95,8 +95,22 @@
     <attr name="notificationsCountBackgroundColor" format="color" />
     <attr name="notificationsCountTextColor" format="color" />
 
-    <attr name="notificationItemBackgroundColor" format="color" />
-    <attr name="notificationItemNameColor" format="color" />
+    <attr name="notificationsBackgroundColor" format="color" />
+
+    <attr name="unreadNotificationBackgroundColor" format="color" />
+    <attr name="unreadNotificationNameColor" format="color" />
+    <attr name="unreadNotificationDescriptionColor" format="color" />
+    <attr name="unreadNotificationDateColor" format="color" />
+
+    <attr name="inactiveNotificationBackgroundColor" format="color" />
+    <attr name="inactiveNotificationNameColor" format="color" />
+    <attr name="inactiveNotificationDescriptionColor" format="color" />
+    <attr name="inactiveNotificationDateColor" format="color" />
+
+    <attr name="activeNotificationBackgroundColor" format="color" />
+    <attr name="activeNotificationNameColor" format="color" />
+    <attr name="activeNotificationDescriptionColor" format="color" />
+    <attr name="activeNotificationDateColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />

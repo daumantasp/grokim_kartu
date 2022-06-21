@@ -6,10 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
+import java.sql.Date
 
 class NotificationsListAdapter(
     var notificationsListData: MutableList<Any>,
+    private val utils: Utils,
     private val onItemClicked: (Int) -> Unit,
     private val loadNextPage: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -30,11 +33,11 @@ class NotificationsListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == NOTIFICATION) {
-            return NotificationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.notification_item, parent, false), onItemClicked)
+            return NotificationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.notification_item, parent, false), utils, onItemClicked)
         } else if (viewType == LAST) {
             return NotificationLastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.notification_last_item, parent, false), loadNextPage)
         }
-        return return NotificationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.notification_item, parent, false), onItemClicked)
+        return NotificationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.notification_item, parent, false), utils, onItemClicked)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -52,13 +55,19 @@ class NotificationsListAdapter(
 
     class NotificationViewHolder(
         val view: View,
+        private val utils: Utils,
         private val onItemClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(view) {
         val nameTextView = view.findViewById<TextView>(R.id.notificationName)
+        val dateTextView = view.findViewById<TextView>(R.id.notificationDate)
         val descriptionTextView = view.findViewById<TextView>(R.id.notificationDescription)
 
         fun bind(data: NotificationsListData) {
             nameTextView.text = data.notification.name
+            val createdAtFormatted = data.notification.createdAt?.time?.let {
+                utils.timeUtils.format(Date(it))
+            }
+            dateTextView.text = createdAtFormatted
             descriptionTextView.text = data.notification.description
         }
     }

@@ -88,6 +88,7 @@ class NotificationsFragment : Fragment() {
         binding.notificationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.notificationsRecyclerView.adapter = NotificationsListAdapter(
             notificationsListData = notificationsListData.toMutableList(),
+            utils = utils,
             onItemClicked = { notificationId -> this.notificationsViewModel.notificationClicked(notificationId)},
             loadNextPage = { this.notificationsViewModel.loadNextNotificationsPage() }
         )
