@@ -97,6 +97,7 @@ class NotificationsRepositoryImpl(
             notificationsDao.update(notificationId, updateNotificationsRequest, user.getBearerAccessToken()!!) { notificationResponse, notificationsDaoResponseStatus ->
                 if (notificationsDaoResponseStatus.isSuccessful && notificationResponse != null) {
                     val notification = toNotification(notificationResponse)
+                    this.updateNotificationInPage(notification)
                     onComplete(notification, null)
                 } else {
                     onComplete(null, NotificationsErrors.UNKNOWN)
@@ -104,6 +105,22 @@ class NotificationsRepositoryImpl(
             }
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun updateNotificationInPage(updatedNotification: Notification) {
+        for (page in _pages) {
+            page.notifications?.let { notifications ->
+                for (i in 0 until notifications.size) {
+                    if (notifications[i].id == updatedNotification.id) {
+                        if (notifications[i].isRead == false && updatedNotification.isRead == true) {
+                            _unreadCount = _unreadCount?.let { it - 1 }
+                        }
+                        notifications[i] = updatedNotification
+                        break
+                    }
+                }
+            }
         }
     }
 

@@ -67,6 +67,10 @@ class NotificationsFragment : Fragment() {
                 reloadRecyclerViewWithNewData(data)
             }
         })
+        notificationsViewModel.notificationsUpdated.observe(viewLifecycleOwner, { notificationsPages ->
+            val data = getAllNotificationsFromPages(notificationsPages)
+            reloadRecyclerViewWithNewData(data)
+        })
     }
 
     private fun getAllNotificationsFromPages(pages: List<NotificationsPage>) : List<Any> {
@@ -108,11 +112,13 @@ class NotificationsFragment : Fragment() {
                 for (i in 0 until previousData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is PlayersListData && newItem is PlayersListData) {
-                        if (previousItem.player.userId != newItem.player.userId) {
+                    if (previousItem is NotificationsListData && newItem is NotificationsListData) {
+                        if (previousItem.notification.id != newItem.notification.id) {
+                            changedItems.add(i)
+                        } else if (previousItem.notification.isRead != newItem.notification.isRead) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                    } else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)
@@ -125,11 +131,13 @@ class NotificationsFragment : Fragment() {
                 for (i in 0 until newData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is PlayersListData && newItem is PlayersListData) {
-                        if (previousItem.player.userId != newItem.player.userId) {
+                    if (previousItem is NotificationsListData && newItem is NotificationsListData) {
+                        if (previousItem.notification.id != newItem.notification.id) {
+                            changedItems.add(i)
+                        } else if (previousItem.notification.isRead != newItem.notification.isRead) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                    } else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)

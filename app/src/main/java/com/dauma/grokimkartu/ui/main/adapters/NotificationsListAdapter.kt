@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
+import com.dauma.grokimkartu.ui.viewelements.NotificationViewElementState
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 import java.sql.Date
 
@@ -58,17 +60,29 @@ class NotificationsListAdapter(
         private val utils: Utils,
         private val onItemClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val nameTextView = view.findViewById<TextView>(R.id.notificationName)
-        val dateTextView = view.findViewById<TextView>(R.id.notificationDate)
-        val descriptionTextView = view.findViewById<TextView>(R.id.notificationDescription)
+        val notificationViewElement = view.findViewById<NotificationViewElement>(R.id.notificationViewElement)
 
         fun bind(data: NotificationsListData) {
-            nameTextView.text = data.notification.name
             val createdAtFormatted = data.notification.createdAt?.time?.let {
                 utils.timeUtils.format(Date(it))
             }
-            dateTextView.text = createdAtFormatted
-            descriptionTextView.text = data.notification.description
+
+            notificationViewElement.apply {
+                setName(data.notification.name ?: "")
+                setDate(createdAtFormatted ?: "")
+                setDescription(data.notification.description ?: "")
+                setState(NotificationViewElementState.INACTIVE)
+                setOnClick { onItemClicked(data.notification.id ?: -1) }
+
+                val state = if (data.notification.isRead == true) {
+                    NotificationViewElementState.INACTIVE
+                } else {
+                    NotificationViewElementState.UNREAD
+                }
+                setState(state)
+            }
+
+            // https://www.colorhexa.com/394989
         }
     }
 
