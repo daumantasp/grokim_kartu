@@ -97,21 +97,6 @@
 
     <attr name="notificationsBackgroundColor" format="color" />
 
-    <attr name="unreadNotificationBackgroundColor" format="color" />
-    <attr name="unreadNotificationNameColor" format="color" />
-    <attr name="unreadNotificationDescriptionColor" format="color" />
-    <attr name="unreadNotificationDateColor" format="color" />
-
-    <attr name="inactiveNotificationBackgroundColor" format="color" />
-    <attr name="inactiveNotificationNameColor" format="color" />
-    <attr name="inactiveNotificationDescriptionColor" format="color" />
-    <attr name="inactiveNotificationDateColor" format="color" />
-
-    <attr name="activeNotificationBackgroundColor" format="color" />
-    <attr name="activeNotificationNameColor" format="color" />
-    <attr name="activeNotificationDescriptionColor" format="color" />
-    <attr name="activeNotificationDateColor" format="color" />
-
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
@@ -168,5 +153,22 @@
         <attr name="cardDescription" format="string" />
         <attr name="cardStartColor" format="color" />
         <attr name="cardEndColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="NotificationViewElement">
+        <attr name="unreadNotificationBackgroundColor" format="color" />
+        <attr name="unreadNotificationNameColor" format="color" />
+        <attr name="unreadNotificationDescriptionColor" format="color" />
+        <attr name="unreadNotificationDateColor" format="color" />
+
+        <attr name="inactiveNotificationBackgroundColor" format="color" />
+        <attr name="inactiveNotificationNameColor" format="color" />
+        <attr name="inactiveNotificationDescriptionColor" format="color" />
+        <attr name="inactiveNotificationDateColor" format="color" />
+
+        <attr name="activeNotificationBackgroundColor" format="color" />
+        <attr name="activeNotificationNameColor" format="color" />
+        <attr name="activeNotificationDescriptionColor" format="color" />
+        <attr name="activeNotificationDateColor" format="color" />
     </declare-styleable>
 </resources>
