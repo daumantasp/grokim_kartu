@@ -1,10 +1,8 @@
 package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
