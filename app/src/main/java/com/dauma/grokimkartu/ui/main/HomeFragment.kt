@@ -80,6 +80,7 @@ class HomeFragment : Fragment() {
         _binding = null
         customNavigator = null
         statusBarManager = null
+        homeViewModel.viewIsDiscarded()
     }
 
     private fun setupObservers() {

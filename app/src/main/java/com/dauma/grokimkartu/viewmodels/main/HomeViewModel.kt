@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.repositories.notifications.NotificationsListener
 import com.dauma.grokimkartu.repositories.notifications.NotificationsRepository
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val notificationsRepository: NotificationsRepository
-) : ViewModel() {
+) : ViewModel(), NotificationsListener {
     private val _name = MutableLiveData<String?>()
     private val _userIcon = MutableLiveData<Bitmap?>()
     private val _unreadCount = MutableLiveData<Int?>()
@@ -32,12 +33,18 @@ class HomeViewModel @Inject constructor(
 
     companion object {
         private val TAG = "HomeViewModel"
+        private val HOME_VIEW_MODEL_NOTIFICATIONS_LISTENER_ID = "HOME_VIEW_MODEL_NOTIFICATIONS_LISTENER_ID"
     }
 
     fun viewIsReady() {
         loadUserProfile()
         loadUserIcon()
         loadUnreadNotificationsCount()
+        notificationsRepository.registerListener(HOME_VIEW_MODEL_NOTIFICATIONS_LISTENER_ID, this)
+    }
+
+    fun viewIsDiscarded() {
+        notificationsRepository.unregisterListener(HOME_VIEW_MODEL_NOTIFICATIONS_LISTENER_ID)
     }
 
     fun userIconClicked() {
@@ -72,5 +79,9 @@ class HomeViewModel @Inject constructor(
         notificationsRepository.unreadCount { unreadCount, notificationsErrors ->
             _unreadCount.value = unreadCount
         }
+    }
+
+    override fun notificationsChanged() {
+        _unreadCount.value = notificationsRepository.unreadCount
     }
 }
