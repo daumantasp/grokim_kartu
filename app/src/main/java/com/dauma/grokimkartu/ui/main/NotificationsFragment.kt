@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentNotificationsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.NotificationsViewModel
@@ -78,7 +79,8 @@ class NotificationsFragment : Fragment() {
         for (page in pages) {
             if (page.notifications != null) {
                 for (notification in page.notifications) {
-                    data.add(NotificationsListData(notification))
+                    val copiedNotification = Notification(notification)
+                    data.add(NotificationsListData(copiedNotification))
                 }
             }
         }
@@ -115,7 +117,7 @@ class NotificationsFragment : Fragment() {
                     if (previousItem is NotificationsListData && newItem is NotificationsListData) {
                         if (previousItem.notification.id != newItem.notification.id) {
                             changedItems.add(i)
-                        } else if (previousItem.notification.isRead != newItem.notification.isRead) {
+                        } else if (previousItem.notification.state != newItem.notification.state) {
                             changedItems.add(i)
                         }
                     } else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
@@ -134,7 +136,7 @@ class NotificationsFragment : Fragment() {
                     if (previousItem is NotificationsListData && newItem is NotificationsListData) {
                         if (previousItem.notification.id != newItem.notification.id) {
                             changedItems.add(i)
-                        } else if (previousItem.notification.isRead != newItem.notification.isRead) {
+                        } else if (previousItem.notification.state != newItem.notification.state) {
                             changedItems.add(i)
                         }
                     } else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {

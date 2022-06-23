@@ -3,12 +3,11 @@ package com.dauma.grokimkartu.ui.main.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
-import com.dauma.grokimkartu.ui.viewelements.NotificationViewElementState
+import com.dauma.grokimkartu.repositories.notifications.entities.NotificationState
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 import java.sql.Date
 
@@ -71,15 +70,8 @@ class NotificationsListAdapter(
                 setName(data.notification.name ?: "")
                 setDate(createdAtFormatted ?: "")
                 setDescription(data.notification.description ?: "")
-                setState(NotificationViewElementState.INACTIVE)
+                setState(data.notification.state ?: NotificationState.INACTIVE)
                 setOnClick { onItemClicked(data.notification.id ?: -1) }
-
-                val state = if (data.notification.isRead == true) {
-                    NotificationViewElementState.INACTIVE
-                } else {
-                    NotificationViewElementState.UNREAD
-                }
-                setState(state)
             }
 
             // https://www.colorhexa.com/394989

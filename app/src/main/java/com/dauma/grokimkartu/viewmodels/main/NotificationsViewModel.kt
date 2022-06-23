@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.repositories.notifications.NotificationsRepository
+import com.dauma.grokimkartu.repositories.notifications.entities.NotificationState
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
 import com.dauma.grokimkartu.repositories.notifications.entities.UpdateNotification
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,18 +39,8 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun notificationClicked(notificationId: Int) {
-        for (page in notificationsPages.value ?: listOf()) {
-            for (notification in page.notifications ?: listOf()) {
-                if (notification.id == notificationId) {
-                    if (notification.isRead == false) {
-                        val updateNotification = UpdateNotification(isRead = true)
-                        notificationsRepository.update(notificationId, updateNotification) { notification, notificationsErrors ->
-                            _notificationsUpdated.value = notificationsRepository.pages
-                        }
-                    }
-                    break
-                }
-            }
+        notificationsRepository.activate(notificationId) { _, _ ->
+            _notificationsUpdated.value = notificationsRepository.pages
         }
     }
 

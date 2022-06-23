@@ -9,7 +9,7 @@ interface NotificationsRepository {
     val unreadCount: Int?
     fun loadNextPage(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit)
     fun unreadCount(onComplete: (Int?, NotificationsErrors?) -> Unit)
-    fun update(notificationId: Int, updateNotification: UpdateNotification, onComplete: (Notification?, NotificationsErrors?) -> Unit)
+    fun activate(notificationId: Int, onComplete: (Notification?, NotificationsErrors?) -> Unit)
     fun reset()
     fun registerListener(id: String, listener: NotificationsListener)
     fun unregisterListener(id: String)

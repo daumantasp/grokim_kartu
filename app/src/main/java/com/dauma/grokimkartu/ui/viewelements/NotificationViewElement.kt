@@ -6,12 +6,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.dauma.grokimkartu.R
-
-enum class NotificationViewElementState {
-    INACTIVE,
-    ACTIVE,
-    UNREAD
-}
+import com.dauma.grokimkartu.repositories.notifications.entities.NotificationState
 
 class NotificationViewElement(context: Context, attrs: AttributeSet)
     : FrameLayout(context, attrs) {
@@ -112,23 +107,23 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
         this.onClick = onClick
     }
 
-    fun setState(state: NotificationViewElementState) {
+    fun setState(state: NotificationState) {
         when (state) {
-            NotificationViewElementState.INACTIVE -> {
+            NotificationState.INACTIVE -> {
                 notificationCardView.setBackgroundColor(inactiveNotificationBackgroundColor)
                 nameTextView.setTextColor(inactiveNotificationNameColor)
                 dateTextView.setTextColor(inactiveNotificationDateColor)
                 descriptionTextView.setTextColor(inactiveNotificationDescriptionColor)
                 notificationCardView.cardElevation = 0.0f
             }
-            NotificationViewElementState.ACTIVE -> {
+            NotificationState.ACTIVE -> {
                 notificationCardView.setBackgroundColor(activeNotificationBackgroundColor)
                 nameTextView.setTextColor(activeNotificationNameColor)
                 dateTextView.setTextColor(activeNotificationDateColor)
                 descriptionTextView.setTextColor(activeNotificationDescriptionColor)
                 notificationCardView.cardElevation = 10.0f
             }
-            NotificationViewElementState.UNREAD -> {
+            NotificationState.UNREAD -> {
                 notificationCardView.setBackgroundColor(unreadNotificationBackgroundColor)
                 nameTextView.setTextColor(unreadNotificationNameColor)
                 dateTextView.setTextColor(unreadNotificationDateColor)

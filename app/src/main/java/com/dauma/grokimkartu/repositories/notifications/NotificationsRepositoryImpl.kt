@@ -6,10 +6,7 @@ import com.dauma.grokimkartu.data.notifications.entities.NotificationsResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.notifications.entities.Notification
-import com.dauma.grokimkartu.repositories.notifications.entities.NotificationUserConcise
-import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
-import com.dauma.grokimkartu.repositories.notifications.entities.UpdateNotification
+import com.dauma.grokimkartu.repositories.notifications.entities.*
 import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginator
 
 class NotificationsRepositoryImpl(
@@ -85,7 +82,46 @@ class NotificationsRepositoryImpl(
         }
     }
 
-    override fun update(
+    override fun activate(
+        notificationId: Int,
+        onComplete: (Notification?, NotificationsErrors?) -> Unit
+    ) {
+        if (user.isUserLoggedIn()) {
+            if (hasNotification(notificationId)) {
+                val notification = getNotification(notificationId)!!
+                readNotificationIfNeeded(notificationId) { _, _ -> }
+                activateNotification(notificationId)
+                onComplete(notification, null)
+            } else {
+                onComplete(null, NotificationsErrors.UNKNOWN)
+            }
+        } else {
+            throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun readNotificationIfNeeded(
+        notificationId: Int,
+        onComplete: (Notification?, NotificationsErrors?) -> Unit
+    ) {
+        val previousNotification = getNotification(notificationId)
+        if (previousNotification?.state == NotificationState.UNREAD) {
+            val updateNotification = UpdateNotification(isRead = true)
+            update(notificationId, updateNotification) { updatedNotification, notificationsErrors ->
+                updatedNotification?.let {
+                    if (it.state != NotificationState.UNREAD) {
+                        previousNotification.state = it.state
+                        _unreadCount = _unreadCount?.let { it - 1 }
+                    }
+                }
+                onComplete(updatedNotification, notificationsErrors)
+            }
+        } else {
+            onComplete(null, NotificationsErrors.UNKNOWN)
+        }
+    }
+
+    private fun update(
         notificationId: Int,
         updateNotification: UpdateNotification,
         onComplete: (Notification?, NotificationsErrors?) -> Unit
@@ -97,7 +133,6 @@ class NotificationsRepositoryImpl(
             notificationsDao.update(notificationId, updateNotificationsRequest, user.getBearerAccessToken()!!) { notificationResponse, notificationsDaoResponseStatus ->
                 if (notificationsDaoResponseStatus.isSuccessful && notificationResponse != null) {
                     val notification = toNotification(notificationResponse)
-                    this.updateNotificationInPage(notification)
                     onComplete(notification, null)
                 } else {
                     onComplete(null, NotificationsErrors.UNKNOWN)
@@ -105,22 +140,6 @@ class NotificationsRepositoryImpl(
             }
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
-        }
-    }
-
-    private fun updateNotificationInPage(updatedNotification: Notification) {
-        for (page in _pages) {
-            page.notifications?.let { notifications ->
-                for (i in 0 until notifications.size) {
-                    if (notifications[i].id == updatedNotification.id) {
-                        if (notifications[i].isRead == false && updatedNotification.isRead == true) {
-                            _unreadCount = _unreadCount?.let { it - 1 }
-                        }
-                        notifications[i] = updatedNotification
-                        break
-                    }
-                }
-            }
         }
     }
 
@@ -141,17 +160,49 @@ class NotificationsRepositoryImpl(
         notificationsListeners.remove(id)
     }
 
+    private fun hasNotification(notificationId: Int) : Boolean {
+        return getNotification(notificationId) != null
+    }
+
+    private fun getNotification(notificationId: Int) : Notification? {
+        for (page in _pages) {
+            page.notifications?.let { notifications ->
+                for (notification in notifications) {
+                    if (notification.id == notificationId) {
+                        return notification
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    private fun activateNotification(notificationId: Int) {
+        for (page in _pages) {
+            page.notifications?.let { notifications ->
+                for (notification in notifications) {
+                    if (notification.id == notificationId) {
+                        notification.state = NotificationState.ACTIVE
+                    } else if (notification.state == NotificationState.ACTIVE) {
+                        notification.state = NotificationState.INACTIVE
+                    }
+                }
+            }
+        }
+    }
+
     private fun toNotification(notificationResponse: NotificationResponse) : Notification {
+        val state = if (notificationResponse.isRead == true) NotificationState.INACTIVE else NotificationState.UNREAD
         return Notification(
             id = notificationResponse.id,
             user = NotificationUserConcise(
                 id = notificationResponse.user?.id,
                 name = notificationResponse.user?.name
             ),
-            isRead = notificationResponse.isRead,
             name = notificationResponse.name,
             description = notificationResponse.description,
-            createdAt = notificationResponse.createdAt
+            createdAt = notificationResponse.createdAt,
+            state = state
         )
     }
 
