@@ -56,6 +56,12 @@ class NotificationsFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        notificationsViewModel.viewIsDiscarded()
+    }
+
     private fun setupObservers() {
         notificationsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()

@@ -4,17 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.repositories.notifications.NotificationsListener
 import com.dauma.grokimkartu.repositories.notifications.NotificationsRepository
-import com.dauma.grokimkartu.repositories.notifications.entities.NotificationState
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
-import com.dauma.grokimkartu.repositories.notifications.entities.UpdateNotification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
     private val notificationsRepository: NotificationsRepository,
-) : ViewModel() {
+) : ViewModel(), NotificationsListener {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _notificationsUpdated = MutableLiveData<List<NotificationsPage>>()
     private val _notificationsPages = MutableLiveData<List<NotificationsPage>>()
@@ -24,6 +23,7 @@ class NotificationsViewModel @Inject constructor(
 
     companion object {
         private val TAG = "NotificationsViewModelImpl"
+        private val NOTIFICATIONS_VIEW_MODEL_LISTENER_ID = "NOTIFICATIONS_VIEW_MODEL_LISTENER_ID"
     }
 
     fun viewIsReady() {
@@ -32,6 +32,11 @@ class NotificationsViewModel @Inject constructor(
         } else {
             _notificationsPages.value = notificationsRepository.pages
         }
+        notificationsRepository.registerListener(NOTIFICATIONS_VIEW_MODEL_LISTENER_ID, this)
+    }
+
+    fun viewIsDiscarded() {
+        notificationsRepository.unregisterListener(NOTIFICATIONS_VIEW_MODEL_LISTENER_ID)
     }
 
     fun backClicked() {
@@ -48,5 +53,9 @@ class NotificationsViewModel @Inject constructor(
         notificationsRepository.loadNextPage { _, _ ->
             _notificationsPages.value = notificationsRepository.pages
         }
+    }
+
+    override fun notificationsChanged() {
+        _notificationsPages.value = notificationsRepository.pages
     }
 }
