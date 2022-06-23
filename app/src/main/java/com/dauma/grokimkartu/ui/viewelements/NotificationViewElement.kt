@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -15,6 +16,11 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
     private val descriptionTextView: TextView
     private val dateTextView: TextView
     private var onClick: () -> Unit = {}
+
+    private val activeNotificationCardView: CardView
+    private val activeNameTextView: TextView
+    private val activeDescriptionTextView: TextView
+    private val activeDateTextView: TextView
 
     private val unreadNotificationBackgroundColor: Int
     private val unreadNotificationNameColor: Int
@@ -37,12 +43,18 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
         descriptionTextView = findViewById(R.id.notificationDescription)
         dateTextView = findViewById(R.id.notificationDate)
 
+        activeNotificationCardView = findViewById(R.id.activeNotificationCardView)
+        activeNameTextView = findViewById(R.id.activeNotificationName)
+        activeDescriptionTextView = findViewById(R.id.activeNotificationDescription)
+        activeDateTextView = findViewById(R.id.activeNotificationDate)
+
         notificationCardView.setOnClickListener { onClick() }
+        activeNotificationCardView.setOnClickListener { onClick() }
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.NotificationViewElement)
         unreadNotificationBackgroundColor = attributes.getInt(
             R.styleable.NotificationViewElement_unreadNotificationBackgroundColor,
-            R.color.columbiaBlue
+            R.color.skyBlue
         )
         unreadNotificationNameColor = attributes.getInt(
             R.styleable.NotificationViewElement_unreadNotificationNameColor,
@@ -93,14 +105,17 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
 
     fun setName(name: String) {
         nameTextView.text = name
+        activeNameTextView.text = name
     }
 
     fun setDescription(description: String) {
         descriptionTextView.text = description
+        activeDescriptionTextView.text = description
     }
 
     fun setDate(date: String) {
         dateTextView.text = date
+        activeDateTextView.text = date
     }
 
     fun setOnClick(onClick: () -> Unit) {
@@ -110,25 +125,26 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
     fun setState(state: NotificationState) {
         when (state) {
             NotificationState.INACTIVE -> {
-                notificationCardView.setBackgroundColor(inactiveNotificationBackgroundColor)
+                notificationCardView.setCardBackgroundColor(inactiveNotificationBackgroundColor)
                 nameTextView.setTextColor(inactiveNotificationNameColor)
                 dateTextView.setTextColor(inactiveNotificationDateColor)
                 descriptionTextView.setTextColor(inactiveNotificationDescriptionColor)
-                notificationCardView.cardElevation = 0.0f
+
+                activeNotificationCardView.visibility = View.GONE
+                notificationCardView.visibility = View.VISIBLE
             }
             NotificationState.ACTIVE -> {
-                notificationCardView.setBackgroundColor(activeNotificationBackgroundColor)
-                nameTextView.setTextColor(activeNotificationNameColor)
-                dateTextView.setTextColor(activeNotificationDateColor)
-                descriptionTextView.setTextColor(activeNotificationDescriptionColor)
-                notificationCardView.cardElevation = 10.0f
+                notificationCardView.visibility = View.GONE
+                activeNotificationCardView.visibility = View.VISIBLE
             }
             NotificationState.UNREAD -> {
-                notificationCardView.setBackgroundColor(unreadNotificationBackgroundColor)
+                notificationCardView.setCardBackgroundColor(unreadNotificationBackgroundColor)
                 nameTextView.setTextColor(unreadNotificationNameColor)
                 dateTextView.setTextColor(unreadNotificationDateColor)
                 descriptionTextView.setTextColor(unreadNotificationDescriptionColor)
-                notificationCardView.cardElevation = 0.0f
+
+                activeNotificationCardView.visibility = View.GONE
+                notificationCardView.visibility = View.VISIBLE
             }
         }
     }

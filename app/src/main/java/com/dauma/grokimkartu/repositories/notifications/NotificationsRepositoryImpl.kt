@@ -90,7 +90,7 @@ class NotificationsRepositoryImpl(
             if (hasNotification(notificationId)) {
                 val notification = getNotification(notificationId)!!
                 readNotificationIfNeeded(notificationId) { _, _ -> }
-                activateNotification(notificationId)
+                toggleNotificationActivity(notificationId)
                 onComplete(notification, null)
             } else {
                 onComplete(null, NotificationsErrors.UNKNOWN)
@@ -177,12 +177,16 @@ class NotificationsRepositoryImpl(
         return null
     }
 
-    private fun activateNotification(notificationId: Int) {
+    private fun toggleNotificationActivity(notificationId: Int) {
         for (page in _pages) {
             page.notifications?.let { notifications ->
                 for (notification in notifications) {
                     if (notification.id == notificationId) {
-                        notification.state = NotificationState.ACTIVE
+                        if (notification.state == NotificationState.INACTIVE || notification.state == NotificationState.UNREAD) {
+                            notification.state = NotificationState.ACTIVE
+                        } else {
+                            notification.state = NotificationState.INACTIVE
+                        }
                     } else if (notification.state == NotificationState.ACTIVE) {
                         notification.state = NotificationState.INACTIVE
                     }

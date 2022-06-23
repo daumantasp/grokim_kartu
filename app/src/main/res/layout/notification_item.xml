@@ -2,14 +2,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="105dp"
+    android:layout_height="wrap_content"
+    android:minHeight="100dp"
     android:background="?attr/notificationsBackgroundColor"
     android:id="@+id/notificationItemContainer">
 
     <com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
         android:id="@+id/notificationViewElement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
         app:unreadNotificationBackgroundColor="?attr/unreadNotificationBackgroundColor"
         app:unreadNotificationNameColor="?attr/unreadNotificationNameColor"
         app:unreadNotificationDescriptionColor="?attr/unreadNotificationDescriptionColor"
