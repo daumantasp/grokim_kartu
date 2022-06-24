@@ -4,17 +4,21 @@ import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoResponseStatus
 import com.dauma.grokimkartu.data.auth.entities.ChangePasswordRequest
 import com.dauma.grokimkartu.data.auth.entities.LoginRequest
-import com.dauma.grokimkartu.data.auth.entities.RegistrationRequest
 import com.dauma.grokimkartu.data.auth.entities.ReauthenticateRequest
+import com.dauma.grokimkartu.data.auth.entities.RegistrationRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.auth.LoginListener
+import com.dauma.grokimkartu.repositories.auth.LogoutListener
 
 class AuthRepositoryImpl(
     private val authDao: AuthDao,
     private val user: User,
     private val utils: Utils
 ) : AuthRepository {
+    private val loginListeners: MutableMap<String, LoginListener> = mutableMapOf()
+    private val logoutListeners: MutableMap<String, LogoutListener> = mutableMapOf()
 
     companion object {
         private const val USER_ACCESS_TOKEN_KEY = "USER_ACCESS_TOKEN_KEY"
@@ -179,6 +183,34 @@ class AuthRepositoryImpl(
             }
         } else {
             throw AuthenticationException(AuthenticationErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun registerLoginListener(id: String, listener: LoginListener) {
+        loginListeners[id] = listener
+    }
+
+    override fun unregisterLoginListener(id: String) {
+        loginListeners.remove(id)
+    }
+
+    private fun notifyLoginListeners(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        for (listener in loginListeners.values) {
+            listener.loginCompleted(isSuccessful, errors)
+        }
+    }
+
+    override fun registerLogoutListener(id: String, listener: LogoutListener) {
+        logoutListeners[id] = listener
+    }
+
+    override fun unregisterLogoutListener(id: String) {
+        logoutListeners.remove(id)
+    }
+
+    private fun notifyLogoutListeners(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        for (listener in logoutListeners.values) {
+            listener.logoutCompleted(isSuccessful, errors)
         }
     }
 
