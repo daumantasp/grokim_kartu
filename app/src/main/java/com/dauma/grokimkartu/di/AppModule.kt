@@ -248,9 +248,12 @@ class AppModule {
         playersDao: PlayersDao,
         citiesDao: CitiesDao,
         paginator: ThomannsPaginator,
-        user: User
+        user: User,
+        authRepository: AuthRepository
     ) : ThomannsRepository {
-        return ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, paginator, user)
+        val thomannsRepository = ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, paginator, user)
+        authRepository.registerLoginListener("THOMANNS_REPOSITORY_LOGIN_LISTENER_ID", thomannsRepository)
+        return thomannsRepository
     }
 
     @Provides

@@ -8,8 +8,10 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoResponseStatus
 import com.dauma.grokimkartu.data.thomanns.entities.*
 import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 
 class ThomannsRepositoryImpl(
     private val thomannsDao: ThomannsDao,
@@ -17,7 +19,7 @@ class ThomannsRepositoryImpl(
     private val citiesDao: CitiesDao,
     private val paginator: ThomannsPaginator,
     private val user: User
-) : ThomannsRepository {
+) : ThomannsRepository, LoginListener {
     private val _pages: MutableList<ThomannsPage> = mutableListOf()
 
     override val pages: List<ThomannsPage>
@@ -331,5 +333,11 @@ class ThomannsRepositoryImpl(
             id = cityResponse.id,
             name = cityResponse.name
         )
+    }
+
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            reset()
+        }
     }
 }
