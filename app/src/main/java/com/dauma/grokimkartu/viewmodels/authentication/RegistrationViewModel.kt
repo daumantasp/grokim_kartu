@@ -11,6 +11,7 @@ import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import android.os.Handler
 import android.os.Looper
+import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import javax.inject.Inject
@@ -19,7 +20,7 @@ import javax.inject.Inject
 class RegistrationViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationForm: RegistrationForm,
-) : ViewModel() {
+) : ViewModel(), LoginListener {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _emailVerificationSent = MutableLiveData<Event<Boolean>>()
     private val _emailError = MutableLiveData<Int>()
@@ -37,6 +38,15 @@ class RegistrationViewModel @Inject constructor(
 
     companion object {
         private val TAG = "RegistrationViewModel"
+        private const val REGISTRATION_VIEW_MODEL_LOGIN_LISTENER_ID = "REGISTRATION_VIEW_MODEL_LOGIN_LISTENER_ID"
+    }
+
+    fun viewIsReady() {
+        authRepository.registerLoginListener(REGISTRATION_VIEW_MODEL_LOGIN_LISTENER_ID, this)
+    }
+
+    fun viewIsDiscarded() {
+        authRepository.unregisterLoginListener(REGISTRATION_VIEW_MODEL_LOGIN_LISTENER_ID)
     }
 
     fun getRegistrationForm() : RegistrationForm {
@@ -46,18 +56,7 @@ class RegistrationViewModel @Inject constructor(
     fun createUser(name: String, email: String, password: String) {
         try {
             _registrationInProgress.value = true
-            authRepository.register(email, password, name) { isSuccessful, error ->
-                if (isSuccessful) {
-//                    updateEmailVerificationTimer()
-                    clearAuthenticationErrors()
-                    _emailVerificationSent.value = Event(isSuccessful)
-                } else {
-                    if (error != null) {
-                        handleAuthenticationError(error)
-                    }
-                }
-                _registrationInProgress.value = false
-            }
+            authRepository.register(email, password, name)
         } catch (e: AuthenticationException) {
             _registrationInProgress.value = false
             Log.d(TAG, e.message ?: "Registration was unsuccessful")
@@ -79,6 +78,19 @@ class RegistrationViewModel @Inject constructor(
 //            _verificationEmailWillBeAllowedToSentInSeconds.value = 60
 //            updateEmailVerificationTimer()
 //        }
+    }
+
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+//                    updateEmailVerificationTimer()
+            clearAuthenticationErrors()
+            _emailVerificationSent.value = Event(isSuccessful)
+        } else {
+            if (errors != null) {
+                handleAuthenticationError(errors)
+            }
+        }
+        _registrationInProgress.value = false
     }
 
     private fun updateEmailVerificationTimer() {

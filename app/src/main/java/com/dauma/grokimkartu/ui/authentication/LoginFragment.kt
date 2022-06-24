@@ -41,12 +41,14 @@ class LoginFragment : Fragment() {
         }
         (requireActivity() as MainActivity).changeStatusBarTheme(StatusBarTheme.LOGIN)
 
+        loginViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        loginViewModel.viewIsDiscarded()
     }
 
     private fun setupOnClickListeners() {

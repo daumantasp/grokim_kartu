@@ -32,18 +32,21 @@ class RegistrationFragment : Fragment() {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         binding.model = registrationViewModel
         val view = binding.root
+
         setupObservers()
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             registrationViewModel.backClicked()
         }
 
+        registrationViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        registrationViewModel.viewIsDiscarded()
     }
 
     fun setupObservers() {

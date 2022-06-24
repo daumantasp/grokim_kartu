@@ -27,8 +27,7 @@ class AuthRepositoryImpl(
     override fun register(
         email: String,
         password: String,
-        name: String,
-        onComplete: (Boolean, AuthenticationErrors?) -> Unit
+        name: String
     ) {
         if (user.isUserLoggedIn() == false) {
             val registrationRequest = RegistrationRequest(
@@ -40,17 +39,17 @@ class AuthRepositoryImpl(
             authDao.register(registrationRequest) { registrationResponse, authDaoResponseStatus ->
                 if (authDaoResponseStatus.isSuccessful && registrationResponse != null) {
                     user.login(registrationResponse)
-                    onComplete(true, null)
+                    notifyLoginListeners(true, null)
                 } else {
                     when (authDaoResponseStatus.error) {
                         AuthDaoResponseStatus.Errors.EMAIL_TAKEN -> {
-                            onComplete(false, AuthenticationErrors.EMAIL_TAKEN)
+                            notifyLoginListeners(false, AuthenticationErrors.EMAIL_TAKEN)
                         }
                         AuthDaoResponseStatus.Errors.INVALID_EMAIL -> {
-                            onComplete(false, AuthenticationErrors.INVALID_EMAIL)
+                            notifyLoginListeners(false, AuthenticationErrors.INVALID_EMAIL)
                         }
                         else -> {
-                            onComplete(false, AuthenticationErrors.UNKNOWN)
+                            notifyLoginListeners(false, AuthenticationErrors.UNKNOWN)
                         }
                     }
                 }
@@ -62,8 +61,7 @@ class AuthRepositoryImpl(
 
     override fun login(
         email: String,
-        password: String,
-        onComplete: (Boolean, AuthenticationErrors?) -> Unit
+        password: String
     ) {
         if (user.isUserLoggedIn() == false) {
             val loginRequest = LoginRequest(email, password)
@@ -73,17 +71,17 @@ class AuthRepositoryImpl(
                     if (loginResponse.accessToken != null) {
                         saveAccessTokenToStorage(loginResponse.accessToken!!)
                     }
-                    onComplete(true, null)
+                    notifyLoginListeners(true, null)
                 } else {
                     when (authDaoResponseStatus.error) {
                         AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW -> {
-                            onComplete(false, AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW)
+                            notifyLoginListeners(false, AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW)
                         }
                         AuthDaoResponseStatus.Errors.EMAIL_NOT_VERIFIED -> {
-                            onComplete(false, AuthenticationErrors.EMAIL_NOT_VERIFIED)
+                            notifyLoginListeners(false, AuthenticationErrors.EMAIL_NOT_VERIFIED)
                         }
                         else -> {
-                            onComplete(false, AuthenticationErrors.UNKNOWN)
+                            notifyLoginListeners(false, AuthenticationErrors.UNKNOWN)
                         }
                     }
                 }
@@ -93,7 +91,7 @@ class AuthRepositoryImpl(
         }
     }
 
-    override fun tryReauthenticate(onComplete: (Boolean, AuthenticationErrors?) -> Unit) {
+    override fun tryReauthenticate() {
         if (user.isUserLoggedIn() == false) {
             val accessToken = getAccessTokenFromStorage()
             if (accessToken != null) {
@@ -104,35 +102,35 @@ class AuthRepositoryImpl(
                         if (loginResponse.accessToken != null) {
                             saveAccessTokenToStorage(loginResponse.accessToken!!)
                         }
-                        onComplete(true, null)
+                        this.notifyLoginListeners(true, null)
                     } else {
                         when (authDaoResponseStatus.error) {
                             AuthDaoResponseStatus.Errors.INCORRECT_ACCESS_TOKEN -> {
-                                onComplete(false, AuthenticationErrors.INCORRECT_ACCESS_TOKEN)
+                                notifyLoginListeners(false, AuthenticationErrors.INCORRECT_ACCESS_TOKEN)
                             }
                             else -> {
-                                onComplete(false, AuthenticationErrors.UNKNOWN)
+                                notifyLoginListeners(false, AuthenticationErrors.UNKNOWN)
                             }
                         }
                     }
                 }
             } else {
-                onComplete(false, AuthenticationErrors.ACCESS_TOKEN_NOT_PROVIDED)
+                notifyLoginListeners(false, AuthenticationErrors.ACCESS_TOKEN_NOT_PROVIDED)
             }
         } else {
             throw AuthenticationException(AuthenticationErrors.USER_ALREADY_LOGGED_IN)
         }
     }
 
-    override fun logout(onComplete: (Boolean, AuthenticationErrors?) -> Unit) {
+    override fun logout() {
         if (user.isUserLoggedIn()) {
             authDao.logout(user.getBearerAccessToken()!!) { authDaoResponseStatus ->
                 if (authDaoResponseStatus.isSuccessful) {
                     user.logout()
                     removeAccessTokenFromStorage()
-                    onComplete(true, null)
+                    notifyLogoutListeners(true, null)
                 } else {
-                    onComplete(false, AuthenticationErrors.UNKNOWN)
+                    notifyLogoutListeners(false, AuthenticationErrors.UNKNOWN)
                 }
             }
         } else {

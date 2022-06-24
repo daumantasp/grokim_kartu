@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.SettingsForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.auth.LogoutListener
 import com.dauma.grokimkartu.repositories.settings.SettingsRepository
 import com.dauma.grokimkartu.repositories.settings.entities.Settings
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -17,7 +18,7 @@ class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val settingsRepository: SettingsRepository,
     private val settingsForm: SettingsForm
-) : ViewModel() {
+) : ViewModel(), LogoutListener {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToDeleteUser = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
@@ -29,6 +30,15 @@ class SettingsViewModel @Inject constructor(
 
     companion object {
         private val TAG = "SettingsViewModel"
+        private const val SETTINGS_VIEW_MODEL_LOGOUT_LISTENER = "SETTINGS_VIEW_MODEL_LOGOUT_LISTENER"
+    }
+
+    fun viewIsReady() {
+        authRepository.registerLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER, this)
+    }
+
+    fun viewIsDiscarded() {
+        authRepository.unregisterLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER)
     }
 
     fun getSettingsForm() : SettingsForm {
@@ -76,10 +86,12 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun logoutClicked() {
-        authRepository.logout { isSuccessful, authenticationErrors ->
-            if (isSuccessful) {
-                _navigateToLogin.value = Event("")
-            }
+        authRepository.logout()
+    }
+
+    override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            _navigateToLogin.value = Event("")
         }
     }
 

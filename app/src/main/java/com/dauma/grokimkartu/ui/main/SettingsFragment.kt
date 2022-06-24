@@ -34,6 +34,7 @@ class SettingsFragment : Fragment() {
             // TODO: Still reloads on device rotate, probably need to save state instance
             settingsViewModel.loadSettings()
         }
+        settingsViewModel.viewIsReady()
 
         return view
     }
@@ -41,6 +42,7 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        settingsViewModel.viewIsDiscarded()
     }
 
     private fun setupObservers() {

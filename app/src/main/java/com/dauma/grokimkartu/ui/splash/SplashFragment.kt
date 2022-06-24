@@ -30,13 +30,14 @@ class SplashFragment : Fragment() {
         binding.model = splashViewModel
         val view = binding.root
         setupObservers()
-        splashViewModel.splashCompleted()
+        splashViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        splashViewModel.viewIsDiscarded()
     }
 
     private fun setupObservers() {

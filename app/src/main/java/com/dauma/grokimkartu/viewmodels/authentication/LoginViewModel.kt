@@ -8,6 +8,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.LoginForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val loginForm: LoginForm
-) : ViewModel() {
+) : ViewModel(), LoginListener {
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
     private val _navigateToRegistration = MutableLiveData<Event<String>>()
     private val _navigateToForgotPassword = MutableLiveData<Event<String>>()
@@ -35,22 +36,21 @@ class LoginViewModel @Inject constructor(
 
     companion object {
         private val TAG = "LoginViewModel"
+        private const val LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID = "LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID"
+    }
+
+    fun viewIsReady() {
+        authRepository.registerLoginListener(LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID, this)
+    }
+
+    fun viewIsDiscarded() {
+        authRepository.unregisterLoginListener(LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID)
     }
 
     fun loginUser(email: String, password: String) {
         try {
             _loginInProgress.value = true
-            authRepository.login(email, password) { isSuccessful, error ->
-                if (isSuccessful) {
-                    clearAuthenticationErrors()
-                    _navigateToPlayers.value = Event("")
-                } else {
-                    if (error != null) {
-                        handleAuthenticationError(error)
-                    }
-                }
-                _loginInProgress.value = false
-            }
+            authRepository.login(email, password)
         } catch (e: AuthenticationException) {
             Log.d(TAG, e.message ?: "Login was unsuccessful")
         }
@@ -70,6 +70,18 @@ class LoginViewModel @Inject constructor(
 
     fun backClicked() {
         _closeApp.value = Event("")
+    }
+
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            clearAuthenticationErrors()
+            _navigateToPlayers.value = Event("")
+        } else {
+            if (errors != null) {
+                handleAuthenticationError(errors)
+            }
+        }
+        _loginInProgress.value = false
     }
 
     private fun handleAuthenticationError(error: AuthenticationErrors) {
