@@ -5,17 +5,19 @@ import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginator
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 
 class PlayersRepositoryImpl(
     private val playersDao: PlayersDao,
     private val paginator: PlayersPaginator,
     private val user: User
-) : PlayersRepository {
+) : PlayersRepository, LoginListener {
     private val _playersPages: MutableList<PlayersPage> = mutableListOf()
 
     override val pages: List<PlayersPage>
@@ -147,6 +149,12 @@ class PlayersRepositoryImpl(
         }
 
         return PlayersPage(players, isLastPage)
+    }
+
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            reset()
+        }
     }
 }
 

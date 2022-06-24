@@ -207,9 +207,12 @@ class AppModule {
     fun providePlayersRepository(
         playersDao: PlayersDao,
         paginator: PlayersPaginator,
-        user: User
+        user: User,
+        authRepository: AuthRepository
     ) : PlayersRepository {
-        return PlayersRepositoryImpl(playersDao, paginator, user)
+        val playersRepository = PlayersRepositoryImpl(playersDao, paginator, user)
+        authRepository.registerLoginListener("PLAYERS_REPOSITORY_LOGIN_LISTENER_ID", playersRepository)
+        return playersRepository
     }
 
     @Provides
