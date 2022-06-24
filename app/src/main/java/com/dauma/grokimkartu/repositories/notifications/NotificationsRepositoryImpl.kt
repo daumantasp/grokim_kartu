@@ -6,15 +6,17 @@ import com.dauma.grokimkartu.data.notifications.entities.NotificationsResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.notifications.entities.*
 import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginator
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 
 class NotificationsRepositoryImpl(
     private val notificationsDao: NotificationsDao,
     private val paginator: NotificationsPaginator,
     private val user: User,
     private val utils: Utils
-) : NotificationsRepository {
+) : NotificationsRepository, LoginListener {
     private val _pages: MutableList<NotificationsPage> = mutableListOf()
     private var _unreadCount: Int? = null
     private val notificationsListeners: MutableMap<String, NotificationsListener> = mutableMapOf()
@@ -227,6 +229,12 @@ class NotificationsRepositoryImpl(
     private fun notifyListeners() {
         for (listener in this.notificationsListeners.values) {
             listener.notificationsChanged()
+        }
+    }
+
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            reset()
         }
     }
 }

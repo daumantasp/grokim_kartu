@@ -276,9 +276,12 @@ class AppModule {
         notificationsDao: NotificationsDao,
         paginator: NotificationsPaginator,
         user: User,
-        utils: Utils
+        utils: Utils,
+        authRepository: AuthRepository
     ) : NotificationsRepository {
-        return NotificationsRepositoryImpl(notificationsDao, paginator, user, utils)
+        val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user, utils)
+        authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
+        return notificationsRepository
     }
 
     @Provides
