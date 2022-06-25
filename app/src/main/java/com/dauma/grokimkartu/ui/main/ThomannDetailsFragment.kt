@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.ui.main
 
 import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,6 +72,13 @@ class ThomannDetailsFragment : Fragment() {
             thomannDetailsViewModel.backClicked()
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            thomannDetailsViewModel.loadDetails()
+        }
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.swipeRefreshProgressSpinnerColor, typedValue, true)
+        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
+
         return view
     }
 
@@ -91,6 +99,9 @@ class ThomannDetailsFragment : Fragment() {
                 setupDetailsRecyclerView()
             } else {
                 binding.thomannDetailsRecyclerView.adapter?.notifyDataSetChanged()
+            }
+            if (binding.swipeRefreshLayout.isRefreshing) {
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         }
         thomannDetailsViewModel.userDetails.observe(viewLifecycleOwner, EventObserver { userId ->
