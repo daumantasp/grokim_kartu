@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,13 @@ class PlayersFragment : Fragment() {
             playersViewModel.backClicked()
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            playersViewModel.reload()
+        }
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.swipeRefreshProgressSpinnerColor, typedValue, true)
+        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
+
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             playersViewModel.backClicked()
         }
@@ -76,6 +84,9 @@ class PlayersFragment : Fragment() {
                 setupPlayersRecyclerView(data)
             } else {
                 reloadRecyclerViewWithNewData(data)
+            }
+            if (binding.swipeRefreshLayout.isRefreshing) {
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         })
     }

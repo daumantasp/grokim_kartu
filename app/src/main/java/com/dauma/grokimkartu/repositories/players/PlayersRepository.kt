@@ -10,5 +10,5 @@ interface PlayersRepository {
     fun playerDetails(userId: Int, onComplete: (PlayerDetails?, PlayersErrors?) -> Unit)
     fun playerPhoto(userId: Int, onComplete: (Bitmap?, PlayersErrors?) -> Unit)
     fun playerIcon(userId: Int, onComplete: (Bitmap?, PlayersErrors?) -> Unit)
-    fun reset()
+    fun reload(onComplete: (PlayersPage?, PlayersErrors?) -> Unit)
 }

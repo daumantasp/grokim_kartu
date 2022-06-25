@@ -45,4 +45,10 @@ class PlayersViewModel @Inject constructor(
             _playersPages.value = playersRepository.pages
         }
     }
+
+    fun reload() {
+        playersRepository.reload { _, _ ->
+            _playersPages.value = playersRepository.pages
+        }
+    }
 }

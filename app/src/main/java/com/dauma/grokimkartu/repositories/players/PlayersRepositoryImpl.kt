@@ -6,6 +6,8 @@ import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.auth.LoginListener
+import com.dauma.grokimkartu.repositories.notifications.NotificationsErrors
+import com.dauma.grokimkartu.repositories.notifications.NotificationsException
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
@@ -116,7 +118,16 @@ class PlayersRepositoryImpl(
         }
     }
 
-    override fun reset() {
+    override fun reload(onComplete: (PlayersPage?, PlayersErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            reset()
+            loadNextPage(onComplete)
+        } else {
+            throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun reset() {
         if (user.isUserLoggedIn()) {
             _playersPages.clear()
             paginator.clear()
