@@ -14,5 +14,5 @@ interface ThomannsRepository {
     fun kick(thomannId: Int, userToKickId: Int, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
     fun cities(onComplete: (List<ThomannCity>?, ThomannsErrors?) -> Unit)
     fun searchCity(value: String, onComplete: (List<ThomannCity>?, ThomannsErrors?) -> Unit)
-    fun reset()
+    fun reload(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit)
 }

@@ -123,7 +123,7 @@ class PlayersRepositoryImpl(
             reset()
             loadNextPage(onComplete)
         } else {
-            throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
+            throw PlayersException(PlayersErrors.USER_NOT_LOGGED_IN)
         }
     }
 

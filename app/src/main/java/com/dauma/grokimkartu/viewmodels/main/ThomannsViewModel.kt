@@ -62,4 +62,10 @@ class ThomannsViewModel @Inject constructor(
             _thomannsPages.value = thomannsRepository.pages
         }
     }
+
+    fun reload() {
+        thomannsRepository.reload { _, _ ->
+            _thomannsPages.value = thomannsRepository.pages
+        }
+    }
 }

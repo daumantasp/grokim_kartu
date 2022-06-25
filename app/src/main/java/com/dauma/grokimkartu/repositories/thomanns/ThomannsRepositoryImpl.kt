@@ -9,6 +9,8 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDaoResponseStatus
 import com.dauma.grokimkartu.data.thomanns.entities.*
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.auth.LoginListener
+import com.dauma.grokimkartu.repositories.players.PlayersErrors
+import com.dauma.grokimkartu.repositories.players.PlayersException
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -239,7 +241,16 @@ class ThomannsRepositoryImpl(
         }
     }
 
-    override fun reset() {
+    override fun reload(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            reset()
+            loadNextPage(onComplete)
+        } else {
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun reset() {
         if (user.isUserLoggedIn()) {
             _pages.clear()
             paginator.clear()

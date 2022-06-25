@@ -6,6 +6,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-hdpi/notification_item_background.xml" value="0.144" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/oval_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/player_item_background.xml" value="0.1365" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/thomann_item_background.xml" value="0.1405" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_button.xml" value="0.23125" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_card.xml" value="0.23777173913043478" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_header.xml" value="0.4203703703703704" />
@@ -15,6 +16,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_players.xml" value="0.2006340579710145" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_profile_edit.xml" value="0.2509057971014493" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_edit.xml" value="0.2" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomanns.xml" value="0.18020833333333333" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/notification_item.xml" value="0.30844155844155846" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/notification_last_item.xml" value="0.20923913043478262" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/player_last_item.xml" value="0.36302083333333335" />
