@@ -41,15 +41,17 @@ class NotificationsRepositoryImpl(
             startImmediately = true,
             repeats = true
         ) {
-            val previousUnreadCount = this._unreadCount
-            this.unreadCount { unreadCount, notificationsErrors ->
-                if (previousUnreadCount != unreadCount) {
-                    this.reset()
-                    this.loadNextPage { _, _ ->
-                        this.notifyListeners()
+            try {
+                val previousUnreadCount = this._unreadCount
+                this.unreadCount { unreadCount, notificationsErrors ->
+                    if (previousUnreadCount != unreadCount) {
+                        this.reset()
+                        this.loadNextPage { _, _ ->
+                            this.notifyListeners()
+                        }
                     }
                 }
-            }
+            } catch (e: NotificationsException) {}
         }
     }
 
