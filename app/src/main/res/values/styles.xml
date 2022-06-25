@@ -119,6 +119,8 @@
         <item name="activeNotificationNameColor">@color/black</item>
         <item name="activeNotificationDescriptionColor">@color/black</item>
         <item name="activeNotificationDateColor">@color/violetBlue</item>
+
+        <item name="swipeRefreshProgressSpinnerColor">@color/violetBlue</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

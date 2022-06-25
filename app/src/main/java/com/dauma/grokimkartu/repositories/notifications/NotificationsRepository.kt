@@ -2,7 +2,6 @@ package com.dauma.grokimkartu.repositories.notifications
 
 import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
-import com.dauma.grokimkartu.repositories.notifications.entities.UpdateNotification
 
 interface NotificationsRepository {
     val pages: List<NotificationsPage>
@@ -10,7 +9,7 @@ interface NotificationsRepository {
     fun loadNextPage(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit)
     fun unreadCount(onComplete: (Int?, NotificationsErrors?) -> Unit)
     fun activate(notificationId: Int, onComplete: (Notification?, NotificationsErrors?) -> Unit)
-    fun reset()
+    fun reload(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit)
     fun registerListener(id: String, listener: NotificationsListener)
     fun unregisterListener(id: String)
 }

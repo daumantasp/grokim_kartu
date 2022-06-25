@@ -96,6 +96,7 @@
     <attr name="notificationsCountTextColor" format="color" />
 
     <attr name="notificationsBackgroundColor" format="color" />
+    <attr name="swipeRefreshProgressSpinnerColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />

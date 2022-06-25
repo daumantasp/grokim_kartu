@@ -55,6 +55,12 @@ class NotificationsViewModel @Inject constructor(
         }
     }
 
+    fun reload() {
+        notificationsRepository.reload { _, _ ->
+            _notificationsPages.value = notificationsRepository.pages
+        }
+    }
+
     override fun notificationsChanged() {
         _notificationsPages.value = notificationsRepository.pages
     }

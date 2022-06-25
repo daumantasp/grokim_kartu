@@ -147,7 +147,16 @@ class NotificationsRepositoryImpl(
         }
     }
 
-    override fun reset() {
+    override fun reload(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            reset()
+            loadNextPage(onComplete)
+        } else {
+            throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun reset() {
         if (user.isUserLoggedIn()) {
             _pages.clear()
             paginator.clear()

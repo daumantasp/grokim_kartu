@@ -1,6 +1,11 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentNotificationsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
@@ -48,6 +54,13 @@ class NotificationsFragment : Fragment() {
             notificationsViewModel.backClicked()
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            notificationsViewModel.reload()
+        }
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.swipeRefreshProgressSpinnerColor, typedValue, true)
+        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
+
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             notificationsViewModel.backClicked()
         }
@@ -72,6 +85,9 @@ class NotificationsFragment : Fragment() {
                 setupNotificationsRecyclerView(data)
             } else {
                 reloadRecyclerViewWithNewData(data)
+            }
+            if (binding.swipeRefreshLayout.isRefreshing) {
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         })
         notificationsViewModel.notificationsUpdated.observe(viewLifecycleOwner, { notificationsPages ->
