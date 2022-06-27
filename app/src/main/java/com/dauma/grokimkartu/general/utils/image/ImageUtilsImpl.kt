@@ -3,14 +3,22 @@ package com.dauma.grokimkartu.general.utils.image
 import android.content.Context
 import android.graphics.*
 import android.net.Uri
+import android.os.Environment
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ImageUtilsImpl : ImageUtils {
     override fun getImageWithAuthority(context: Context, uri: Uri, width: Int, height: Int): Bitmap? {
         return decodeUriStreamToSize(context, uri, width, height)
+    }
+
+    override fun getImageWithAuthority(filePath: String, width: Int, height: Int
+    ): Bitmap {
+        return decodeFileToSize(filePath, width, height)
     }
 
     override fun scaleImage(bitmap: Bitmap, width: Int, height: Int): Bitmap {
@@ -92,6 +100,15 @@ class ImageUtilsImpl : ImageUtils {
         }
     }
 
+    private fun decodeFileToSize(filePath: String, width: Int, height: Int): Bitmap {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(filePath, options)
+        options.inSampleSize = calculateInSampleSize(options.outWidth, options.outHeight, width, height)
+        options.inJustDecodeBounds = false
+        return BitmapFactory.decodeFile(filePath, options)
+    }
+
     private fun calculateInSampleSize(width: Int, height: Int, reqWidth: Int, reqHeight: Int): Int {
         var inSampleSize = 1
         if (height > reqHeight || width > reqWidth) {
@@ -109,5 +126,12 @@ class ImageUtilsImpl : ImageUtils {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         val byteArray = stream.toByteArray()
         return byteArray
+    }
+
+    override fun createUniqueImageFile(context: Context): File {
+        val timeStamp = SimpleDateFormat("yyyyMMddHHmmss").format(Date())
+        val filename = "Grokim_${timeStamp}_"
+        val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(filename, ".jpg", filesDir)
     }
 }

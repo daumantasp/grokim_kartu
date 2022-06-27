@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.ui.main
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -22,6 +24,7 @@ import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ProfileEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,9 +32,9 @@ class ProfileEditFragment : Fragment() {
     private val profileEditViewModel by viewModels<ProfileEditViewModel>()
     private var dialogsManager: DialogsManager? = null
     @Inject lateinit var utils: Utils
-    private var galleryResult: ActivityResultLauncher<Intent>
-    //    private var cameraResult: ActivityResultLauncher<Intent>
+    private var pickCaptureResult: ActivityResultLauncher<Intent>
     private var isDialogShown: Boolean = false
+    private var photoFile: File? = null
 
     private var _binding: FragmentProfileEditBinding? = null
     // This property is only valid between onCreateView and
@@ -43,16 +46,30 @@ class ProfileEditFragment : Fragment() {
     }
 
     init {
-        galleryResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        pickCaptureResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
+                val width = resources.getDimensionPixelSize(R.dimen.default_profile_photo_width)
+                val height = resources.getDimensionPixelSize(R.dimen.default_profile_photo_height)
+
                 val imageUri = result.data?.data
                 if (imageUri != null) {
-                    val width = resources.getDimensionPixelSize(R.dimen.default_profile_photo_width)
-                    val height = resources.getDimensionPixelSize(R.dimen.default_profile_photo_height)
+                    // this case will occur in case of picking image from the Gallery,
+                    // but not when taking picture with a camera
                     val image = utils.imageUtils.getImageWithAuthority(requireContext(), imageUri, width, height)
                     if (image != null) {
                         profileEditViewModel.getProfileEditForm().photo = image
                     }
+                } else {
+                    // this case will occur when taking a picture with a camera
+                    // read more at Android Apprentice book
+                    val photoFile = photoFile ?: return@registerForActivityResult
+                    val uri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.dauma.grokimkartu.fileprovider",
+                        photoFile)
+                    requireContext().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    val image = utils.imageUtils.getImageWithAuthority(photoFile.absolutePath, width, height)
+                    profileEditViewModel.getProfileEditForm().photo = image
                 }
             }
         }
@@ -125,8 +142,45 @@ class ProfileEditFragment : Fragment() {
             }
         })
         profileEditViewModel.selectPhoto.observe(viewLifecycleOwner, EventObserver {
-            val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            galleryResult.launch(pickIntent)
+            val pickIntent: Intent? = if (canPick()) Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) else null
+            var captureIntent: Intent? = null
+            if (canCapture()) {
+                photoFile = null
+                try {
+                    photoFile = utils.imageUtils.createUniqueImageFile(requireContext())
+                } catch (ex: java.io.IOException) { }
+
+                photoFile?.let { photoFile ->
+                    val photoUri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.dauma.grokimkartu.fileprovider",
+                        photoFile
+                    )
+                    captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    captureIntent!!.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+
+                    val intentActivities = requireContext().packageManager.queryIntentActivities(
+                        captureIntent!!,
+                        PackageManager.MATCH_DEFAULT_ONLY
+                    )
+                    intentActivities
+                        .map { it.activityInfo.packageName }
+                        .forEach { requireContext().grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
+                }
+            }
+
+            if (pickIntent != null && captureIntent != null) {
+                val chooser = Intent(Intent.ACTION_CHOOSER)
+                chooser.putExtra(Intent.EXTRA_INTENT, pickIntent)
+                chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.profile_edit_chooser_title))
+                val intentArray = arrayOf(captureIntent)
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                pickCaptureResult.launch(chooser)
+            } else if (pickIntent != null) {
+                pickCaptureResult.launch(pickIntent)
+            } else if (captureIntent != null) {
+                pickCaptureResult.launch(captureIntent)
+            }
         })
         profileEditViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
             this.isDialogShown = true
@@ -198,5 +252,15 @@ class ProfileEditFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         dialogsManager = null
+    }
+
+    private fun canPick() : Boolean {
+        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        return pickIntent.resolveActivity(requireContext().packageManager) != null
+    }
+
+    private fun canCapture() : Boolean {
+        val captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        return captureIntent.resolveActivity(requireContext().packageManager) != null
     }
 }
