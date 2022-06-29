@@ -39,6 +39,10 @@ class PlayerDetailsViewModel @Inject constructor(
         // TODO: not implemented
     }
 
+    fun messageClicked() {
+        TODO()
+    }
+
     fun loadDetails() {
         var isDetailsLoaded = false
         var isPhotoLoaded = false

@@ -99,6 +99,17 @@
                     app:rowShowIcon="false"
                     app:rowBorders="both"/>
 
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/messageButtonViewElement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    app:type="primary"
+                    app:onClick="@{() -> model.messageClicked()}"
+                    app:text="@string/playerDetails_message" />
+
             </LinearLayout>
 
         </ScrollView>
