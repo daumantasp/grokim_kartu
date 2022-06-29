@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayerDetailsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
@@ -56,6 +57,11 @@ class PlayerDetailsFragment : Fragment() {
     private fun setupObservers() {
         playerDetailsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
+        })
+        playerDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { userId ->
+            val args = Bundle()
+            args.putInt("userId", userId)
+            this.findNavController().navigate(R.id.action_playerDetailsFragment_to_chatFragment, args)
         })
         playerDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner, EventObserver {
             if (playerDetailsViewModel.getPlayerDetailsForm().photo == null) {
