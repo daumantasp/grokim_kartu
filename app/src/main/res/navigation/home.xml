@@ -57,8 +57,8 @@
             android:name="userId"
             app:argType="integer" />
         <action
-            android:id="@+id/action_playerDetailsFragment_to_chatFragment"
-            app:destination="@id/chatFragment"
+            android:id="@+id/action_playerDetailsFragment_to_conversationFragment"
+            app:destination="@id/conversationFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -114,9 +114,9 @@
         android:name="com.dauma.grokimkartu.ui.main.NotificationsFragment"
         android:label="NotificationsFragment" />
     <fragment
-        android:id="@+id/chatFragment"
-        android:name="com.dauma.grokimkartu.ui.main.ChatFragment"
-        android:label="ChatFragment">
+        android:id="@+id/conversationFragment"
+        android:name="com.dauma.grokimkartu.ui.main.ConversationFragment"
+        android:label="ConversationFragment">
         <argument
             android:name="userId"
             app:argType="integer" />

@@ -61,7 +61,7 @@ class PlayerDetailsFragment : Fragment() {
         playerDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { userId ->
             val args = Bundle()
             args.putInt("userId", userId)
-            this.findNavController().navigate(R.id.action_playerDetailsFragment_to_chatFragment, args)
+            this.findNavController().navigate(R.id.action_playerDetailsFragment_to_conversationFragment, args)
         })
         playerDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner, EventObserver {
             if (playerDetailsViewModel.getPlayerDetailsForm().photo == null) {
