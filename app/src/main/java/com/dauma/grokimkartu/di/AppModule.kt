@@ -5,6 +5,8 @@ import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
 import com.dauma.grokimkartu.data.cities.CitiesDao
 import com.dauma.grokimkartu.data.cities.CitiesDaoImpl
+import com.dauma.grokimkartu.data.conversations.ConversationsDao
+import com.dauma.grokimkartu.data.conversations.ConversationsDaoImpl
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
 import com.dauma.grokimkartu.data.instruments.InstrumentsDao
@@ -288,6 +290,11 @@ class AppModule {
         val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user, utils)
         authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
         return notificationsRepository
+    }
+
+    @Provides
+    fun providesConversationsDao(retrofit: Retrofit) : ConversationsDao {
+        return ConversationsDaoImpl(retrofit)
     }
 
     @Provides
