@@ -5,8 +5,10 @@ import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoImpl
 import com.dauma.grokimkartu.data.cities.CitiesDao
 import com.dauma.grokimkartu.data.cities.CitiesDaoImpl
-import com.dauma.grokimkartu.data.conversations.ConversationsDao
-import com.dauma.grokimkartu.data.conversations.ConversationsDaoImpl
+import com.dauma.grokimkartu.data.conversations.PrivateConversationsDao
+import com.dauma.grokimkartu.data.conversations.PrivateConversationsDaoImpl
+import com.dauma.grokimkartu.data.conversations.ThomannConversationsDao
+import com.dauma.grokimkartu.data.conversations.ThomannConversationsDaoImpl
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorage
 import com.dauma.grokimkartu.data.firestore.storage.FirebaseStorageImpl
 import com.dauma.grokimkartu.data.instruments.InstrumentsDao
@@ -293,8 +295,13 @@ class AppModule {
     }
 
     @Provides
-    fun providesConversationsDao(retrofit: Retrofit) : ConversationsDao {
-        return ConversationsDaoImpl(retrofit)
+    fun providesPrivateConversationsDao(retrofit: Retrofit) : PrivateConversationsDao {
+        return PrivateConversationsDaoImpl(retrofit)
+    }
+
+    @Provides
+    fun providesThomannConversationsDao(retrofit: Retrofit) : ThomannConversationsDao {
+        return ThomannConversationsDaoImpl(retrofit)
     }
 
     @Provides
