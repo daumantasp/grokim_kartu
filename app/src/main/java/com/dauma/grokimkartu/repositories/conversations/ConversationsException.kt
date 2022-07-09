@@ -7,5 +7,6 @@ class ConversationsException(error: ConversationsErrors)
 enum class ConversationsErrors {
     CONVERSATION_PARTNER_ID_NOT_SET,
     THOMANN_ID_NOT_SET,
+    USER_NOT_LOGGED_IN,
     UNKNOWN
 }
