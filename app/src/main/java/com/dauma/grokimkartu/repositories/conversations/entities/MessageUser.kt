@@ -4,4 +4,5 @@ data class MessageUser(
     var id: Int?,
     var name: String?,
     var isCurrent: Boolean?,
+    var userIcon: MessageUserIcon?
 )
