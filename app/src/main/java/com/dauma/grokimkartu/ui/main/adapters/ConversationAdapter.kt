@@ -67,7 +67,7 @@ class ConversationAdapter(
         } else if (viewType == PARTNER_MESSAGE) {
             return PartnerMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.partner_message_conversation_item, parent, false), utils, photoIconBackgroundDrawable)
         } else if (viewType == LAST) {
-            TODO()
+            return MessageLastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.message_last_item, parent, false), loadNextPage)
         }
         return MyMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_message_conversation_item, parent, false), utils)
     }
@@ -78,8 +78,8 @@ class ConversationAdapter(
             holder.bind(itemData)
         } else if (holder is PartnerMessageViewHolder && itemData is PartnerMessageConversationData) {
             holder.bind(itemData)
-        } else if (itemData is MessageLastInPageData) {
-            TODO()
+        } else if (holder is MessageLastViewHolder && itemData is MessageLastInPageData) {
+            holder.bind(itemData)
         }
     }
 
@@ -185,6 +185,18 @@ class ConversationAdapter(
             } else {
                 return CustomDateTimeFormatPattern.yyyyMMddHHmmss
             }
+        }
+    }
+
+    class MessageLastViewHolder(
+        view: View,
+        private val loadNextPage: () -> Unit
+    ) : RecyclerView.ViewHolder(view) {
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+
+        fun bind(data: MessageLastInPageData) {
+            spinnerViewElement.showAnimation(true)
+            loadNextPage()
         }
     }
 }

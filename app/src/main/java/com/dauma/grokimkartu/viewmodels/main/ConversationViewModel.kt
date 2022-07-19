@@ -20,11 +20,13 @@ class ConversationViewModel @Inject constructor(
     private val userId = savedStateHandle.get<Int>("userId")
     private val userNameSaved = savedStateHandle.get<String>("userName")
     private val _navigateBack = MutableLiveData<Event<String>>()
-    private val _conversationPages = MutableLiveData<List<ConversationPage>>()
+    private val _newConversationPages = MutableLiveData<List<ConversationPage>>()
+    private val _nextConversationPage = MutableLiveData<List<ConversationPage>>()
     private val _messagePosted = MutableLiveData<Event<String>>()
     private val _userName = MutableLiveData<Event<String?>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
-    val conversationPages: LiveData<List<ConversationPage>> = _conversationPages
+    val newConversationPages: LiveData<List<ConversationPage>> = _newConversationPages
+    val nextConversationPage: LiveData<List<ConversationPage>> = _nextConversationPage
     val messagePosted: LiveData<Event<String>> = _messagePosted
     val userName: LiveData<Event<String?>> = _userName
 
@@ -39,7 +41,7 @@ class ConversationViewModel @Inject constructor(
 
     fun viewIsReady() {
         _userName.value = Event(userNameSaved)
-        _conversationPages.value = conversationsRepository.pages
+        _newConversationPages.value = conversationsRepository.pages
     }
 
     fun viewIsDiscarded() {
@@ -62,13 +64,13 @@ class ConversationViewModel @Inject constructor(
         }
     }
 
-//    private fun loadNextConversationsPage() {
-//        conversationsRepository.loadNextPage { _, _ ->
-//            _conversationPages.value = conversationsRepository.pages
-//        }
-//    }
+    fun loadNextConversationPage() {
+        conversationsRepository.loadNextPage { _, _ ->
+            _nextConversationPage.value = conversationsRepository.pages
+        }
+    }
 
     override fun conversationChanged() {
-        _conversationPages.value = conversationsRepository.pages
+        _newConversationPages.value = conversationsRepository.pages
     }
 }

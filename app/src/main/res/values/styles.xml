@@ -122,6 +122,8 @@
 
         <item name="swipeRefreshProgressSpinnerColor">@color/violetBlue</item>
 
+        <item name="messageItemBackgroundColor">@color/white</item>
+
         <item name="myMessageBubbleBackgroundColor">@color/lightGrey</item>
         <item name="myMessageBubbleStrokeColor">@color/grey</item>
         <item name="myMessageBubbleTextColor">@color/black</item>

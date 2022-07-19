@@ -67,16 +67,20 @@ class PrivateConversationsRepositoryImpl(
     }
 
     override fun loadNextPage(onComplete: (ConversationPage?, ConversationsErrors?) -> Unit) {
+        Log.d("PrivateConversationsRepositoryImpl", "loadNextPage")
         if (user.isUserLoggedIn()) {
             if (conversationPartnerId != null) {
+                isReloadInProgress = true
                 paginator.loadNextPage(user.getBearerAccessToken()!!) { messagesResponse, conversationsErrors ->
                     if (messagesResponse != null) {
                         val conversationPage = toConversationPage(messagesResponse)
                         _pages.add(conversationPage)
+                        Log.d("PrivateConversationsRepositoryImpl", "loadNextPage completed")
                         onComplete(conversationPage, null)
                     } else {
                         onComplete(null, ConversationsErrors.UNKNOWN)
                     }
+                    isReloadInProgress = false
                 }
             } else {
                 throw ConversationsException(ConversationsErrors.CONVERSATION_PARTNER_ID_NOT_SET)

@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.ui.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,7 +99,7 @@ class ConversationFragment : Fragment() {
                 binding.conversationsHeaderViewElement.setTitle(it)
             }
         })
-        conversationViewModel.conversationPages.observe(viewLifecycleOwner, { conversationPages ->
+        conversationViewModel.newConversationPages.observe(viewLifecycleOwner, { conversationPages ->
             val data = getAllConversationFromPagesAndReverse(conversationPages)
             if (isViewSetup == false) {
                 setupConversationRecyclerView(data)
@@ -107,6 +107,13 @@ class ConversationFragment : Fragment() {
                 reloadRecyclerViewWithNewData(data)
             }
             binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
+        })
+        conversationViewModel.nextConversationPage.observe(viewLifecycleOwner, { conversationPages ->
+            val data = getAllConversationFromPagesAndReverse(conversationPages)
+            reloadRecyclerViewWithNewData(data)
+            val position = (conversationPages.lastOrNull()?.messages?.count() ?: 0) + 5
+            Log.d("ConversationFragment", "scrolling to ${position}")
+            binding.conversationsRecyclerView.scrollToPosition(position)
         })
         conversationViewModel.messagePosted.observe(viewLifecycleOwner, EventObserver {
             binding.conversationsRecyclerView.adapter?.notifyDataSetChanged()
@@ -132,9 +139,9 @@ class ConversationFragment : Fragment() {
                 }
             }
         }
-//        if (pages.lastOrNull()?.isLast == false) {
-//            data.add(NotificationLastInPageData())
-//        }
+        if (pages.lastOrNull()?.isLast == false) {
+            data.add(MessageLastInPageData())
+        }
         val reversedData = data.reversed()
         return reversedData
     }
@@ -145,7 +152,7 @@ class ConversationFragment : Fragment() {
             context = requireContext(),
             conversation = conversation.toMutableList(),
             utils = utils,
-            loadNextPage = {}
+            loadNextPage = { this.conversationViewModel.loadNextConversationPage() }
         )
         isViewSetup = true
     }
@@ -172,9 +179,9 @@ class ConversationFragment : Fragment() {
                             changedItems.add(i)
                         }
                     }
-//                    else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
-//                        // DO NOTHING
-//                    }
+                    else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                        // DO NOTHING
+                    }
                     else {
                         changedItems.add(i)
                     }
@@ -195,9 +202,9 @@ class ConversationFragment : Fragment() {
                             changedItems.add(i)
                         }
                     }
-//                    else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
-//                        // DO NOTHING
-//                    }
+                    else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                        // DO NOTHING
+                    }
                     else {
                         changedItems.add(i)
                     }
