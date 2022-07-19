@@ -120,5 +120,8 @@
         <argument
             android:name="userId"
             app:argType="integer" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
     </fragment>
 </navigation>

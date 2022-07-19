@@ -20,10 +20,10 @@ class PlayerDetailsViewModel @Inject constructor(
     private val userId = savedStateHandle.get<Int>("userId")
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _detailsLoaded = MutableLiveData<Event<String>>()
-    private val _message = MutableLiveData<Event<Int>>()
+    private val _message = MutableLiveData<Event<Array<Any>>>() // TODO: refactor
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val detailsLoaded: LiveData<Event<String>> = _detailsLoaded
-    val message: LiveData<Event<Int>> = _message
+    val message: LiveData<Event<Array<Any>>> = _message
 
     companion object {
         private val TAG = "DetailsViewModel"
@@ -42,7 +42,10 @@ class PlayerDetailsViewModel @Inject constructor(
     }
 
     fun messageClicked() {
-        userId?.let { _message.value = Event(it) }
+        userId?.let { userId ->
+            val name = playerDetailsForm.name
+            _message.value = Event(arrayOf<Any>(userId, name))
+        }
     }
 
     fun loadDetails() {

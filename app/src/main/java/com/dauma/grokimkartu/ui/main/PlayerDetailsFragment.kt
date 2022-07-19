@@ -58,9 +58,10 @@ class PlayerDetailsFragment : Fragment() {
         playerDetailsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
-        playerDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { userId ->
+        playerDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { userData ->
             val args = Bundle()
-            args.putInt("userId", userId)
+            args.putInt("userId", userData[0] as Int)
+            args.putString("userName", userData[1] as String)
             this.findNavController().navigate(R.id.action_playerDetailsFragment_to_conversationFragment, args)
         })
         playerDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner, EventObserver {
