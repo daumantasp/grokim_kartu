@@ -1,13 +1,21 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentConversationBinding
+import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
+import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ConversationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -15,6 +23,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ConversationFragment : Fragment() {
     private val conversationViewModel by viewModels<ConversationViewModel>()
+    private var isViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentConversationBinding? = null
@@ -29,12 +38,193 @@ class ConversationFragment : Fragment() {
         _binding = FragmentConversationBinding.inflate(inflater, container, false)
         binding.model = conversationViewModel
         val view = binding.root
+        setupObservers()
+        isViewSetup = false
 
+        binding.conversationsHeaderViewElement.setOnBackClick {
+            conversationViewModel.backClicked()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            conversationViewModel.backClicked()
+        }
+
+        binding.postMessageButtonFrameLayout.setOnClickListener {
+            onPostMessageClicked()
+        }
+        binding.postMessageImageButton.setOnClickListener {
+            onPostMessageClicked()
+        }
+        binding.postMessageTextInputEditText.setOnEditorActionListener { textView, actionId, keyEvent ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onPostMessageClicked()
+                handled = true
+            }
+            handled
+        }
+        binding.conversationsRecyclerView.setOnTouchListener { view, motionEvent ->
+            if (binding.postMessageTextInputEditText.isFocused) {
+                utils.keyboardUtils.hideKeyboard(requireView())
+                binding.postMessageTextInputEditText.clearFocus()
+            }
+            false
+        }
+
+        activity?.window?.decorView?.let {
+            utils.keyboardUtils.registerListener("ConversationFragment", it) { isOpened, keyboardHeight ->
+                if (isOpened) {
+                    val data = (binding.conversationsRecyclerView.adapter as ConversationAdapter).conversation
+                    binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
+                }
+            }
+        }
+
+        conversationViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        utils.keyboardUtils.unregisterListener("ConversationFragment")
+        conversationViewModel.viewIsDiscarded()
+    }
+
+    private fun setupObservers() {
+        conversationViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().popBackStack()
+        })
+        conversationViewModel.userName.observe(viewLifecycleOwner, EventObserver {
+            it?.let {
+                binding.conversationsHeaderViewElement.setTitle(it)
+            }
+        })
+        conversationViewModel.conversationPages.observe(viewLifecycleOwner, { conversationPages ->
+            val data = getAllConversationFromPagesAndReverse(conversationPages)
+            if (isViewSetup == false) {
+                setupConversationRecyclerView(data)
+            } else {
+                reloadRecyclerViewWithNewData(data)
+            }
+            binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
+        })
+        conversationViewModel.messagePosted.observe(viewLifecycleOwner, EventObserver {
+            binding.conversationsRecyclerView.adapter?.notifyDataSetChanged()
+            binding.postMessageTextInputEditText.editableText.clear()
+        })
+    }
+
+    private fun onPostMessageClicked() {
+        val messageText = binding.postMessageTextInputEditText.editableText.toString()
+        conversationViewModel.postMessageClicked(messageText)
+    }
+
+    private fun getAllConversationFromPagesAndReverse(pages: List<ConversationPage>) : List<Any> {
+        val data: MutableList<Any> = mutableListOf()
+        for (page in pages) {
+            if (page.messages != null) {
+                for (message in page.messages) {
+                    if (message.user?.isCurrent == true) {
+                        data.add(MyMessageConversationData(message))
+                    } else {
+                        data.add(PartnerMessageConversationData(message))
+                    }
+                }
+            }
+        }
+//        if (pages.lastOrNull()?.isLast == false) {
+//            data.add(NotificationLastInPageData())
+//        }
+        val reversedData = data.reversed()
+        return reversedData
+    }
+
+    private fun setupConversationRecyclerView(conversation: List<Any>) {
+        binding.conversationsRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.conversationsRecyclerView.adapter = ConversationAdapter(
+            context = requireContext(),
+            conversation = conversation.toMutableList(),
+            utils = utils,
+            loadNextPage = {}
+        )
+        isViewSetup = true
+    }
+
+    private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
+        val adapter = binding.conversationsRecyclerView.adapter
+        if (adapter is ConversationAdapter) {
+            val previousData = adapter.conversation
+
+            val changedItems: MutableList<Int> = mutableListOf()
+            val insertedItems: MutableList<Int> = mutableListOf()
+            val removedItems: MutableList<Int> = mutableListOf()
+
+            if (previousData.count() <= newData.count()) {
+                for (i in 0 until previousData.count()) {
+                    val previousItem = previousData[i]
+                    val newItem = newData[i]
+                    if (previousItem is MyMessageConversationData && newItem is MyMessageConversationData) {
+                        if (previousItem.message.id != newItem.message.id) {
+                            changedItems.add(i)
+                        }
+                    } else if (previousItem is PartnerMessageConversationData && newItem is PartnerMessageConversationData) {
+                        if (previousItem.message.id != newItem.message.id) {
+                            changedItems.add(i)
+                        }
+                    }
+//                    else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
+//                        // DO NOTHING
+//                    }
+                    else {
+                        changedItems.add(i)
+                    }
+                }
+                for (i in previousData.count() until newData.count()) {
+                    insertedItems.add(i)
+                }
+            } else {
+                for (i in 0 until newData.count()) {
+                    val previousItem = previousData[i]
+                    val newItem = newData[i]
+                    if (previousItem is MyMessageConversationData && newItem is MyMessageConversationData) {
+                        if (previousItem.message.id != newItem.message.id) {
+                            changedItems.add(i)
+                        }
+                    } else if (previousItem is PartnerMessageConversationData && newItem is PartnerMessageConversationData) {
+                        if (previousItem.message.id != newItem.message.id) {
+                            changedItems.add(i)
+                        }
+                    }
+//                    else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
+//                        // DO NOTHING
+//                    }
+                    else {
+                        changedItems.add(i)
+                    }
+                }
+                for (i in newData.count() until previousData.count()) {
+                    removedItems.add(i)
+                }
+            }
+
+            val sortedChangedItems = changedItems.sorted()
+            val sortedInsertedItems = insertedItems.sorted()
+            val sortedRemovedItems = removedItems.sorted()
+
+            val sortedChangedRanges = utils.otherUtils.getRanges(sortedChangedItems)
+            val sortedInsertedRanges = utils.otherUtils.getRanges(sortedInsertedItems)
+            val sortedRemovedRanges = utils.otherUtils.getRanges(sortedRemovedItems)
+
+            adapter.conversation = newData.toMutableList()
+            for (range in sortedRemovedRanges.reversed()) {
+                adapter.notifyItemRangeRemoved(range[0], range[1])
+            }
+            for (range in sortedInsertedRanges) {
+                adapter.notifyItemRangeInserted(range[0], range[1])
+            }
+            for (range in sortedChangedRanges) {
+                adapter.notifyItemRangeChanged(range[0], range[1])
+            }
+        }
     }
 }

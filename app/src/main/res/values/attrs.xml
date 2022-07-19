@@ -98,6 +98,23 @@
     <attr name="notificationsBackgroundColor" format="color" />
     <attr name="swipeRefreshProgressSpinnerColor" format="color" />
 
+    <attr name="myMessageBubbleBackgroundColor" format="color" />
+    <attr name="myMessageBubbleStrokeColor" format="color" />
+    <attr name="myMessageBubbleNameColor" format="color"/>
+    <attr name="myMessageBubbleDateColor" format="color"/>
+    <attr name="myMessageBubbleTextColor" format="color"/>
+    <attr name="partnerMessageBubbleBackgroundColor" format="color" />
+    <attr name="partnerMessageBubbleTextColor" format="color" />
+    <attr name="partnerMessageBubbleNameColor" format="color" />
+    <attr name="partnerMessageBubbleDateColor" format="color" />
+    <attr name="partnerMessageBubbleStrokeColor" format="color" />
+
+    <attr name="postMessageContainerBackgroundColor" format="color" />
+    <attr name="postMessageInputBackgroundColor" format="color" />
+    <attr name="postMessageInputStrokeColor" format="color" />
+    <attr name="postMessageIconBackgroundColor" format="color" />
+    <attr name="postMessageIconColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
