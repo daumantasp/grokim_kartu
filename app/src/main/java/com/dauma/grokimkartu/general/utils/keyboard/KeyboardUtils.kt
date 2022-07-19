@@ -1,8 +1,10 @@
 package com.dauma.grokimkartu.general.utils.keyboard
 
-import android.content.Context
 import android.view.View
 
 interface KeyboardUtils {
-    fun hideKeyboardFrom(context: Context, view: View)
+    fun registerListener(id: String, decorView: View, listener: (Boolean, Int) -> Unit)
+    fun unregisterListener(id: String)
+    fun hideKeyboard(view: View)
+    fun showKeyboard(view: View)
 }
