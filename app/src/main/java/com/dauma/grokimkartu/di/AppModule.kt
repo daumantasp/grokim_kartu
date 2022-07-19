@@ -326,11 +326,12 @@ class AppModule {
     @Singleton
     fun providesPrivateConversationsRepository(
         privateConversationsDao: PrivateConversationsDao,
+        playersDao: PlayersDao,
         paginator: PrivateConversationsPaginator,
         user: User,
         utils: Utils
     ) : PrivateConversationsRepository {
-        return PrivateConversationsRepositoryImpl(privateConversationsDao, paginator, user, utils)
+        return PrivateConversationsRepositoryImpl(privateConversationsDao, playersDao, paginator, user, utils)
     }
 
     @Provides
