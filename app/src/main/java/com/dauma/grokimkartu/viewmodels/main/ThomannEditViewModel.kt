@@ -6,10 +6,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.models.forms.ThomannEditForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.entities.CreateThomann
-import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.UpdateThomann
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
@@ -74,7 +74,7 @@ class ThomannEditViewModel @Inject constructor(
                 if (thomannDetails != null) {
                     var validUntilAsString = ""
                     if (thomannDetails.validUntil != null) {
-                        validUntilAsString = utils.timeUtils.format(Date(thomannDetails.validUntil!!.time))
+                        validUntilAsString = utils.timeUtils.format(Date(thomannDetails.validUntil!!.time), CustomDateTimeFormatPattern.yyyyMMdd)
                     }
                     this.thomannEditForm.setInitialValues(
                         city = thomannDetails.city,
@@ -98,13 +98,13 @@ class ThomannEditViewModel @Inject constructor(
     }
 
     fun validUntilClicked() {
-        val currentDate = utils.timeUtils.getCurrentDate()
+        val currentDate = utils.timeUtils.getCurrentDateTime()
         val minDate = utils.timeUtils.addDays(currentDate, 1)
         val maxDate = utils.timeUtils.addYears(currentDate, 1)
         var selectedDate = currentDate
         var isSaveButtonEnabled = true
         if (thomannEditForm.validUntil != "") {
-            val validUntilAsCustomDate = utils.timeUtils.parseToDate(thomannEditForm.validUntil)
+            val validUntilAsCustomDate = utils.timeUtils.parseToCustomDateTime(thomannEditForm.validUntil)
             if (validUntilAsCustomDate != null) {
                 val validUntilInMillis = utils.timeUtils.convertToTimeInMillis(validUntilAsCustomDate)
                 val currentDateInMillis = utils.timeUtils.convertToTimeInMillis(currentDate)
@@ -118,7 +118,7 @@ class ThomannEditViewModel @Inject constructor(
     }
 
     fun saveChanges(onComplete: () -> Unit = {}) {
-        val validUntilAsDate = utils.timeUtils.parseToDate(thomannEditForm.validUntil)
+        val validUntilAsDate = utils.timeUtils.parseToCustomDateTime(thomannEditForm.validUntil)
         var validUntilTimestamp: Timestamp? = null
         if (validUntilAsDate != null) {
             val validUntilInMillis = utils.timeUtils.convertToTimeInMillis(validUntilAsDate)

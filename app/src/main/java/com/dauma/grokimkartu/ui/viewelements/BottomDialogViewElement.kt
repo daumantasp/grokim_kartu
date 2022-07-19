@@ -15,14 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.general.utils.time.CustomDate
+import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.main.adapters.BottomDialogCodeValueAdapter
 import com.dauma.grokimkartu.ui.main.adapters.CodeValue
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -105,9 +104,15 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     fun bindDatePickerData(data: BottomDialogDatePickerData) {
         reset()
         setTitle(data.title)
-        datePicker.updateDate(data.selectedDate.year, data.selectedDate.month - 1, data.selectedDate.dayOfMonth)
+        datePicker.updateDate(
+            data.selectedDate.year ?: 0,
+            (data.selectedDate.month ?: 1) - 1,
+            data.selectedDate.dayOfMonth ?: 0
+        )
         datePicker.setOnDateChangedListener { _, year, month, dayOfMonth ->
-            val datePickerDate = CustomDate(year, month - 1, dayOfMonth)
+            val datePickerDate = CustomDateTime().apply {
+                setDate(year, month - 1, dayOfMonth)
+            }
             data.onSelectedDateChanged(datePickerDate)
         }
         if (data.minDate != null) {
@@ -120,11 +125,13 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         setSaveButtonEnabled(data.isSaveButtonEnabled)
         saveButton.setOnClick(object : View.OnClickListener {
             override fun onClick(p0: View?) {
-                val selectedDate = CustomDate(
-                    datePicker.year,
-                    datePicker.month + 1,
-                    datePicker.dayOfMonth
-                )
+                val selectedDate = CustomDateTime().apply {
+                    setDate(
+                        datePicker.year,
+                        datePicker.month + 1,
+                        datePicker.dayOfMonth
+                    )
+                }
                 data.onSaveClicked(selectedDate)
             }
         })

@@ -16,6 +16,7 @@ import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import com.dauma.grokimkartu.databinding.FragmentThomannDetailsBinding
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.main.adapters.*
@@ -122,7 +123,7 @@ class ThomannDetailsFragment : Fragment() {
                             this.thomannDetailsViewModel.joinClicked(valueAsDouble) {
                                 manager.showBottomDialogLoading(false)
                                 manager.hideBottomDialog()
-                                this.utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                                this.utils.keyboardUtils.hideKeyboard(requireView())
                             }
                         } else {
                             manager.showBottomDialogLoading(false)
@@ -133,7 +134,7 @@ class ThomannDetailsFragment : Fragment() {
                     },
                     onCancelClicked = {
                         manager.hideBottomDialog()
-                        utils.keyboardUtils.hideKeyboardFrom(requireActivity(), requireView())
+                        utils.keyboardUtils.hideKeyboard(requireView())
                     }
                 )
                 manager.showBottomDialog(dialogData)
@@ -176,12 +177,12 @@ class ThomannDetailsFragment : Fragment() {
         recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_city), details.city))
 
         if (details.createdAt != null) {
-            val createdAtFormatted = utils.timeUtils.format(Date(details.createdAt.time))
+            val createdAtFormatted = utils.timeUtils.format(Date(details.createdAt.time), CustomDateTimeFormatPattern.yyyyMMdd)
             recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_creation_date), createdAtFormatted))
         }
 
         if (details.validUntil != null) {
-            val validUntilFormatted = utils.timeUtils.format(Date(details.validUntil.time))
+            val validUntilFormatted = utils.timeUtils.format(Date(details.validUntil.time), CustomDateTimeFormatPattern.yyyyMMdd)
             recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_valid_until), validUntilFormatted))
         }
 

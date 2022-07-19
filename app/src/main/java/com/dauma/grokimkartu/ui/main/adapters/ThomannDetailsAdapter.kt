@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
@@ -195,7 +196,7 @@ class ThomannDetailsAdapter(
             userAmountTextView.setText(formattedUserAmountText)
             if (data.user.createdAt != null) {
                 val joinDate = Date(data.user.createdAt!!.time)
-                val formattedJoinDate = utils.timeUtils.format(joinDate)
+                val formattedJoinDate = utils.timeUtils.format(joinDate, CustomDateTimeFormatPattern.yyyyMMdd)
                 val joinDateText = view.context.getText(R.string.thomann_details_user_join_date).toString()
                 val formattedJoinDateText = joinDateText.replace("{{joinDate}}", formattedJoinDate)
                 userJoinedDateTextView.setText(formattedJoinDateText)

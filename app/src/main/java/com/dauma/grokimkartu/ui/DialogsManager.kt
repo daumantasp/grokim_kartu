@@ -1,6 +1,6 @@
 package com.dauma.grokimkartu.ui
 
-import com.dauma.grokimkartu.general.utils.time.CustomDate
+import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.ui.main.adapters.CodeValue
 
 interface DialogsManager {
@@ -24,12 +24,12 @@ data class BottomDialogData(
 
 data class BottomDialogDatePickerData (
     val title: String,
-    val selectedDate: CustomDate,
-    val minDate: CustomDate?,
-    val maxDate: CustomDate?,
+    val selectedDate: CustomDateTime,
+    val minDate: CustomDateTime?,
+    val maxDate: CustomDateTime?,
     val isSaveButtonEnabled: Boolean,
-    val onSaveClicked: (CustomDate) -> Unit,
-    val onSelectedDateChanged: (CustomDate) -> Unit,
+    val onSaveClicked: (CustomDateTime) -> Unit,
+    val onSelectedDateChanged: (CustomDateTime) -> Unit,
     val onCancelClicked: () -> Unit
 )
 

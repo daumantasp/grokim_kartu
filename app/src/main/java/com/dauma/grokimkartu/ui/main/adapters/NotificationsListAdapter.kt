@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationState
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
@@ -63,7 +64,7 @@ class NotificationsListAdapter(
 
         fun bind(data: NotificationsListData) {
             val createdAtFormatted = data.notification.createdAt?.time?.let {
-                utils.timeUtils.format(Date(it))
+                utils.timeUtils.format(Date(it), CustomDateTimeFormatPattern.yyyyMMdd)
             }
 
             notificationViewElement.apply {

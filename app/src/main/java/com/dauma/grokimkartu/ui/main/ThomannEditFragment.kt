@@ -13,7 +13,8 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.general.utils.time.CustomDate
+import com.dauma.grokimkartu.general.utils.time.CustomDateTime
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
@@ -127,9 +128,9 @@ class ThomannEditFragment : Fragment() {
         })
         thomannEditViewModel.validUntil.observe(viewLifecycleOwner, EventObserver {
             this.isDialogShown = true
-            val currentDate = it[0] as CustomDate
-            val minDate = it[1] as CustomDate
-            val maxDate = it[2] as CustomDate
+            val currentDate = it[0] as CustomDateTime
+            val minDate = it[1] as CustomDateTime
+            val maxDate = it[2] as CustomDateTime
             val isSaveButtonEnabled = it[3] as Boolean
             this.dialogsManager?.let { manager ->
                 manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
@@ -139,7 +140,7 @@ class ThomannEditFragment : Fragment() {
                     maxDate = maxDate,
                     isSaveButtonEnabled = isSaveButtonEnabled,
                     onSaveClicked = { selectedDate ->
-                        val formattedDate = this.utils.timeUtils.format(selectedDate)
+                        val formattedDate = this.utils.timeUtils.format(selectedDate, CustomDateTimeFormatPattern.yyyyMMdd)
                         thomannEditViewModel.thomannEditForm().validUntil = formattedDate
                         manager.hideBottomDialog()
                         this.isDialogShown = false

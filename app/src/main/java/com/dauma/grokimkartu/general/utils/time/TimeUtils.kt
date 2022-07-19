@@ -3,12 +3,13 @@ package com.dauma.grokimkartu.general.utils.time
 import java.util.*
 
 interface TimeUtils {
-    fun format(customDate: CustomDate) : String
-    fun format(date: Date) : String
-    fun convertToTimeInMillis(customDate: CustomDate) : Long
-    fun getCurrentDate() : CustomDate
-    fun addDays(customDate: CustomDate, days: Int) : CustomDate
-    fun addMonths(customDate: CustomDate, months: Int) : CustomDate
-    fun addYears(customDate: CustomDate, years: Int) : CustomDate
-    fun parseToDate(date: String) : CustomDate?
+    fun format(customDateTime: CustomDateTime, pattern: CustomDateTimeFormatPattern) : String
+    fun format(date: Date, pattern: CustomDateTimeFormatPattern) : String
+    fun convertToTimeInMillis(customDateTime: CustomDateTime) : Long
+    fun convertToCustomDateTime(date: Date) : CustomDateTime
+    fun getCurrentDateTime() : CustomDateTime
+    fun addDays(customDateTime: CustomDateTime, days: Int) : CustomDateTime
+    fun addMonths(customDateTime: CustomDateTime, months: Int) : CustomDateTime
+    fun addYears(customDateTime: CustomDateTime, years: Int) : CustomDateTime
+    fun parseToCustomDateTime(date: String) : CustomDateTime?
 }

@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
@@ -99,7 +100,7 @@ class ThomannListAdapter(
         fun bind(data: ThomannsListData) {
             userTextView.text = data.thomann.user?.name
             cityTextView.text = data.thomann.city
-            val validUntil = this.utils.timeUtils.format(data.thomann.validUntil ?: Date())
+            val validUntil = this.utils.timeUtils.format(data.thomann.validUntil ?: Date(), CustomDateTimeFormatPattern.yyyyMMdd)
             validUntilTextView.text = validUntil
             if (data.thomann.isLocked == true) {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
