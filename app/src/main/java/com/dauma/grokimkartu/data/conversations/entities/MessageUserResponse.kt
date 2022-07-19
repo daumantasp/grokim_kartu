@@ -4,5 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class MessageUserResponse(
     @SerializedName("id") var id: Int?,
-    @SerializedName("name") var name: String?
+    @SerializedName("name") var name: String?,
+    @SerializedName("is_current") var isCurrent: Boolean?
 )
