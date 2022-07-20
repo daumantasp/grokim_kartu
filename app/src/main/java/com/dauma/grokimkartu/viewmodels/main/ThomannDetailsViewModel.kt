@@ -25,6 +25,7 @@ class ThomannDetailsViewModel @Inject constructor(
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _detailsLoaded = MutableLiveData<ThomannDetails>()
     private val _userDetails = MutableLiveData<Event<Int>>()
+    private val _message = MutableLiveData<Event<Int>>() // TODO: refactor
     private val _join = MutableLiveData<Event<Int>>()
     private val _quit = MutableLiveData<Event<Int>>()
     private val _edit = MutableLiveData<Event<Int>>()
@@ -34,6 +35,7 @@ class ThomannDetailsViewModel @Inject constructor(
     val join: LiveData<Event<Int>> = _join
     val quit: LiveData<Event<Int>> = _quit
     val edit: LiveData<Event<Int>> = _edit
+    val message: LiveData<Event<Int>> = _message
 
     companion object {
         private val TAG = "ThomannDetailsViewModel"
@@ -109,6 +111,12 @@ class ThomannDetailsViewModel @Inject constructor(
         }
     }
 
+    fun postMessageClicked() {
+        if (thomannId != null) {
+            _message.value = Event(thomannId)
+        }
+    }
+
     fun loadDetails() {
         if (thomannId == null) {
             return
@@ -157,6 +165,18 @@ class ThomannDetailsViewModel @Inject constructor(
                     }
                     details?.onLockClicked = { isLocked ->
                         this.lockClicked(isLocked)
+                    }
+                    details?.onPostMessageClicked = {
+                        this.postMessageClicked()
+                    }
+                } else {
+                    for (user in thomannDetails.users ?: listOf()) {
+                        if (user.isCurrentUser == true) {
+                            details?.onPostMessageClicked = {
+                                this.postMessageClicked()
+                            }
+                            break
+                        }
                     }
                 }
 

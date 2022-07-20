@@ -108,6 +108,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_thomannDetailsFragment_to_conversationFragment"
+            app:destination="@id/conversationFragment" />
     </fragment>
     <fragment
         android:id="@+id/notificationsFragment"
@@ -119,9 +122,15 @@
         android:label="ConversationFragment">
         <argument
             android:name="userId"
-            app:argType="integer" />
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="thomannId"
+            app:argType="integer"
+            android:defaultValue="-1" />
         <argument
             android:name="userName"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
 </navigation>

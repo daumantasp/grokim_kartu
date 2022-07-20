@@ -146,6 +146,11 @@ class ThomannDetailsFragment : Fragment() {
             args.putInt("thomannId", thomannId)
             this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_thomannEditFragment, args)
         })
+        thomannDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { thomannId ->
+            val args = Bundle()
+            args.putInt("thomannId", thomannId)
+            this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_conversationFragment, args)
+        })
     }
 
     private fun setupDetailsRecyclerView() {
