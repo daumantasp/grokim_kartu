@@ -76,25 +76,14 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <FrameLayout
-                android:id="@+id/postMessageButtonFrameLayout"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/oval_background"
-                android:backgroundTint="?attr/postMessageIconBackgroundColor">
-
-                <ImageButton
-                    android:id="@+id/postMessageImageButton"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_post_message"
-                    android:backgroundTint="?attr/postMessageIconColor" />
-
-            </FrameLayout>
+            <ImageButton
+                android:id="@+id/postMessageImageButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_margin="20dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_post_message"
+                android:backgroundTint="?attr/postMessageIconInactiveColor" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

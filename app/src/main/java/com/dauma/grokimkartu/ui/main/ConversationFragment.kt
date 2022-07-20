@@ -1,7 +1,11 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.content.res.ColorStateList
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentConversationBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
@@ -48,9 +53,6 @@ class ConversationFragment : Fragment() {
             conversationViewModel.backClicked()
         }
 
-        binding.postMessageButtonFrameLayout.setOnClickListener {
-            onPostMessageClicked()
-        }
         binding.postMessageImageButton.setOnClickListener {
             onPostMessageClicked()
         }
@@ -62,6 +64,22 @@ class ConversationFragment : Fragment() {
             }
             handled
         }
+
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.postMessageIconActiveColor, typedValue, true)
+        val postMessageIconActiveColor = typedValue.data
+        context?.theme?.resolveAttribute(R.attr.postMessageIconInactiveColor, typedValue, true)
+        val postMessageIconInactiveColor = typedValue.data
+        binding.postMessageTextInputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                val isPostMessageInputNotBlank = p0.toString().isNotBlank()
+                val color = if (isPostMessageInputNotBlank) postMessageIconActiveColor else postMessageIconInactiveColor
+                binding.postMessageImageButton.backgroundTintList = ColorStateList.valueOf(color)
+            }
+        })
+
         binding.conversationsRecyclerView.setOnTouchListener { view, motionEvent ->
             if (binding.postMessageTextInputEditText.isFocused) {
                 utils.keyboardUtils.hideKeyboard(requireView())

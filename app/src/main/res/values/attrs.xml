@@ -114,8 +114,8 @@
     <attr name="postMessageContainerBackgroundColor" format="color" />
     <attr name="postMessageInputBackgroundColor" format="color" />
     <attr name="postMessageInputStrokeColor" format="color" />
-    <attr name="postMessageIconBackgroundColor" format="color" />
-    <attr name="postMessageIconColor" format="color" />
+    <attr name="postMessageIconInactiveColor" format="color" />
+    <attr name="postMessageIconActiveColor" format="color" />
 
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
