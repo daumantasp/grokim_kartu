@@ -72,7 +72,7 @@
     <string name="playerDetails_instrument">Instrumentas</string>
     <string name="playerDetails_description">Aprašymas</string>
     <string name="playerDetails_city">Miestas</string>
-    <string name="playerDetails_message">Rašyti</string>
+    <string name="playerDetails_message">Rašyti žinutę</string>
     <string name="menu_home">Home</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_settings">Settings</string>
@@ -101,6 +101,7 @@
     <string name="thomann_details_cancel">Atšaukti</string>
     <string name="thomann_details_edit">Redaguoti</string>
     <string name="thomann_details_join_dialog_title">Suma</string>
+    <string name="thomann_details_post_message">Rašyti žinutę</string>
     <string name="notifications_title">Pranešimai</string>
     <string name="conversations_title">Pokalbis</string>
     <string name="conversations_post_message">Rašyti žinutę</string>

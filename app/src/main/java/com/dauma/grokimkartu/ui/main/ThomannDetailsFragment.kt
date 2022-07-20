@@ -186,9 +186,13 @@ class ThomannDetailsFragment : Fragment() {
             recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_valid_until), validUntilFormatted))
         }
 
+        var isUserParticipating = details.isOwner ?: false
         if (details.users != null) {
             for (user in details.users) {
                 recyclerViewData.add(ThomannDetailsListUserData(user))
+                if (user.isCurrentUser == true) {
+                    isUserParticipating = true
+                }
             }
             if (details.users.count() > 0) {
                 recyclerViewData.add(ThomannDetailsListRowData(getString(R.string.thomann_details_total_amount), details.totalAmount.toString()))
@@ -201,6 +205,9 @@ class ThomannDetailsFragment : Fragment() {
         if (details.isOwner == true) {
             recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_edit), details.onEditClicked))
             recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_cancel), details.onCancelClicked))
+        }
+        if (isUserParticipating == true) {
+            recyclerViewData.add(ThomannDetailsListButtonData(getString(R.string.thomann_details_post_message), details.onPostMessageClicked))
         }
     }
 }

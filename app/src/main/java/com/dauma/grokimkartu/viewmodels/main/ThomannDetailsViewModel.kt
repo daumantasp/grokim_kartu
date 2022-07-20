@@ -191,4 +191,5 @@ class ThomannDetails(
     var onLockClicked: (Boolean) -> Unit = {}
     var onEditClicked: () -> Unit = {}
     var onCancelClicked: () -> Unit = {}
+    var onPostMessageClicked: () -> Unit = {}
 }
