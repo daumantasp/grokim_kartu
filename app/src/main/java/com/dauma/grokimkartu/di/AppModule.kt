@@ -44,6 +44,8 @@ import com.dauma.grokimkartu.models.forms.*
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepository
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepositoryImpl
+import com.dauma.grokimkartu.repositories.conversations.ThomannConversationsRepository
+import com.dauma.grokimkartu.repositories.conversations.ThomannConversationsRepositoryImpl
 import com.dauma.grokimkartu.repositories.conversations.paginator.PrivateConversationsPaginator
 import com.dauma.grokimkartu.repositories.conversations.paginator.PrivateConversationsPaginatorImpl
 import com.dauma.grokimkartu.repositories.conversations.paginator.ThomannConversationsPaginator
@@ -332,6 +334,18 @@ class AppModule {
         utils: Utils
     ) : PrivateConversationsRepository {
         return PrivateConversationsRepositoryImpl(privateConversationsDao, playersDao, paginator, user, utils)
+    }
+
+    @Provides
+    @Singleton
+    fun providesThomannConversationsRepository(
+        thomannConversationsDao: ThomannConversationsDao,
+        playersDao: PlayersDao,
+        paginator: ThomannConversationsPaginator,
+        user: User,
+        utils: Utils
+    ) : ThomannConversationsRepository {
+        return ThomannConversationsRepositoryImpl(thomannConversationsDao, playersDao, paginator, user, utils)
     }
 
     @Provides
