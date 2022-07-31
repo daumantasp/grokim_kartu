@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.repositories.conversations
 import android.graphics.Bitmap
 import android.util.Log
 import com.dauma.grokimkartu.data.conversations.ThomannConversationsDao
+import com.dauma.grokimkartu.data.conversations.entities.ConversationResponse
 import com.dauma.grokimkartu.data.conversations.entities.MessageResponse
 import com.dauma.grokimkartu.data.conversations.entities.MessagesResponse
 import com.dauma.grokimkartu.data.conversations.entities.PostMessageRequest
@@ -43,6 +44,21 @@ class ThomannConversationsRepositoryImpl(
 
     companion object {
         private const val CONVERSATION_PERIODIC_RELOAD = "CONVERSATION_PERIODIC_RELOAD"
+    }
+
+    override fun thomannConversations(onComplete: (List<Conversation>?, ConversationsErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            thomannConversationsDao.thomannConversations(user.getBearerAccessToken()!!) { conversationArrayResponse, conversationsDaoResponseStatus ->
+                if (conversationsDaoResponseStatus.isSuccessful && conversationArrayResponse != null) {
+                    val conversationList = conversationArrayResponse.map { car -> toConversation(car) }
+                    onComplete(conversationList, null)
+                } else {
+                    onComplete(null, ConversationsErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ConversationsException(ConversationsErrors.USER_NOT_LOGGED_IN)
+        }
     }
 
     private fun reloadConversationPeriodically() {
@@ -256,6 +272,19 @@ class ThomannConversationsRepositoryImpl(
             conversationId = messageResponse.conversationId,
             text = messageResponse.text,
             createdAt = messageResponse.createdAt
+        )
+    }
+
+    private fun toConversation(conversationResponse: ConversationResponse) : Conversation {
+        var lastMessage: Message? = null
+        conversationResponse.lastMessage?.let {
+            lastMessage = toMessage(it)
+        }
+        return Conversation(
+            id = conversationResponse.id,
+            isRead = conversationResponse.isRead,
+            createdAt = conversationResponse.createdAt,
+            lastMessage = lastMessage
         )
     }
 
