@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.data.conversations
 
+import com.dauma.grokimkartu.data.conversations.entities.ConversationResponse
 import com.dauma.grokimkartu.data.conversations.entities.MessageResponse
 import com.dauma.grokimkartu.data.conversations.entities.MessagesResponse
 import com.dauma.grokimkartu.data.conversations.entities.PostMessageRequest
@@ -11,6 +12,35 @@ import retrofit2.http.*
 
 class PrivateConversationsDaoImpl(retrofit: Retrofit) : PrivateConversationsDao {
     private val retrofitConversations: RetrofitConversations = retrofit.create(RetrofitConversations::class.java)
+
+    override fun conversations(
+        accessToken: String,
+        onComplete: (List<ConversationResponse>?, ConversationsDaoResponseStatus) -> Unit
+    ) {
+        retrofitConversations.conversations(accessToken).enqueue(object : Callback<ArrayList<ConversationResponse>> {
+            override fun onResponse(
+                call: Call<ArrayList<ConversationResponse>>,
+                response: Response<ArrayList<ConversationResponse>>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val conversationListResponse = response.body()
+                        val status = ConversationsDaoResponseStatus(true, null)
+                        onComplete(conversationListResponse, status)
+                    }
+                    else -> {
+                        val status = ConversationsDaoResponseStatus(false, ConversationsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ArrayList<ConversationResponse>>, t: Throwable) {
+                val status = ConversationsDaoResponseStatus(false, ConversationsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
 
     override fun messages(
         conversationPartnerId: Int,
@@ -92,6 +122,9 @@ class PrivateConversationsDaoImpl(retrofit: Retrofit) : PrivateConversationsDao 
     }
 
     private interface RetrofitConversations {
+        @GET ("conversations")
+        fun conversations(@Header("Authorization") accessToken: String) : Call<ArrayList<ConversationResponse>>
+
         @GET("messages")
         fun messages(
             @Query("user_id") userId: Int,
