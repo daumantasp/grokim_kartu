@@ -106,4 +106,5 @@
     <string name="notifications_title">Pranešimai</string>
     <string name="conversations_title">Pokalbis</string>
     <string name="conversations_post_message">Rašyti žinutę</string>
+    <string name="conversations_fragment">Pokalbiai</string>
 </resources>
