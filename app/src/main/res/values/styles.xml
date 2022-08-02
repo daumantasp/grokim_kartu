@@ -140,6 +140,8 @@
         <item name="postMessageInputStrokeColor">@color/grey</item>
         <item name="postMessageIconInactiveColor">@color/violetBlue</item>
         <item name="postMessageIconActiveColor">@color/violet</item>
+
+        <item name="conversationItemBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

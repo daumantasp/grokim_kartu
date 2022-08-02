@@ -117,6 +117,8 @@
     <attr name="postMessageIconInactiveColor" format="color" />
     <attr name="postMessageIconActiveColor" format="color" />
 
+    <attr name="conversationItemBackgroundColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
