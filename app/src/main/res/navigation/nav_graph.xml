@@ -5,6 +5,7 @@
     app:startDestination="@+id/auth">
     <include app:graph="@navigation/auth" />
     <include app:graph="@navigation/home" />
+    <include app:graph="@navigation/conversations" />
     <include app:graph="@navigation/profile" />
     <include app:graph="@navigation/settings" />
 </navigation>

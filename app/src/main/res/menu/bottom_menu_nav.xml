@@ -8,7 +8,7 @@
         android:icon="@drawable/ic_home"/>
 
     <item android:id="@+id/conversations"
-        android:title="@string/menu_home"
+        android:title="@string/menu_conversations"
         app:showAsAction="always"
         android:orderInCategory="2"
         android:icon="@drawable/ic_conversations"/>
