@@ -24,7 +24,7 @@ class PrivateConversationsRepositoryImpl(
 ) : PrivateConversationsRepository {
     private val _pages: MutableList<ConversationPage> = mutableListOf()
     private var _conversationPartnerId: Int? = null
-    private var conversationPartnerIcon: Bitmap? = null
+    private var conversationPartnersIcons: MutableMap<Int, Bitmap> = mutableMapOf()
     private var isReloadInProgress: Boolean = false
     private val conversationListeners: MutableMap<String, ConversationListener> = mutableMapOf()
 
@@ -217,14 +217,14 @@ class PrivateConversationsRepositoryImpl(
         }
     }
 
-    private fun playerIcon(onComplete: (Bitmap?, PlayersErrors?) -> Unit) {
+    private fun playerIcon(userId: Int, onComplete: (Bitmap?, PlayersErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
-            if (conversationPartnerIcon != null) {
-                onComplete(conversationPartnerIcon, null)
-            } else if (conversationPartnerId != null) {
-                playersDao.playerIcon(conversationPartnerId!!, user.getBearerAccessToken()!!) { playerIcon, playersDaoResponseStatus ->
+            if (conversationPartnersIcons.containsKey(userId)) {
+                onComplete(conversationPartnersIcons[userId], null)
+            } else {
+                playersDao.playerIcon(userId, user.getBearerAccessToken()!!) { playerIcon, playersDaoResponseStatus ->
                     if (playerIcon != null) {
-                        this.conversationPartnerIcon = playerIcon
+                        this.conversationPartnersIcons[userId] = playerIcon
                         onComplete(playerIcon, null)
                     } else {
                         val error: PlayersErrors
@@ -239,8 +239,6 @@ class PrivateConversationsRepositoryImpl(
                         onComplete(null, error)
                     }
                 }
-            } else {
-                throw ConversationsException(ConversationsErrors.CONVERSATION_PARTNER_ID_NOT_SET)
             }
         } else {
             throw ConversationsException(ConversationsErrors.USER_NOT_LOGGED_IN)
@@ -251,7 +249,7 @@ class PrivateConversationsRepositoryImpl(
         if (user.isUserLoggedIn()) {
             _pages.clear()
             paginator.clear()
-            conversationPartnerIcon = null
+            conversationPartnersIcons.clear()
             utils.dispatcherUtils.main.cancelPeriodic(CONVERSATION_PERIODIC_RELOAD)
         } else {
             throw ConversationsException(ConversationsErrors.USER_NOT_LOGGED_IN)
@@ -260,7 +258,8 @@ class PrivateConversationsRepositoryImpl(
 
     private fun toMessage(messageResponse: MessageResponse) : Message {
         val loader = { onComplete: (Bitmap?, PlayersErrors?) -> Unit ->
-            this.playerIcon(onComplete)
+            val userId = messageResponse.user?.id ?: -1
+            this.playerIcon(userId, onComplete)
         }
         return Message(
             id = messageResponse.id,

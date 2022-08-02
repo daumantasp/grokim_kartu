@@ -8,9 +8,12 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentConversationsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.main.adapters.ConversationData
+import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
 import com.dauma.grokimkartu.viewmodels.main.ConversationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -44,6 +47,10 @@ class ConversationsFragment : Fragment() {
             conversationsViewModel.backClicked()
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            conversationsViewModel.reload()
+        }
+
         conversationsViewModel.viewIsReady()
         return view
     }
@@ -58,5 +65,27 @@ class ConversationsFragment : Fragment() {
         conversationsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
+        conversationsViewModel.privateConversations.observe(viewLifecycleOwner, {
+            val conversationsData = it.map { c -> ConversationData(c) }
+            if (isViewSetup == false) {
+                setupPrivateConversationsRecyclerView(conversationsData)
+            } else {
+                binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
+            }
+            if (binding.swipeRefreshLayout.isRefreshing) {
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        })
+    }
+
+    private fun setupPrivateConversationsRecyclerView(conversationsListData: List<ConversationData>) {
+        binding.privateConversationsRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.privateConversationsRecyclerView.adapter = ConversationsAdapter(
+            context = requireContext(),
+            conversationsListData = conversationsListData.toMutableList(),
+            utils = utils,
+            onItemClicked = {}
+        )
+        isViewSetup = true
     }
 }

@@ -7,4 +7,4 @@ data class MyMessageConversationData(val message: Message)
 data class PartnerMessageConversationData(val message: Message)
 class MessageLastInPageData()
 
-data class ConversationsData(val conversation: Conversation)
+data class ConversationData(val conversation: Conversation)
