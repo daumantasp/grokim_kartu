@@ -107,4 +107,6 @@
     <string name="conversations_title">Pokalbis</string>
     <string name="conversations_post_message">Rašyti žinutę</string>
     <string name="conversations_fragment">Pokalbiai</string>
+    <string name="conversations_private_title">Privatūs</string>
+    <string name="conversations_thomann_title">Thomann</string>
 </resources>
