@@ -7,16 +7,22 @@
         android:orderInCategory="1"
         android:icon="@drawable/ic_home"/>
 
+    <item android:id="@+id/conversations"
+        android:title="@string/menu_home"
+        app:showAsAction="always"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_conversations"/>
+
     <item android:id="@+id/profile"
         android:title="@string/menu_profile"
         app:showAsAction="always"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:icon="@drawable/ic_profile"/>
 
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_settings"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/menu_settings"
         app:showAsAction="always" />
 </menu>

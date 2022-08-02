@@ -74,6 +74,7 @@
     <string name="playerDetails_city">Miestas</string>
     <string name="playerDetails_message">Rašyti žinutę</string>
     <string name="menu_home">Home</string>
+    <string name="menu_conversations">Conversations</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_settings">Settings</string>
     <string name="bottom_dialog_search">Paieška</string>
