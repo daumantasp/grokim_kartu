@@ -9,19 +9,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentConversationsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.ConversationData
 import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
+import com.dauma.grokimkartu.ui.main.adapters.ConversationsPagerAdapter
 import com.dauma.grokimkartu.viewmodels.main.ConversationsViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ConversationsFragment : Fragment() {
     private val conversationsViewModel by viewModels<ConversationsViewModel>()
-    private var isViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentConversationsBinding? = null
@@ -41,15 +43,24 @@ class ConversationsFragment : Fragment() {
         binding.model = conversationsViewModel
         val view = binding.root
         setupObservers()
-        isViewSetup = false
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             conversationsViewModel.backClicked()
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            conversationsViewModel.reload()
-        }
+        val viewPager = binding.conversationsViewPager
+        val tabLayout = binding.conversationsTabLayout
+
+        val adapter = ConversationsPagerAdapter(childFragmentManager, lifecycle)
+        viewPager.adapter = adapter
+
+        val tabTitles = arrayOf(
+            requireContext().getString(R.string.conversations_private_title),
+            requireContext().getString(R.string.conversations_thomann_title)
+        )
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabTitles[position]
+        }.attach()
 
         conversationsViewModel.viewIsReady()
         return view
@@ -65,27 +76,5 @@ class ConversationsFragment : Fragment() {
         conversationsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
-        conversationsViewModel.privateConversations.observe(viewLifecycleOwner, {
-            val conversationsData = it.map { c -> ConversationData(c) }
-            if (isViewSetup == false) {
-                setupPrivateConversationsRecyclerView(conversationsData)
-            } else {
-                binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
-            }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        })
-    }
-
-    private fun setupPrivateConversationsRecyclerView(conversationsListData: List<ConversationData>) {
-        binding.privateConversationsRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.privateConversationsRecyclerView.adapter = ConversationsAdapter(
-            context = requireContext(),
-            conversationsListData = conversationsListData.toMutableList(),
-            utils = utils,
-            onItemClicked = {}
-        )
-        isViewSetup = true
     }
 }

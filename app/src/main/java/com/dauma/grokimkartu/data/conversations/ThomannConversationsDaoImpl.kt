@@ -130,7 +130,7 @@ class ThomannConversationsDaoImpl(retrofit: Retrofit) : ThomannConversationsDao 
     }
 
     private interface RetrofitConversations {
-        @GET ("conversations")
+        @GET ("conversations/thomann")
         fun thomannConversations(@Header("Authorization") accessToken: String) : Call<ArrayList<ConversationResponse>>
 
         @GET("messages/thomann")
