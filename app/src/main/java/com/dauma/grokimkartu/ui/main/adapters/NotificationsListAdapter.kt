@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
+import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationState
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
@@ -25,9 +27,9 @@ class NotificationsListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (notificationsListData[position] is NotificationLastInPageData) {
+        if (notificationsListData[position] is DummyCell) {
             return LAST
-        } else if (notificationsListData[position] is NotificationsListData) {
+        } else if (notificationsListData[position] is Notification) {
             return NOTIFICATION
         }
         return NOTIFICATION
@@ -44,9 +46,9 @@ class NotificationsListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemData = notificationsListData[position]
-        if (holder is NotificationLastViewHolder && itemData is NotificationLastInPageData) {
+        if (holder is NotificationLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
-        } else if (holder is NotificationViewHolder && itemData is NotificationsListData) {
+        } else if (holder is NotificationViewHolder && itemData is Notification) {
             holder.bind(itemData)
         }
     }
@@ -62,17 +64,17 @@ class NotificationsListAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val notificationViewElement = view.findViewById<NotificationViewElement>(R.id.notificationViewElement)
 
-        fun bind(data: NotificationsListData) {
-            val createdAtFormatted = data.notification.createdAt?.time?.let {
+        fun bind(notification: Notification) {
+            val createdAtFormatted = notification.createdAt?.time?.let {
                 utils.timeUtils.format(Date(it), CustomDateTimeFormatPattern.yyyyMMdd)
             }
 
             notificationViewElement.apply {
-                setName(data.notification.name ?: "")
+                setName(notification.name ?: "")
                 setDate(createdAtFormatted ?: "")
-                setDescription(data.notification.description ?: "")
-                setState(data.notification.state ?: NotificationState.INACTIVE)
-                setOnClick { onItemClicked(data.notification.id ?: -1) }
+                setDescription(notification.description ?: "")
+                setState(notification.state ?: NotificationState.INACTIVE)
+                setOnClick { onItemClicked(notification.id ?: -1) }
             }
 
             // https://www.colorhexa.com/394989
@@ -85,7 +87,7 @@ class NotificationsListAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
 
-        fun bind(data: NotificationLastInPageData) {
+        fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)
             loadNextPage()
         }

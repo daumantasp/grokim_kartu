@@ -1,9 +1,5 @@
 package com.dauma.grokimkartu.ui.main
 
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -16,11 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentNotificationsBinding
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
-import com.dauma.grokimkartu.ui.main.adapters.*
+import com.dauma.grokimkartu.ui.main.adapters.NotificationsListAdapter
 import com.dauma.grokimkartu.viewmodels.main.NotificationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -102,12 +99,12 @@ class NotificationsFragment : Fragment() {
             if (page.notifications != null) {
                 for (notification in page.notifications) {
                     val copiedNotification = Notification(notification)
-                    data.add(NotificationsListData(copiedNotification))
+                    data.add(copiedNotification)
                 }
             }
         }
         if (pages.lastOrNull()?.isLast == false) {
-            data.add(NotificationLastInPageData())
+            data.add(DummyCell())
         }
         return data
     }
@@ -136,13 +133,13 @@ class NotificationsFragment : Fragment() {
                 for (i in 0 until previousData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is NotificationsListData && newItem is NotificationsListData) {
-                        if (previousItem.notification.id != newItem.notification.id) {
+                    if (previousItem is Notification && newItem is Notification) {
+                        if (previousItem.id != newItem.id) {
                             changedItems.add(i)
-                        } else if (previousItem.notification.state != newItem.notification.state) {
+                        } else if (previousItem.state != newItem.state) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
+                    } else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)
@@ -155,13 +152,13 @@ class NotificationsFragment : Fragment() {
                 for (i in 0 until newData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is NotificationsListData && newItem is NotificationsListData) {
-                        if (previousItem.notification.id != newItem.notification.id) {
+                    if (previousItem is Notification && newItem is Notification) {
+                        if (previousItem.id != newItem.id) {
                             changedItems.add(i)
-                        } else if (previousItem.notification.state != newItem.notification.state) {
+                        } else if (previousItem.state != newItem.state) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is NotificationLastInPageData && newItem is NotificationLastInPageData) {
+                    } else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)
