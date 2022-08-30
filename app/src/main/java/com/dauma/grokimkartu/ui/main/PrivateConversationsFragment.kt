@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentPrivateConversationsBinding
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.ui.main.adapters.ConversationData
+import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
 import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
 import com.dauma.grokimkartu.viewmodels.main.PrivateConversationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,9 +56,8 @@ class PrivateConversationsFragment : Fragment() {
 
     private fun setupObservers() {
         privateConversationsViewModel.privateConversations.observe(viewLifecycleOwner, {
-            val conversationsData = it.map { c -> ConversationData(c) }
             if (isViewSetup == false) {
-                setupPrivateConversationsRecyclerView(conversationsData)
+                setupPrivateConversationsRecyclerView(it)
             } else {
                 binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
             }
@@ -68,11 +67,11 @@ class PrivateConversationsFragment : Fragment() {
         })
     }
 
-    private fun setupPrivateConversationsRecyclerView(conversationsListData: List<ConversationData>) {
+    private fun setupPrivateConversationsRecyclerView(conversations: List<Conversation>) {
         binding.privateConversationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.privateConversationsRecyclerView.adapter = ConversationsAdapter(
             context = requireContext(),
-            conversationsListData = conversationsListData.toMutableList(),
+            conversationsListData = conversations.toMutableList(),
             utils = utils,
             onItemClicked = {}
         )

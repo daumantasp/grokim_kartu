@@ -159,7 +159,7 @@ class ConversationFragment : Fragment() {
             }
         }
         if (pages.lastOrNull()?.isLast == false) {
-            data.add(MessageLastInPageData())
+            data.add(DummyCell())
         }
         val reversedData = data.reversed()
         return reversedData

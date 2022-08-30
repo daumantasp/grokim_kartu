@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.repositories.conversations.entities.MessageUserIconStatus
@@ -55,7 +56,7 @@ class ConversationAdapter(
             return MY_MESSAGE
         } else if (conversation[position] is PartnerMessageConversationData) {
             return PARTNER_MESSAGE
-        } else if (conversation[position] is MessageLastInPageData) {
+        } else if (conversation[position] is DummyCell) {
             return LAST
         }
         return MY_MESSAGE
@@ -78,7 +79,7 @@ class ConversationAdapter(
             holder.bind(itemData)
         } else if (holder is PartnerMessageViewHolder && itemData is PartnerMessageConversationData) {
             holder.bind(itemData)
-        } else if (holder is MessageLastViewHolder && itemData is MessageLastInPageData) {
+        } else if (holder is MessageLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
         }
     }
@@ -194,7 +195,7 @@ class ConversationAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
 
-        fun bind(data: MessageLastInPageData) {
+        fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)
             loadNextPage()
         }
