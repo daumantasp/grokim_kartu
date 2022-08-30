@@ -18,6 +18,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
+import com.dauma.grokimkartu.repositories.conversations.entities.Message
 import com.dauma.grokimkartu.repositories.conversations.entities.MessageUserIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
@@ -52,11 +53,12 @@ class ConversationAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (conversation[position] is MyMessageConversationData) {
+        val data = conversation[position]
+        if (data is Message && data.user?.isCurrent == true) {
             return MY_MESSAGE
-        } else if (conversation[position] is PartnerMessageConversationData) {
+        } else if (data is Message && data.user?.isCurrent == false) {
             return PARTNER_MESSAGE
-        } else if (conversation[position] is DummyCell) {
+        } else if (data is DummyCell) {
             return LAST
         }
         return MY_MESSAGE
@@ -75,9 +77,9 @@ class ConversationAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemData = conversation[position]
-        if (holder is MyMessageViewHolder && itemData is MyMessageConversationData) {
+        if (holder is MyMessageViewHolder && itemData is Message) {
             holder.bind(itemData)
-        } else if (holder is PartnerMessageViewHolder && itemData is PartnerMessageConversationData) {
+        } else if (holder is PartnerMessageViewHolder && itemData is Message) {
             holder.bind(itemData)
         } else if (holder is MessageLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
@@ -96,13 +98,13 @@ class ConversationAdapter(
         val dateTextView = view.findViewById<TextView>(R.id.dateTextView)
         val textView = view.findViewById<TextView>(R.id.textView)
 
-        fun bind(data: MyMessageConversationData) {
-            nameTextView.text = data.message.user?.name
-            data.message.createdAt?.let {
+        fun bind(message: Message) {
+            nameTextView.text = message.user?.name
+            message.createdAt?.let {
                 val createdAtFormatted = utils.timeUtils.format(Date(it.time), getDateTimeFormat(it))
                 dateTextView.text = createdAtFormatted
             }
-            textView.text = data.message.text
+            textView.text = message.text
         }
 
         // TODO: refactor
@@ -129,17 +131,17 @@ class ConversationAdapter(
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
 
-        fun bind(data: PartnerMessageConversationData) {
-            nameTextView.text = data.message.user?.name
-            data.message.createdAt?.let {
+        fun bind(message: Message) {
+            nameTextView.text = message.user?.name
+            message.createdAt?.let {
                 val createdAtFormatted = utils.timeUtils.format(Date(it.time), getDateTimeFormat(it))
                 dateTextView.text = createdAtFormatted
             }
-            textView.text = data.message.text
+            textView.text = message.text
 
             fun bindOrUnbindPhoto() {
-                if (data.message.user?.userIcon?.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(data.message.user?.userIcon?.icon!!)
+                if (message.user?.userIcon?.icon != null) {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(message.user?.userIcon?.icon!!)
                     userIconImageView.setImageBitmap(ovalPhoto)
                     spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
@@ -147,8 +149,8 @@ class ConversationAdapter(
                 }
             }
             fun bindOrUnbindInitials() {
-                if (data.message.user?.userIcon?.icon == null) {
-                    val initials = utils.stringUtils.getInitials(data.message.user?.name ?: "")
+                if (message.user?.userIcon?.icon == null) {
+                    val initials = utils.stringUtils.getInitials(message.user?.name ?: "")
                     initialsViewElement.setInitials(initials)
                     spinnerViewElement.showAnimation(false)
                     userIconImageView.visibility = View.GONE
@@ -162,7 +164,7 @@ class ConversationAdapter(
                 spinnerViewElement.showAnimation(true)
             }
 
-            val iconStatus = data.message.user?.userIcon?.status
+            val iconStatus = message.user?.userIcon?.status
             if (iconStatus == MessageUserIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == MessageUserIconStatus.DOWNLOADED_ICON_SET) {
                 bindOrUnbindPhoto()
                 bindOrUnbindInitials()
@@ -170,7 +172,7 @@ class ConversationAdapter(
                 bindDownloadInProgress()
             } else if (iconStatus == MessageUserIconStatus.NEED_TO_DOWNLOAD) {
                 bindDownloadInProgress()
-                data.message.user?.userIcon?.loadIfNeeded { photo, e ->
+                message.user?.userIcon?.loadIfNeeded { photo, e ->
                     bindOrUnbindPhoto()
                     bindOrUnbindInitials()
                 }

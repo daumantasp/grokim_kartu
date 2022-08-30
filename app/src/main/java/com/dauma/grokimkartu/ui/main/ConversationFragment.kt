@@ -21,6 +21,7 @@ import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
+import com.dauma.grokimkartu.repositories.conversations.entities.Message
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ConversationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -148,14 +149,8 @@ class ConversationFragment : Fragment() {
     private fun getAllConversationFromPagesAndReverse(pages: List<ConversationPage>) : List<Any> {
         val data: MutableList<Any> = mutableListOf()
         for (page in pages) {
-            if (page.messages != null) {
-                for (message in page.messages) {
-                    if (message.user?.isCurrent == true) {
-                        data.add(MyMessageConversationData(message))
-                    } else {
-                        data.add(PartnerMessageConversationData(message))
-                    }
-                }
+            page.messages?.let {
+                data.addAll(it)
             }
         }
         if (pages.lastOrNull()?.isLast == false) {
@@ -189,12 +184,8 @@ class ConversationFragment : Fragment() {
                 for (i in 0 until previousData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is MyMessageConversationData && newItem is MyMessageConversationData) {
-                        if (previousItem.message.id != newItem.message.id) {
-                            changedItems.add(i)
-                        }
-                    } else if (previousItem is PartnerMessageConversationData && newItem is PartnerMessageConversationData) {
-                        if (previousItem.message.id != newItem.message.id) {
+                    if (previousItem is Message && newItem is Message) {
+                        if (previousItem.id != newItem.id) {
                             changedItems.add(i)
                         }
                     }
@@ -212,12 +203,8 @@ class ConversationFragment : Fragment() {
                 for (i in 0 until newData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is MyMessageConversationData && newItem is MyMessageConversationData) {
-                        if (previousItem.message.id != newItem.message.id) {
-                            changedItems.add(i)
-                        }
-                    } else if (previousItem is PartnerMessageConversationData && newItem is PartnerMessageConversationData) {
-                        if (previousItem.message.id != newItem.message.id) {
+                    if (previousItem is Message && newItem is Message) {
+                        if (previousItem.id != newItem.id) {
                             changedItems.add(i)
                         }
                     }
