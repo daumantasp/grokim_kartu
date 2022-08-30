@@ -11,8 +11,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class ImageUtilsImpl : ImageUtils {
-    override fun getImageWithAuthority(context: Context, uri: Uri, width: Int, height: Int): Bitmap? {
+class ImageUtilsImpl(
+    private val context: Context
+) : ImageUtils {
+    override fun getImageWithAuthority(uri: Uri, width: Int, height: Int): Bitmap? {
         return decodeUriStreamToSize(context, uri, width, height)
     }
 
@@ -128,7 +130,7 @@ class ImageUtilsImpl : ImageUtils {
         return byteArray
     }
 
-    override fun createUniqueImageFile(context: Context): File {
+    override fun createUniqueImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMddHHmmss").format(Date())
         val filename = "Grokim_${timeStamp}_"
         val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)

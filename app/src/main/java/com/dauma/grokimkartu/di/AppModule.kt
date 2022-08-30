@@ -93,8 +93,8 @@ class AppModule {
     }
 
     @Provides
-    fun providesImageUtils() : ImageUtils {
-        return ImageUtilsImpl()
+    fun providesImageUtils(@ApplicationContext appContext: Context) : ImageUtils {
+        return ImageUtilsImpl(appContext)
     }
 
     @Provides

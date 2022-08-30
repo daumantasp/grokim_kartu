@@ -55,7 +55,7 @@ class ProfileEditFragment : Fragment() {
                 if (imageUri != null) {
                     // this case will occur in case of picking image from the Gallery,
                     // but not when taking picture with a camera
-                    val image = utils.imageUtils.getImageWithAuthority(requireContext(), imageUri, width, height)
+                    val image = utils.imageUtils.getImageWithAuthority(imageUri, width, height)
                     if (image != null) {
                         profileEditViewModel.getProfileEditForm().photo = image
                     }
@@ -147,7 +147,7 @@ class ProfileEditFragment : Fragment() {
             if (canCapture()) {
                 photoFile = null
                 try {
-                    photoFile = utils.imageUtils.createUniqueImageFile(requireContext())
+                    photoFile = utils.imageUtils.createUniqueImageFile()
                 } catch (ex: java.io.IOException) { }
 
                 photoFile?.let { photoFile ->
