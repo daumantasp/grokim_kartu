@@ -12,8 +12,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsBinding
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel
@@ -93,14 +95,12 @@ class ThomannsFragment : Fragment() {
     private fun getAllThomannsFromPages(pages: List<ThomannsPage>) : List<Any> {
         val data: MutableList<Any> = mutableListOf()
         for (page in pages) {
-            if (page.thomanns != null) {
-                for (thomann in page.thomanns) {
-                    data.add(ThomannsListData(thomann))
-                }
+            page.thomanns?.let {
+                data.addAll(it)
             }
         }
         if (pages.lastOrNull()?.isLast == false) {
-            data.add(ThomannLastInPageData())
+            data.add(DummyCell())
         }
         return data
     }
@@ -129,11 +129,11 @@ class ThomannsFragment : Fragment() {
                 for (i in 0 until previousData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is ThomannsListData && newItem is ThomannsListData) {
-                        if (previousItem.thomann.id != newItem.thomann.id) {
+                    if (previousItem is Thomann && newItem is Thomann) {
+                        if (previousItem.id != newItem.id) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is ThomannLastInPageData && newItem is ThomannLastInPageData) {
+                    } else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)
@@ -146,11 +146,11 @@ class ThomannsFragment : Fragment() {
                 for (i in 0 until newData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is ThomannsListData && newItem is ThomannsListData) {
-                        if (previousItem.thomann.id != newItem.thomann.id) {
+                    if (previousItem is Thomann && newItem is Thomann) {
+                        if (previousItem.id != newItem.id) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is ThomannLastInPageData && newItem is ThomannLastInPageData) {
+                    } else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)

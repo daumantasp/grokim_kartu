@@ -16,8 +16,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
+import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
@@ -52,9 +54,9 @@ class ThomannListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (thomannListData[position] is ThomannLastInPageData) {
+        if (thomannListData[position] is DummyCell) {
             return LAST
-        } else if (thomannListData[position] is ThomannsListData) {
+        } else if (thomannListData[position] is Thomann) {
             return THOMANN
         }
         return THOMANN
@@ -71,9 +73,9 @@ class ThomannListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemData = thomannListData[position]
-        if (holder is ThomannLastViewHolder && itemData is ThomannLastInPageData) {
+        if (holder is ThomannLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
-        } else if (holder is ThomannViewHolder && itemData is ThomannsListData) {
+        } else if (holder is ThomannViewHolder && itemData is Thomann) {
             holder.bind(itemData)
         }
     }
@@ -97,25 +99,25 @@ class ThomannListAdapter(
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
         val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.lockedUnlockedIconImageView)
 
-        fun bind(data: ThomannsListData) {
-            userTextView.text = data.thomann.user?.name
-            cityTextView.text = data.thomann.city
-            val validUntil = this.utils.timeUtils.format(data.thomann.validUntil ?: Date(), CustomDateTimeFormatPattern.yyyyMMdd)
+        fun bind(thomann: Thomann) {
+            userTextView.text = thomann.user?.name
+            cityTextView.text = thomann.city
+            val validUntil = this.utils.timeUtils.format(thomann.validUntil ?: Date(), CustomDateTimeFormatPattern.yyyyMMdd)
             validUntilTextView.text = validUntil
-            if (data.thomann.isLocked == true) {
+            if (thomann.isLocked == true) {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)
             } else {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.unlocked_icon)
             }
 
             thomannItemLinearLayout.setOnClickListener {
-                this.onItemClicked(data.thomann.id ?: -1)
+                this.onItemClicked(thomann.id ?: -1)
             }
 
             // TODO: Duplicates in playerItem. Refactor
             fun bindOrUnbindPhoto() {
-                if (data.thomann.icon?.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(data.thomann.icon!!.icon!!)
+                if (thomann.icon?.icon != null) {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(thomann.icon!!.icon!!)
                     photoIcon.setImageBitmap(ovalPhoto)
                     spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
@@ -123,8 +125,8 @@ class ThomannListAdapter(
                 }
             }
             fun bindOrUnbindInitials() {
-                if (data.thomann.icon?.icon == null) {
-                    val initials = utils.stringUtils.getInitials(data.thomann.user?.name ?: "")
+                if (thomann.icon?.icon == null) {
+                    val initials = utils.stringUtils.getInitials(thomann.user?.name ?: "")
                     initialsViewElement.setInitials(initials)
                     spinnerViewElement.showAnimation(false)
                     photoIcon.visibility = View.GONE
@@ -138,7 +140,7 @@ class ThomannListAdapter(
                 spinnerViewElement.showAnimation(true)
             }
 
-            val iconStatus = data.thomann.icon?.status
+            val iconStatus = thomann.icon?.status
             if (iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_SET) {
                 bindOrUnbindPhoto()
                 bindOrUnbindInitials()
@@ -146,7 +148,7 @@ class ThomannListAdapter(
                 bindDownloadInProgress()
             } else if (iconStatus == ThomannPlayerIconStatus.NEED_TO_DOWNLOAD) {
                 bindDownloadInProgress()
-                data.thomann.icon?.loadIfNeeded { photo, e ->
+                thomann.icon?.loadIfNeeded { photo, e ->
                     bindOrUnbindPhoto()
                     bindOrUnbindInitials()
                 }
@@ -160,7 +162,7 @@ class ThomannListAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
 
-        fun bind(data: ThomannLastInPageData) {
+        fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)
             loadNextPage()
         }
