@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentConversationBinding
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
@@ -197,7 +198,7 @@ class ConversationFragment : Fragment() {
                             changedItems.add(i)
                         }
                     }
-                    else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                    else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     }
                     else {
@@ -220,7 +221,7 @@ class ConversationFragment : Fragment() {
                             changedItems.add(i)
                         }
                     }
-                    else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                    else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     }
                     else {

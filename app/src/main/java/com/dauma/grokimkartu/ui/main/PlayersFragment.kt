@@ -13,12 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
-import com.dauma.grokimkartu.ui.main.adapters.PlayerLastInPageData
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
-import com.dauma.grokimkartu.ui.main.adapters.PlayersListData
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -94,14 +94,12 @@ class PlayersFragment : Fragment() {
     private fun getAllPlayersFromPages(pages: List<PlayersPage>) : List<Any> {
         val data: MutableList<Any> = mutableListOf()
         for (page in pages) {
-            if (page.players != null) {
-                for (player in page.players) {
-                    data.add(PlayersListData(player))
-                }
+            page.players?.let {
+                data.addAll(it)
             }
         }
         if (pages.lastOrNull()?.isLast == false) {
-            data.add(PlayerLastInPageData())
+            data.add(DummyCell())
         }
         return data
     }
@@ -130,11 +128,11 @@ class PlayersFragment : Fragment() {
                 for (i in 0 until previousData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is PlayersListData && newItem is PlayersListData) {
-                        if (previousItem.player.userId != newItem.player.userId) {
+                    if (previousItem is Player && newItem is Player) {
+                        if (previousItem.userId != newItem.userId) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                    } else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)
@@ -147,11 +145,11 @@ class PlayersFragment : Fragment() {
                 for (i in 0 until newData.count()) {
                     val previousItem = previousData[i]
                     val newItem = newData[i]
-                    if (previousItem is PlayersListData && newItem is PlayersListData) {
-                        if (previousItem.player.userId != newItem.player.userId) {
+                    if (previousItem is Player && newItem is Player) {
+                        if (previousItem.userId != newItem.userId) {
                             changedItems.add(i)
                         }
-                    } else if (previousItem is PlayerLastInPageData && newItem is PlayerLastInPageData) {
+                    } else if (previousItem is DummyCell && newItem is DummyCell) {
                         // DO NOTHING
                     } else {
                         changedItems.add(i)

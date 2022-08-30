@@ -16,7 +16,9 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
@@ -49,9 +51,9 @@ class PlayersListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (playersListData[position] is PlayerLastInPageData) {
+        if (playersListData[position] is DummyCell) {
             return LAST
-        } else if (playersListData[position] is PlayersListData) {
+        } else if (playersListData[position] is Player) {
             return PLAYER
         }
         return PLAYER
@@ -68,9 +70,9 @@ class PlayersListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemData = playersListData[position]
-        if (holder is PlayerLastViewHolder && itemData is PlayerLastInPageData) {
+        if (holder is PlayerLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
-        } else if (holder is PlayerViewHolder && itemData is PlayersListData) {
+        } else if (holder is PlayerViewHolder && itemData is Player) {
             holder.bind(itemData)
         }
     }
@@ -93,18 +95,18 @@ class PlayersListAdapter(
         val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
 
-        fun bind(data: PlayersListData) {
-            nameTextView.text = data.player.name
-            instrumentTextView.text = data.player.instrument
-            cityTextView.text = data.player.city
+        fun bind(player: Player) {
+            nameTextView.text = player.name
+            instrumentTextView.text = player.instrument
+            cityTextView.text = player.city
 
             playerItemContainer.setOnClickListener {
-                this.onItemClicked(data.player.userId ?: -1)
+                this.onItemClicked(player.userId ?: -1)
             }
 
             fun bindOrUnbindPhoto() {
-                if (data.player.icon.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(data.player.icon.icon!!)
+                if (player.icon.icon != null) {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(player.icon.icon!!)
                     photoIcon.setImageBitmap(ovalPhoto)
                     spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
@@ -112,8 +114,8 @@ class PlayersListAdapter(
                 }
             }
             fun bindOrUnbindInitials() {
-                if (data.player.icon.icon == null) {
-                    val initials = utils.stringUtils.getInitials(data.player.name ?: "")
+                if (player.icon.icon == null) {
+                    val initials = utils.stringUtils.getInitials(player.name ?: "")
                     initialsViewElement.setInitials(initials)
                     spinnerViewElement.showAnimation(false)
                     photoIcon.visibility = View.GONE
@@ -127,7 +129,7 @@ class PlayersListAdapter(
                 spinnerViewElement.showAnimation(true)
             }
 
-            val iconStatus = data.player.icon.status
+            val iconStatus = player.icon.status
             if (iconStatus == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == PlayerIconStatus.DOWNLOADED_ICON_SET) {
                 bindOrUnbindPhoto()
                 bindOrUnbindInitials()
@@ -135,7 +137,7 @@ class PlayersListAdapter(
                 bindDownloadInProgress()
             } else if (iconStatus == PlayerIconStatus.NEED_TO_DOWNLOAD) {
                 bindDownloadInProgress()
-                data.player.icon.loadIfNeeded { photo, e ->
+                player.icon.loadIfNeeded { photo, e ->
                     bindOrUnbindPhoto()
                     bindOrUnbindInitials()
                 }
@@ -149,7 +151,7 @@ class PlayersListAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
 
-        fun bind(data: PlayerLastInPageData) {
+        fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)
             loadNextPage()
         }
