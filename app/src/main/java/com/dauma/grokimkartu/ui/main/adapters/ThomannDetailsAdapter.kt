@@ -27,7 +27,7 @@ import java.sql.Date
 
 class ThomannDetailsAdapter(
     private val context: Context,
-    private val data: List<ThomannDetailsListData>,
+    private val data: List<Any>,
     private val utils: Utils,
     private val onItemClicked: (Int) -> Unit,
     private val onLeaveClicked: () -> Unit,
@@ -43,15 +43,15 @@ class ThomannDetailsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (data[position] is ThomannDetailsListPhotoData) {
+        if (data[position] is ThomannDetailsPhotoData) {
             return PHOTO
-        } else if (data[position] is ThomannDetailsListRowData) {
+        } else if (data[position] is ThomannDetailsRowData) {
             return ROW
-        } else if (data[position] is ThomannDetailsListStatusRowData) {
+        } else if (data[position] is ThomannDetailsStatusData) {
             return STATUS_ROW
-        } else if (data[position] is ThomannDetailsListUserData) {
+        } else if (data[position] is ThomannDetailsUserData) {
             return USER
-        } else if (data[position] is ThomannDetailsListButtonData) {
+        } else if (data[position] is ThomannDetailstButtonData) {
             return BUTTON
         }
         return ROW
@@ -74,15 +74,15 @@ class ThomannDetailsAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemData = data[position]
-        if (holder is PhotoViewHolder && itemData is ThomannDetailsListPhotoData) {
+        if (holder is PhotoViewHolder && itemData is ThomannDetailsPhotoData) {
             holder.bind(itemData)
-        } else if (holder is RowViewHolder && itemData is ThomannDetailsListRowData) {
+        } else if (holder is RowViewHolder && itemData is ThomannDetailsRowData) {
             holder.bind(itemData)
-        } else if (holder is StatusRowViewHolder && itemData is ThomannDetailsListStatusRowData) {
+        } else if (holder is StatusRowViewHolder && itemData is ThomannDetailsStatusData) {
             holder.bind(itemData)
-        } else if (holder is UserViewHolder && itemData is ThomannDetailsListUserData) {
+        } else if (holder is UserViewHolder && itemData is ThomannDetailsUserData) {
             holder.bind(itemData)
-        } else if (holder is ButtonViewHolder && itemData is ThomannDetailsListButtonData) {
+        } else if (holder is ButtonViewHolder && itemData is ThomannDetailstButtonData) {
             holder.bind(itemData)
         }
     }
@@ -96,7 +96,7 @@ class ThomannDetailsAdapter(
         val photoImageView = view.findViewById<ImageView>(R.id.photoImageView)
         val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.lockedUnlockedIconImageView)
 
-        fun bind(data: ThomannDetailsListPhotoData) {
+        fun bind(data: ThomannDetailsPhotoData) {
             if (data.photo == null) {
                 val initials = utils.stringUtils.getInitials(data.name ?: "")
                 initialsViewElement.setInitials(initials)
@@ -122,7 +122,7 @@ class ThomannDetailsAdapter(
     private class RowViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val rowViewElement = view.findViewById<RowViewElement>(R.id.thomannDetailsRowViewElement)
 
-        fun bind(data: ThomannDetailsListRowData) {
+        fun bind(data: ThomannDetailsRowData) {
             rowViewElement.setTitle(data.title)
             rowViewElement.setValue(data.value ?: "")
         }
@@ -131,7 +131,7 @@ class ThomannDetailsAdapter(
     private class StatusRowViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val rowViewElement = view.findViewById<RowViewElement>(R.id.thomannDetailsRowViewElement)
 
-        fun bind(data: ThomannDetailsListStatusRowData) {
+        fun bind(data: ThomannDetailsStatusData) {
             rowViewElement.setTitle(data.title)
 
             val typedValue = TypedValue()
@@ -189,7 +189,7 @@ class ThomannDetailsAdapter(
             }
         }
 
-        fun bind(data: ThomannDetailsListUserData) {
+        fun bind(data: ThomannDetailsUserData) {
             userNameTextView.setText(data.user.user?.name ?: "")
             val userAmountText = view.context.getText(R.string.thomann_details_user_amount).toString()
             val formattedUserAmountText = userAmountText.replace("{{amount}}", data.user.amount.toString())
@@ -277,7 +277,7 @@ class ThomannDetailsAdapter(
     private class ButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val buttonViewElement = view.findViewById<ButtonViewElement>(R.id.thomannDetailsButtonViewElement)
 
-        fun bind(data: ThomannDetailsListButtonData) {
+        fun bind(data: ThomannDetailstButtonData) {
             buttonViewElement.setText(data.title)
             buttonViewElement.setOnClick(object : View.OnClickListener {
                 override fun onClick(p0: View?) {

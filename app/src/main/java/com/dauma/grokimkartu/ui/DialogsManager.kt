@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.ui
 
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
-import com.dauma.grokimkartu.ui.main.adapters.CodeValue
+import com.dauma.grokimkartu.general.CodeValue
 
 interface DialogsManager {
     fun showBottomDialog(data: BottomDialogData)

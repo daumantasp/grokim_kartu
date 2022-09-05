@@ -20,7 +20,7 @@ import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.main.adapters.BottomDialogCodeValueAdapter
-import com.dauma.grokimkartu.ui.main.adapters.CodeValue
+import com.dauma.grokimkartu.general.CodeValue
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

@@ -14,7 +14,7 @@ import androidx.core.view.*
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.ui.main.adapters.CodeValue
+import com.dauma.grokimkartu.general.CodeValue
 import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint

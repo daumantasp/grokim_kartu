@@ -1,6 +1,6 @@
 package com.dauma.grokimkartu.repositories.thomanns.entities
 
-import com.dauma.grokimkartu.ui.main.adapters.CodeValue
+import com.dauma.grokimkartu.general.CodeValue
 
 class ThomannCity(
     var id: Int?,

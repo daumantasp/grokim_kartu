@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.CodeValue
 
 class BottomDialogCodeValueAdapter(
     private val codeValueList: List<CodeValue>,
@@ -33,8 +34,3 @@ class BottomDialogCodeValueAdapter(
         val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
     }
 }
-
-data class CodeValue(
-    val code: String,
-    val value: String
-)
