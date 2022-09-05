@@ -70,14 +70,14 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/playerDetails_name"
+                    app:rowTitle="@string/player_details_name"
                     app:value="@{model.playerDetailsForm.name}"
                     app:rowBorders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/playerDetails_instrument"
+                    app:rowTitle="@string/player_details_instrument"
                     app:value="@{model.playerDetailsForm.instrument}"
                     app:rowShowIcon="false"
                     app:rowBorders="top"/>
@@ -85,7 +85,7 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/playerDetails_description"
+                    app:rowTitle="@string/player_details_description"
                     app:value="@{model.playerDetailsForm.description}"
                     app:rowShowIcon="false"
                     app:rowBorders="top"
@@ -94,7 +94,7 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/playerDetails_city"
+                    app:rowTitle="@string/player_details_city"
                     app:value="@{model.playerDetailsForm.city}"
                     app:rowShowIcon="false"
                     app:rowBorders="both"/>
@@ -108,7 +108,7 @@
                     android:layout_marginBottom="10dp"
                     app:type="primary"
                     app:onClick="@{() -> model.messageClicked()}"
-                    app:text="@string/playerDetails_message" />
+                    app:text="@string/player_details_message" />
 
             </LinearLayout>
 
@@ -123,7 +123,7 @@
             app:showIcon="false"
             app:headerType="withBack"
             app:headerTextSize="small"
-            app:headerRightText="@string/playerDetails_report"
+            app:headerRightText="@string/player_details_report"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

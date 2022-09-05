@@ -42,12 +42,12 @@ class PasswordChangeViewModel @Inject constructor(
     fun passwordChangeClicked(oldPassword: String, newPassword: String, repeatPassword: String) {
         if (passwordChangeForm.isOldAndNewPasswordSame()) {
             clearErrors()
-            _newPasswordError.value = R.string.passwordChange_oldAndNewPasswordMustNotBeTheSame_error
+            _newPasswordError.value = R.string.password_change_old_and_new_password_must_not_be_the_same_error
             return
         }
         if (passwordChangeForm.isNewAndRepeatPasswordSame() == false) {
             clearErrors()
-            _repeatPasswordError.value = R.string.passwordChange_newAndRepeatPasswordAreNotTheSame_error
+            _repeatPasswordError.value = R.string.password_change_new_and_repeat_password_are_not_the_same_error
             return
         }
 
@@ -80,13 +80,13 @@ class PasswordChangeViewModel @Inject constructor(
     private fun handleAuthenticationError(error: AuthenticationErrors) {
         when(error) {
             AuthenticationErrors.INCORRECT_OLD_PSW -> {
-                _oldPasswordError.value = R.string.passwordChange_invalid_password_error
+                _oldPasswordError.value = R.string.password_change_invalid_password_error
                 _newPasswordError.value = -1
                 _repeatPasswordError.value = -1
             }
             AuthenticationErrors.NEW_PSW_SIMILAR -> {
                 _oldPasswordError.value = -1
-                _newPasswordError.value = R.string.passwordChange_oldAndNewPasswordMustNotBeTheSame_error
+                _newPasswordError.value = R.string.password_change_old_and_new_password_must_not_be_the_same_error
                 _repeatPasswordError.value = -1
             }
 //            AuthenticationErrors.PASSWORD_TOO_WEAK -> {

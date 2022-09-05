@@ -53,7 +53,7 @@
                     android:layout_marginEnd="50dp"
                     android:textSize="32sp"
                     android:layout_gravity="center"
-                    android:text="@string/registration_registrationTextView" />
+                    android:text="@string/registration_registration_text" />
             </LinearLayout>
 
             <LinearLayout
@@ -183,7 +183,7 @@
                 android:layout_marginBottom="30dp"
                 app:enabled="@{model.registrationForm.valid}"
                 app:onClick="@{() -> model.registrationForm.onClick()}"
-                app:text="@string/registration_registerButton"
+                app:text="@string/registration_register_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -197,7 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/registration_registrationSuccessful"
+                android:text="@string/registration_registration_successful"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:visibility="invisible"
@@ -224,7 +224,7 @@
                     android:layout_gravity="center"
                     app:type="primaryInAuth"
                     app:onClick="@{() -> model.okClicked()}"
-                    app:text="@string/registration_okButton" />
+                    app:text="@string/registration_ok_button" />
 
 <!--                <TextView-->
 <!--                    android:id="@+id/resendTextView"-->
