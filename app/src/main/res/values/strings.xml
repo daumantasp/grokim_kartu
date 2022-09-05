@@ -38,10 +38,10 @@
     <string name="forgot_password_reset">Atkurti</string>
 
     <!--    Menu-->
-    <string name="menu_home">Home</string>
-    <string name="menu_conversations">Conversations</string>
-    <string name="menu_profile">Profile</string>
-    <string name="menu_settings">Settings</string>
+    <string name="menu_home">Pradžia</string>
+    <string name="menu_conversations">Pokalbiai</string>
+    <string name="menu_profile">Paskyra</string>
+    <string name="menu_settings">Nustatymai</string>
 
     <!--    Notifications-->
     <string name="notifications_title">Pranešimai</string>
