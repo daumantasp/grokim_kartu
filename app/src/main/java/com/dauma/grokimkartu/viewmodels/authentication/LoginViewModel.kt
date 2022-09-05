@@ -88,10 +88,10 @@ class LoginViewModel @Inject constructor(
         when(error) {
             AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW -> {
                 _emailError.value = -1
-                _passwordError.value = R.string.login_incorrect_usr_name_or_psw
+                _passwordError.value = R.string.login_incorrect_usr_name_or_psw_error
             }
             AuthenticationErrors.EMAIL_NOT_VERIFIED -> {
-                _emailError.value = R.string.login_email_not_verified
+                _emailError.value = R.string.login_email_not_verified_error
                 _passwordError.value = -1
             }
 //            AuthenticationErrors.TOO_MANY_REQUESTS -> {

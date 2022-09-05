@@ -8,10 +8,11 @@
     <string name="login_login_button">Prisijungti</string>
     <string name="login_register">Registruotis</string>
     <string name="login_forgot_password">Pamiršau slaptažodį</string>
-    <string name="login_policy_and_terms">By creating an account you agree to Grokim Kartu Privacy Policy and Terms of use</string>
-    <string name="login_incorrect_usr_name_or_psw">Neteisingi prisijungimo duomenys</string>
-    <string name="login_too_many_requests_error">Luktelėkite! Per daug bandymų prisijungti.</string>
-    <string name="login_email_not_verified">El. paštas nepatvirtintas</string>
+    <string name="login_policy_and_terms">Kurdami paskyrą sutinkate su Grokim Kartu privatumo politika ir naudojimo sąlygomis</string>
+<!--    <string name="login_policy_and_terms">By creating an account you agree to Grokim Kartu Privacy Policy and Terms of use</string>-->
+    <string name="login_incorrect_usr_name_or_psw_error">Neteisingi prisijungimo duomenys</string>
+    <string name="login_too_many_requests_error">Luktelėkite! Per daug bandymų</string>
+    <string name="login_email_not_verified_error">El. paštas nepatvirtintas</string>
 
     <!--    Registration-->
     <string name="registration_registration_text">Registracija</string>
