@@ -32,10 +32,10 @@
     <string name="registration_resend_button">Siųsti dar kartą</string>
 
     <!--    Forgot Password-->
-    <string name="forgot_password_title">Atstatyti slaptažodį</string>
-    <string name="forgot_password_description">Norėdami atstatyti slaptažodį nurodykite el. paštą</string>
+    <string name="forgot_password_title">Atkurti slaptažodį</string>
+    <string name="forgot_password_description">Norėdami atkurti slaptažodį nurodykite el. paštą</string>
     <string name="forgot_password_email">El. paštas</string>
-    <string name="forgot_password_reset">Atstatyti</string>
+    <string name="forgot_password_reset">Atkurti</string>
 
     <!--    Menu-->
     <string name="menu_home">Home</string>
