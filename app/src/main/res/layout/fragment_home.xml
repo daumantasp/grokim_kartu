@@ -35,8 +35,8 @@
                     android:id="@+id/playersCardViewElement"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    app:cardTitle="Grojikai"
-                    app:cardDescription="Cia galite rasti grojikus"
+                    app:cardTitle="@string/home_players"
+                    app:cardDescription="@string/home_players_description"
                     app:cardStartColor="?attr/card1StartColor"
                     app:cardEndColor="?attr/card1EndColor" />
 
@@ -44,8 +44,8 @@
                     android:id="@+id/thomannCardViewElement"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    app:cardTitle="Thomann"
-                    app:cardDescription="Metames ant Thomann"
+                    app:cardTitle="@string/home_thomanns"
+                    app:cardDescription="@string/home_thomanns_description"
                     app:cardStartColor="?attr/card2StartColor"
                     app:cardEndColor="?attr/card2EndColor" />
 
