@@ -62,9 +62,9 @@
     <string name="player_details_report">Pranešti</string>
     <string name="player_details_name">Vardas</string>
     <string name="player_details_instrument">Instrumentas</string>
-    <string name="player_details_description">Aprašymas</string>
+    <string name="player_details_description">Prisistatymas</string>
     <string name="player_details_city">Miestas</string>
-    <string name="player_details_message">Rašyti žinutę</string>
+    <string name="player_details_message">Susisiekti</string>
 
     <!--    Thomanns-->
     <string name="thomanns_title">Thomann</string>
