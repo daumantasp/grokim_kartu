@@ -1,0 +1,142 @@
+<resources>
+    <string name="app_name">Grokim Kartu</string>
+
+    <!--    Login-->
+    <string name="login_welcome">Grokim Kartu</string>
+    <string name="login_email">El. paštas</string>
+    <string name="login_password">Slaptažodis</string>
+    <string name="login_login_button">Prisijungti</string>
+    <string name="login_register">Registracija</string>
+    <string name="login_forgot_password">Pamiršote slaptažodį?</string>
+    <string name="login_policy_and_terms">Kurdami paskyrą sutinkate su Grokim Kartu privatumo politika ir naudojimo sąlygomis</string>
+    <string name="login_incorrect_usr_name_or_psw_error">Neteisingi prisijungimo duomenys</string>
+    <string name="login_too_many_requests_error">Luktelėkite! Per daug bandymų</string>
+    <string name="login_email_not_verified_error">El. paštas nepatvirtintas</string>
+
+    <!--    Registration-->
+    <string name="registration_registration_text">Registracija</string>
+    <string name="registration_name">Vardas</string>
+    <string name="registration_email">El. paštas</string>
+    <string name="registration_password">Slaptažodis</string>
+    <string name="registration_password_repeat">Pakartokitę slaptažodį</string>
+    <string name="registration_name_description">Vardą turi sudaryti ne daugiau kaip 20 simbolių.</string>
+    <string name="registration_password_description">Slaptažodį turi sudaryti ne mažiau kaip 6 ir ne daugiau kaip 35 simboliai.</string>
+    <string name="registration_register_button">Registruotis</string>
+    <string name="registration_email_verification_description">Jums į el. paštą buvo išsiųsta patvirtinimo nuoroda</string>
+    <string name="registration_email_already_exists_error">Toks el. paštas jau naudojamas</string>
+    <string name="registration_email_incorrect_format_error">Netinkamas el. pašto formatas</string>
+    <string name="registration_email_password_too_weak_error">Nurodytas slaptažodis yra per silpnas</string>
+    <string name="registration_registration_successful">Jūs sėkmingai užsiregistravote. Į jūsų el. paštą buvo išsiųstas patvirtinimo laiškas.</string>
+    <string name="registration_ok_button">Supratau</string>
+    <string name="registration_resend_button">Siųsti dar kartą</string>
+
+    <!--    Forgot Password-->
+    <string name="forgot_password_title">Perkurti slaptažodį</string>
+    <string name="forgot_password_description">Norėdami perkurti slaptažodį nurodykite el. paštą</string>
+    <string name="forgot_password_email">El. paštas</string>
+    <string name="forgot_password_reset">Perkurti</string>
+    <string name="forgot_password_ok_button">Supratau</string>
+    <string name="forgot_password_email_sent">Slaptažodžio atkurimo laiškas išsiųstas Jums į el. paštą</string>
+
+    <!--    Menu-->
+    <string name="menu_home">Pradžia</string>
+    <string name="menu_conversations">Pokalbiai</string>
+    <string name="menu_profile">Paskyra</string>
+    <string name="menu_settings">Nustatymai</string>
+
+    <!--    Notifications-->
+    <string name="notifications_title">Pranešimai</string>
+
+    <!--    Bottom Dialog-->
+    <string name="bottom_dialog_search">Paieška</string>
+    <string name="bottom_dialog_save_button">Išsaugoti</string>
+    <string name="bottom_dialog_cancel_button">Atšaukti</string>
+
+    <!--    Home-->
+    <string name="home_players">Žmonės</string>
+    <string name="home_players_description">Muzikalių bendraminčių paieška</string>
+    <string name="home_thomanns">Thomanns</string>
+    <string name="home_thomanns_description">Metames Thomann užsakymui</string>
+
+    <!--    Players-->
+    <string name="players_title">Žmonės</string>
+    <string name="player_details_report">Pranešti</string>
+    <string name="player_details_name">Vardas</string>
+    <string name="player_details_instrument">Instrumentas</string>
+    <string name="player_details_description">Prisistatymas</string>
+    <string name="player_details_city">Miestas</string>
+    <string name="player_details_message">Pokalbis</string>
+
+    <!--    Thomanns-->
+    <string name="thomanns_title">Thomann</string>
+    <string name="thomann_details_title">Thomann</string>
+    <string name="thomann_details_name">Koordinatorius</string>
+    <string name="thomann_details_city">Miestas</string>
+    <string name="thomann_details_status">Būsena</string>
+    <string name="thomann_details_status_locked">Užrakinta</string>
+    <string name="thomann_details_status_unlocked">Atrakinta</string>
+    <string name="thomann_details_creation_date">Sukurta</string>
+    <string name="thomann_details_valid_until">Galioja iki</string>
+    <string name="thomann_details_join">Prisijungti</string>
+    <string name="thomann_details_leave">Išeiti</string>
+    <string name="thomann_details_kick">Išmesti</string>
+    <string name="thomann_details_user_amount">Suma: {{amount}}</string>
+    <string name="thomann_details_user_join_date">Prisijungė: {{joinDate}}</string>
+    <string name="thomann_details_total_amount">Bendra suma</string>
+    <string name="thomann_details_cancel">Atšaukti</string>
+    <string name="thomann_details_edit">Redaguoti</string>
+    <string name="thomann_details_join_dialog_title">Suma</string>
+    <string name="thomann_details_post_message">Pokalbis</string>
+    <string name="thomanns_add_new_button">Sukurti</string>
+    <string name="thomann_edit_title">Redaguoti</string>
+    <string name="thomann_edit_city">Miestas</string>
+    <string name="thomann_edit_valid_until">Galioja iki</string>
+    <string name="thomann_edit_save">Išsaugoti</string>
+
+    <!--    Conversations-->
+    <string name="conversation_title">Pokalbis</string>
+    <string name="conversations_title">Pokalbiai</string>
+    <string name="conversations_post_message">Rašyti žinutę</string>
+    <string name="conversations_private_title">Privatūs</string>
+    <string name="conversations_thomann_title">Thomann</string>
+
+    <!--    Profile-->
+    <string name="profile_fragment">Paskyra</string>
+    <string name="profile_name">Vardas</string>
+    <string name="profile_instrument">Instrumentas</string>
+    <string name="profile_description">Prisistatymas</string>
+    <string name="profile_city">Miestas</string>
+    <string name="profile_edit_fragment">Redaguoti</string>
+    <string name="profile_edit_button">Redaguoti</string>
+    <string name="profile_edit_name">Vardas</string>
+    <string name="profile_edit_instrument">Instrumentas</string>
+    <string name="profile_edit_city">Miestas</string>
+    <string name="profile_edit_description">Prisistatymas</string>
+    <string name="profile_edit_save">Išsaugoti</string>
+    <string name="profile_edit_chooser_title">Pasirinkite nuotrauką</string>
+
+    <!--    Settings-->
+    <string name="settings_fragment">Nustatymai</string>
+    <string name="settings_email">El. paštas</string>
+    <string name="settings_show_me_in_list">Rodyti mane sąraše</string>
+    <string name="settings_change_password">Keisti slaptažodį</string>
+    <string name="settings_delete_user">Panaikinti vartotoją</string>
+    <string name="settings_logout">Atsijungti</string>
+
+    <!--    Delete User-->
+    <string name="delete_user_title">Panaikinti vartotoją</string>
+    <string name="delete_user_password">Slaptažodis</string>
+    <string name="delete_user_delete_button">Panaikinti</string>
+
+    <!--    Password Change-->
+    <string name="password_change_ok_button">Supratau</string>
+    <string name="password_change_title">Keisti slaptažodį</string>
+    <string name="password_change_old_password">Senas slaptažodis</string>
+    <string name="password_change_new_password">Naujas slaptažodis</string>
+    <string name="password_change_repeat_password">Pakartokite naująjį slaptažodį</string>
+    <string name="password_change_change_button">Keisti</string>
+    <string name="password_change_invalid_password_error">Neteisingas slaptažodis</string>
+    <string name="password_change_old_and_new_password_must_not_be_the_same_error">Senasis ir naujasis slaptažodžiai negali sutapti</string>
+    <string name="password_change_new_and_repeat_password_are_not_the_same_error">Slaptažodis nesutampa</string>
+    <string name="password_change_password_changed_successfully">Slaptažodis sėkmingai pakeistas</string>
+</resources>
