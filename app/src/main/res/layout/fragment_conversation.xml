@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:showBottomBorder="true"
             app:showIcon="false"
-            app:title="@string/conversations_title" />
+            app:title="@string/conversation_title" />
 
         <LinearLayout
             android:id="@+id/postMessageLinearLayout"

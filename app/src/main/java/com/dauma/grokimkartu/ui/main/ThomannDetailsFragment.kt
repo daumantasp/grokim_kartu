@@ -94,7 +94,7 @@ class ThomannDetailsFragment : Fragment() {
             this.findNavController().popBackStack()
         })
         thomannDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner) {
-            this.binding.thomannDetailsHeaderViewElement.setTitle("${it.user} Thomann")
+            this.binding.thomannDetailsHeaderViewElement.setTitle(getString(R.string.thomann_details_title))
             setupRecyclerViewData(it)
             if (isDetailsRecyclerViewSetup == false) {
                 setupDetailsRecyclerView()

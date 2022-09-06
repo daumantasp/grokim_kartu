@@ -40,7 +40,7 @@
                         android:id="@+id/passwordTextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:hint="@string/profile_delete_user_password"
+                        android:hint="@string/delete_user_password"
                         android:inputType="textPassword"
                         android:lines="1"
                         android:maxLines="1"

@@ -51,7 +51,7 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/profile_change_password_button"
+                    app:rowTitle="@string/settings_change_password"
                     app:rowShowIcon="true"
                     app:onClick="@{() -> model.changePassword()}"
                     app:rowBorders="bottom"/>
@@ -97,7 +97,7 @@
                     android:layout_marginTop="30dp"
                     app:type="primary"
                     app:onClick="@{() -> model.logoutClicked()}"
-                    app:text="@string/profile_logout" />
+                    app:text="@string/settings_logout" />
 
             </LinearLayout>
         </ScrollView>

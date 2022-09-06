@@ -17,7 +17,7 @@
             android:id="@+id/conversationsHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:title="@string/conversations_fragment"
+            app:title="@string/conversations_title"
             app:showBottomBorder="false"
             app:showIcon="false"
             app:headerType="standart"
