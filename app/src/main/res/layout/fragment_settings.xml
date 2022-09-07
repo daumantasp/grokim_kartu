@@ -111,14 +111,13 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/changePasswordHeaderViewElement"
+            android:id="@+id/settingsHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:title="@string/settings_language"
-            app:showBottomBorder="true"
+            app:title="@string/settings_fragment"
+            app:showBottomBorder="false"
             app:showIcon="false"
-            app:headerType="withBack"
-            app:headerTextSize="small"
+            app:headerType="standart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
