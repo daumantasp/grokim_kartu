@@ -55,5 +55,8 @@ class SettingsFragment : Fragment() {
         settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
         })
+        settingsViewModel.navigateToLanguages.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_settingsFragment_to_languagesFragment)
+        })
     }
 }

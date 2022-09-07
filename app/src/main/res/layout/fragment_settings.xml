@@ -51,6 +51,14 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:rowTitle="@string/settings_language"
+                    app:rowShowIcon="true"
+                    app:onClick="@{() -> model.changeLanguage()}"
+                    app:rowBorders="bottom"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_change_password"
                     app:rowShowIcon="true"
                     app:onClick="@{() -> model.changePassword()}"
@@ -103,13 +111,14 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/settingsHeaderViewElement"
+            android:id="@+id/changePasswordHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:title="@string/settings_fragment"
-            app:showBottomBorder="false"
+            app:title="@string/settings_language"
+            app:showBottomBorder="true"
             app:showIcon="false"
-            app:headerType="standart"
+            app:headerType="withBack"
+            app:headerTextSize="small"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

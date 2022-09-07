@@ -21,10 +21,12 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel(), LogoutListener {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToDeleteUser = MutableLiveData<Event<String>>()
+    private val _navigateToLanguages = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val navigateToDeleteUser: LiveData<Event<String>> = _navigateToDeleteUser
+    val navigateToLanguages: LiveData<Event<String>> = _navigateToLanguages
     val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
 
@@ -58,6 +60,10 @@ class SettingsViewModel @Inject constructor(
 
     fun deleteUserClicked() {
         _navigateToDeleteUser.value = Event("")
+    }
+
+    fun changeLanguage() {
+        _navigateToLanguages.value = Event("")
     }
 
     fun changePassword() {

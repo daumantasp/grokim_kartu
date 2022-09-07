@@ -119,9 +119,13 @@
     <string name="settings_fragment">Nustatymai</string>
     <string name="settings_email">El. paštas</string>
     <string name="settings_show_me_in_list">Rodyti mane sąraše</string>
+    <string name="settings_language">Kalba</string>
     <string name="settings_change_password">Keisti slaptažodį</string>
     <string name="settings_delete_user">Panaikinti vartotoją</string>
     <string name="settings_logout">Atsijungti</string>
+
+    <!--    Language-->
+    <string name="languages_title">Kalba</string>
 
     <!--    Delete User-->
     <string name="delete_user_title">Panaikinti vartotoją</string>
