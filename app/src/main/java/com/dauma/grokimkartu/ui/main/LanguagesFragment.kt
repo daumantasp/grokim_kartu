@@ -30,14 +30,8 @@ class LanguagesFragment : Fragment() {
         binding.model = languagesViewModel
         val view = binding.root
         setupObservers()
-        // Inflate the layout for this fragment
-
-        binding.languagesHeaderViewElement.setOnBackClick {
-            languagesViewModel.backClicked()
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            languagesViewModel.backClicked()
-        }
+        setupBackHandlers()
+        setupOnClicks()
         return view
     }
 
@@ -49,5 +43,25 @@ class LanguagesFragment : Fragment() {
         languagesViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
+    }
+
+    private fun setupBackHandlers() {
+        binding.languagesHeaderViewElement.setOnBackClick {
+            languagesViewModel.backClicked()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            languagesViewModel.backClicked()
+        }
+    }
+
+    private fun setupOnClicks() {
+        binding.ltLanguageViewElement.setOnClick {
+            binding.enLanguageViewElement.isSelected = false
+            binding.ltLanguageViewElement.isSelected = true
+        }
+        binding.enLanguageViewElement.setOnClick {
+            binding.ltLanguageViewElement.isSelected = false
+            binding.enLanguageViewElement.isSelected = true
+        }
     }
 }

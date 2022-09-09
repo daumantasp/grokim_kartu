@@ -13,6 +13,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingTop="0dp"
+            android:layout_marginTop="100dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.dauma.grokimkartu.ui.viewelements.LanguageViewElement
+                android:id="@+id/ltLanguageViewElement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:languageCode="lt"
+                app:languageIsSelected="true" />
+
+            <com.dauma.grokimkartu.ui.viewelements.LanguageViewElement
+                android:id="@+id/enLanguageViewElement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:languageCode="en"
+                app:languageIsSelected="false" />
+
+        </LinearLayout>
+
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
             android:id="@+id/languagesHeaderViewElement"
             android:layout_width="match_parent"
