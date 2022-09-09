@@ -126,6 +126,8 @@
 
     <!--    Language-->
     <string name="languages_title">Language</string>
+    <string name="language_en" translatable="false">English</string>
+    <string name="language_lt" translatable="false">Lietuvių</string>
 
     <!--    Delete User-->
     <string name="delete_user_title">Delete my account</string>

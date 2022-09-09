@@ -119,6 +119,8 @@
 
     <attr name="conversationItemBackgroundColor" format="color" />
 
+    <attr name="languageBackgroundColor" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
@@ -192,5 +194,13 @@
         <attr name="activeNotificationNameColor" format="color" />
         <attr name="activeNotificationDescriptionColor" format="color" />
         <attr name="activeNotificationDateColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="LanguageViewElement">
+        <attr name="languageCode" format="enum">
+            <enum name="en" value="0" />
+            <enum name="lt" value="1" />
+        </attr>
+        <attr name="languageIsSelected" format="boolean" />
     </declare-styleable>
 </resources>

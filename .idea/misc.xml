@@ -8,11 +8,13 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-mdpi/post_message_input_background.xml" value="0.175" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-v24/post_message_background.xml" value="0.1695" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-xhdpi/conversation_item_background.xml" value="0.164" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/language_background.xml" value="0.115" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/my_message_bubble.xml" value="0.1" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/oval_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/partner_message_bubble.xml" value="0.115" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/player_item_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/primary_in_auth_button_ripple.xml" value="0.107" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/row_background_with_both_borders.xml" value="0.115" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/row_background_with_top_border.xml" value="0.175" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/thomann_item_background.xml" value="0.1405" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/unlocked_icon.xml" value="0.175" />
@@ -20,6 +22,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_button.xml" value="0.23125" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_card.xml" value="0.23777173913043478" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_header.xml" value="0.4203703703703704" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_language.xml" value="0.5" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_notification.xml" value="0.20833333333333334" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_chat.xml" value="0.32916666666666666" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_conversation.xml" value="0.1" />

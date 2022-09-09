@@ -142,6 +142,8 @@
         <item name="postMessageIconActiveColor">@color/violet</item>
 
         <item name="conversationItemBackgroundColor">@color/white</item>
+
+        <item name="languageBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
