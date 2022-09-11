@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.general.utils
 import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
+import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
 import com.dauma.grokimkartu.general.utils.other.OtherUtils
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils
 import com.dauma.grokimkartu.general.utils.string.StringUtils
@@ -15,5 +16,6 @@ class UtilsImpl(
     override val timeUtils: TimeUtils,
     override val sharedStorageUtils: SharedStorageUtils,
     override val dispatcherUtils: DispatcherUtils,
+    override val localeUtils: LocaleUtils,
     override val otherUtils: OtherUtils
 ) : Utils

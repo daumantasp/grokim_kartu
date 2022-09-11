@@ -118,6 +118,11 @@ class AppModule {
     }
 
     @Provides
+    fun localeUtils() : LocaleUtils {
+        return LocaleUtilsImpl()
+    }
+
+    @Provides
     fun otherUtils() : OtherUtils {
         return OtherUtilsImpl()
     }
@@ -130,6 +135,7 @@ class AppModule {
         timeUtils: TimeUtils,
         sharedStorageUtils: SharedStorageUtils,
         dispatcherUtils: DispatcherUtils,
+        localeUtils: LocaleUtils,
         otherUtils: OtherUtils
     ) : Utils {
         return UtilsImpl(
@@ -139,6 +145,7 @@ class AppModule {
             timeUtils,
             sharedStorageUtils,
             dispatcherUtils,
+            localeUtils,
             otherUtils
         )
     }
