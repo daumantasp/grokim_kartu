@@ -32,6 +32,8 @@ import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtilsImpl
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtilsImpl
+import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
+import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
 import com.dauma.grokimkartu.general.utils.other.OtherUtils
 import com.dauma.grokimkartu.general.utils.other.OtherUtilsImpl
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils

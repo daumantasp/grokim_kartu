@@ -20,7 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager {
+class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager, BottomMenuManager {
     private var mainActivityFrameLayout: FrameLayout? = null
     private var statusBarBackgroundFrameLayout: FrameLayout? = null
     private var safeAreaConstraintLayout: ConstraintLayout? = null
@@ -197,5 +197,14 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
 
     override fun showBottomDialogLoading(show: Boolean) {
         bottomDialogViewElement?.showLoading(show)
+    }
+
+    override fun refreshBottomMenuItemTitles() {
+        bottomNavigationView?.menu?.let {
+            it.findItem(R.id.home).title = getString(R.string.menu_home)
+            it.findItem(R.id.conversations).title = getString(R.string.menu_conversations)
+            it.findItem(R.id.profile).title = getString(R.string.menu_profile)
+            it.findItem(R.id.settings).title = getString(R.string.menu_settings)
+        }
     }
 }

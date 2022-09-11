@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,17 +13,24 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLanguagesBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.locale.Language
+import com.dauma.grokimkartu.ui.BottomMenuManager
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LanguagesFragment : Fragment() {
     private val languagesViewModel by viewModels<LanguagesViewModel>()
+    private var bottomMenuManager: BottomMenuManager? = null
 
     private var _binding: FragmentLanguagesBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        bottomMenuManager = context as? BottomMenuManager
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +48,8 @@ class LanguagesFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
+        bottomMenuManager = null
     }
 
     private fun setupObservers() {
@@ -80,11 +90,16 @@ class LanguagesFragment : Fragment() {
                 binding.enLanguageViewElement.isSelected = true
             }
         }
-        updateHeaderTitle()
+        refreshHeaderTitle()
+        refreshMenuItemTitles()
     }
 
-    private fun updateHeaderTitle() {
+    private fun refreshHeaderTitle() {
         val title = getString(R.string.settings_language)
         binding.languagesHeaderViewElement.setTitle(title)
+    }
+
+    private fun refreshMenuItemTitles() {
+        bottomMenuManager?.refreshBottomMenuItemTitles()
     }
 }
