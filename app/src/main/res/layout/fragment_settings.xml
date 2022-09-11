@@ -49,6 +49,7 @@
                     app:rowBorders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:id="@+id/languageRowViewElement"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:rowTitle="@string/settings_language"

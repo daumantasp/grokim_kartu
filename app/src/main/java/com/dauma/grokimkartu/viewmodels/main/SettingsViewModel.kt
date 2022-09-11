@@ -1,9 +1,12 @@
 package com.dauma.grokimkartu.viewmodels.main
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.utils.locale.Language
+import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
 import com.dauma.grokimkartu.models.forms.SettingsForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.auth.LogoutListener
@@ -17,26 +20,30 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val settingsRepository: SettingsRepository,
-    private val settingsForm: SettingsForm
+    private val settingsForm: SettingsForm,
+    private val localeUtils: LocaleUtils
 ) : ViewModel(), LogoutListener {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToDeleteUser = MutableLiveData<Event<String>>()
     private val _navigateToLanguages = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
+    private val _language = MutableLiveData<Event<Language>>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val navigateToDeleteUser: LiveData<Event<String>> = _navigateToDeleteUser
     val navigateToLanguages: LiveData<Event<String>> = _navigateToLanguages
     val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
+    val language: LiveData<Event<Language>> = _language
 
     companion object {
         private val TAG = "SettingsViewModel"
         private const val SETTINGS_VIEW_MODEL_LOGOUT_LISTENER = "SETTINGS_VIEW_MODEL_LOGOUT_LISTENER"
     }
 
-    fun viewIsReady() {
+    fun viewIsReady(context: Context) {
         authRepository.registerLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER, this)
+        selectLanguage(context)
     }
 
     fun viewIsDiscarded() {
@@ -64,6 +71,11 @@ class SettingsViewModel @Inject constructor(
 
     fun changeLanguage() {
         _navigateToLanguages.value = Event("")
+    }
+
+    private fun selectLanguage(context: Context) {
+        val currentLanguage = localeUtils.getCurrentLanguage(context)
+        _language.value = Event(currentLanguage)
     }
 
     fun changePassword() {

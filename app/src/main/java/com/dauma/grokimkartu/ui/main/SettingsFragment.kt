@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSettingsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.viewmodels.main.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +35,7 @@ class SettingsFragment : Fragment() {
             // TODO: Still reloads on device rotate, probably need to save state instance
             settingsViewModel.loadSettings()
         }
-        settingsViewModel.viewIsReady()
+        settingsViewModel.viewIsReady(requireContext())
 
         return view
     }
@@ -58,5 +59,16 @@ class SettingsFragment : Fragment() {
         settingsViewModel.navigateToLanguages.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_languagesFragment)
         })
+        settingsViewModel.language.observe(viewLifecycleOwner, EventObserver {
+            updateLanguageRowValue(it)
+        })
+    }
+
+    private fun updateLanguageRowValue(language: Language) {
+        val value = when (language) {
+            Language.Lithuanian -> getString(R.string.language_lt)
+            Language.English -> getString(R.string.language_en)
+        }
+        binding.languageRowViewElement.setValue(value)
     }
 }

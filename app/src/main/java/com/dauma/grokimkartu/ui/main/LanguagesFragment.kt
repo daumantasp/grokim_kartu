@@ -8,8 +8,10 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLanguagesBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +34,7 @@ class LanguagesFragment : Fragment() {
         setupObservers()
         setupBackHandlers()
         setupOnClicks()
+        languagesViewModel.viewIsReady(requireContext())
         return view
     }
 
@@ -42,6 +45,9 @@ class LanguagesFragment : Fragment() {
     private fun setupObservers() {
         languagesViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
+        })
+        languagesViewModel.language.observe(viewLifecycleOwner, EventObserver {
+            selectLanguage(it)
         })
     }
 
@@ -56,12 +62,29 @@ class LanguagesFragment : Fragment() {
 
     private fun setupOnClicks() {
         binding.ltLanguageViewElement.setOnClick {
-            binding.enLanguageViewElement.isSelected = false
-            binding.ltLanguageViewElement.isSelected = true
+            languagesViewModel.languageClicked(requireContext(), Language.Lithuanian)
         }
         binding.enLanguageViewElement.setOnClick {
-            binding.ltLanguageViewElement.isSelected = false
-            binding.enLanguageViewElement.isSelected = true
+            languagesViewModel.languageClicked(requireContext(), Language.English)
         }
+    }
+
+    private fun selectLanguage(language: Language) {
+        when (language) {
+            Language.Lithuanian -> {
+                binding.enLanguageViewElement.isSelected = false
+                binding.ltLanguageViewElement.isSelected = true
+            }
+            Language.English -> {
+                binding.ltLanguageViewElement.isSelected = false
+                binding.enLanguageViewElement.isSelected = true
+            }
+        }
+        updateHeaderTitle()
+    }
+
+    private fun updateHeaderTitle() {
+        val title = getString(R.string.settings_language)
+        binding.languagesHeaderViewElement.setTitle(title)
     }
 }
