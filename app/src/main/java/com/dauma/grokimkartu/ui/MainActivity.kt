@@ -10,12 +10,18 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.CodeValue
+import com.dauma.grokimkartu.general.utils.locale.Language
+import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
+import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtilsImpl
 import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
+import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,6 +39,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setLocale()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mainActivityFrameLayout = findViewById<FrameLayout>(R.id.mainActivityFrameLayout)
@@ -42,6 +49,13 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             findViewById<BottomDialogViewElement>(R.id.bottomDialogViewElement)
         initializeBottomNavigation()
         setupInsets()
+    }
+
+    private fun setLocale() {
+        // Utils injection won't help because at this stage it has not been created yet
+        val currentLanguageCode = SharedStorageUtilsImpl(this).getEntry(LanguagesViewModel.CURRENT_LANGUAGE_KEY)
+        val language = if (currentLanguageCode == "LT") Language.LT else Language.EN
+        LocaleUtilsImpl().setLanguage(this, language)
     }
 
     private fun initializeBottomNavigation() {

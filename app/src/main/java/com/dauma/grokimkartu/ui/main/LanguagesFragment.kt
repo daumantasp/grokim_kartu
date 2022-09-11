@@ -72,20 +72,20 @@ class LanguagesFragment : Fragment() {
 
     private fun setupOnClicks() {
         binding.ltLanguageViewElement.setOnClick {
-            languagesViewModel.languageClicked(requireContext(), Language.Lithuanian)
+            languagesViewModel.languageClicked(requireContext(), Language.LT)
         }
         binding.enLanguageViewElement.setOnClick {
-            languagesViewModel.languageClicked(requireContext(), Language.English)
+            languagesViewModel.languageClicked(requireContext(), Language.EN)
         }
     }
 
     private fun selectLanguage(language: Language) {
         when (language) {
-            Language.Lithuanian -> {
+            Language.LT -> {
                 binding.enLanguageViewElement.isSelected = false
                 binding.ltLanguageViewElement.isSelected = true
             }
-            Language.English -> {
+            Language.EN -> {
                 binding.ltLanguageViewElement.isSelected = false
                 binding.enLanguageViewElement.isSelected = true
             }

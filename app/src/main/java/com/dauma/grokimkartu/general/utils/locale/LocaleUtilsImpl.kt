@@ -1,7 +1,6 @@
 package com.dauma.grokimkartu.general.utils.locale
 
 import android.content.Context
-import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils
 import java.util.*
 
 class LocaleUtilsImpl() : LocaleUtils {
@@ -22,15 +21,15 @@ class LocaleUtilsImpl() : LocaleUtils {
 
     private fun getLanguage(languageCode: String): Language {
         return when (languageCode) {
-            "lt" -> Language.Lithuanian
-            else -> Language.English
+            "lt" -> Language.LT
+            else -> Language.EN
         }
     }
 
     private fun getLanguageCode(language: Language): String {
         return when (language) {
-            Language.Lithuanian -> "lt"
-            Language.English -> "en"
+            Language.LT -> "lt"
+            Language.EN -> "en"
         }
     }
 }

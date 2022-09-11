@@ -66,8 +66,8 @@ class SettingsFragment : Fragment() {
 
     private fun updateLanguageRowValue(language: Language) {
         val value = when (language) {
-            Language.Lithuanian -> getString(R.string.language_lt)
-            Language.English -> getString(R.string.language_en)
+            Language.LT -> getString(R.string.language_lt)
+            Language.EN -> getString(R.string.language_en)
         }
         binding.languageRowViewElement.setValue(value)
     }

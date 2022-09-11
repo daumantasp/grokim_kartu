@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
+import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class LanguagesViewModel @Inject constructor(
-    private val localeUtils: LocaleUtils
+    private val localeUtils: LocaleUtils,
+    private val sharedStorageUtils: SharedStorageUtils
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _language = MutableLiveData<Event<Language>>()
@@ -21,6 +23,7 @@ class LanguagesViewModel @Inject constructor(
 
     companion object {
         private val TAG = "LanguagesViewModel"
+        const val CURRENT_LANGUAGE_KEY = "CURRENT_LANGUAGE_KEY"
     }
 
     fun viewIsReady(context: Context) {
@@ -33,6 +36,7 @@ class LanguagesViewModel @Inject constructor(
 
     fun languageClicked(context: Context, language: Language) {
         localeUtils.setLanguage(context, language)
+        sharedStorageUtils.save(CURRENT_LANGUAGE_KEY, language.toString())
         selectLanguage(context)
         backClicked()
     }
