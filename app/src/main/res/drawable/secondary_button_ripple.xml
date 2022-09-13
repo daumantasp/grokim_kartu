@@ -4,8 +4,8 @@
 
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <solid android:color="@android:color/white" />
-            <corners android:radius="25dp" />
+            <solid android:color="?attr/secondaryButtonRippleColor" />
+            <corners android:radius="@dimen/secondary_button_radius" />
         </shape>
     </item>
 

@@ -5,7 +5,7 @@
     android:id="@+id/rowConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/row_background_with_both_borders">
+    android:background="@drawable/main_background_with_both_borders">
 
     <TextView
         android:id="@+id/titleTextView"

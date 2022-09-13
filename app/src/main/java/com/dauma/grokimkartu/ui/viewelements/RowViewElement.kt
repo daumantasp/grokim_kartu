@@ -133,9 +133,9 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
 
     private fun setBorder(border: Int) {
         when (border) {
-            0 -> rowConstraintLayout.setBackgroundResource(R.drawable.row_background_with_top_border)
-            1 -> rowConstraintLayout.setBackgroundResource(R.drawable.row_background_with_bottom_border)
-            2 -> rowConstraintLayout.setBackgroundResource(R.drawable.row_background_with_both_borders)
+            0 -> rowConstraintLayout.setBackgroundResource(R.drawable.main_background_with_top_border)
+            1 -> rowConstraintLayout.setBackgroundResource(R.drawable.main_background_with_bottom_border)
+            2 -> rowConstraintLayout.setBackgroundResource(R.drawable.main_background_with_both_borders)
         }
     }
 

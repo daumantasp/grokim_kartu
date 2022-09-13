@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
-    android:background="@drawable/thomann_details_item_background">
+    android:background="@drawable/main_background_with_bottom_border">
 
     <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
         android:id="@+id/initialsViewElement"

@@ -7,6 +7,8 @@
     <attr name="iconInAuthColor" format="color" />
     <attr name="disabledColor" format="color" />
 
+    <attr name="mainBackgroundColor" format="color" />
+
     <attr name="titleColor" format="color" />
     <attr name="textColor" format="color" />
     <attr name="textSecondaryColor" format="color" />
@@ -19,11 +21,13 @@
 
     <attr name="primaryButtonColor" format="color" />
     <attr name="primaryButtonPressedColor" format="color" />
+    <attr name="primaryButtonRippleColor" format="color" />
     <attr name="primaryButtonTextColor" format="color" />
 
     <attr name="secondaryButtonColor" format="color" />
     <attr name="secondaryButtonBorderColor" format="color" />
     <attr name="secondaryButtonPressedColor" format="color" />
+    <attr name="secondaryButtonRippleColor" format="color" />
     <attr name="secondaryButtonTextColor" format="color" />
 
     <attr name="primaryTextInputBackgroundColor" format="color" />
@@ -44,13 +48,10 @@
     <attr name="bottomMenuActiveColor" format="color" />
     <attr name="bottomMenuInactiveColor" format="color" />
 
-    <attr name="playerItemBackgroundColor" format="color" />
     <attr name="playerItemPhotoBackgroundColor" format="color" />
     <attr name="playerItemNameColor" format="color" />
     <attr name="borderColor" format="color" />
     <attr name="spinnerInMainColor" format="color" />
-
-    <attr name="thomannItemBackgroundColor" format="color" />
 
     <attr name="initialsTextColor" format="color" />
     <attr name="initialsBackgroundColor1" format="color" />
@@ -67,8 +68,6 @@
     <attr name="StatusBarMainColor" format="color" />
 
     <attr name="iconInHeaderColor" format="color" />
-
-    <attr name="rowBackgroundColor" format="color" />
 
     <attr name="bottomDialogBackgroundColor" format="color" />
     <attr name="bottomDialogColor" format="color" />
@@ -89,7 +88,6 @@
     <attr name="thomannDetailsItemBackgroundColor" format="color" />
     <attr name="thomannDetailsKickUserColor" format="color" />
 
-    <attr name="codeValueItemBackgroundColor" format="color" />
     <attr name="spinnerAsLastItemColor" format="color" />
 
     <attr name="notificationsCountBackgroundColor" format="color" />
@@ -118,9 +116,6 @@
     <attr name="postMessageIconActiveColor" format="color" />
 
     <attr name="conversationItemBackgroundColor" format="color" />
-
-    <attr name="languageBackgroundColor" format="color" />
-
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">

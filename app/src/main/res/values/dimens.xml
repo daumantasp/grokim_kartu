@@ -2,4 +2,12 @@
 <resources>
     <dimen name="default_profile_photo_width">250px</dimen>
     <dimen name="default_profile_photo_height">250px</dimen>
+    <dimen name="bottom_dialog_corner_radius">20dp</dimen>
+    <dimen name="message_bubble_corner_radius">18dp</dimen>
+    <dimen name="message_bubble_border_width">1dp</dimen>
+    <dimen name="post_message_input_corner_radius">10dp</dimen>
+    <dimen name="post_message_input_width">1dp</dimen>
+    <dimen name="primary_button_radius">25dp</dimen>
+    <dimen name="secondary_button_radius">25dp</dimen>
+    <dimen name="secondary_button_border_width">1dp</dimen>
 </resources>

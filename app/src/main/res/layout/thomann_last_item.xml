@@ -8,7 +8,7 @@
     android:paddingEnd="20dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:background="?attr/thomannItemBackgroundColor"
+    android:background="?attr/mainBackgroundColor"
     android:id="@+id/thomannLastItemContainer">
 
     <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement

@@ -3,7 +3,6 @@
     android:id="@+id/rootFrameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rectangular_background"
     android:alpha="0.7">
 
     <TextView

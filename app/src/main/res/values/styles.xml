@@ -30,11 +30,13 @@
 
         <item name="primaryButtonColor">@color/violetBlue</item>
         <item name="primaryButtonPressedColor">@color/violet</item>
+        <item name="primaryButtonRippleColor">@color/white</item>
         <item name="primaryButtonTextColor">@color/white</item>
 
         <item name="secondaryButtonColor">@color/white</item>
         <item name="secondaryButtonBorderColor">@color/lightGrey</item>
         <item name="secondaryButtonPressedColor">@color/cadetBlue</item>
+        <item name="secondaryButtonRippleColor">@color/white</item>
         <item name="secondaryButtonTextColor">@color/violetBlue</item>
 
         <item name="primaryTextInputBackgroundColor">@color/white</item>
@@ -56,12 +58,9 @@
         <item name="bottomMenuInactiveColor">@color/grey</item>
 
         <item name="borderColor">@color/grey</item>
-        <item name="playerItemBackgroundColor">@color/white</item>
         <item name="playerItemPhotoBackgroundColor">@color/grey</item>
         <item name="spinnerInMainColor">@color/white</item>
         <item name="playerItemNameColor">@color/black</item>
-
-        <item name="thomannItemBackgroundColor">@color/white</item>
 
         <item name="initialsTextColor">@color/white</item>
         <item name="initialsBackgroundColor1">#00AA55</item>
@@ -75,7 +74,7 @@
         <item name="headerBackgroundColor">@color/white</item>
         <item name="iconInHeaderColor">@color/black</item>
 
-        <item name="rowBackgroundColor">@color/white</item>
+        <item name="mainBackgroundColor">@color/white</item>
 
         <item name="bottomDialogBackgroundColor">@color/black50</item>
         <item name="bottomDialogColor">@color/white</item>
@@ -97,7 +96,6 @@
 
         <item name="thomannDetailsKickUserColor">@color/cherryRed</item>
 
-        <item name="codeValueItemBackgroundColor">@color/white</item>
         <item name="spinnerAsLastItemColor">@color/violetBlue</item>
 
         <item name="notificationsCountBackgroundColor">@color/cherryRed</item>
@@ -142,8 +140,6 @@
         <item name="postMessageIconActiveColor">@color/violet</item>
 
         <item name="conversationItemBackgroundColor">@color/white</item>
-
-        <item name="languageBackgroundColor">@color/white</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->

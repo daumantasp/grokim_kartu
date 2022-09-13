@@ -21,7 +21,7 @@
         android:minHeight="350dp"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/bottom_dialog_content_background">
+        android:background="@drawable/bottom_dialog_background">
 
         <TextView
             android:id="@+id/titleTextView"
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.0"
-            android:background="@drawable/bottom_dialog_value_container_background">
+            android:background="@drawable/bottom_dialog_inner_container_background">
 
             <EditText
                 android:id="@+id/valueEditText"

@@ -5,7 +5,7 @@
     android:id="@+id/languageConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/language_background">
+    android:background="@drawable/main_background_with_bottom_border">
 
     <ImageView
         android:id="@+id/flagImageView"

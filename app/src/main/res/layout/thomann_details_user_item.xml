@@ -9,7 +9,7 @@
     android:paddingEnd="20dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:background="@drawable/thomann_details_item_background"
+    android:background="@drawable/main_background_with_bottom_border"
     android:id="@+id/thomannDetailsUserItemLayout">
 
     <RelativeLayout
