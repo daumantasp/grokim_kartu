@@ -54,7 +54,7 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.NotificationViewElement)
         unreadNotificationBackgroundColor = attributes.getInt(
             R.styleable.NotificationViewElement_unreadNotificationBackgroundColor,
-            R.color.skyBlue
+            R.color.sky_blue
         )
         unreadNotificationNameColor = attributes.getInt(
             R.styleable.NotificationViewElement_unreadNotificationNameColor,
@@ -62,27 +62,27 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
         )
         unreadNotificationDescriptionColor = attributes.getInt(
             R.styleable.NotificationViewElement_unreadNotificationDescriptionColor,
-            R.color.black50
+            R.color.black_50
         )
         unreadNotificationDateColor = attributes.getInt(
             R.styleable.NotificationViewElement_unreadNotificationDateColor,
-            R.color.violetBlue
+            R.color.chambray
         )
         inactiveNotificationBackgroundColor = attributes.getInt(
             R.styleable.NotificationViewElement_inactiveNotificationBackgroundColor,
-            R.color.lightGrey
+            R.color.light_grey
         )
         inactiveNotificationNameColor = attributes.getInt(
             R.styleable.NotificationViewElement_inactiveNotificationNameColor,
-            R.color.black50
+            R.color.black_50
         )
         inactiveNotificationDescriptionColor = attributes.getInt(
             R.styleable.NotificationViewElement_inactiveNotificationDescriptionColor,
-            R.color.black50
+            R.color.black_50
         )
         inactiveNotificationDateColor = attributes.getInt(
             R.styleable.NotificationViewElement_inactiveNotificationDateColor,
-            R.color.black50
+            R.color.black_50
         )
         activeNotificationBackgroundColor = attributes.getInt(
             R.styleable.NotificationViewElement_activeNotificationBackgroundColor,
@@ -98,7 +98,7 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
         )
         activeNotificationDateColor = attributes.getInt(
             R.styleable.NotificationViewElement_activeNotificationDateColor,
-            R.color.violetBlue
+            R.color.chambray
         )
         attributes.recycle()
     }

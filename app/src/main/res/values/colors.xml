@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="black50">#80000000</color>
-    <color name="darkGrey">#FF808080</color>
-    <color name="grey">#FFDFE0DF</color>
-    <color name="lightGrey">#FFF5F5F5</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="yellow">#FFFFB319</color>
-    <color name="beige">#FFFFE194</color>
+    <color name="black">#000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="dark_grey">#808080</color>
+    <color name="grey">#DFE0DF</color>
+    <color name="light_grey">#F5F5F5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#FFB319</color>
+    <color name="beige">#FFE194</color>
     <color name="violet">#3B2E5A</color>
-    <color name="violetBlue">#394989</color>
+    <color name="chambray">#394989</color>
     <color name="cadet">#37737A</color>
-    <color name="cadetBlue">#4EA0AE</color>
-    <color name="cambridgeBlue">#FFB8DFD8</color>
-    <color name="columbiaBlue">#FFE8F6EF</color>
-    <color name="skyBlue">#F2F3F7</color>
-    <color name="grassGreen">#FF3F9F57</color>
-    <color name="budGreen">#FF6EA735</color>
-    <color name="appleGreen">#FF9BB12A</color>
-    <color name="cherryRed">#C15A71</color>
-    <color name="brown">#FF9E6450</color>
-    <color name="champagnePink">#DBC5D0</color>
+    <color name="cadet_blue">#4EA0AE</color>
+    <color name="cambridge_blue">#B8DFD8</color>
+    <color name="columbia_blue">#E8F6EF</color>
+    <color name="sky_blue">#F2F3F7</color>
+    <color name="grass_green">#3F9F57</color>
+    <color name="bud_green">#6EA735</color>
+    <color name="apple_green">#9BB12A</color>
+    <color name="cherry_red">#C15A71</color>
+    <color name="brown">#9E6450</color>
+    <color name="champagne_pink">#DBC5D0</color>
 </resources>

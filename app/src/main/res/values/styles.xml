@@ -10,7 +10,7 @@
         <item name="android:textColorPrimary">@color/violet</item>
 
         <item name="loginBackgroundStartColor">@color/violet</item>
-        <item name="loginBackgroundEndColor">@color/violetBlue</item>
+        <item name="loginBackgroundEndColor">@color/chambray</item>
 
         <item name="spinnerInLoginColor">@color/white</item>
         <item name="iconInAuthColor">@color/white</item>
@@ -19,42 +19,42 @@
 <!--        refactor texts-->
         <item name="titleColor">@color/white</item>
         <item name="titleSecondaryColor">@color/black</item>
-        <item name="textColor">@color/champagnePink</item>
+        <item name="textColor">@color/champagne_pink</item>
         <item name="textSecondaryColor">@color/white</item>
-        <item name="textThirdlyColor">@color/darkGrey</item>
+        <item name="textThirdlyColor">@color/dark_grey</item>
         <item name="textForthColor">@color/black</item>
 
-        <item name="primaryInAuthButtonColor">@color/cadetBlue</item>
+        <item name="primaryInAuthButtonColor">@color/cadet_blue</item>
         <item name="primaryInAuthButtonPressedColor">@color/cadet</item>
         <item name="primaryInAuthButtonTextColor">@color/white</item>
 
-        <item name="primaryButtonColor">@color/violetBlue</item>
+        <item name="primaryButtonColor">@color/chambray</item>
         <item name="primaryButtonPressedColor">@color/violet</item>
         <item name="primaryButtonRippleColor">@color/white</item>
         <item name="primaryButtonTextColor">@color/white</item>
 
         <item name="secondaryButtonColor">@color/white</item>
-        <item name="secondaryButtonBorderColor">@color/lightGrey</item>
-        <item name="secondaryButtonPressedColor">@color/cadetBlue</item>
+        <item name="secondaryButtonBorderColor">@color/light_grey</item>
+        <item name="secondaryButtonPressedColor">@color/cadet_blue</item>
         <item name="secondaryButtonRippleColor">@color/white</item>
-        <item name="secondaryButtonTextColor">@color/violetBlue</item>
+        <item name="secondaryButtonTextColor">@color/chambray</item>
 
         <item name="primaryTextInputBackgroundColor">@color/white</item>
-        <item name="primaryTextInputHintColor">@color/cherryRed</item>
-        <item name="primaryTextInputBoxStrokeColor">@color/cherryRed</item>
+        <item name="primaryTextInputHintColor">@color/cherry_red</item>
+        <item name="primaryTextInputBoxStrokeColor">@color/cherry_red</item>
 
-        <item name="secondaryTextInputBackgroundColor">@color/lightGrey</item>
-        <item name="secondaryTextInputHintColor">@color/violetBlue</item>
-        <item name="secondaryTextInputBoxStrokeColor">@color/violetBlue</item>
+        <item name="secondaryTextInputBackgroundColor">@color/light_grey</item>
+        <item name="secondaryTextInputHintColor">@color/chambray</item>
+        <item name="secondaryTextInputBoxStrokeColor">@color/chambray</item>
 
-        <item name="dialogTextInputBackgroundColor">@color/lightGrey</item>
-        <item name="dialogTextInputHintColor">@color/violetBlue</item>
+        <item name="dialogTextInputBackgroundColor">@color/light_grey</item>
+        <item name="dialogTextInputHintColor">@color/chambray</item>
 
-        <item name="selectPhotoButtonBackgroundColor">@color/violetBlue</item>
+        <item name="selectPhotoButtonBackgroundColor">@color/chambray</item>
         <item name="selectPhotoButtonIconColor">@color/white</item>
 
         <item name="bottomMenuBackgroundColor">@color/white</item>
-        <item name="bottomMenuActiveColor">@color/violetBlue</item>
+        <item name="bottomMenuActiveColor">@color/chambray</item>
         <item name="bottomMenuInactiveColor">@color/grey</item>
 
         <item name="borderColor">@color/grey</item>
@@ -76,67 +76,67 @@
 
         <item name="mainBackgroundColor">@color/white</item>
 
-        <item name="bottomDialogBackgroundColor">@color/black50</item>
+        <item name="bottomDialogBackgroundColor">@color/black_50</item>
         <item name="bottomDialogColor">@color/white</item>
         <item name="bottomDialogTitleColor">@color/black</item>
-        <item name="bottomDialogValueColor">@color/darkGrey</item>
+        <item name="bottomDialogValueColor">@color/dark_grey</item>
 
-        <item name="card1StartColor">@color/violetBlue</item>
+        <item name="card1StartColor">@color/chambray</item>
         <item name="card1EndColor">@color/violet</item>
-        <item name="card2StartColor">@color/cambridgeBlue</item>
-        <item name="card2EndColor">@color/cadetBlue</item>
+        <item name="card2StartColor">@color/cambridge_blue</item>
+        <item name="card2EndColor">@color/cadet_blue</item>
 
-        <item name="datePickerDividerColor">@color/violetBlue</item>
+        <item name="datePickerDividerColor">@color/chambray</item>
 
-        <item name="lockedIconBackgroundColor">@color/cherryRed</item>
-        <item name="unlockedIconBackgroundColor">@color/cadetBlue</item>
+        <item name="lockedIconBackgroundColor">@color/cherry_red</item>
+        <item name="unlockedIconBackgroundColor">@color/cadet_blue</item>
         <item name="lockedIconColor">@color/white</item>
 
         <item name="thomannDetailsItemBackgroundColor">@color/white</item>
 
-        <item name="thomannDetailsKickUserColor">@color/cherryRed</item>
+        <item name="thomannDetailsKickUserColor">@color/cherry_red</item>
 
-        <item name="spinnerAsLastItemColor">@color/violetBlue</item>
+        <item name="spinnerAsLastItemColor">@color/chambray</item>
 
-        <item name="notificationsCountBackgroundColor">@color/cherryRed</item>
+        <item name="notificationsCountBackgroundColor">@color/cherry_red</item>
         <item name="notificationsCountTextColor">@color/white</item>
 
         <item name="notificationsBackgroundColor">@color/white</item>
 
-        <item name="unreadNotificationBackgroundColor">@color/skyBlue</item>
+        <item name="unreadNotificationBackgroundColor">@color/sky_blue</item>
         <item name="unreadNotificationNameColor">@color/black</item>
-        <item name="unreadNotificationDescriptionColor">@color/black50</item>
-        <item name="unreadNotificationDateColor">@color/violetBlue</item>
+        <item name="unreadNotificationDescriptionColor">@color/black_50</item>
+        <item name="unreadNotificationDateColor">@color/chambray</item>
 
-        <item name="inactiveNotificationBackgroundColor">@color/lightGrey</item>
-        <item name="inactiveNotificationNameColor">@color/black50</item>
-        <item name="inactiveNotificationDescriptionColor">@color/black50</item>
-        <item name="inactiveNotificationDateColor">@color/black50</item>
+        <item name="inactiveNotificationBackgroundColor">@color/light_grey</item>
+        <item name="inactiveNotificationNameColor">@color/black_50</item>
+        <item name="inactiveNotificationDescriptionColor">@color/black_50</item>
+        <item name="inactiveNotificationDateColor">@color/black_50</item>
 
         <item name="activeNotificationBackgroundColor">@color/white</item>
         <item name="activeNotificationNameColor">@color/black</item>
         <item name="activeNotificationDescriptionColor">@color/black</item>
-        <item name="activeNotificationDateColor">@color/violetBlue</item>
+        <item name="activeNotificationDateColor">@color/chambray</item>
 
-        <item name="swipeRefreshProgressSpinnerColor">@color/violetBlue</item>
+        <item name="swipeRefreshProgressSpinnerColor">@color/chambray</item>
 
         <item name="messageItemBackgroundColor">@color/white</item>
 
-        <item name="myMessageBubbleBackgroundColor">@color/lightGrey</item>
+        <item name="myMessageBubbleBackgroundColor">@color/light_grey</item>
         <item name="myMessageBubbleStrokeColor">@color/grey</item>
         <item name="myMessageBubbleTextColor">@color/black</item>
         <item name="myMessageBubbleNameColor">@color/black</item>
-        <item name="myMessageBubbleDateColor">@color/darkGrey</item>
+        <item name="myMessageBubbleDateColor">@color/dark_grey</item>
         <item name="partnerMessageBubbleBackgroundColor">@color/white</item>
         <item name="partnerMessageBubbleStrokeColor">@color/grey</item>
         <item name="partnerMessageBubbleTextColor">@color/black</item>
         <item name="partnerMessageBubbleNameColor">@color/black</item>
-        <item name="partnerMessageBubbleDateColor">@color/darkGrey</item>
+        <item name="partnerMessageBubbleDateColor">@color/dark_grey</item>
 
         <item name="postMessageContainerBackgroundColor">@color/white</item>
         <item name="postMessageInputBackgroundColor">@color/white</item>
         <item name="postMessageInputStrokeColor">@color/grey</item>
-        <item name="postMessageIconInactiveColor">@color/violetBlue</item>
+        <item name="postMessageIconInactiveColor">@color/chambray</item>
         <item name="postMessageIconActiveColor">@color/violet</item>
 
         <item name="conversationItemBackgroundColor">@color/white</item>
@@ -156,8 +156,8 @@
         <item name="textColor">@color/brown</item>
         <item name="textSecondaryColor">@color/white</item>
 
-        <item name="primaryInAuthButtonColor">@color/appleGreen</item>
-        <item name="primaryInAuthButtonPressedColor">@color/budGreen</item>
+        <item name="primaryInAuthButtonColor">@color/apple_green</item>
+        <item name="primaryInAuthButtonPressedColor">@color/bud_green</item>
         <item name="primaryInAuthButtonTextColor">@color/white</item>
 
         <item name="primaryTextInputBackgroundColor">@color/white</item>
