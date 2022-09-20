@@ -21,7 +21,7 @@
 
             <TextView
                 android:id="@+id/titleTextView"
-                style="@style/CardTitle"
+                style="@style/card_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@id/contentConstraintLayout"
@@ -31,7 +31,7 @@
 
             <TextView
                 android:id="@+id/descriptionTextView"
-                style="@style/CardText"
+                style="@style/card_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@id/contentConstraintLayout"

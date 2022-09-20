@@ -46,7 +46,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailTextInput"
-                    style="@style/PrimaryTextInput"
+                    style="@style/primary_text_input"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_margin="20dp">
@@ -66,7 +66,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordTextInput"
-                    style="@style/PrimaryTextInput"
+                    style="@style/primary_text_input"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_marginTop="0dp"

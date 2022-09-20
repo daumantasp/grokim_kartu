@@ -32,14 +32,14 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/cityTextInput"
-                        style="@style/SecondaryTextInput"
+                        style="@style/secondary_text_input"
                         android:layout_width="300dp"
                         android:layout_height="100dp"
                         android:layout_gravity="center"
                         android:layout_marginBottom="0dp"
                         app:counterEnabled="true"
                         app:counterMaxLength="@{model.thomannEditForm().cityMaxLength}"
-                        app:counterTextAppearance="@style/InputCounterStyle">
+                        app:counterTextAppearance="@style/input_counter">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/cityInputEditText"
@@ -59,7 +59,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/validUntilTextInput"
-                        style="@style/SecondaryTextInput"
+                        style="@style/secondary_text_input"
                         android:layout_width="300dp"
                         android:layout_height="100dp"
                         android:layout_marginBottom="40dp"

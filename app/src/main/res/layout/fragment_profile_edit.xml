@@ -79,7 +79,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/nameTextInput"
-                    style="@style/SecondaryTextInput"
+                    style="@style/secondary_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
@@ -102,14 +102,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/instrumentTextInput"
-                    style="@style/SecondaryTextInput"
+                    style="@style/secondary_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="0dp"
                     app:counterEnabled="true"
                     app:counterMaxLength="@{model.getProfileEditForm().instrumentMaxLength}"
-                    app:counterTextAppearance="@style/InputCounterStyle">
+                    app:counterTextAppearance="@style/input_counter">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/instrumentInputEditText"
@@ -129,14 +129,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/descriptionTextInput"
-                    style="@style/SecondaryTextInput"
+                    style="@style/secondary_text_input"
                     android:layout_width="300dp"
                     android:layout_height="240dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="0dp"
                     app:counterEnabled="true"
                     app:counterMaxLength="@{model.getProfileEditForm().descriptionMaxLength}"
-                    app:counterTextAppearance="@style/InputCounterStyle">
+                    app:counterTextAppearance="@style/input_counter">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/descriptionInputEditText"
@@ -156,14 +156,14 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/cityTextInput"
-                    style="@style/SecondaryTextInput"
+                    style="@style/secondary_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="0dp"
                     app:counterEnabled="true"
                     app:counterMaxLength="@{model.getProfileEditForm().cityMaxLength}"
-                    app:counterTextAppearance="@style/InputCounterStyle">
+                    app:counterTextAppearance="@style/input_counter">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/cityInputEditText"
