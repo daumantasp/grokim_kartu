@@ -44,8 +44,8 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="25dp"
                         android:visibility="invisible"
-                        app:initialsType="rectangular"
-                        app:textSize="32dp"
+                        app:initials_type="rectangular"
+                        app:text_size="32dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -68,31 +68,31 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/profile_name"
+                    app:row_title="@string/profile_name"
                     app:value="@{model.profileForm.name}"
-                    app:rowBorders="top"/>
+                    app:row_borders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/profile_instrument"
+                    app:row_title="@string/profile_instrument"
                     app:value="@{model.profileForm.instrument}"
-                    app:rowBorders="top"/>
+                    app:row_borders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/profile_description"
+                    app:row_title="@string/profile_description"
                     app:value="@{model.profileForm.description}"
-                    app:rowBorders="top"
-                    app:rowMultiline="true"/>
+                    app:row_borders="top"
+                    app:row_multiline="true"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/profile_city"
+                    app:row_title="@string/profile_city"
                     app:value="@{model.profileForm.city}"
-                    app:rowBorders="both"/>
+                    app:row_borders="both"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -117,9 +117,9 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/profile_fragment"
-            app:showBottomBorder="false"
-            app:showIcon="false"
-            app:headerType="standart"
+            app:show_bottom_border="false"
+            app:show_icon="false"
+            app:header_type="standart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

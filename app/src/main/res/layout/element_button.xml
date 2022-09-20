@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:translationZ="2dp"
         android:layout_gravity="center"
-        app:unitDimensions="14dp"
+        app:unit_dimensions="14dp"
         app:color="@color/white"/>
 
 </FrameLayout>

@@ -30,13 +30,13 @@
             android:id="@+id/conversationsHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:headerTextSize="small"
-            app:headerType="withBack"
+            app:header_text_size="small"
+            app:header_type="with_back"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:showBottomBorder="true"
-            app:showIcon="false"
+            app:show_bottom_border="true"
+            app:show_icon="false"
             app:title="@string/conversation_title" />
 
         <LinearLayout
@@ -83,7 +83,7 @@
                 android:layout_margin="20dp"
                 android:layout_gravity="center"
                 android:background="@drawable/ic_post_message"
-                android:backgroundTint="?attr/postMessageIconInactiveColor" />
+                android:backgroundTint="?attr/post_message_icon_inactive_color" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

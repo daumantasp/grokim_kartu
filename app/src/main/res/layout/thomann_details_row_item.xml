@@ -8,9 +8,9 @@
         android:id="@+id/thomannDetailsRowViewElement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:rowBorders="bottom"
-        app:rowMultiline="false"
-        app:rowShowIcon="false"
-        app:rowShowSwitch="false"/>
+        app:row_borders="bottom"
+        app:row_multiline="false"
+        app:row_show_icon="false"
+        app:row_show_switch="false"/>
 
 </FrameLayout>

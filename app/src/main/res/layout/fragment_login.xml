@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/welcomeTextView"
-                style="@style/Title"
+                style="@style/auth_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_welcome"
@@ -123,7 +123,7 @@
 
                     <TextView
                         android:id="@+id/registerTextView"
-                        style="@style/Text"
+                        style="@style/auth_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="20dp"
@@ -135,7 +135,7 @@
 
                     <TextView
                         android:id="@+id/forgotPasswordTextView"
-                        style="@style/Text"
+                        style="@style/auth_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="20dp"
@@ -149,7 +149,7 @@
 
             <TextView
                 android:id="@+id/privacyAndTermsTextView"
-                style="@style/TextSecondary"
+                style="@style/auth_text_secondary"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

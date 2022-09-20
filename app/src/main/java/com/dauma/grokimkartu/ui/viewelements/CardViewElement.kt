@@ -25,10 +25,10 @@ class CardViewElement(context: Context, attrs: AttributeSet)
         cardView.setOnClickListener { onClick() }
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.CardViewElement)
-        val title = attributes.getString(R.styleable.CardViewElement_cardTitle)
-        val description = attributes.getString(R.styleable.CardViewElement_cardDescription)
-        val startColor = attributes.getInt(R.styleable.CardViewElement_cardStartColor, R.color.white)
-        val endColor = attributes.getInt(R.styleable.CardViewElement_cardEndColor, R.color.white)
+        val title = attributes.getString(R.styleable.CardViewElement_card_title)
+        val description = attributes.getString(R.styleable.CardViewElement_card_description)
+        val startColor = attributes.getInt(R.styleable.CardViewElement_card_start_color, R.color.white)
+        val endColor = attributes.getInt(R.styleable.CardViewElement_card_end_color, R.color.white)
         attributes.recycle()
 
         setTitle(title ?: "")

@@ -44,7 +44,7 @@ class ThomannListAdapter(
         // You may need to call mutate() on the drawable or else all icons are affected.
         photoIconBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.oval_background)?.mutate()
         val typedValue = TypedValue()
-        context.theme.resolveAttribute(R.attr.playerItemPhotoBackgroundColor, typedValue, true)
+        context.theme.resolveAttribute(R.attr.photo_placeholder_color, typedValue, true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             photoIconBackgroundDrawable?.colorFilter = BlendModeColorFilter(typedValue.data, BlendMode.SRC_ATOP)
         } else {

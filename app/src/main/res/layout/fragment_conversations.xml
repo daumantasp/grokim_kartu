@@ -18,9 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/conversations_title"
-            app:showBottomBorder="false"
-            app:showIcon="false"
-            app:headerType="standart"
+            app:show_bottom_border="false"
+            app:show_icon="false"
+            app:header_type="standart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

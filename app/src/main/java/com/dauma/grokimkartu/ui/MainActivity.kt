@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         currentStatusBarTheme = theme
         val typedValue = TypedValue()
         val attributeId =
-            if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.StatusBarMainColor
+            if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.main_status_bar_color
         this.theme.resolveAttribute(attributeId, typedValue, true)
         val statusBarBackgroundColor = typedValue.resourceId
 

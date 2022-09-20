@@ -22,8 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            app:initialsType="oval"
-            app:textSize="10dp"/>
+            app:initials_type="oval"
+            app:text_size="10dp"/>
 
         <ImageView
             android:id="@+id/thomannPlayerIconImageView"
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_centerInParent="true"
-            app:unitDimensions="7dp"
-            app:color="?attr/spinnerInMainColor"/>
+            app:unit_dimensions="7dp"
+            app:color="?attr/spinner_color"/>
 
         <ImageView
             android:id="@+id/lockedUnlockedIconImageView"
@@ -56,21 +56,22 @@
 
         <TextView
             android:id="@+id/userTextView"
-            style="@style/PlayerItemTitle"
+            style="@style/main_text_secondary"
+            android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"/>
 
         <TextView
             android:id="@+id/cityTextView"
-            style="@style/TextThirdly"
+            style="@style/main_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"/>
 
         <TextView
             android:id="@+id/validUntilTextView"
-            style="@style/TextThirdly"
+            style="@style/main_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"/>

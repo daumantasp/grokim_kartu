@@ -139,10 +139,10 @@ class ThomannDetailsAdapter(
             val statusColor: Int
             if (data.isLocked == true) {
                 statusText = view.context.getText(R.string.thomann_details_status_locked).toString()
-                view.context.theme.resolveAttribute(R.attr.lockedIconBackgroundColor, typedValue, true)
+                view.context.theme.resolveAttribute(R.attr.locked_icon_background_color, typedValue, true)
             } else {
                 statusText = view.context.getText(R.string.thomann_details_status_unlocked).toString()
-                view.context.theme.resolveAttribute(R.attr.unlockedIconBackgroundColor, typedValue, true)
+                view.context.theme.resolveAttribute(R.attr.unlocked_icon_background_color, typedValue, true)
             }
             statusColor = typedValue.data
 
@@ -180,7 +180,7 @@ class ThomannDetailsAdapter(
             // You may need to call mutate() on the drawable or else all icons are affected.
             photoIconBackgroundDrawable = ContextCompat.getDrawable(view.context, R.drawable.oval_background)?.mutate()
             val typedValue = TypedValue()
-            view.context.theme.resolveAttribute(R.attr.playerItemPhotoBackgroundColor, typedValue, true)
+            view.context.theme.resolveAttribute(R.attr.photo_placeholder_color, typedValue, true)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 photoIconBackgroundDrawable?.colorFilter = BlendModeColorFilter(typedValue.data, BlendMode.SRC_ATOP)
             } else {

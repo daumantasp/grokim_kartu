@@ -13,7 +13,7 @@
         android:layout_marginTop="7.5dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="7.5dp"
-        app:cardBackgroundColor="?attr/inactiveNotificationBackgroundColor"
+        app:cardBackgroundColor="?attr/inactive_notification_background_color"
         app:cardCornerRadius="5dp"
         app:cardElevation="0dp">
 
@@ -31,7 +31,7 @@
 
                 <TextView
                     android:id="@+id/notificationName"
-                    style="@style/NotificationName"
+                    style="@style/notification_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
@@ -40,7 +40,7 @@
 
                 <TextView
                     android:id="@+id/notificationDate"
-                    style="@style/NotificationDate"
+                    style="@style/notification_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end" />
@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/notificationDescription"
-                style="@style/NotificationDescription"
+                style="@style/notification_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -64,7 +64,7 @@
         android:layout_marginTop="7.5dp"
         android:layout_marginBottom="7.5dp"
         android:visibility="gone"
-        app:cardBackgroundColor="?attr/activeNotificationBackgroundColor"
+        app:cardBackgroundColor="?attr/active_notification_background_color"
         app:cardElevation="3dp"
         app:cardCornerRadius="5dp">
 
@@ -82,7 +82,7 @@
 
                 <TextView
                     android:id="@+id/activeNotificationName"
-                    style="@style/ActiveNotificationName"
+                    style="@style/active_notification_title"
                     android:layout_width="0dp"
                     android:layout_weight="1.0"
                     android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
 
             <TextView
                 android:id="@+id/activeNotificationDescription"
-                style="@style/ActiveNotificationDescription"
+                style="@style/active_notification_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

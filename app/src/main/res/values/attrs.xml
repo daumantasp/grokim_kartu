@@ -1,138 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="loginBackgroundStartColor" format="color" />
-    <attr name="loginBackgroundEndColor" format="color" />
+    <attr name="auth_background_start_color" format="color" />
+    <attr name="auth_background_end_color" format="color" />
+    <attr name="auth_spinner_color" format="color" />
+    <attr name="auth_icon_color" format="color" />
+    <attr name="auth_title_color" format="color" />
+    <attr name="auth_text_color" format="color" />
+    <attr name="auth_text_secondary_color" format="color" />
+    <attr name="auth_primary_button_color" format="color" />
+    <attr name="auth_primary_button_pressed_color" format="color" />
+    <attr name="auth_primary_button_title_color" format="color" />
 
-    <attr name="spinnerInLoginColor" format="color" />
-    <attr name="iconInAuthColor" format="color" />
-    <attr name="disabledColor" format="color" />
+    <attr name="background_color" format="color" />
+    <attr name="spinner_color" format="color" />
+    <attr name="last_item_spinner_color" format="color" />
+    <attr name="swipe_to_refresh_progress_spinner_color" format="color" />
+    <attr name="border_color" format="color" />
+    <attr name="main_status_bar_color" format="color" />
+    <attr name="disabled_color" format="color" />
+    <attr name="warning_color" format="color" />
+    <attr name="title_color" format="color" />
+    <attr name="text_color" format="color" />
+    <attr name="text_secondary_color" format="color" />
 
-    <attr name="mainBackgroundColor" format="color" />
+    <attr name="bottom_dialog_background_color" format="color" />
+    <attr name="bottom_dialog_color" format="color" />
+    <attr name="bottom_dialog_title_color" format="color" />
+    <attr name="bottom_dialog_value_color" format="color" />
+    <attr name="bottom_dialog_separator_color" format="color" />
+    <attr name="bottom_dialog_text_input_background_color" format="color" />
+    <attr name="bottom_dialog_text_input_hint_color" format="color" />
 
-    <attr name="titleColor" format="color" />
-    <attr name="textColor" format="color" />
-    <attr name="textSecondaryColor" format="color" />
-    <attr name="textThirdlyColor" format="color" />
-    <attr name="textForthColor" format="color" />
+    <attr name="primary_button_color" format="color" />
+    <attr name="primary_button_pressed_color" format="color" />
+    <attr name="primary_button_ripple_color" format="color" />
+    <attr name="primary_button_title_color" format="color" />
 
-    <attr name="primaryInAuthButtonColor" format="color" />
-    <attr name="primaryInAuthButtonPressedColor" format="color" />
-    <attr name="primaryInAuthButtonTextColor" format="color" />
+    <attr name="secondary_button_color" format="color" />
+    <attr name="secondary_button_border_color" format="color" />
+    <attr name="secondary_button_pressed_color" format="color" />
+    <attr name="secondary_button_ripple_color" format="color" />
+    <attr name="secondary_button_title_color" format="color" />
 
-    <attr name="primaryButtonColor" format="color" />
-    <attr name="primaryButtonPressedColor" format="color" />
-    <attr name="primaryButtonRippleColor" format="color" />
-    <attr name="primaryButtonTextColor" format="color" />
+    <attr name="primary_text_input_background_color" format="color" />
+    <attr name="primary_text_input_hint_color" format="color" />
+    <attr name="primary_text_input_box_stroke_color" format="color" />
 
-    <attr name="secondaryButtonColor" format="color" />
-    <attr name="secondaryButtonBorderColor" format="color" />
-    <attr name="secondaryButtonPressedColor" format="color" />
-    <attr name="secondaryButtonRippleColor" format="color" />
-    <attr name="secondaryButtonTextColor" format="color" />
+    <attr name="secondary_text_input_background_color" format="color" />
+    <attr name="secondary_text_input_hint_color" format="color" />
+    <attr name="secondary_text_input_box_stroke_color" format="color" />
 
-    <attr name="primaryTextInputBackgroundColor" format="color" />
-    <attr name="primaryTextInputHintColor" format="color" />
-    <attr name="primaryTextInputBoxStrokeColor" format="color" />
+    <attr name="bottom_menu_background_color" format="color" />
+    <attr name="bottom_menu_active_color" format="color" />
+    <attr name="bottom_menu_inactive_color" format="color" />
 
-    <attr name="secondaryTextInputBackgroundColor" format="color" />
-    <attr name="secondaryTextInputHintColor" format="color" />
-    <attr name="secondaryTextInputBoxStrokeColor" format="color" />
+    <attr name="header_background_color" format="color" />
+    <attr name="header_icon_color" format="color" />
 
-    <attr name="dialogTextInputBackgroundColor" format="color" />
-    <attr name="dialogTextInputHintColor" format="color" />
+    <attr name="notifications_counter_background_color" format="color" />
+    <attr name="notifications_counter_value_color" format="color" />
 
-    <attr name="selectPhotoButtonBackgroundColor" format="color" />
-    <attr name="selectPhotoButtonIconColor" format="color" />
+    <attr name="card_1_start_color" format="color" />
+    <attr name="card_1_end_color" format="color" />
+    <attr name="card_2_start_color" format="color" />
+    <attr name="card_2_end_color" format="color" />
 
-    <attr name="bottomMenuBackgroundColor" format="color" />
-    <attr name="bottomMenuActiveColor" format="color" />
-    <attr name="bottomMenuInactiveColor" format="color" />
+    <attr name="initials_text_color" format="color" />
+    <attr name="initials_background_color_1" format="color" />
+    <attr name="initials_background_color_2" format="color" />
+    <attr name="initials_background_color_3" format="color" />
+    <attr name="initials_background_color_4" format="color" />
+    <attr name="initials_background_color_5" format="color" />
+    <attr name="initials_background_color_6" format="color" />
+    <attr name="initials_background_color_7" format="color" />
 
-    <attr name="playerItemPhotoBackgroundColor" format="color" />
-    <attr name="playerItemNameColor" format="color" />
-    <attr name="borderColor" format="color" />
-    <attr name="spinnerInMainColor" format="color" />
+    <attr name="photo_placeholder_color" format="color" />
+    <attr name="select_photo_icon_background_color" format="color" />
+    <attr name="select_photo_icon_color" format="color" />
 
-    <attr name="initialsTextColor" format="color" />
-    <attr name="initialsBackgroundColor1" format="color" />
-    <attr name="initialsBackgroundColor2" format="color" />
-    <attr name="initialsBackgroundColor3" format="color" />
-    <attr name="initialsBackgroundColor4" format="color" />
-    <attr name="initialsBackgroundColor5" format="color" />
-    <attr name="initialsBackgroundColor6" format="color" />
-    <attr name="initialsBackgroundColor7" format="color" />
+    <attr name="locked_icon_background_color" format="color" />
+    <attr name="unlocked_icon_background_color" format="color" />
+    <attr name="lock_icon_color" format="color" />
 
-    <attr name="headerBackgroundColor" format="color" />
-    <attr name="titleSecondaryColor" format="color" />
+    <attr name="my_message_bubble_background_color" format="color" />
+    <attr name="my_message_bubble_stroke_color" format="color" />
+    <attr name="my_message_bubble_name_color" format="color"/>
+    <attr name="my_message_bubble_date_color" format="color"/>
+    <attr name="my_message_bubble_text_color" format="color"/>
 
-    <attr name="StatusBarMainColor" format="color" />
+    <attr name="friend_message_bubble_background_color" format="color" />
+    <attr name="friend_message_bubble_text_color" format="color" />
+    <attr name="friend_message_bubble_name_color" format="color" />
+    <attr name="friend_message_bubble_date_color" format="color" />
+    <attr name="friend_message_bubble_stroke_color" format="color" />
 
-    <attr name="iconInHeaderColor" format="color" />
+    <attr name="post_message_container_background_color" format="color" />
+    <attr name="post_message_input_background_color" format="color" />
+    <attr name="post_message_input_stroke_color" format="color" />
+    <attr name="post_message_icon_inactive_color" format="color" />
+    <attr name="post_message_icon_active_color" format="color" />
 
-    <attr name="bottomDialogBackgroundColor" format="color" />
-    <attr name="bottomDialogColor" format="color" />
-    <attr name="bottomDialogTitleColor" format="color" />
-    <attr name="bottomDialogValueColor" format="color" />
-
-    <attr name="card1StartColor" format="color" />
-    <attr name="card1EndColor" format="color" />
-    <attr name="card2StartColor" format="color" />
-    <attr name="card2EndColor" format="color" />
-
-    <attr name="datePickerDividerColor" format="color" />
-
-    <attr name="lockedIconBackgroundColor" format="color" />
-    <attr name="unlockedIconBackgroundColor" format="color" />
-    <attr name="lockedIconColor" format="color" />
-
-    <attr name="thomannDetailsItemBackgroundColor" format="color" />
-    <attr name="thomannDetailsKickUserColor" format="color" />
-
-    <attr name="spinnerAsLastItemColor" format="color" />
-
-    <attr name="notificationsCountBackgroundColor" format="color" />
-    <attr name="notificationsCountTextColor" format="color" />
-
-    <attr name="notificationsBackgroundColor" format="color" />
-    <attr name="swipeRefreshProgressSpinnerColor" format="color" />
-
-    <attr name="messageItemBackgroundColor" format="color"/>
-
-    <attr name="myMessageBubbleBackgroundColor" format="color" />
-    <attr name="myMessageBubbleStrokeColor" format="color" />
-    <attr name="myMessageBubbleNameColor" format="color"/>
-    <attr name="myMessageBubbleDateColor" format="color"/>
-    <attr name="myMessageBubbleTextColor" format="color"/>
-    <attr name="partnerMessageBubbleBackgroundColor" format="color" />
-    <attr name="partnerMessageBubbleTextColor" format="color" />
-    <attr name="partnerMessageBubbleNameColor" format="color" />
-    <attr name="partnerMessageBubbleDateColor" format="color" />
-    <attr name="partnerMessageBubbleStrokeColor" format="color" />
-
-    <attr name="postMessageContainerBackgroundColor" format="color" />
-    <attr name="postMessageInputBackgroundColor" format="color" />
-    <attr name="postMessageInputStrokeColor" format="color" />
-    <attr name="postMessageIconInactiveColor" format="color" />
-    <attr name="postMessageIconActiveColor" format="color" />
-
-    <attr name="conversationItemBackgroundColor" format="color" />
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">
-            <enum name="primaryInAuth" value="0" />
+            <enum name="auth_primary" value="0" />
             <enum name="primary" value="1" />
             <enum name="secondary" value="2" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="SpinnerViewElement">
-        <attr name="unitDimensions" format="dimension" />
+        <attr name="unit_dimensions" format="dimension" />
         <attr name="color" format="color" />
     </declare-styleable>
 
     <declare-styleable name="InitialsViewElement">
-        <attr name="textSize" format="dimension" />
-        <attr name="initialsType" format="enum">
+        <attr name="text_size" format="dimension" />
+        <attr name="initials_type" format="enum">
             <enum name="rectangular" value="0" />
             <enum name="oval" value="1" />
         </attr>
@@ -140,62 +124,62 @@
 
     <declare-styleable name="HeaderViewElement">
         <attr name="title" format="string" />
-        <attr name="showIcon" format="boolean" />
-        <attr name="showBottomBorder" format="boolean" />
-        <attr name="headerRightText" format="string" />
-        <attr name="headerType" format="enum">
+        <attr name="show_icon" format="boolean" />
+        <attr name="show_bottom_border" format="boolean" />
+        <attr name="header_right_text" format="string" />
+        <attr name="header_type" format="enum">
             <enum name="standart" value="0" />
-            <enum name="withBack" value="1" />
+            <enum name="with_back" value="1" />
         </attr>
-        <attr name="headerTextSize" format="enum">
+        <attr name="header_text_size" format="enum">
             <enum name="normal" value="0" />
             <enum name="small" value="1" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="RowViewElement">
-        <attr name="rowTitle" format="string" />
-        <attr name="rowShowIcon" format="boolean" />
-        <attr name="rowShowSwitch" format="boolean" />
-        <attr name="rowMultiline" format="boolean" />
-        <attr name="rowCustomIcon" format="reference" />
-        <attr name="rowBorders" format="enum">
+        <attr name="row_title" format="string" />
+        <attr name="row_show_icon" format="boolean" />
+        <attr name="row_show_switch" format="boolean" />
+        <attr name="row_multiline" format="boolean" />
+        <attr name="row_custom_icon" format="reference" />
+        <attr name="row_borders" format="enum">
             <enum name="top" value="0" />
             <enum name="bottom" value="1" />
             <enum name="both" value="2" />
         </attr>
-        <attr name="rowValueColor" format="color" />
+        <attr name="row_value_color" format="color" />
     </declare-styleable>
 
     <declare-styleable name="CardViewElement">
-        <attr name="cardTitle" format="string" />
-        <attr name="cardDescription" format="string" />
-        <attr name="cardStartColor" format="color" />
-        <attr name="cardEndColor" format="color" />
+        <attr name="card_title" format="string" />
+        <attr name="card_description" format="string" />
+        <attr name="card_start_color" format="color" />
+        <attr name="card_end_color" format="color" />
     </declare-styleable>
 
     <declare-styleable name="NotificationViewElement">
-        <attr name="unreadNotificationBackgroundColor" format="color" />
-        <attr name="unreadNotificationNameColor" format="color" />
-        <attr name="unreadNotificationDescriptionColor" format="color" />
-        <attr name="unreadNotificationDateColor" format="color" />
+        <attr name="unread_notification_background_color" format="color" />
+        <attr name="unread_notification_title_color" format="color" />
+        <attr name="unread_notification_text_color" format="color" />
+        <attr name="unread_notification_date_color" format="color" />
 
-        <attr name="inactiveNotificationBackgroundColor" format="color" />
-        <attr name="inactiveNotificationNameColor" format="color" />
-        <attr name="inactiveNotificationDescriptionColor" format="color" />
-        <attr name="inactiveNotificationDateColor" format="color" />
+        <attr name="inactive_notification_background_color" format="color" />
+        <attr name="inactive_notification_title_color" format="color" />
+        <attr name="inactive_notification_text_color" format="color" />
+        <attr name="inactive_notification_date_color" format="color" />
 
-        <attr name="activeNotificationBackgroundColor" format="color" />
-        <attr name="activeNotificationNameColor" format="color" />
-        <attr name="activeNotificationDescriptionColor" format="color" />
-        <attr name="activeNotificationDateColor" format="color" />
+        <attr name="active_notification_background_color" format="color" />
+        <attr name="active_notification_title_color" format="color" />
+        <attr name="active_notification_text_color" format="color" />
+        <attr name="active_notification_date_color" format="color" />
     </declare-styleable>
 
     <declare-styleable name="LanguageViewElement">
-        <attr name="languageCode" format="enum">
+        <attr name="language_code" format="enum">
             <enum name="en" value="0" />
             <enum name="lt" value="1" />
         </attr>
-        <attr name="languageIsSelected" format="boolean" />
+        <attr name="language_is_selected" format="boolean" />
     </declare-styleable>
 </resources>

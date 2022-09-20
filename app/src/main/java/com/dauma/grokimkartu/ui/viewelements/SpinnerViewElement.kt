@@ -32,7 +32,7 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
         visibility = View.GONE
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.SpinnerViewElement)
-        val unitDimensions = attributes.getDimension(R.styleable.SpinnerViewElement_unitDimensions, 18f)
+        val unitDimensions = attributes.getDimension(R.styleable.SpinnerViewElement_unit_dimensions, 18f)
         val color = attributes.getColor(R.styleable.SpinnerViewElement_color, Color.BLACK)
         spinnerContainerLinearLayout.clipChildren = false
         spinnerContainerLinearLayout.clipToPadding = false

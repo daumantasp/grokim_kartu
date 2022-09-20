@@ -35,19 +35,19 @@
                     android:id="@+id/playersCardViewElement"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    app:cardTitle="@string/home_players"
-                    app:cardDescription="@string/home_players_description"
-                    app:cardStartColor="?attr/card1StartColor"
-                    app:cardEndColor="?attr/card1EndColor" />
+                    app:card_title="@string/home_players"
+                    app:card_description="@string/home_players_description"
+                    app:card_start_color="?attr/card_1_start_color"
+                    app:card_end_color="?attr/card_1_end_color" />
 
                 <com.dauma.grokimkartu.ui.viewelements.CardViewElement
                     android:id="@+id/thomannCardViewElement"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    app:cardTitle="@string/home_thomanns"
-                    app:cardDescription="@string/home_thomanns_description"
-                    app:cardStartColor="?attr/card2StartColor"
-                    app:cardEndColor="?attr/card2EndColor" />
+                    app:card_title="@string/home_thomanns"
+                    app:card_description="@string/home_thomanns_description"
+                    app:card_start_color="?attr/card_2_start_color"
+                    app:card_end_color="?attr/card_2_end_color" />
 
             </LinearLayout>
         </ScrollView>
@@ -56,9 +56,9 @@
             android:id="@+id/homeHeaderViewElement"
             android:layout_width="match_parent"
             android:layout_height="110dp"
-            app:showBottomBorder="false"
-            app:showIcon="true"
-            app:headerType="standart"
+            app:show_bottom_border="false"
+            app:show_icon="true"
+            app:header_type="standart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

@@ -5,248 +5,227 @@
     <style name="SecondaryLightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
         <item name="colorPrimaryDark">@color/violet</item>
-        <item name="StatusBarMainColor">@color/white</item>
+        <item name="main_status_bar_color">@color/white</item>
 <!--        Menu icon color-->
         <item name="android:textColorPrimary">@color/violet</item>
 
-        <item name="loginBackgroundStartColor">@color/violet</item>
-        <item name="loginBackgroundEndColor">@color/chambray</item>
+        <item name="auth_background_start_color">@color/violet</item>
+        <item name="auth_background_end_color">@color/chambray</item>
 
-        <item name="spinnerInLoginColor">@color/white</item>
-        <item name="iconInAuthColor">@color/white</item>
-        <item name="disabledColor">@color/grey</item>
+        <item name="auth_spinner_color">@color/white</item>
+        <item name="auth_icon_color">@color/white</item>
+        <item name="disabled_color">@color/grey</item>
 
 <!--        refactor texts-->
-        <item name="titleColor">@color/white</item>
-        <item name="titleSecondaryColor">@color/black</item>
-        <item name="textColor">@color/champagne_pink</item>
-        <item name="textSecondaryColor">@color/white</item>
-        <item name="textThirdlyColor">@color/dark_grey</item>
-        <item name="textForthColor">@color/black</item>
+        <item name="auth_title_color">@color/white</item>
+        <item name="title_color">@color/black</item>
+        <item name="auth_text_color">@color/champagne_pink</item>
+        <item name="auth_text_secondary_color">@color/white</item>
+        <item name="text_color">@color/dark_grey</item>
+        <item name="text_secondary_color">@color/black</item>
 
-        <item name="primaryInAuthButtonColor">@color/cadet_blue</item>
-        <item name="primaryInAuthButtonPressedColor">@color/cadet</item>
-        <item name="primaryInAuthButtonTextColor">@color/white</item>
+        <item name="auth_primary_button_color">@color/cadet_blue</item>
+        <item name="auth_primary_button_pressed_color">@color/cadet</item>
+        <item name="auth_primary_button_title_color">@color/white</item>
 
-        <item name="primaryButtonColor">@color/chambray</item>
-        <item name="primaryButtonPressedColor">@color/violet</item>
-        <item name="primaryButtonRippleColor">@color/white</item>
-        <item name="primaryButtonTextColor">@color/white</item>
+        <item name="primary_button_color">@color/chambray</item>
+        <item name="primary_button_pressed_color">@color/violet</item>
+        <item name="primary_button_ripple_color">@color/white</item>
+        <item name="primary_button_title_color">@color/white</item>
 
-        <item name="secondaryButtonColor">@color/white</item>
-        <item name="secondaryButtonBorderColor">@color/light_grey</item>
-        <item name="secondaryButtonPressedColor">@color/cadet_blue</item>
-        <item name="secondaryButtonRippleColor">@color/white</item>
-        <item name="secondaryButtonTextColor">@color/chambray</item>
+        <item name="secondary_button_color">@color/white</item>
+        <item name="secondary_button_border_color">@color/light_grey</item>
+        <item name="secondary_button_pressed_color">@color/cadet_blue</item>
+        <item name="secondary_button_ripple_color">@color/white</item>
+        <item name="secondary_button_title_color">@color/chambray</item>
 
-        <item name="primaryTextInputBackgroundColor">@color/white</item>
-        <item name="primaryTextInputHintColor">@color/cherry_red</item>
-        <item name="primaryTextInputBoxStrokeColor">@color/cherry_red</item>
+        <item name="primary_text_input_background_color">@color/white</item>
+        <item name="primary_text_input_hint_color">@color/cherry_red</item>
+        <item name="primary_text_input_box_stroke_color">@color/cherry_red</item>
 
-        <item name="secondaryTextInputBackgroundColor">@color/light_grey</item>
-        <item name="secondaryTextInputHintColor">@color/chambray</item>
-        <item name="secondaryTextInputBoxStrokeColor">@color/chambray</item>
+        <item name="secondary_text_input_background_color">@color/light_grey</item>
+        <item name="secondary_text_input_hint_color">@color/chambray</item>
+        <item name="secondary_text_input_box_stroke_color">@color/chambray</item>
 
-        <item name="dialogTextInputBackgroundColor">@color/light_grey</item>
-        <item name="dialogTextInputHintColor">@color/chambray</item>
+        <item name="bottom_dialog_text_input_background_color">@color/light_grey</item>
+        <item name="bottom_dialog_text_input_hint_color">@color/chambray</item>
 
-        <item name="selectPhotoButtonBackgroundColor">@color/chambray</item>
-        <item name="selectPhotoButtonIconColor">@color/white</item>
+        <item name="select_photo_icon_background_color">@color/chambray</item>
+        <item name="select_photo_icon_color">@color/white</item>
 
-        <item name="bottomMenuBackgroundColor">@color/white</item>
-        <item name="bottomMenuActiveColor">@color/chambray</item>
-        <item name="bottomMenuInactiveColor">@color/grey</item>
+        <item name="bottom_menu_background_color">@color/white</item>
+        <item name="bottom_menu_active_color">@color/chambray</item>
+        <item name="bottom_menu_inactive_color">@color/grey</item>
 
-        <item name="borderColor">@color/grey</item>
-        <item name="playerItemPhotoBackgroundColor">@color/grey</item>
-        <item name="spinnerInMainColor">@color/white</item>
-        <item name="playerItemNameColor">@color/black</item>
+        <item name="border_color">@color/grey</item>
+        <item name="photo_placeholder_color">@color/grey</item>
+        <item name="spinner_color">@color/white</item>
 
-        <item name="initialsTextColor">@color/white</item>
-        <item name="initialsBackgroundColor1">#00AA55</item>
-        <item name="initialsBackgroundColor2">#009FD4</item>
-        <item name="initialsBackgroundColor3">#B381B3</item>
-        <item name="initialsBackgroundColor4">#939393</item>
-        <item name="initialsBackgroundColor5">#E3BC00</item>
-        <item name="initialsBackgroundColor6">#D47500</item>
-        <item name="initialsBackgroundColor7">#DC2A2A</item>
+        <item name="initials_text_color">@color/white</item>
+        <item name="initials_background_color_1">#00AA55</item>
+        <item name="initials_background_color_2">#009FD4</item>
+        <item name="initials_background_color_3">#B381B3</item>
+        <item name="initials_background_color_4">#939393</item>
+        <item name="initials_background_color_5">#E3BC00</item>
+        <item name="initials_background_color_6">#D47500</item>
+        <item name="initials_background_color_7">#DC2A2A</item>
 
-        <item name="headerBackgroundColor">@color/white</item>
-        <item name="iconInHeaderColor">@color/black</item>
+        <item name="header_background_color">@color/white</item>
+        <item name="header_icon_color">@color/black</item>
 
-        <item name="mainBackgroundColor">@color/white</item>
+        <item name="background_color">@color/white</item>
 
-        <item name="bottomDialogBackgroundColor">@color/black_50</item>
-        <item name="bottomDialogColor">@color/white</item>
-        <item name="bottomDialogTitleColor">@color/black</item>
-        <item name="bottomDialogValueColor">@color/dark_grey</item>
+        <item name="bottom_dialog_background_color">@color/black_50</item>
+        <item name="bottom_dialog_color">@color/white</item>
+        <item name="bottom_dialog_title_color">@color/black</item>
+        <item name="bottom_dialog_value_color">@color/dark_grey</item>
 
-        <item name="card1StartColor">@color/chambray</item>
-        <item name="card1EndColor">@color/violet</item>
-        <item name="card2StartColor">@color/cambridge_blue</item>
-        <item name="card2EndColor">@color/cadet_blue</item>
+        <item name="card_1_start_color">@color/chambray</item>
+        <item name="card_1_end_color">@color/violet</item>
+        <item name="card_2_start_color">@color/cambridge_blue</item>
+        <item name="card_2_end_color">@color/cadet_blue</item>
 
-        <item name="datePickerDividerColor">@color/chambray</item>
+        <item name="bottom_dialog_separator_color">@color/chambray</item>
 
-        <item name="lockedIconBackgroundColor">@color/cherry_red</item>
-        <item name="unlockedIconBackgroundColor">@color/cadet_blue</item>
-        <item name="lockedIconColor">@color/white</item>
+        <item name="locked_icon_background_color">@color/cherry_red</item>
+        <item name="unlocked_icon_background_color">@color/cadet_blue</item>
+        <item name="lock_icon_color">@color/white</item>
 
-        <item name="thomannDetailsItemBackgroundColor">@color/white</item>
+        <item name="warning_color">@color/cherry_red</item>
 
-        <item name="thomannDetailsKickUserColor">@color/cherry_red</item>
+        <item name="last_item_spinner_color">@color/chambray</item>
 
-        <item name="spinnerAsLastItemColor">@color/chambray</item>
+        <item name="notifications_counter_background_color">@color/cherry_red</item>
+        <item name="notifications_counter_value_color">@color/white</item>
 
-        <item name="notificationsCountBackgroundColor">@color/cherry_red</item>
-        <item name="notificationsCountTextColor">@color/white</item>
+        <item name="unread_notification_background_color">@color/sky_blue</item>
+        <item name="unread_notification_title_color">@color/black</item>
+        <item name="unread_notification_text_color">@color/black_50</item>
+        <item name="unread_notification_date_color">@color/chambray</item>
 
-        <item name="notificationsBackgroundColor">@color/white</item>
+        <item name="inactive_notification_background_color">@color/light_grey</item>
+        <item name="inactive_notification_title_color">@color/black_50</item>
+        <item name="inactive_notification_text_color">@color/black_50</item>
+        <item name="inactive_notification_date_color">@color/black_50</item>
 
-        <item name="unreadNotificationBackgroundColor">@color/sky_blue</item>
-        <item name="unreadNotificationNameColor">@color/black</item>
-        <item name="unreadNotificationDescriptionColor">@color/black_50</item>
-        <item name="unreadNotificationDateColor">@color/chambray</item>
+        <item name="active_notification_background_color">@color/white</item>
+        <item name="active_notification_title_color">@color/black</item>
+        <item name="active_notification_text_color">@color/black</item>
+        <item name="active_notification_date_color">@color/chambray</item>
 
-        <item name="inactiveNotificationBackgroundColor">@color/light_grey</item>
-        <item name="inactiveNotificationNameColor">@color/black_50</item>
-        <item name="inactiveNotificationDescriptionColor">@color/black_50</item>
-        <item name="inactiveNotificationDateColor">@color/black_50</item>
+        <item name="swipe_to_refresh_progress_spinner_color">@color/chambray</item>
 
-        <item name="activeNotificationBackgroundColor">@color/white</item>
-        <item name="activeNotificationNameColor">@color/black</item>
-        <item name="activeNotificationDescriptionColor">@color/black</item>
-        <item name="activeNotificationDateColor">@color/chambray</item>
+        <item name="my_message_bubble_background_color">@color/light_grey</item>
+        <item name="my_message_bubble_stroke_color">@color/grey</item>
+        <item name="my_message_bubble_text_color">@color/black</item>
+        <item name="my_message_bubble_name_color">@color/black</item>
+        <item name="my_message_bubble_date_color">@color/dark_grey</item>
+        <item name="friend_message_bubble_background_color">@color/white</item>
+        <item name="friend_message_bubble_stroke_color">@color/grey</item>
+        <item name="friend_message_bubble_text_color">@color/black</item>
+        <item name="friend_message_bubble_name_color">@color/black</item>
+        <item name="friend_message_bubble_date_color">@color/dark_grey</item>
 
-        <item name="swipeRefreshProgressSpinnerColor">@color/chambray</item>
-
-        <item name="messageItemBackgroundColor">@color/white</item>
-
-        <item name="myMessageBubbleBackgroundColor">@color/light_grey</item>
-        <item name="myMessageBubbleStrokeColor">@color/grey</item>
-        <item name="myMessageBubbleTextColor">@color/black</item>
-        <item name="myMessageBubbleNameColor">@color/black</item>
-        <item name="myMessageBubbleDateColor">@color/dark_grey</item>
-        <item name="partnerMessageBubbleBackgroundColor">@color/white</item>
-        <item name="partnerMessageBubbleStrokeColor">@color/grey</item>
-        <item name="partnerMessageBubbleTextColor">@color/black</item>
-        <item name="partnerMessageBubbleNameColor">@color/black</item>
-        <item name="partnerMessageBubbleDateColor">@color/dark_grey</item>
-
-        <item name="postMessageContainerBackgroundColor">@color/white</item>
-        <item name="postMessageInputBackgroundColor">@color/white</item>
-        <item name="postMessageInputStrokeColor">@color/grey</item>
-        <item name="postMessageIconInactiveColor">@color/chambray</item>
-        <item name="postMessageIconActiveColor">@color/violet</item>
-
-        <item name="conversationItemBackgroundColor">@color/white</item>
+        <item name="post_message_container_background_color">@color/white</item>
+        <item name="post_message_input_background_color">@color/white</item>
+        <item name="post_message_input_stroke_color">@color/grey</item>
+        <item name="post_message_icon_inactive_color">@color/chambray</item>
+        <item name="post_message_icon_active_color">@color/violet</item>
     </style>
     <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
         <item name="colorPrimaryDark">@color/yellow</item>
 
-        <item name="loginBackgroundStartColor">@color/yellow</item>
-        <item name="loginBackgroundEndColor">@color/beige</item>
+        <item name="auth_background_start_color">@color/yellow</item>
+        <item name="auth_background_end_color">@color/beige</item>
 
-        <item name="spinnerInLoginColor">@color/white</item>
-        <item name="iconInAuthColor">@color/white</item>
-        <item name="disabledColor">@color/grey</item>
+        <item name="auth_spinner_color">@color/white</item>
+        <item name="auth_icon_color">@color/white</item>
+        <item name="disabled_color">@color/grey</item>
 
-        <item name="titleColor">@color/white</item>
-        <item name="textColor">@color/brown</item>
-        <item name="textSecondaryColor">@color/white</item>
+        <item name="auth_title_color">@color/white</item>
+        <item name="auth_text_color">@color/brown</item>
+        <item name="auth_text_secondary_color">@color/white</item>
 
-        <item name="primaryInAuthButtonColor">@color/apple_green</item>
-        <item name="primaryInAuthButtonPressedColor">@color/bud_green</item>
-        <item name="primaryInAuthButtonTextColor">@color/white</item>
+        <item name="auth_primary_button_color">@color/apple_green</item>
+        <item name="auth_primary_button_pressed_color">@color/bud_green</item>
+        <item name="auth_primary_button_title_color">@color/white</item>
 
-        <item name="primaryTextInputBackgroundColor">@color/white</item>
-        <item name="primaryTextInputHintColor">@color/brown</item>
-        <item name="primaryTextInputBoxStrokeColor">@color/brown</item>
+        <item name="primary_text_input_background_color">@color/white</item>
+        <item name="primary_text_input_hint_color">@color/brown</item>
+        <item name="primary_text_input_box_stroke_color">@color/brown</item>
     </style>
 
-    <style name="Title">
-        <item name="android:textColor">?attr/titleColor</item>
+    <style name="auth_title">
+        <item name="android:textColor">?attr/auth_title_color</item>
         <item name="android:fontFamily">@font/raleway</item>
         <item name="android:textSize">32sp</item>
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Text">
-        <item name="android:textColor">?attr/textColor</item>
+    <style name="auth_text">
+        <item name="android:textColor">?attr/auth_text_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextSecondary">
-        <item name="android:textColor">?attr/textSecondaryColor</item>
+    <style name="auth_text_secondary">
+        <item name="android:textColor">?attr/auth_text_secondary_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextThirdly">
-        <item name="android:textColor">?attr/textThirdlyColor</item>
+    <style name="main_text">
+        <item name="android:textColor">?attr/text_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextForthly">
-        <item name="android:textColor">?attr/textForthColor</item>
+    <style name="main_text_secondary">
+        <item name="android:textColor">?attr/text_secondary_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="PlayerItemTitle">
-        <item name="android:textColor">?attr/playerItemNameColor</item>
-        <item name="android:fontFamily">"@font/lato"</item>
-        <item name="android:textSize">18sp</item>
-    </style>
-
-    <style name="ThomannDetailsUserTitle" parent="PlayerItemTitle" />
-
-    <style name="NotificationName">
-        <item name="android:textColor">?attr/inactiveNotificationNameColor</item>
+    <style name="notification_title">
+        <item name="android:textColor">?attr/inactive_notification_title_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">16sp</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="NotificationDate">
-        <item name="android:textColor">?attr/inactiveNotificationDateColor</item>
+    <style name="notification_date">
+        <item name="android:textColor">?attr/inactive_notification_date_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="NotificationDescription">
-        <item name="android:textColor">?attr/inactiveNotificationDescriptionColor</item>
+    <style name="notification_text">
+        <item name="android:textColor">?attr/inactive_notification_text_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="ActiveNotificationName">
-        <item name="android:textColor">?attr/activeNotificationNameColor</item>
-        <item name="android:fontFamily">"@font/lato"</item>
-        <item name="android:textSize">16sp</item>
+    <style name="active_notification_title" parent="notification_title">
+        <item name="android:textColor">?attr/active_notification_title_color</item>
         <item name="android:maxLines">2</item>
     </style>
 
-    <style name="ActiveNotificationDate">
-        <item name="android:textColor">?attr/activeNotificationDateColor</item>
+    <style name="ActiveNotificationDate" parent="notification_date">
+        <item name="android:textColor">?attr/active_notification_date_color</item>
+    </style>
+
+    <style name="active_notification_text">
+        <item name="android:textColor">?attr/active_notification_text_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="ActiveNotificationDescription">
-        <item name="android:textColor">?attr/activeNotificationDescriptionColor</item>
-        <item name="android:fontFamily">"@font/lato"</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="UnreadNotifications">
-        <item name="android:textColor">?attr/notificationsCountTextColor</item>
+    <style name="unread_notifications_count">
+        <item name="android:textColor">?attr/notifications_counter_value_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">12dp</item>
         <item name="android:gravity">center</item>
@@ -255,7 +234,7 @@
 
     <style name="PrimaryButton">
         <item name="android:background">@drawable/primary_in_auth_button_ripple</item>
-        <item name="android:textColor">?attr/primaryInAuthButtonTextColor</item>
+        <item name="android:textColor">?attr/auth_primary_button_title_color</item>
         <item name="android:fontFamily">@font/lato</item>
         <item name="android:textSize">16sp</item>
         <item name="android:width">250dp</item>
@@ -264,25 +243,25 @@
     </style>
 
     <style name="PrimaryTextInput" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">?attr/primaryTextInputBackgroundColor</item>
-        <item name="android:textColorHint">?attr/primaryTextInputHintColor</item>
-        <item name="hintTextColor">?attr/primaryTextInputHintColor</item>
-        <item name="boxStrokeColor">?attr/primaryTextInputBoxStrokeColor</item>
+        <item name="boxBackgroundColor">?attr/primary_text_input_background_color</item>
+        <item name="android:textColorHint">?attr/primary_text_input_hint_color</item>
+        <item name="hintTextColor">?attr/primary_text_input_hint_color</item>
+        <item name="boxStrokeColor">?attr/primary_text_input_box_stroke_color</item>
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
     </style>
 
     <style name="SecondaryTextInput" parent="PrimaryTextInput">
-        <item name="boxBackgroundColor">?attr/secondaryTextInputBackgroundColor</item>
-        <item name="android:textColorHint">?attr/secondaryTextInputHintColor</item>
-        <item name="hintTextColor">?attr/secondaryTextInputHintColor</item>
-        <item name="boxStrokeColor">?attr/secondaryTextInputBoxStrokeColor</item>
+        <item name="boxBackgroundColor">?attr/secondary_text_input_background_color</item>
+        <item name="android:textColorHint">?attr/secondary_text_input_hint_color</item>
+        <item name="hintTextColor">?attr/secondary_text_input_hint_color</item>
+        <item name="boxStrokeColor">?attr/secondary_text_input_box_stroke_color</item>
     </style>
 
     <style name="DialogTextInput" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">?attr/dialogTextInputBackgroundColor</item>
-        <item name="android:textColorHint">?attr/dialogTextInputHintColor</item>
-        <item name="hintTextColor">?attr/dialogTextInputHintColor</item>
+        <item name="boxBackgroundColor">?attr/bottom_dialog_text_input_background_color</item>
+        <item name="android:textColorHint">?attr/bottom_dialog_text_input_hint_color</item>
+        <item name="hintTextColor">?attr/bottom_dialog_text_input_hint_color</item>
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
         <item name="boxCornerRadiusBottomStart">10dp</item>
@@ -292,7 +271,7 @@
     </style>
 
     <style name="HeaderTitle">
-        <item name="android:textColor">?attr/titleSecondaryColor</item>
+        <item name="android:textColor">?attr/title_color</item>
         <item name="android:fontFamily">@font/raleway</item>
         <item name="android:textSize">32sp</item>
         <item name="android:gravity">center</item>
@@ -305,7 +284,7 @@
     </style>
 
     <style name="BottomDialogTitle">
-        <item name="android:textColor">?attr/bottomDialogTitleColor</item>
+        <item name="android:textColor">?attr/bottom_dialog_title_color</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/raleway</item>
@@ -313,27 +292,27 @@
     </style>
 
     <style name="BottomDialogValue">
-        <item name="android:textColor">?attr/bottomDialogValueColor</item>
+        <item name="android:textColor">?attr/bottom_dialog_value_color</item>
         <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">@font/lato</item>
         <item name="android:gravity">start|top</item>
     </style>
 
-    <style name="CardTitle" parent="Title">
-        <item name="android:textColor">?attr/titleColor</item>
+    <style name="CardTitle" parent="auth_title">
+        <item name="android:textColor">?attr/auth_title_color</item>
         <item name="android:fontFamily">@font/raleway</item>
         <item name="android:textSize">26sp</item>
         <item name="android:gravity">center</item>
         <item name="android:textStyle">bold</item>
     </style>
     <style name="CardText">
-        <item name="android:textColor">?attr/textSecondaryColor</item>
+        <item name="android:textColor">?attr/auth_text_secondary_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">center</item>
     </style>
     <style name="DatePicker">
-        <item name="colorControlNormal">?attr/datePickerDividerColor</item>
+        <item name="colorControlNormal">?attr/bottom_dialog_separator_color</item>
     </style>
     <style name="InputCounterStyle" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/grey</item>

@@ -4,6 +4,6 @@
     <corners android:bottomRightRadius="@dimen/message_bubble_corner_radius"
         android:bottomLeftRadius="@dimen/message_bubble_corner_radius"
         android:topRightRadius="@dimen/message_bubble_corner_radius" />
-    <solid android:color="?attr/partnerMessageBubbleBackgroundColor"/>
-    <stroke android:width="@dimen/message_bubble_border_width" android:color="?attr/partnerMessageBubbleStrokeColor" />
+    <solid android:color="?attr/friend_message_bubble_background_color"/>
+    <stroke android:width="@dimen/message_bubble_border_width" android:color="?attr/friend_message_bubble_stroke_color" />
 </shape>

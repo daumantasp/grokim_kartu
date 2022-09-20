@@ -12,7 +12,7 @@
         android:id="@+id/bottomDialogBackgroundFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/bottomDialogBackgroundColor" />
+        android:background="?attr/bottom_dialog_background_color" />
 
     <LinearLayout
         android:id="@+id/dialogContentLinearLayout"

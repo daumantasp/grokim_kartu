@@ -34,44 +34,44 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/settings_email"
+                    app:row_title="@string/settings_email"
                     app:value="@{model.settingsForm.email}"
-                    app:rowBorders="both"/>
+                    app:row_borders="both"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/settings_show_me_in_list"
-                    app:rowShowSwitch="true"
+                    app:row_title="@string/settings_show_me_in_list"
+                    app:row_show_switch="true"
                     app:switchChecked="@={model.settingsForm.visible}"
                     app:onClick="@{() -> model.changePassword()}"
                     app:onSwitchChecked="@{() -> model.saveChanges()}"
-                    app:rowBorders="bottom"/>
+                    app:row_borders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:id="@+id/languageRowViewElement"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/settings_language"
-                    app:rowShowIcon="true"
+                    app:row_title="@string/settings_language"
+                    app:row_show_icon="true"
                     app:onClick="@{() -> model.changeLanguage()}"
-                    app:rowBorders="bottom"/>
+                    app:row_borders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/settings_change_password"
-                    app:rowShowIcon="true"
+                    app:row_title="@string/settings_change_password"
+                    app:row_show_icon="true"
                     app:onClick="@{() -> model.changePassword()}"
-                    app:rowBorders="bottom"/>
+                    app:row_borders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/settings_delete_user"
-                    app:rowShowIcon="true"
+                    app:row_title="@string/settings_delete_user"
+                    app:row_show_icon="true"
                     app:onClick="@{() -> model.deleteUserClicked()}"
-                    app:rowBorders="bottom"/>
+                    app:row_borders="bottom"/>
 
 <!--                <Switch-->
 <!--                    android:id="@+id/showMeSwitch"-->
@@ -116,9 +116,9 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/settings_fragment"
-            app:showBottomBorder="false"
-            app:showIcon="false"
-            app:headerType="standart"
+            app:show_bottom_border="false"
+            app:show_icon="false"
+            app:header_type="standart"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

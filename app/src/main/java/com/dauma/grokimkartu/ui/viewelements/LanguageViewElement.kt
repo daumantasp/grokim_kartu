@@ -23,8 +23,8 @@ class LanguageViewElement(context: Context, attrs: AttributeSet) : ConstraintLay
         selectedImageView = findViewById(R.id.selectedImageView)
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.LanguageViewElement)
-        val languageCode = attributes.getInt(R.styleable.LanguageViewElement_languageCode, 0)
-        val isSelected = attributes.getBoolean(R.styleable.LanguageViewElement_languageIsSelected, false)
+        val languageCode = attributes.getInt(R.styleable.LanguageViewElement_language_code, 0)
+        val isSelected = attributes.getBoolean(R.styleable.LanguageViewElement_language_is_selected, false)
         attributes.recycle()
 
         setLanguage(languageCode)

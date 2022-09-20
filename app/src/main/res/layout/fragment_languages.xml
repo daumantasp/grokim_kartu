@@ -28,15 +28,15 @@
                 android:id="@+id/ltLanguageViewElement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:languageCode="lt"
-                app:languageIsSelected="true" />
+                app:language_code="lt"
+                app:language_is_selected="true" />
 
             <com.dauma.grokimkartu.ui.viewelements.LanguageViewElement
                 android:id="@+id/enLanguageViewElement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:languageCode="en"
-                app:languageIsSelected="false" />
+                app:language_code="en"
+                app:language_is_selected="false" />
 
         </LinearLayout>
 
@@ -45,10 +45,10 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/settings_language"
-            app:showBottomBorder="true"
-            app:showIcon="false"
-            app:headerType="withBack"
-            app:headerTextSize="small"
+            app:show_bottom_border="true"
+            app:show_icon="false"
+            app:header_type="with_back"
+            app:header_text_size="small"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

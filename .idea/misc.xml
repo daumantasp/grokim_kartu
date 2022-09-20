@@ -21,6 +21,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/ic_launcher_background.xml" value="0.184" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/language_background.xml" value="0.115" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/locked_icon.xml" value="0.1605" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/main_background_with_top_border.xml" value="0.148" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/my_message_bubble.xml" value="0.1" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/oval_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/partner_message_bubble.xml" value="0.115" />
@@ -58,6 +59,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_initials.xml" value="0.13697916666666668" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_language.xml" value="0.5" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_notification.xml" value="0.20833333333333334" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_row.xml" value="0.12083333333333333" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_spinner.xml" value="0.13697916666666668" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_chat.xml" value="0.32916666666666666" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_conversation.xml" value="0.3333333333333333" />
@@ -68,10 +70,12 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_login.xml" value="0.20425724637681159" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_notifications.xml" value="0.3333333333333333" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_password_change.xml" value="0.1" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_player_details.xml" value="0.18697916666666667" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_players.xml" value="0.2006340579710145" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_private_conversations.xml" value="0.1947463768115942" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_profile.xml" value="0.32916666666666666" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_profile_edit.xml" value="0.2509057971014493" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_registration.xml" value="0.18489583333333334" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_settings.xml" value="0.12239583333333333" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_conversations.xml" value="0.1947463768115942" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_details.xml" value="0.19427083333333334" />

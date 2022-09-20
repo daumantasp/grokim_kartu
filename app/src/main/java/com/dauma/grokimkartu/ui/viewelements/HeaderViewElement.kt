@@ -54,7 +54,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
         photoIconBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.oval_background)?.mutate()
         val typedValue = TypedValue()
-        context.theme.resolveAttribute(R.attr.playerItemPhotoBackgroundColor, typedValue, true)
+        context.theme.resolveAttribute(R.attr.photo_placeholder_color, typedValue, true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             photoIconBackgroundDrawable?.colorFilter = BlendModeColorFilter(typedValue.data, BlendMode.SRC_ATOP)
         } else {
@@ -67,11 +67,11 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.HeaderViewElement)
         val title = attributes.getString(R.styleable.HeaderViewElement_title)
-        val isIconVisible = attributes.getBoolean(R.styleable.HeaderViewElement_showIcon, false)
-        val isBottomBorderVisible = attributes.getBoolean(R.styleable.HeaderViewElement_showBottomBorder, false)
-        val type = attributes.getInt(R.styleable.HeaderViewElement_headerType, 0)
-        val textSize = attributes.getInt(R.styleable.HeaderViewElement_headerTextSize, 0)
-        val rightText = attributes.getString(R.styleable.HeaderViewElement_headerRightText)
+        val isIconVisible = attributes.getBoolean(R.styleable.HeaderViewElement_show_icon, false)
+        val isBottomBorderVisible = attributes.getBoolean(R.styleable.HeaderViewElement_show_bottom_border, false)
+        val type = attributes.getInt(R.styleable.HeaderViewElement_header_type, 0)
+        val textSize = attributes.getInt(R.styleable.HeaderViewElement_header_text_size, 0)
+        val rightText = attributes.getString(R.styleable.HeaderViewElement_header_right_text)
         attributes.recycle()
         titleTextView.text = title
         userRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE

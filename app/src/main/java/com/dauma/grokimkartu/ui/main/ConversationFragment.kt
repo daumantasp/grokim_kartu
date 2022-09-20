@@ -68,9 +68,9 @@ class ConversationFragment : Fragment() {
         }
 
         val typedValue = TypedValue()
-        context?.theme?.resolveAttribute(R.attr.postMessageIconActiveColor, typedValue, true)
+        context?.theme?.resolveAttribute(R.attr.post_message_icon_active_color, typedValue, true)
         val postMessageIconActiveColor = typedValue.data
-        context?.theme?.resolveAttribute(R.attr.postMessageIconInactiveColor, typedValue, true)
+        context?.theme?.resolveAttribute(R.attr.post_message_icon_inactive_color, typedValue, true)
         val postMessageIconInactiveColor = typedValue.data
         binding.postMessageTextInputEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

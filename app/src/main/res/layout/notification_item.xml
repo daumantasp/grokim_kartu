@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="100dp"
-    android:background="?attr/notificationsBackgroundColor"
+    android:background="?attr/background_color"
     android:id="@+id/notificationItemContainer">
 
     <com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
@@ -12,17 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="100dp"
-        app:unreadNotificationBackgroundColor="?attr/unreadNotificationBackgroundColor"
-        app:unreadNotificationNameColor="?attr/unreadNotificationNameColor"
-        app:unreadNotificationDescriptionColor="?attr/unreadNotificationDescriptionColor"
-        app:unreadNotificationDateColor="?attr/unreadNotificationDateColor"
-        app:inactiveNotificationBackgroundColor="?attr/inactiveNotificationBackgroundColor"
-        app:inactiveNotificationNameColor="?attr/inactiveNotificationNameColor"
-        app:inactiveNotificationDescriptionColor="?attr/inactiveNotificationDescriptionColor"
-        app:inactiveNotificationDateColor="?attr/inactiveNotificationDateColor"
-        app:activeNotificationBackgroundColor="?attr/activeNotificationBackgroundColor"
-        app:activeNotificationNameColor="?attr/activeNotificationNameColor"
-        app:activeNotificationDescriptionColor="?attr/activeNotificationDescriptionColor"
-        app:activeNotificationDateColor="?attr/activeNotificationDateColor" />
+        app:unread_notification_background_color="?attr/unread_notification_background_color"
+        app:unread_notification_title_color="?attr/unread_notification_title_color"
+        app:unread_notification_text_color="?attr/unread_notification_text_color"
+        app:unread_notification_date_color="?attr/unread_notification_date_color"
+        app:inactive_notification_background_color="?attr/inactive_notification_background_color"
+        app:inactive_notification_title_color="?attr/inactive_notification_title_color"
+        app:inactive_notification_text_color="?attr/inactive_notification_text_color"
+        app:inactive_notification_date_color="?attr/inactive_notification_date_color"
+        app:active_notification_background_color="?attr/active_notification_background_color"
+        app:active_notification_title_color="?attr/active_notification_title_color"
+        app:active_notification_text_color="?attr/active_notification_text_color"
+        app:active_notification_date_color="?attr/active_notification_date_color" />
 
 </FrameLayout>

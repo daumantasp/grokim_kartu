@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/messageItemBackgroundColor">
+    android:background="?attr/background_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -21,7 +21,7 @@
                 android:id="@+id/nameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/myMessageBubbleNameColor"
+                android:textColor="?attr/my_message_bubble_name_color"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:layout_marginStart="15dp"
@@ -43,7 +43,7 @@
                 android:layout_toEndOf="@id/nameTextView"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="?attr/partnerMessageBubbleDateColor"
+                android:textColor="?attr/friend_message_bubble_date_color"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="5dp"
-                android:textColor="?attr/myMessageBubbleTextColor"
+                android:textColor="?attr/my_message_bubble_text_color"
                 android:textSize="15sp"
                 android:ellipsize="end"
                 android:textIsSelectable="true"

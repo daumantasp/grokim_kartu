@@ -39,12 +39,12 @@
                     android:layout_marginStart="20dp"
                     android:layout_gravity="center"
                     android:background="@drawable/left_arrow"
-                    android:backgroundTint="?attr/iconInAuthColor"
+                    android:backgroundTint="?attr/auth_icon_color"
                     android:onClick="@{() -> model.backClicked()}" />
 
                 <TextView
                     android:id="@+id/registrationTextView"
-                    style="@style/Title"
+                    style="@style/auth_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.0"
@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/nameDescriptionTextView"
-                    style="@style/Text"
+                    style="@style/auth_text"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:text="@string/registration_name_description"
@@ -123,7 +123,7 @@
 
                 <TextView
                     android:id="@+id/passwordDescriptionTextView"
-                    style="@style/Text"
+                    style="@style/auth_text"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -192,7 +192,7 @@
             <!--            Success-->
             <TextView
                 android:id="@+id/registrationSuccessfulTextView"
-                style="@style/Title"
+                style="@style/auth_title"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -222,7 +222,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:type="primaryInAuth"
+                    app:type="auth_primary"
                     app:onClick="@{() -> model.okClicked()}"
                     app:text="@string/registration_ok_button" />
 

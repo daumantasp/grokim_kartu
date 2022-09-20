@@ -12,6 +12,6 @@
         android:fontFamily="@font/raleway"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:textColor="?attr/initialsTextColor"/>
+        android:textColor="?attr/initials_text_color"/>
 
 </FrameLayout>

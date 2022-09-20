@@ -45,8 +45,8 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="25dp"
                         android:visibility="invisible"
-                        app:initialsType="rectangular"
-                        app:textSize="32dp"
+                        app:initials_type="rectangular"
+                        app:text_size="32dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -70,34 +70,34 @@
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/player_details_name"
+                    app:row_title="@string/player_details_name"
                     app:value="@{model.playerDetailsForm.name}"
-                    app:rowBorders="top"/>
+                    app:row_borders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/player_details_instrument"
+                    app:row_title="@string/player_details_instrument"
                     app:value="@{model.playerDetailsForm.instrument}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="top"/>
+                    app:row_show_icon="false"
+                    app:row_borders="top"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/player_details_description"
+                    app:row_title="@string/player_details_description"
                     app:value="@{model.playerDetailsForm.description}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="top"
-                    app:rowMultiline="true"/>
+                    app:row_show_icon="false"
+                    app:row_borders="top"
+                    app:row_multiline="true"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:rowTitle="@string/player_details_city"
+                    app:row_title="@string/player_details_city"
                     app:value="@{model.playerDetailsForm.city}"
-                    app:rowShowIcon="false"
-                    app:rowBorders="both"/>
+                    app:row_show_icon="false"
+                    app:row_borders="both"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
                     android:id="@+id/messageButtonViewElement"
@@ -119,11 +119,11 @@
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@{model.playerDetailsForm.name}"
-            app:showBottomBorder="true"
-            app:showIcon="false"
-            app:headerType="withBack"
-            app:headerTextSize="small"
-            app:headerRightText="@string/player_details_report"
+            app:show_bottom_border="true"
+            app:show_icon="false"
+            app:header_type="with_back"
+            app:header_text_size="small"
+            app:header_right_text="@string/player_details_report"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

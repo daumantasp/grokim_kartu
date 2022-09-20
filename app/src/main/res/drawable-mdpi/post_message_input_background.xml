@@ -5,6 +5,6 @@
         android:bottomLeftRadius="@dimen/post_message_input_corner_radius"
         android:topLeftRadius="@dimen/post_message_input_corner_radius"
         android:topRightRadius="@dimen/post_message_input_corner_radius" />
-    <solid android:color="?attr/postMessageInputBackgroundColor"/>
-    <stroke android:width="@dimen/post_message_input_width" android:color="?attr/postMessageInputStrokeColor" />
+    <solid android:color="?attr/post_message_input_background_color"/>
+    <stroke android:width="@dimen/post_message_input_width" android:color="?attr/post_message_input_stroke_color" />
 </shape>

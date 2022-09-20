@@ -10,7 +10,7 @@
         android:id="@+id/contentConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="?attr/headerBackgroundColor">
+        android:background="?attr/header_background_color">
 
         <ImageButton
             android:id="@+id/backImageButton"
@@ -18,7 +18,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
             android:background="@drawable/left_arrow"
-            android:backgroundTint="?attr/iconInHeaderColor"
+            android:backgroundTint="?attr/header_icon_color"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -65,12 +65,12 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/oval_background"
-                android:backgroundTint="?attr/notificationsCountBackgroundColor"
+                android:backgroundTint="?attr/notifications_counter_background_color"
                 android:visibility="gone">
 
                 <TextView
                     android:id="@+id/unreadNotificationsCountTextView"
-                    style="@style/UnreadNotifications"
+                    style="@style/unread_notifications_count"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>
@@ -89,8 +89,8 @@
                 android:id="@+id/initialsViewElement"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                app:initialsType="oval"
-                app:textSize="7dp" />
+                app:initials_type="oval"
+                app:text_size="7dp" />
 
             <ImageView
                 android:id="@+id/userIconImageView"
@@ -103,8 +103,8 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:layout_centerInParent="true"
-                app:unitDimensions="4dp"
-                app:color="?attr/spinnerInMainColor"/>
+                app:unit_dimensions="4dp"
+                app:color="?attr/spinner_color"/>
         </RelativeLayout>
 
         <TextView

@@ -58,7 +58,7 @@ class PlayersFragment : Fragment() {
             playersViewModel.reload()
         }
         val typedValue = TypedValue()
-        context?.theme?.resolveAttribute(R.attr.swipeRefreshProgressSpinnerColor, typedValue, true)
+        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
         binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {

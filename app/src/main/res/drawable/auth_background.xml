@@ -3,8 +3,8 @@
     <item>
         <shape
             android:shape="rectangle">
-            <gradient android:startColor="?attr/loginBackgroundStartColor"
-                android:endColor="?attr/loginBackgroundEndColor"  android:angle="315" />
+            <gradient android:startColor="?attr/auth_background_start_color"
+                android:endColor="?attr/auth_background_end_color"  android:angle="315" />
         </shape>
     </item>
 </layer-list>

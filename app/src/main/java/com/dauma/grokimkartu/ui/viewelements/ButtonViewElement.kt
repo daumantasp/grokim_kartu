@@ -52,13 +52,13 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         } else if (type == 1) {
             // Primary
             val typedValue = TypedValue()
-            context.theme.resolveAttribute(R.attr.primaryButtonTextColor, typedValue, true)
+            context.theme.resolveAttribute(R.attr.primary_button_title_color, typedValue, true)
             button.setTextColor(typedValue.data)
             button.setBackgroundResource(R.drawable.primary_button_ripple)
         } else if (type == 2) {
             // Secondary
             val typedValue = TypedValue()
-            context.theme.resolveAttribute(R.attr.secondaryButtonTextColor, typedValue, true)
+            context.theme.resolveAttribute(R.attr.secondary_button_title_color, typedValue, true)
             button.setTextColor(typedValue.data)
             button.setBackgroundResource(R.drawable.secondary_button_ripple)
         }
