@@ -42,11 +42,11 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         setLocale()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mainActivityFrameLayout = findViewById<FrameLayout>(R.id.mainActivityFrameLayout)
-        statusBarBackgroundFrameLayout = findViewById<FrameLayout>(R.id.statusBarBackgroundFrameLayout)
-        safeAreaConstraintLayout = findViewById<ConstraintLayout>(R.id.safeAreaConstraintLayout)
+        mainActivityFrameLayout = findViewById<FrameLayout>(R.id.main_activity_frame_layout)
+        statusBarBackgroundFrameLayout = findViewById<FrameLayout>(R.id.status_bar_background_frame_layout)
+        safeAreaConstraintLayout = findViewById<ConstraintLayout>(R.id.safe_area_constraint_layout)
         bottomDialogViewElement =
-            findViewById<BottomDialogViewElement>(R.id.bottomDialogViewElement)
+            findViewById<BottomDialogViewElement>(R.id.bottom_dialog_view_element)
         initializeBottomNavigation()
         setupInsets()
     }

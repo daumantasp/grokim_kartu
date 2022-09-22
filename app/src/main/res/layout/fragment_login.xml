@@ -16,43 +16,43 @@
         android:background="@drawable/auth_background">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/loginLayout"
+            android:id="@+id/login_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".ui.authentication.LoginFragment">
 
             <TextView
-                android:id="@+id/welcomeTextView"
+                android:id="@+id/welcome_text_view"
                 style="@style/auth_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_welcome"
                 android:layout_margin="20dp"
-                app:layout_constraintBottom_toTopOf="@+id/inputFieldsLinearLayout"
+                app:layout_constraintBottom_toTopOf="@+id/input_fields_linear_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread" />
 
             <LinearLayout
-                android:id="@+id/inputFieldsLinearLayout"
+                android:id="@+id/input_fields_linear_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/welcomeTextView"
+                app:layout_constraintTop_toBottomOf="@id/welcome_text_view"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/buttonsLinearLayout">
+                app:layout_constraintBottom_toTopOf="@id/buttons_linear_layout">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/emailTextInput"
+                    android:id="@+id/email_text_input"
                     style="@style/auth_text_input"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
                     android:layout_margin="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/emailTextInputEditText"
+                        android:id="@+id/email_text_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:fontFamily="@font/lato"
@@ -65,7 +65,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/passwordTextInput"
+                    android:id="@+id/password_text_input"
                     style="@style/auth_text_input"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
@@ -75,7 +75,7 @@
                     android:layout_marginLeft="20dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/passwordTextInputEditText"
+                        android:id="@+id/password_text_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:fontFamily="@font/lato"
@@ -91,17 +91,17 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/buttonsLinearLayout"
+                android:id="@+id/buttons_linear_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/inputFieldsLinearLayout"
-                app:layout_constraintBottom_toTopOf="@id/privacyAndTermsTextView">
+                app:layout_constraintTop_toBottomOf="@id/input_fields_linear_layout"
+                app:layout_constraintBottom_toTopOf="@id/privacy_and_terms_text_view">
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/loginButton"
+                    android:id="@+id/login_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -110,7 +110,6 @@
                     app:text="@string/login_login_button" />
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -119,10 +118,10 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/loginButton">
+                    app:layout_constraintTop_toBottomOf="@+id/login_button">
 
                     <TextView
-                        android:id="@+id/registerTextView"
+                        android:id="@+id/register_text_view"
                         style="@style/auth_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -134,7 +133,7 @@
                         android:text="@string/login_register" />
 
                     <TextView
-                        android:id="@+id/forgotPasswordTextView"
+                        android:id="@+id/forgot_password_text_view"
                         style="@style/auth_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -148,7 +147,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/privacyAndTermsTextView"
+                android:id="@+id/privacy_and_terms_text_view"
                 style="@style/auth_text_secondary"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"

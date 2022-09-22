@@ -16,7 +16,7 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         inflate(context, R.layout.element_button, this)
 
         button = findViewById(R.id.button)
-        spinner = findViewById(R.id.spinnerViewElement)
+        spinner = findViewById(R.id.spinner_view_element)
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.ButtonViewElement)
         text = attributes.getString(R.styleable.ButtonViewElement_text) ?: ""

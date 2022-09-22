@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/conversationsRecyclerView"
+            android:id="@+id/conversations_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
@@ -24,10 +24,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/postMessageLinearLayout"/>
+            app:layout_constraintBottom_toTopOf="@id/post_message_linear_layout"/>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/conversationsHeaderViewElement"
+            android:id="@+id/conversations_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:header_text_size="small"
@@ -40,7 +40,7 @@
             app:title="@string/conversation_title" />
 
         <LinearLayout
-            android:id="@+id/postMessageLinearLayout"
+            android:id="@+id/post_message_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:orientation="horizontal"
@@ -49,10 +49,10 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/conversationsRecyclerView">
+            app:layout_constraintTop_toBottomOf="@id/conversations_recycler_view">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/postMessageTextInput"
+                android:id="@+id/post_message_text_input"
                 style="@style/main_text_input"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
@@ -63,7 +63,7 @@
                 app:boxStrokeWidthFocused="0dp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/postMessageTextInputEditText"
+                    android:id="@+id/post_message_text_input_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/post_message_input_background"
@@ -77,7 +77,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
-                android:id="@+id/postMessageImageButton"
+                android:id="@+id/post_message_image_button"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_margin="20dp"

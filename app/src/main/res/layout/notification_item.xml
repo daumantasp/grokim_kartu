@@ -5,10 +5,10 @@
     android:layout_height="wrap_content"
     android:minHeight="100dp"
     android:background="?attr/background_color"
-    android:id="@+id/notificationItemContainer">
+    android:id="@+id/notification_item_container">
 
     <com.dauma.grokimkartu.ui.viewelements.NotificationViewElement
-        android:id="@+id/notificationViewElement"
+        android:id="@+id/notification_view_element"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="100dp"

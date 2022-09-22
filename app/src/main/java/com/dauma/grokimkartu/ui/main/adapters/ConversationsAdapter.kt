@@ -66,13 +66,13 @@ class ConversationsAdapter(
         private val photoIconBackgroundDrawable: Drawable?,
         private val onItemClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val conversationItemContainer = view.findViewById<LinearLayout>(R.id.conversationItemContainer)
-        val nameTextView = view.findViewById<TextView>(R.id.playerName)
-        val dateTextView = view.findViewById<TextView>(R.id.messageDate)
-        val textTextView = view.findViewById<TextView>(R.id.messageText)
-        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
-        val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val conversationItemContainer = view.findViewById<LinearLayout>(R.id.conversation_item_container)
+        val nameTextView = view.findViewById<TextView>(R.id.player_name_text_view)
+        val dateTextView = view.findViewById<TextView>(R.id.message_date_text_view)
+        val textTextView = view.findViewById<TextView>(R.id.message_text_text_view)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
+        val photoIcon = view.findViewById<ImageView>(R.id.player_icon_image_view)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(conversation: Conversation) {
             nameTextView.text = conversation.lastMessage?.user?.name ?: ""

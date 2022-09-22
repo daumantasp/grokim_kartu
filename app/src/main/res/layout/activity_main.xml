@@ -3,18 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainActivityFrameLayout"
+    android:id="@+id/main_activity_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
     <FrameLayout
-        android:id="@+id/statusBarBackgroundFrameLayout"
+        android:id="@+id/status_bar_background_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/safeAreaConstraintLayout"
+        android:id="@+id/safe_area_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -46,7 +46,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
-        android:id="@+id/bottomDialogViewElement"
+        android:id="@+id/bottom_dialog_view_element"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"

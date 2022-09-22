@@ -14,7 +14,7 @@
         android:layout_height="wrap_content" />
 
     <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
-        android:id="@+id/spinnerViewElement"
+        android:id="@+id/spinner_view_element"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:translationZ="2dp"

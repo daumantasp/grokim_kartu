@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <ScrollView
-            android:id="@+id/profileScrollView"
+            android:id="@+id/profile_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
@@ -32,7 +32,7 @@
                 android:orientation="vertical">
 
                 <com.dauma.grokimkartu.ui.viewelements.CardViewElement
-                    android:id="@+id/playersCardViewElement"
+                    android:id="@+id/players_card_view_element"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     app:card_title="@string/home_players"
@@ -41,7 +41,7 @@
                     app:card_end_color="?attr/card_1_end_color" />
 
                 <com.dauma.grokimkartu.ui.viewelements.CardViewElement
-                    android:id="@+id/thomannCardViewElement"
+                    android:id="@+id/thomann_card_view_element"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     app:card_title="@string/home_thomanns"
@@ -53,7 +53,7 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/homeHeaderViewElement"
+            android:id="@+id/home_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:show_bottom_border="false"

@@ -7,13 +7,13 @@
     android:layout_height="110dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/contentConstraintLayout"
+        android:id="@+id/content_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="?attr/header_background_color">
 
         <ImageButton
-            android:id="@+id/backImageButton"
+            android:id="@+id/back_image_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
-            android:id="@+id/headerTitleTextView"
+            android:id="@+id/header_title_text_view"
             style="@style/header_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/notificationsRelativeLayout"
+            app:layout_constraintEnd_toStartOf="@id/notifications_relative_layout"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,23 +43,23 @@
             tools:text="Header Title" />
 
         <RelativeLayout
-            android:id="@+id/notificationsRelativeLayout"
+            android:id="@+id/notifications_relative_layout"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginEnd="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/userRelativeLayout"
+            app:layout_constraintEnd_toStartOf="@id/user_relative_layout"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/notificationsImageView"
+                android:id="@+id/notifications_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 app:srcCompat="@drawable/ic_notifications" />
 
             <FrameLayout
-                android:id="@+id/notificationsFrameLayout"
+                android:id="@+id/notifications_frame_layout"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
@@ -69,7 +69,7 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/unreadNotificationsCountTextView"
+                    android:id="@+id/unread_notifications_count_text_view"
                     style="@style/unread_notifications_count"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -77,7 +77,7 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/userRelativeLayout"
+            android:id="@+id/user_relative_layout"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginEnd="20dp"
@@ -86,19 +86,19 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-                android:id="@+id/initialsViewElement"
+                android:id="@+id/initials_view_element"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 app:initials_type="oval"
                 app:text_size="7dp" />
 
             <ImageView
-                android:id="@+id/userIconImageView"
+                android:id="@+id/user_icon_image_view"
                 android:layout_width="45dp"
                 android:layout_height="45dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
-                android:id="@+id/spinnerViewElement"
+                android:id="@+id/spinner_view_element"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -108,7 +108,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/rightTextView"
+            android:id="@+id/right_text_view"
             style="@style/header_right_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

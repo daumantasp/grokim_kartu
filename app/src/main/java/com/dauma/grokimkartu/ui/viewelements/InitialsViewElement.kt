@@ -16,8 +16,8 @@ class InitialsViewElement(context: Context, attrs: AttributeSet) : FrameLayout(c
     init {
         inflate(context, R.layout.element_initials, this)
 
-        rootFrameLayout = findViewById(R.id.rootFrameLayout)
-        initialsTextView = findViewById(R.id.initialsTextView)
+        rootFrameLayout = findViewById(R.id.root_frame_layout)
+        initialsTextView = findViewById(R.id.initials_text_view)
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.InitialsViewElement)
         val textSize = attributes.getDimension(R.styleable.InitialsViewElement_text_size, 12f)

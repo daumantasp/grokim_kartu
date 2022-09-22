@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-        android:id="@+id/thomannDetailsButtonViewElement"
+        android:id="@+id/thomann_details_button_view_element"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

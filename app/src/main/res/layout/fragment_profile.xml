@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <ScrollView
-            android:id="@+id/profileScrollView"
+            android:id="@+id/profile_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
@@ -38,7 +38,7 @@
                     android:layout_marginBottom="30dp">
 
                     <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-                        android:id="@+id/profileInitialsViewElement"
+                        android:id="@+id/profile_initials_view_element"
                         android:layout_width="244dp"
                         android:layout_height="253dp"
                         android:layout_gravity="center"
@@ -52,7 +52,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/photoImageView"
+                        android:id="@+id/photo_image_view"
                         android:layout_width="244dp"
                         android:layout_height="253dp"
                         android:layout_gravity="center"
@@ -100,7 +100,7 @@
                     android:layout_weight="1" />
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/editProfileButton"
+                    android:id="@+id/edit_profile_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -113,7 +113,7 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/profileHeaderViewElement"
+            android:id="@+id/profile_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/profile_fragment"

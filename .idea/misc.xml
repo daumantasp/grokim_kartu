@@ -50,6 +50,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/thomann_details_item_background.xml" value="0.1605" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/thomann_item_background.xml" value="0.1405" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/unlocked_icon.xml" value="0.175" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/activity_main.xml" value="0.2717391304347826" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/code_value_item.xml" value="0.16979166666666667" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/conversation_item.xml" value="0.18115942028985507" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/element_bottom_dialog.xml" value="0.15942028985507245" />
@@ -77,6 +78,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_profile_edit.xml" value="0.2509057971014493" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_registration.xml" value="0.18489583333333334" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_settings.xml" value="0.12239583333333333" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_splash.xml" value="0.17083333333333334" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_conversations.xml" value="0.1947463768115942" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_details.xml" value="0.19427083333333334" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/layout/fragment_thomann_edit.xml" value="0.2" />

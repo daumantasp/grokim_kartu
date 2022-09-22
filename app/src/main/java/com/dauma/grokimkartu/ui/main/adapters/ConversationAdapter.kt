@@ -94,9 +94,9 @@ class ConversationAdapter(
         view: View,
         private val utils: Utils
     ) : RecyclerView.ViewHolder(view) {
-        val nameTextView = view.findViewById<TextView>(R.id.nameTextView)
-        val dateTextView = view.findViewById<TextView>(R.id.dateTextView)
-        val textView = view.findViewById<TextView>(R.id.textView)
+        val nameTextView = view.findViewById<TextView>(R.id.name_text_view)
+        val dateTextView = view.findViewById<TextView>(R.id.date_text_view)
+        val textView = view.findViewById<TextView>(R.id.text_view)
 
         fun bind(message: Message) {
             nameTextView.text = message.user?.name
@@ -124,12 +124,12 @@ class ConversationAdapter(
         private val utils: Utils,
         private val photoIconBackgroundDrawable: Drawable?,
     ) : RecyclerView.ViewHolder(view) {
-        val nameTextView = view.findViewById<TextView>(R.id.nameTextView)
-        val dateTextView = view.findViewById<TextView>(R.id.dateTextView)
-        val textView = view.findViewById<TextView>(R.id.textView)
-        val userIconImageView = view.findViewById<ImageView>(R.id.playerIconImageView)
-        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val nameTextView = view.findViewById<TextView>(R.id.name_text_view)
+        val dateTextView = view.findViewById<TextView>(R.id.date_text_view)
+        val textView = view.findViewById<TextView>(R.id.text_view)
+        val userIconImageView = view.findViewById<ImageView>(R.id.player_icon_image_view)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(message: Message) {
             nameTextView.text = message.user?.name
@@ -195,7 +195,7 @@ class ConversationAdapter(
         view: View,
         private val loadNextPage: () -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)

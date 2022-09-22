@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/conversationsHeaderViewElement"
+            android:id="@+id/conversations_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/conversations_title"
@@ -26,18 +26,18 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/conversationsTabLayout"
+            android:id="@+id/conversations_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/conversationsHeaderViewElement"
+            app:layout_constraintTop_toBottomOf="@id/conversations_header_view_element"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/conversationsViewPager"
+            android:id="@+id/conversations_view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/conversationsTabLayout"
+            app:layout_constraintTop_toBottomOf="@id/conversations_tab_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />

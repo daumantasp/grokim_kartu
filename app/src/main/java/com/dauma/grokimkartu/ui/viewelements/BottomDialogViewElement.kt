@@ -51,17 +51,17 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     init {
         inflate(context, R.layout.element_bottom_dialog, this)
 
-        rootRelativeLayout = findViewById(R.id.bottomDialogRootRelativeLayout)
-        backgroundFrameLayout = findViewById(R.id.bottomDialogBackgroundFrameLayout)
-        contentLinearLayout = findViewById(R.id.dialogContentLinearLayout)
-        titleTextView = findViewById(R.id.titleTextView)
-        valueEditText = findViewById(R.id.valueEditText)
-        valueLimitTextView = findViewById(R.id.valueLimitTextView)
-        datePicker = findViewById(R.id.datePicker)
-        codeValueLinearLayout = findViewById(R.id.codeValueLinearLayout)
-        codeValueSearchEditText = findViewById(R.id.codeValueTextInputEditText)
-        codeValueRecyclerView = findViewById(R.id.codeValueRecyclerView)
-        saveButton = findViewById(R.id.saveButton)
+        rootRelativeLayout = findViewById(R.id.bottom_dialog_root_relative_layout)
+        backgroundFrameLayout = findViewById(R.id.bottom_dialog_background_frame_layout)
+        contentLinearLayout = findViewById(R.id.dialog_content_linear_layout)
+        titleTextView = findViewById(R.id.title_text_view)
+        valueEditText = findViewById(R.id.value_edit_text)
+        valueLimitTextView = findViewById(R.id.value_limit_text_view)
+        datePicker = findViewById(R.id.bottom_dialog_date_picker)
+        codeValueLinearLayout = findViewById(R.id.code_value_linear_layout)
+        codeValueSearchEditText = findViewById(R.id.code_value_text_input_edit_text)
+        codeValueRecyclerView = findViewById(R.id.code_value_recycler_view)
+        saveButton = findViewById(R.id.save_button_view_element)
 
         contentLinearLayout.setOnClickListener {}
         valueEditText.addTextChangedListener(object : TextWatcher {

@@ -31,7 +31,7 @@
                 android:paddingBottom="20dp">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/cityTextInput"
+                        android:id="@+id/city_text_input"
                         style="@style/main_text_input"
                         android:layout_width="300dp"
                         android:layout_height="100dp"
@@ -42,7 +42,7 @@
                         app:counterTextAppearance="@style/input_counter">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/cityInputEditText"
+                            android:id="@+id/city_input_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="60dp"
                             android:clickable="true"
@@ -58,7 +58,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/validUntilTextInput"
+                        android:id="@+id/valid_until_text_input"
                         style="@style/main_text_input"
                         android:layout_width="300dp"
                         android:layout_height="100dp"
@@ -66,7 +66,7 @@
                         android:layout_gravity="center">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/validUntilInputEditText"
+                            android:id="@+id/valid_until_input_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="60dp"
                             android:clickable="true"
@@ -86,7 +86,7 @@
                     android:layout_weight="1" />
 
                     <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                        android:id="@+id/saveThomannButton"
+                        android:id="@+id/save_thomann_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -98,7 +98,7 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/thomannEditHeaderViewElement"
+            android:id="@+id/thomann_edit_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/thomann_edit_title"

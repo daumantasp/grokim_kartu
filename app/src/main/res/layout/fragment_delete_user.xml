@@ -22,14 +22,14 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
-                android:id="@+id/inputAndButtonLinearLayout"
+                android:id="@+id/input_and_button_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="60dp">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/passwordTextInput"
+                    android:id="@+id/password_text_input"
                     style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="80dp"
@@ -37,7 +37,7 @@
                     android:layout_marginBottom="40dp">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/passwordTextInputEditText"
+                        android:id="@+id/password_text_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:hint="@string/delete_user_password"
@@ -50,7 +50,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/deleteUserButton"
+                    android:id="@+id/delete_user_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -65,7 +65,7 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/deleteUserHeaderViewElement"
+            android:id="@+id/delete_user_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/delete_user_title"

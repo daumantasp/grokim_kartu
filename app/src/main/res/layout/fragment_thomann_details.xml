@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="100dp"
@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/thomannDetailsRecyclerView"
+                android:id="@+id/thomann_details_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="10dp"
@@ -34,7 +34,7 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/thomannDetailsHeaderViewElement"
+            android:id="@+id/thomann_details_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:show_bottom_border="true"

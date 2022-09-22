@@ -29,11 +29,11 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     init {
         inflate(context, R.layout.element_row, this)
 
-        rowConstraintLayout = findViewById(R.id.rowConstraintLayout)
-        titleTextView = findViewById(R.id.titleTextView)
-        valueTextView = findViewById(R.id.valueTextView)
-        iconImageView = findViewById(R.id.iconImageView)
-        switch = findViewById(R.id.rowSwitch)
+        rowConstraintLayout = findViewById(R.id.row_constraint_layout)
+        titleTextView = findViewById(R.id.title_text_view)
+        valueTextView = findViewById(R.id.value_text_view)
+        iconImageView = findViewById(R.id.icon_image_view)
+        switch = findViewById(R.id.row_switch)
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.RowViewElement)
         val title = attributes.getString(R.styleable.RowViewElement_row_title)
@@ -112,7 +112,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             iconImageView.visibility = View.VISIBLE
             val constraintSet = ConstraintSet()
             constraintSet.clone(rowConstraintLayout)
-            constraintSet.connect(R.id.valueTextView, ConstraintSet.END, R.id.iconImageView, ConstraintSet.START)
+            constraintSet.connect(R.id.value_text_view, ConstraintSet.END, R.id.icon_image_view, ConstraintSet.START)
             constraintSet.applyTo(rowConstraintLayout)
         }
     }
@@ -152,11 +152,11 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
 
             val constraintSet = ConstraintSet()
             constraintSet.clone(rowConstraintLayout)
-            constraintSet.connect(R.id.titleTextView, ConstraintSet.BOTTOM, R.id.titleTextView, ConstraintSet.TOP)
-            constraintSet.connect(R.id.valueTextView, ConstraintSet.TOP, R.id.titleTextView, ConstraintSet.BOTTOM, marginInPxBetweenTitleAndValue)
-            constraintSet.connect(R.id.valueTextView, ConstraintSet.START, R.id.rowConstraintLayout, ConstraintSet.START, marginInPxSides)
-            constraintSet.connect(R.id.valueTextView, ConstraintSet.END, R.id.rowConstraintLayout, ConstraintSet.END, marginInPxSides)
-            constraintSet.setHorizontalBias(R.id.valueTextView, 0.0f)
+            constraintSet.connect(R.id.title_text_view, ConstraintSet.BOTTOM, R.id.title_text_view, ConstraintSet.TOP)
+            constraintSet.connect(R.id.value_text_view, ConstraintSet.TOP, R.id.title_text_view, ConstraintSet.BOTTOM, marginInPxBetweenTitleAndValue)
+            constraintSet.connect(R.id.value_text_view, ConstraintSet.START, R.id.row_constraint_layout, ConstraintSet.START, marginInPxSides)
+            constraintSet.connect(R.id.value_text_view, ConstraintSet.END, R.id.row_constraint_layout, ConstraintSet.END, marginInPxSides)
+            constraintSet.setHorizontalBias(R.id.value_text_view, 0.0f)
             constraintSet.applyTo(rowConstraintLayout)
         }
     }

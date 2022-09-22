@@ -18,7 +18,7 @@
             android:background="@drawable/my_message_bubble">
 
             <TextView
-                android:id="@+id/nameTextView"
+                android:id="@+id/name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/my_message_bubble_name_color"
@@ -34,13 +34,13 @@
                 tools:text="Daumantas" />
 
             <TextView
-                android:id="@+id/dateTextView"
+                android:id="@+id/date_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="15dp"
-                android:layout_toEndOf="@id/nameTextView"
+                android:layout_toEndOf="@id/name_text_view"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="?attr/friend_message_bubble_date_color"
@@ -48,12 +48,12 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@id/nameTextView"
+                app:layout_constraintStart_toEndOf="@id/name_text_view"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="2022-07-11" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -69,7 +69,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+                app:layout_constraintTop_toBottomOf="@+id/name_text_view"
                 app:layout_constraintVertical_bias="1.0"
                 tools:text="Laba" />
 

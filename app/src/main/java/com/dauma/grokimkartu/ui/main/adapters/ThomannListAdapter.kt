@@ -90,14 +90,14 @@ class ThomannListAdapter(
         private val photoIconBackgroundDrawable: Drawable?,
         private val onItemClicked: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(view) {
-        val thomannItemLinearLayout = view.findViewById<LinearLayout>(R.id.thomannItemLinearLayout)
-        val userTextView = view.findViewById<TextView>(R.id.userTextView)
-        val cityTextView = view.findViewById<TextView>(R.id.cityTextView)
-        val validUntilTextView = view.findViewById<TextView>(R.id.validUntilTextView)
-        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
-        val photoIcon = view.findViewById<ImageView>(R.id.thomannPlayerIconImageView)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
-        val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.lockedUnlockedIconImageView)
+        val thomannItemLinearLayout = view.findViewById<LinearLayout>(R.id.thomann_item_linear_layout)
+        val userTextView = view.findViewById<TextView>(R.id.user_text_view)
+        val cityTextView = view.findViewById<TextView>(R.id.city_text_view)
+        val validUntilTextView = view.findViewById<TextView>(R.id.valid_until_text_view)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
+        val photoIcon = view.findViewById<ImageView>(R.id.thomann_player_icon_image_view)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
+        val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.locked_unlocked_icon_image_view)
 
         fun bind(thomann: Thomann) {
             userTextView.text = thomann.user?.name
@@ -160,7 +160,7 @@ class ThomannListAdapter(
         view: View,
         private val loadNextPage: () -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)

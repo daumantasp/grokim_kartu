@@ -62,7 +62,7 @@ class NotificationsListAdapter(
         private val utils: Utils,
         private val onItemClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val notificationViewElement = view.findViewById<NotificationViewElement>(R.id.notificationViewElement)
+        val notificationViewElement = view.findViewById<NotificationViewElement>(R.id.notification_view_element)
 
         fun bind(notification: Notification) {
             val createdAtFormatted = notification.createdAt?.time?.let {
@@ -85,7 +85,7 @@ class NotificationsListAdapter(
         view: View,
         private val loadNextPage: () -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)

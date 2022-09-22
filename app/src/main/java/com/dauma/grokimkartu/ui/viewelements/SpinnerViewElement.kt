@@ -25,7 +25,7 @@ class SpinnerViewElement(context: Context, attrs: AttributeSet) : LinearLayout(c
 
     init {
         inflate(context, R.layout.element_spinner, this)
-        spinnerContainerLinearLayout = findViewById(R.id.spinnerContainerLinearLayout)
+        spinnerContainerLinearLayout = findViewById(R.id.spinner_container_linear_layout)
         spinnerCircles.add(findViewById(R.id.spinner_circle_1))
         spinnerCircles.add(findViewById(R.id.spinner_circle_2))
         spinnerCircles.add(findViewById(R.id.spinner_circle_3))

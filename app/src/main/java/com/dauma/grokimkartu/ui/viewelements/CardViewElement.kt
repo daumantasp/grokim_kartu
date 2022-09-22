@@ -18,9 +18,9 @@ class CardViewElement(context: Context, attrs: AttributeSet)
     init {
         inflate(context, R.layout.element_card, this)
 
-        cardView = findViewById(R.id.cardView)
-        titleTextView = findViewById(R.id.titleTextView)
-        descriptionTextView = findViewById(R.id.descriptionTextView)
+        cardView = findViewById(R.id.card_view)
+        titleTextView = findViewById(R.id.title_text_view)
+        descriptionTextView = findViewById(R.id.description_text_view)
 
         cardView.setOnClickListener { onClick() }
 

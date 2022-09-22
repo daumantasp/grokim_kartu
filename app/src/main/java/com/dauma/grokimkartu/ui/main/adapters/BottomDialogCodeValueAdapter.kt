@@ -31,6 +31,6 @@ class BottomDialogCodeValueAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val titleTextView = view.findViewById<TextView>(R.id.titleTextView)
+        val titleTextView = view.findViewById<TextView>(R.id.title_text_view)
     }
 }

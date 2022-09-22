@@ -6,7 +6,7 @@
     android:minHeight="100dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/notificationCardView"
+        android:id="@+id/notification_card_view"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginStart="15dp"
@@ -30,7 +30,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/notificationName"
+                    android:id="@+id/notification_name"
                     style="@style/notification_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                     android:layout_weight="1.0" />
 
                 <TextView
-                    android:id="@+id/notificationDate"
+                    android:id="@+id/notification_date"
                     style="@style/notification_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/notificationDescription"
+                android:id="@+id/notification_description"
                 style="@style/notification_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -55,7 +55,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/activeNotificationCardView"
+        android:id="@+id/active_notification_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="100dp"
@@ -81,7 +81,7 @@
                 android:layout_marginBottom="10dp">
 
                 <TextView
-                    android:id="@+id/activeNotificationName"
+                    android:id="@+id/active_notification_name"
                     style="@style/active_notification_title"
                     android:layout_width="0dp"
                     android:layout_weight="1.0"
@@ -90,7 +90,7 @@
                     android:layout_marginEnd="10dp" />
 
                 <TextView
-                    android:id="@+id/activeNotificationDate"
+                    android:id="@+id/active_notification_date"
                     style="@style/active_notification_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/activeNotificationDescription"
+                android:id="@+id/active_notification_description"
                 style="@style/active_notification_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

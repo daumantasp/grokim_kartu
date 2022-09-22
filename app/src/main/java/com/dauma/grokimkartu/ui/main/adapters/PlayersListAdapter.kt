@@ -87,13 +87,13 @@ class PlayersListAdapter(
         private val photoIconBackgroundDrawable: Drawable?,
         private val onItemClicked: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(view) {
-        val playerItemContainer = view.findViewById<LinearLayout>(R.id.playerItemContainer)
-        val nameTextView = view.findViewById<TextView>(R.id.playerName)
-        val instrumentTextView = view.findViewById<TextView>(R.id.playerInstrument)
-        val cityTextView = view.findViewById<TextView>(R.id.playerCity)
-        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
-        val photoIcon = view.findViewById<ImageView>(R.id.playerIconImageView)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val playerItemContainer = view.findViewById<LinearLayout>(R.id.player_item_container)
+        val nameTextView = view.findViewById<TextView>(R.id.player_name_text_view)
+        val instrumentTextView = view.findViewById<TextView>(R.id.player_instrument)
+        val cityTextView = view.findViewById<TextView>(R.id.player_city)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
+        val photoIcon = view.findViewById<ImageView>(R.id.player_icon_image_view)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(player: Player) {
             nameTextView.text = player.name
@@ -149,7 +149,7 @@ class PlayersListAdapter(
         view: View,
         private val loadNextPage: () -> Unit
     ) : RecyclerView.ViewHolder(view) {
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(data: DummyCell) {
             spinnerViewElement.showAnimation(true)

@@ -17,10 +17,10 @@ class LanguageViewElement(context: Context, attrs: AttributeSet) : ConstraintLay
     init {
         inflate(context, R.layout.element_language, this)
 
-        languageConstraintLayout = findViewById(R.id.languageConstraintLayout)
-        flagImageView = findViewById(R.id.flagImageView)
-        languageTextView = findViewById(R.id.languageTextView)
-        selectedImageView = findViewById(R.id.selectedImageView)
+        languageConstraintLayout = findViewById(R.id.language_constraint_layout)
+        flagImageView = findViewById(R.id.flag_image_view)
+        languageTextView = findViewById(R.id.language_text_view)
+        selectedImageView = findViewById(R.id.selected_image_view)
 
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.LanguageViewElement)
         val languageCode = attributes.getInt(R.styleable.LanguageViewElement_language_code, 0)

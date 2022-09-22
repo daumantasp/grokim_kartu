@@ -10,7 +10,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:background="@drawable/main_background_with_bottom_border"
-    android:id="@+id/thomannDetailsUserItemLayout">
+    android:id="@+id/thomann_details_user_item_layout">
 
     <RelativeLayout
         android:layout_width="60dp"
@@ -19,7 +19,7 @@
         android:layout_marginEnd="20dp">
 
         <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-            android:id="@+id/initialsViewElement"
+            android:id="@+id/initials_view_element"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
@@ -27,12 +27,12 @@
             app:text_size="10dp"/>
 
         <ImageView
-            android:id="@+id/userIconImageView"
+            android:id="@+id/user_icon_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
-            android:id="@+id/spinnerViewElement"
+            android:id="@+id/spinner_view_element"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -54,7 +54,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/userName"
+                android:id="@+id/user_name"
                 style="@style/main_text_secondary"
                 android:textSize="18sp"
                 android:layout_width="0dp"
@@ -64,7 +64,7 @@
                 android:layout_marginBottom="5dp"/>
 
             <TextView
-                android:id="@+id/leaveTextView"
+                android:id="@+id/leave_text_view"
                 style="@style/main_text_secondary"
                 android:textSize="18sp"
                 android:textColor="?attr/warning_color"
@@ -77,7 +77,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/userAmount"
+            android:id="@+id/user_amount"
             style="@style/main_text"
             android:textSize="14sp"
             android:layout_width="match_parent"
@@ -85,7 +85,7 @@
             android:layout_marginBottom="5dp"/>
 
         <TextView
-            android:id="@+id/userJoinedDate"
+            android:id="@+id/user_joined_date"
             style="@style/main_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

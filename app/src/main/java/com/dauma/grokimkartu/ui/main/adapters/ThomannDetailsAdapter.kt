@@ -92,9 +92,9 @@ class ThomannDetailsAdapter(
     }
 
     private class PhotoViewHolder(view: View, private val utils: Utils) : RecyclerView.ViewHolder(view) {
-        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
-        val photoImageView = view.findViewById<ImageView>(R.id.photoImageView)
-        val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.lockedUnlockedIconImageView)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
+        val photoImageView = view.findViewById<ImageView>(R.id.photo_image_view)
+        val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.locked_unlocked_icon_image_view)
 
         fun bind(data: ThomannDetailsPhotoData) {
             if (data.photo == null) {
@@ -120,7 +120,7 @@ class ThomannDetailsAdapter(
     }
 
     private class RowViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val rowViewElement = view.findViewById<RowViewElement>(R.id.thomannDetailsRowViewElement)
+        val rowViewElement = view.findViewById<RowViewElement>(R.id.thomann_details_row_view_element)
 
         fun bind(data: ThomannDetailsRowData) {
             rowViewElement.setTitle(data.title)
@@ -129,7 +129,7 @@ class ThomannDetailsAdapter(
     }
 
     private class StatusRowViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        val rowViewElement = view.findViewById<RowViewElement>(R.id.thomannDetailsRowViewElement)
+        val rowViewElement = view.findViewById<RowViewElement>(R.id.thomann_details_row_view_element)
 
         fun bind(data: ThomannDetailsStatusData) {
             rowViewElement.setTitle(data.title)
@@ -167,14 +167,14 @@ class ThomannDetailsAdapter(
         private val onKickClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(view) {
         private val photoIconBackgroundDrawable: Drawable?
-        val rootLayout = view.findViewById<LinearLayout>(R.id.thomannDetailsUserItemLayout)
-        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initialsViewElement)
-        val userIconImageView = view.findViewById<ImageView>(R.id.userIconImageView)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinnerViewElement)
-        val userNameTextView = view.findViewById<TextView>(R.id.userName)
-        val userAmountTextView = view.findViewById<TextView>(R.id.userAmount)
-        val userJoinedDateTextView = view.findViewById<TextView>(R.id.userJoinedDate)
-        val leaveOrKickTextView = view.findViewById<TextView>(R.id.leaveTextView)
+        val rootLayout = view.findViewById<LinearLayout>(R.id.thomann_details_user_item_layout)
+        val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
+        val userIconImageView = view.findViewById<ImageView>(R.id.user_icon_image_view)
+        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
+        val userNameTextView = view.findViewById<TextView>(R.id.user_name)
+        val userAmountTextView = view.findViewById<TextView>(R.id.user_amount)
+        val userJoinedDateTextView = view.findViewById<TextView>(R.id.user_joined_date)
+        val leaveOrKickTextView = view.findViewById<TextView>(R.id.leave_text_view)
 
         init {
             // You may need to call mutate() on the drawable or else all icons are affected.
@@ -275,7 +275,7 @@ class ThomannDetailsAdapter(
     }
 
     private class ButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val buttonViewElement = view.findViewById<ButtonViewElement>(R.id.thomannDetailsButtonViewElement)
+        val buttonViewElement = view.findViewById<ButtonViewElement>(R.id.thomann_details_button_view_element)
 
         fun bind(data: ThomannDetailstButtonData) {
             buttonViewElement.setText(data.title)

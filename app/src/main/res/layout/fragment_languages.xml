@@ -25,14 +25,14 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.dauma.grokimkartu.ui.viewelements.LanguageViewElement
-                android:id="@+id/ltLanguageViewElement"
+                android:id="@+id/lt_language_view_element"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:language_code="lt"
                 app:language_is_selected="true" />
 
             <com.dauma.grokimkartu.ui.viewelements.LanguageViewElement
-                android:id="@+id/enLanguageViewElement"
+                android:id="@+id/en_language_view_element"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:language_code="en"
@@ -41,7 +41,7 @@
         </LinearLayout>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/languagesHeaderViewElement"
+            android:id="@+id/languages_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/settings_language"

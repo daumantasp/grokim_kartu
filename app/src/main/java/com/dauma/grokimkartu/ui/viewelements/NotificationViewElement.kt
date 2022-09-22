@@ -38,15 +38,15 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
     init {
         inflate(context, R.layout.element_notification, this)
 
-        notificationCardView = findViewById(R.id.notificationCardView)
-        nameTextView = findViewById(R.id.notificationName)
-        descriptionTextView = findViewById(R.id.notificationDescription)
-        dateTextView = findViewById(R.id.notificationDate)
+        notificationCardView = findViewById(R.id.notification_card_view)
+        nameTextView = findViewById(R.id.notification_name)
+        descriptionTextView = findViewById(R.id.notification_description)
+        dateTextView = findViewById(R.id.notification_date)
 
-        activeNotificationCardView = findViewById(R.id.activeNotificationCardView)
-        activeNameTextView = findViewById(R.id.activeNotificationName)
-        activeDescriptionTextView = findViewById(R.id.activeNotificationDescription)
-        activeDateTextView = findViewById(R.id.activeNotificationDate)
+        activeNotificationCardView = findViewById(R.id.active_notification_card_view)
+        activeNameTextView = findViewById(R.id.active_notification_name)
+        activeDescriptionTextView = findViewById(R.id.active_notification_description)
+        activeDateTextView = findViewById(R.id.active_notification_date)
 
         notificationCardView.setOnClickListener { onClick() }
         activeNotificationCardView.setOnClickListener { onClick() }

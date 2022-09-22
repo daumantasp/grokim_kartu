@@ -9,10 +9,10 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:background="@drawable/main_background_with_top_border"
-    android:id="@+id/codeValueItemContainer">
+    android:id="@+id/code_value_item_container">
 
     <TextView
-        android:id="@+id/titleTextView"
+        android:id="@+id/title_text_view"
         style="@style/main_text"
         android:textSize="18sp"
         android:layout_width="match_parent"

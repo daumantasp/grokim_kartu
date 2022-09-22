@@ -15,7 +15,7 @@
         tools:context=".ui.main.ProfileEditFragment">
 
         <ScrollView
-            android:id="@+id/profileEditScrollView"
+            android:id="@+id/profile_edit_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="100dp"
@@ -39,7 +39,7 @@
                     android:layout_marginBottom="30dp">
 
                     <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-                        android:id="@+id/profileInitialsViewElement"
+                        android:id="@+id/profile_initials_view_element"
                         android:layout_width="244dp"
                         android:layout_height="253dp"
                         android:layout_gravity="center"
@@ -53,7 +53,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/photoImageView"
+                        android:id="@+id/photo_image_view"
                         android:layout_width="244dp"
                         android:layout_height="253dp"
                         android:layout_gravity="center"
@@ -66,7 +66,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
-                        android:id="@+id/selectPhotoButton"
+                        android:id="@+id/select_photo_button"
                         android:background="@drawable/select_photo_button"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
@@ -78,7 +78,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/nameTextInput"
+                    android:id="@+id/name_text_input"
                     style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
@@ -87,7 +87,7 @@
                     android:enabled="false">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/nameInputEditText"
+                        android:id="@+id/name_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:text="@{model.getProfileEditForm().name}"
@@ -101,7 +101,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/instrumentTextInput"
+                    android:id="@+id/instrument_text_input"
                     style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
@@ -112,7 +112,7 @@
                     app:counterTextAppearance="@style/input_counter">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/instrumentInputEditText"
+                        android:id="@+id/instrument_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:text="@{model.getProfileEditForm().instrument.name}"
@@ -128,7 +128,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/descriptionTextInput"
+                    android:id="@+id/description_text_input"
                     style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="240dp"
@@ -139,7 +139,7 @@
                     app:counterTextAppearance="@style/input_counter">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/descriptionInputEditText"
+                        android:id="@+id/description_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:text="@={model.getProfileEditForm().description}"
@@ -155,7 +155,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cityTextInput"
+                    android:id="@+id/city_text_input"
                     style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
@@ -166,7 +166,7 @@
                     app:counterTextAppearance="@style/input_counter">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/cityInputEditText"
+                        android:id="@+id/city_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:clickable="true"
@@ -187,7 +187,7 @@
                     android:layout_weight="1" />
 
                 <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
-                    android:id="@+id/saveChangesButton"
+                    android:id="@+id/save_changes_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -200,7 +200,7 @@
         </ScrollView>
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
-            android:id="@+id/profileEditHeaderViewElement"
+            android:id="@+id/profile_edit_header_view_element"
             android:layout_width="match_parent"
             android:layout_height="110dp"
             app:title="@string/profile_edit_fragment"

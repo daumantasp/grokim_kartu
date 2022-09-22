@@ -40,17 +40,17 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     init {
         inflate(context, R.layout.element_header, this)
 
-        contentConstraintLayout = findViewById(R.id.contentConstraintLayout)
-        backImageButton = findViewById(R.id.backImageButton)
-        titleTextView = findViewById(R.id.headerTitleTextView)
-        userRelativeLayout = findViewById(R.id.userRelativeLayout)
-        initialsViewElement = findViewById(R.id.initialsViewElement)
-        userIconImageView = findViewById(R.id.userIconImageView)
-        spinnerViewElement = findViewById(R.id.spinnerViewElement)
-        rightTextView = findViewById(R.id.rightTextView)
-        notificationsRelativeLayout = findViewById(R.id.notificationsRelativeLayout)
-        notificationsFrameLayout = findViewById(R.id.notificationsFrameLayout)
-        unreadNotificationsCountTextView = findViewById(R.id.unreadNotificationsCountTextView)
+        contentConstraintLayout = findViewById(R.id.content_constraint_layout)
+        backImageButton = findViewById(R.id.back_image_button)
+        titleTextView = findViewById(R.id.header_title_text_view)
+        userRelativeLayout = findViewById(R.id.user_relative_layout)
+        initialsViewElement = findViewById(R.id.initials_view_element)
+        userIconImageView = findViewById(R.id.user_icon_image_view)
+        spinnerViewElement = findViewById(R.id.spinner_view_element)
+        rightTextView = findViewById(R.id.right_text_view)
+        notificationsRelativeLayout = findViewById(R.id.notifications_relative_layout)
+        notificationsFrameLayout = findViewById(R.id.notifications_frame_layout)
+        unreadNotificationsCountTextView = findViewById(R.id.unread_notifications_count_text_view)
 
         photoIconBackgroundDrawable = ContextCompat.getDrawable(context, R.drawable.oval_background)?.mutate()
         val typedValue = TypedValue()
@@ -154,7 +154,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
             titleTextView.gravity = Gravity.CENTER
             val constraintSet = ConstraintSet()
             constraintSet.clone(contentConstraintLayout)
-            constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.END, R.id.contentConstraintLayout, ConstraintSet.END, 0)
+            constraintSet.connect(R.id.header_title_text_view, ConstraintSet.END, R.id.content_constraint_layout, ConstraintSet.END, 0)
             constraintSet.applyTo(contentConstraintLayout)
         }
     }
@@ -177,9 +177,9 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
             val marginInPxSides = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.0f, resources.displayMetrics).toInt()
             val constraintSet = ConstraintSet()
             constraintSet.clone(contentConstraintLayout)
-            constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.END, R.id.rightTextView, ConstraintSet.START, marginInPxSides)
+            constraintSet.connect(R.id.header_title_text_view, ConstraintSet.END, R.id.right_text_view, ConstraintSet.START, marginInPxSides)
             if (backImageButton.visibility == View.VISIBLE) {
-                constraintSet.connect(R.id.headerTitleTextView, ConstraintSet.START, R.id.backImageButton, ConstraintSet.END, marginInPxSides)
+                constraintSet.connect(R.id.header_title_text_view, ConstraintSet.START, R.id.back_image_button, ConstraintSet.END, marginInPxSides)
             }
             constraintSet.applyTo(contentConstraintLayout)
         }
