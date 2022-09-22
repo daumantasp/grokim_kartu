@@ -79,7 +79,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/nameTextInput"
-                    style="@style/secondary_text_input"
+                    style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
@@ -102,7 +102,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/instrumentTextInput"
-                    style="@style/secondary_text_input"
+                    style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
@@ -129,7 +129,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/descriptionTextInput"
-                    style="@style/secondary_text_input"
+                    style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="240dp"
                     android:layout_gravity="center"
@@ -156,7 +156,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/cityTextInput"
-                    style="@style/secondary_text_input"
+                    style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center"

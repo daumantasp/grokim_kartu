@@ -154,17 +154,50 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="auth_text_input" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">?attr/primary_text_input_background_color</item>
+        <item name="android:textColorHint">?attr/primary_text_input_hint_color</item>
+        <item name="hintTextColor">?attr/primary_text_input_hint_color</item>
+        <item name="boxStrokeColor">?attr/primary_text_input_box_stroke_color</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+    </style>
+
+    <style name="main_text_input" parent="auth_text_input">
+        <item name="boxBackgroundColor">?attr/secondary_text_input_background_color</item>
+        <item name="android:textColorHint">?attr/secondary_text_input_hint_color</item>
+        <item name="hintTextColor">?attr/secondary_text_input_hint_color</item>
+        <item name="boxStrokeColor">?attr/secondary_text_input_box_stroke_color</item>
+    </style>
+
+    <style name="primary_button">
+        <item name="android:background">@drawable/primary_in_auth_button_ripple</item>
+        <item name="android:textColor">?attr/auth_primary_button_title_color</item>
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:width">250dp</item>
+        <item name="android:height">30dp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="header_title">
+        <item name="android:textColor">?attr/title_color</item>
+        <item name="android:fontFamily">@font/raleway</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="header_right_text" parent="header_title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">end</item>
+    </style>
+
     <style name="notification_title">
         <item name="android:textColor">?attr/inactive_notification_title_color</item>
         <item name="android:fontFamily">"@font/lato"</item>
         <item name="android:textSize">16sp</item>
         <item name="android:singleLine">true</item>
-    </style>
-
-    <style name="notification_date">
-        <item name="android:textColor">?attr/inactive_notification_date_color</item>
-        <item name="android:fontFamily">"@font/lato"</item>
-        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="notification_text">
@@ -173,6 +206,12 @@
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="notification_date">
+        <item name="android:textColor">?attr/inactive_notification_date_color</item>
+        <item name="android:fontFamily">"@font/lato"</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="active_notification_title" parent="notification_title">
@@ -198,32 +237,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="primary_button">
-        <item name="android:background">@drawable/primary_in_auth_button_ripple</item>
-        <item name="android:textColor">?attr/auth_primary_button_title_color</item>
-        <item name="android:fontFamily">@font/lato</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:width">250dp</item>
-        <item name="android:height">30dp</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
-
-    <style name="primary_text_input" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="boxBackgroundColor">?attr/primary_text_input_background_color</item>
-        <item name="android:textColorHint">?attr/primary_text_input_hint_color</item>
-        <item name="hintTextColor">?attr/primary_text_input_hint_color</item>
-        <item name="boxStrokeColor">?attr/primary_text_input_box_stroke_color</item>
-        <item name="boxCornerRadiusTopStart">10dp</item>
-        <item name="boxCornerRadiusTopEnd">10dp</item>
-    </style>
-
-    <style name="secondary_text_input" parent="primary_text_input">
-        <item name="boxBackgroundColor">?attr/secondary_text_input_background_color</item>
-        <item name="android:textColorHint">?attr/secondary_text_input_hint_color</item>
-        <item name="hintTextColor">?attr/secondary_text_input_hint_color</item>
-        <item name="boxStrokeColor">?attr/secondary_text_input_box_stroke_color</item>
-    </style>
-
     <style name="dialog_text_input" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">?attr/bottom_dialog_text_input_background_color</item>
         <item name="android:textColorHint">?attr/bottom_dialog_text_input_hint_color</item>
@@ -234,19 +247,6 @@
         <item name="boxCornerRadiusBottomEnd">10dp</item>
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
-    </style>
-
-    <style name="header_title">
-        <item name="android:textColor">?attr/title_color</item>
-        <item name="android:fontFamily">@font/raleway</item>
-        <item name="android:textSize">32sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="header_right_text" parent="header_title">
-        <item name="android:textSize">18sp</item>
-        <item name="android:gravity">end</item>
     </style>
 
     <style name="bottom_dialog_title">
