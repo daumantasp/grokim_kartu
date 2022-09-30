@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import java.sql.Timestamp
 
 data class ProfileResponse(
-    @SerializedName("id") var user: Int?,
+    @SerializedName("user_id") var userId: Int?,
     @SerializedName("name") var name: String?,
     @SerializedName("description") var description: String?,
     @SerializedName("city") var city: CityResponse?,

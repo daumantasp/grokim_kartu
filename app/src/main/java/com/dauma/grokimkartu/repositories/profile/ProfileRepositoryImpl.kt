@@ -195,7 +195,7 @@ class ProfileRepositoryImpl(
             profileResponse.instrument?.name
         )
         return Profile(
-            userId = profileResponse.user,
+            userId = profileResponse.userId,
             name = profileResponse.name,
             description = profileResponse.description,
             city = profileCity,

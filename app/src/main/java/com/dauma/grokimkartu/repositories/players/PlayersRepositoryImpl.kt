@@ -6,8 +6,6 @@ import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.auth.LoginListener
-import com.dauma.grokimkartu.repositories.notifications.NotificationsErrors
-import com.dauma.grokimkartu.repositories.notifications.NotificationsException
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
@@ -49,7 +47,7 @@ class PlayersRepositoryImpl(
             playersDao.playerDetails(userId, user.getBearerAccessToken()!!) { playerDetailsResponse, playersDaoResponseStatus ->
                 if (playersDaoResponseStatus.isSuccessful && playerDetailsResponse != null) {
                     val playerDetails = PlayerDetails(
-                        userId = playerDetailsResponse.id.toString(),
+                        userId = playerDetailsResponse.userId.toString(),
                         name = playerDetailsResponse.name,
                         instrument = playerDetailsResponse.instrument,
                         description = playerDetailsResponse.description,
@@ -143,10 +141,10 @@ class PlayersRepositoryImpl(
         if (playersResponse.data != null) {
             players = playersResponse.data!!.map { pr ->
                 val loader = { onComplete: (Bitmap?, PlayersErrors?) -> Unit ->
-                    this.playerIcon(pr.id ?: -1, onComplete)
+                    this.playerIcon(pr.userId ?: -1, onComplete)
                 }
                 Player(
-                    userId = pr.id,
+                    userId = pr.userId,
                     name = pr.name,
                     instrument = pr.instrument,
                     description = "",
