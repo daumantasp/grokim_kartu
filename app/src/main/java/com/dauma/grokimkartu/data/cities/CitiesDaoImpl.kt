@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 class CitiesDaoImpl(retrofit: Retrofit) : CitiesDao {
     private val retrofitCities: RetrofitCities = retrofit.create(RetrofitCities::class.java)
@@ -73,6 +74,6 @@ class CitiesDaoImpl(retrofit: Retrofit) : CitiesDao {
 
     private interface RetrofitCities {
         @GET("cities") fun cities(@Header("Authorization") accessToken: String): Call<ArrayList<CityResponse>>
-        @GET("city/search/{value}") fun search(@Header("Authorization") accessToken: String, @Path("value") value: String): Call<ArrayList<CityResponse>>
+        @GET("cities/search") fun search(@Header("Authorization") accessToken: String, @Query("value") value: String): Call<ArrayList<CityResponse>>
     }
 }

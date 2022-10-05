@@ -88,7 +88,7 @@ class PrivateConversationsDaoImpl(retrofit: Retrofit) : PrivateConversationsDao 
         accessToken: String,
         onComplete: (MessageResponse?, ConversationsDaoResponseStatus) -> Unit
     ) {
-        retrofitConversations.postMessage(conversationPartnerId, accessToken, postMessageRequest).enqueue(object : Callback<MessageResponse> {
+        retrofitConversations.postMessage(accessToken, conversationPartnerId, postMessageRequest).enqueue(object : Callback<MessageResponse> {
             override fun onResponse(
                 call: Call<MessageResponse>,
                 response: Response<MessageResponse>
@@ -133,10 +133,10 @@ class PrivateConversationsDaoImpl(retrofit: Retrofit) : PrivateConversationsDao 
             @Header("Authorization") accessToken: String
         ): Call<MessagesResponse>
 
-        @POST("messages/{id}")
+        @POST("messages")
         fun postMessage(
-            @Path("id") id: Int,
             @Header("Authorization") accessToken: String,
+            @Query("user_id") user_id: Int,
             @Body postMessageRequest: PostMessageRequest
         ): Call<MessageResponse>
     }

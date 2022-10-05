@@ -118,6 +118,6 @@ class NotificationsDaoImpl(retrofit: Retrofit) : NotificationsDao {
         ) : Call<NotificationsResponse>
 
         @GET("notifications/unreadcount") fun unreadCount(@Header("Authorization") accessToken: String) : Call<UnreadNotificationsResponse>
-        @PUT("notification/{id}") fun updateNotification(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body updateRequest: UpdateNotificationRequest) : Call<NotificationResponse>
+        @PUT("notifications") fun updateNotification(@Header("Authorization") accessToken: String, @Query("id") id: Int, @Body updateRequest: UpdateNotificationRequest) : Call<NotificationResponse>
     }
 }

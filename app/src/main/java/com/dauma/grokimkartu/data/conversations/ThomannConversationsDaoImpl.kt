@@ -92,7 +92,7 @@ class ThomannConversationsDaoImpl(retrofit: Retrofit) : ThomannConversationsDao 
         accessToken: String,
         onComplete: (MessageResponse?, ConversationsDaoResponseStatus) -> Unit
     ) {
-        retrofitConversations.postThomannMessage(thomannId, accessToken, postMessageRequest).enqueue(object : Callback<MessageResponse> {
+        retrofitConversations.postThomannMessage(accessToken, thomannId, postMessageRequest).enqueue(object : Callback<MessageResponse> {
             override fun onResponse(
                 call: Call<MessageResponse>,
                 response: Response<MessageResponse>
@@ -135,16 +135,16 @@ class ThomannConversationsDaoImpl(retrofit: Retrofit) : ThomannConversationsDao 
 
         @GET("messages/thomann")
         fun thomannMessages(
-            @Query("thomann_id") userId: Int,
+            @Query("thomann_id") thomannId: Int,
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
             @Header("Authorization") accessToken: String
         ): Call<MessagesResponse>
 
-        @POST("messages/thomann/{id}")
+        @POST("messages/thomann")
         fun postThomannMessage(
-            @Path("id") id: Int,
             @Header("Authorization") accessToken: String,
+            @Query("thomann_id") thomann_id: Int,
             @Body postMessageRequest: PostMessageRequest
         ): Call<MessageResponse>
     }

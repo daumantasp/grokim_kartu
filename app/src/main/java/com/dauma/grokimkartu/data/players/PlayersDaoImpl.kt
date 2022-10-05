@@ -174,11 +174,11 @@ class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
             @Header("Authorization") accessToken: String
         ): Call<PlayersResponse>
 
-        @GET("player/details/{id}") fun playerDetails(@Header("Authorization") accessToken: String, @Path("id") id: Int) : Call<PlayerDetailsResponse>
-        @GET("player/icon/{id}") fun icon(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ResponseBody>
+        @GET("players/details") fun playerDetails(@Header("Authorization") accessToken: String, @Query("id") id: Int) : Call<PlayerDetailsResponse>
+        @GET("players/icon") fun icon(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<ResponseBody>
 
         @Headers("Connection: close")
-        @GET("player/photo/{id}")
-        fun photo(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ResponseBody>
+        @GET("players/photo")
+        fun photo(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<ResponseBody>
     }
 }

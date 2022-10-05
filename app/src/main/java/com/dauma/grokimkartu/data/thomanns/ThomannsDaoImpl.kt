@@ -344,7 +344,7 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
     }
 
     private interface RetrofitThomanns {
-        @POST("thomann") fun createThomann(@Header("Authorization") accessToken: String, @Body createRequest: CreateThomannRequest): Call<ThomannDetailsResponse>
+        @POST("thomanns") fun createThomann(@Header("Authorization") accessToken: String, @Body createRequest: CreateThomannRequest): Call<ThomannDetailsResponse>
 
         @GET("thomanns")
         fun thomanns(
@@ -353,11 +353,11 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
             @Header("Authorization") accessToken: String
         ): Call<ThomannsResponse>
 
-        @GET("thomann/details/{id}") fun thomannDetails(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ThomannDetailsResponse>
-        @PUT("thomann/{id}") fun updateThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body updateRequest: UpdateThomannRequest): Call<ThomannDetailsResponse>
-        @DELETE("thomann/{id}") fun delete(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<Array<String>>
-        @POST("thomann/join/{id}") fun joinThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body joinRequest: JoinThomannRequest): Call<ThomannDetailsResponse>
-        @POST("thomann/quit/{id}") fun quitThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int): Call<ThomannDetailsResponse>
-        @POST("thomann/kick/{id}") fun kickThomann(@Header("Authorization") accessToken: String, @Path("id") id: Int, @Body joinRequest: KickThomannRequest): Call<ThomannDetailsResponse>
+        @GET("thomanns/details") fun thomannDetails(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<ThomannDetailsResponse>
+        @PUT("thomanns") fun updateThomann(@Header("Authorization") accessToken: String, @Query("id") id: Int, @Body updateRequest: UpdateThomannRequest): Call<ThomannDetailsResponse>
+        @DELETE("thomanns") fun delete(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<Array<String>>
+        @POST("thomanns/join") fun joinThomann(@Header("Authorization") accessToken: String, @Query("id") id: Int, @Body joinRequest: JoinThomannRequest): Call<ThomannDetailsResponse>
+        @POST("thomanns/quit") fun quitThomann(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<ThomannDetailsResponse>
+        @POST("thomanns/kick") fun kickThomann(@Header("Authorization") accessToken: String, @Query("id") id: Int, @Body joinRequest: KickThomannRequest): Call<ThomannDetailsResponse>
     }
 }
