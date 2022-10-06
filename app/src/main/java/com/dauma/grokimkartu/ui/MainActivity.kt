@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -141,20 +143,24 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         val statusBarBackgroundColor = typedValue.resourceId
 
         statusBarBackgroundFrameLayout?.setBackgroundColor(ContextCompat.getColor(this, statusBarBackgroundColor))
-        // TODO: Check on API 30
-        if (theme == StatusBarTheme.LOGIN) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                window?.insetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
-            } else {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            // For navigation bar. Do not understand whats happening. Usually works but sometimes not on API 30
+            // https://stackoverflow.com/questions/64481841/android-api-level-30-setsystembarsappearance-doesnt-overwrite-theme-data
+            if (theme == StatusBarTheme.LOGIN) {
+                window?.decorView?.windowInsetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+            } else if (theme == StatusBarTheme.MAIN) {
+                window?.decorView?.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS or APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    APPEARANCE_LIGHT_STATUS_BARS or APPEARANCE_LIGHT_NAVIGATION_BARS)
+            }
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.white)
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        } else {
+            if (theme == StatusBarTheme.LOGIN) {
                 @Suppress("DEPRECATION")
                 window.decorView.systemUiVisibility =
                     window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-            }
-        } else if (theme == StatusBarTheme.MAIN) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                window?.insetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS,
-                    APPEARANCE_LIGHT_STATUS_BARS)
-            } else {
+            } else if (theme == StatusBarTheme.MAIN) {
                 @Suppress("DEPRECATION")
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
