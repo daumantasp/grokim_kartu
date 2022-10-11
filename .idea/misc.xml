@@ -10,6 +10,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-v24/post_message_background.xml" value="0.1695" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-xhdpi/code_value_item_background.xml" value="0.184" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-xhdpi/conversation_item_background.xml" value="0.164" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable-xxhdpi/rectangular_background.xml" value="0.18" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/auth_background.xml" value="0.1585" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/bottom_dialog_content_background.xml" value="0.1585" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/bottom_dialog_value_container_background.xml" value="0.199" />
@@ -25,6 +26,7 @@
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/my_message_bubble.xml" value="0.1" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/oval_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/partner_message_bubble.xml" value="0.115" />
+        <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/photo_frame.xml" value="0.171" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/player_item_background.xml" value="0.1365" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/primary_button.xml" value="0.147" />
         <entry key="..\:/Development/Grokim/grokim_kartu/app/src/main/res/drawable/primary_button_disabled.xml" value="0.147" />

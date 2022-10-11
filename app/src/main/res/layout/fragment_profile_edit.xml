@@ -36,7 +36,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="30dp">
+                    android:padding="5dp"
+                    android:background="@drawable/photo_frame">
 
                     <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
                         android:id="@+id/profile_initials_view_element"
@@ -44,7 +45,7 @@
                         android:layout_height="253dp"
                         android:layout_gravity="center"
                         android:layout_marginBottom="25dp"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         app:initials_type="rectangular"
                         app:text_size="32dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,28 +55,31 @@
 
                     <ImageView
                         android:id="@+id/photo_image_view"
-                        android:layout_width="244dp"
-                        android:layout_height="253dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="25dp"
                         android:src="@{model.getProfileEditForm().photo}"
-                        android:visibility="invisible"
+                        android:visibility="gone"
+                        app:layout_constraintWidth_max="244dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/select_photo_button"
-                        android:background="@drawable/select_photo_button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:onClick="@{() -> model.selectPhoto()}"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageButton
+                    android:id="@+id/select_photo_button"
+                    android:layout_marginBottom="30dp"
+                    android:background="@drawable/select_photo_button"
+                    android:layout_marginTop="-25dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:onClick="@{() -> model.selectPhoto()}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/name_text_input"
