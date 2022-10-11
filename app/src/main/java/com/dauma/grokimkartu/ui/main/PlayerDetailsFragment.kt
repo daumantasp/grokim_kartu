@@ -74,6 +74,7 @@ class PlayerDetailsFragment : Fragment() {
                 binding.profileInitialsViewElement.visibility = View.GONE
                 binding.photoImageView.visibility = View.VISIBLE
             }
+            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
         })
     }
 }

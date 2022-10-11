@@ -10,10 +10,12 @@
     android:background="@drawable/main_background_with_bottom_border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_photo_or_initials_constraint_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="5dp"
+        android:visibility="invisible"
         android:background="@drawable/photo_frame">
 
         <com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
@@ -21,7 +23,7 @@
             android:layout_width="244dp"
             android:layout_height="253dp"
             android:layout_gravity="center"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:initials_type="rectangular"
             app:text_size="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +37,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:layout_gravity="center"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintWidth_max="244dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -140,6 +140,7 @@ class ProfileEditFragment : Fragment() {
                 binding.profileInitialsViewElement.visibility = View.GONE
                 binding.photoImageView.visibility = View.VISIBLE
             }
+            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
         })
         profileEditViewModel.selectPhoto.observe(viewLifecycleOwner, EventObserver {
             val pickIntent: Intent? = if (canPick()) Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) else null

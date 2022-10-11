@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
@@ -95,6 +96,7 @@ class ThomannDetailsAdapter(
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
         val photoImageView = view.findViewById<ImageView>(R.id.photo_image_view)
         val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.locked_unlocked_icon_image_view)
+        val profilePhotoOrInitialsConstraintLayout = view.findViewById<ConstraintLayout>(R.id.profile_photo_or_initials_constraint_layout)
 
         fun bind(data: ThomannDetailsPhotoData) {
             if (data.photo == null) {
@@ -107,6 +109,7 @@ class ThomannDetailsAdapter(
                 initialsViewElement.visibility = View.GONE
                 photoImageView.visibility = View.VISIBLE
             }
+            profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
 
             if (data.isLocked == true) {
                 lockedUnlockedIconImageView.setImageResource(R.drawable.locked_icon)

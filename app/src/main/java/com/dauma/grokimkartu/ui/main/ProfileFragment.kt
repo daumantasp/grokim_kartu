@@ -55,6 +55,7 @@ class ProfileFragment : Fragment() {
                 binding.profileInitialsViewElement.visibility = View.GONE
                 binding.photoImageView.visibility = View.VISIBLE
             }
+            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
         })
         profileViewModel.profileEdit.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)
