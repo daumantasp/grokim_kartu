@@ -4,11 +4,11 @@ import android.graphics.Bitmap
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
+import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
-import com.dauma.grokimkartu.repositories.players.entities.PlayerIcon
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginator
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -140,15 +140,17 @@ class PlayersRepositoryImpl(
 
         if (playersResponse.data != null) {
             players = playersResponse.data!!.map { pr ->
-                val loader = { onComplete: (Bitmap?, PlayersErrors?) -> Unit ->
-                    this.playerIcon(pr.userId ?: -1, onComplete)
+                val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
+                    this.playerIcon(pr.userId ?: -1) { icon, _ ->
+                        onComplete(icon)
+                    }
                 }
                 Player(
                     userId = pr.userId,
                     name = pr.name,
                     instrument = pr.instrument,
                     description = "",
-                    icon = PlayerIcon(loader),
+                    iconLoader = IconLoader(iconDownload),
                     city = pr.city
                 )
             }

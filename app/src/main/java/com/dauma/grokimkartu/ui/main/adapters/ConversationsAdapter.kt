@@ -17,12 +17,11 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
-import com.dauma.grokimkartu.repositories.conversations.entities.MessageUserIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
-import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 import java.sql.Date
 import java.sql.Timestamp
 
@@ -72,7 +71,6 @@ class ConversationsAdapter(
         val textTextView = view.findViewById<TextView>(R.id.message_text_text_view)
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
         val photoIcon = view.findViewById<ImageView>(R.id.player_icon_image_view)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(conversation: Conversation) {
             nameTextView.text = conversation.lastMessage?.user?.name ?: ""
@@ -96,42 +94,29 @@ class ConversationsAdapter(
                 this.onItemClicked(conversation.id ?: -1)
             }
 
-            fun bindOrUnbindPhoto() {
-                if (conversation.lastMessage?.user?.userIcon?.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(conversation.lastMessage?.user?.userIcon?.icon!!)
+            fun bindIconIfPossible() {
+                conversation.lastMessage?.user?.iconLoader?.icon?.let {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(it)
                     photoIcon.setImageBitmap(ovalPhoto)
-                    spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
                     photoIcon.visibility = View.VISIBLE
                 }
             }
-            fun bindOrUnbindInitials() {
-                if (conversation.lastMessage?.user?.userIcon?.icon  == null) {
-                    val initials = utils.stringUtils.getInitials(conversation.lastMessage?.user?.name ?: "")
-                    initialsViewElement.setInitials(initials)
-                    spinnerViewElement.showAnimation(false)
-                    photoIcon.visibility = View.GONE
-                    initialsViewElement.visibility = View.VISIBLE
-                }
-            }
-            fun bindDownloadInProgress() {
-                photoIcon.setImageDrawable(photoIconBackgroundDrawable)
-                initialsViewElement.visibility = View.GONE
-                photoIcon.visibility = View.VISIBLE
-                spinnerViewElement.showAnimation(true)
+            fun bindInitials() {
+                val initials = utils.stringUtils.getInitials(conversation.lastMessage?.user?.name ?: "")
+                initialsViewElement.setInitials(initials)
+                photoIcon.visibility = View.GONE
+                initialsViewElement.visibility = View.VISIBLE
             }
 
-            val iconStatus = conversation.lastMessage?.user?.userIcon?.status
-            if (iconStatus == MessageUserIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == MessageUserIconStatus.DOWNLOADED_ICON_SET) {
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-            } else if (iconStatus == MessageUserIconStatus.DOWNLOAD_IN_PROGRESS) {
-                bindDownloadInProgress()
-            } else if (iconStatus == MessageUserIconStatus.NEED_TO_DOWNLOAD) {
-                bindDownloadInProgress()
-                conversation.lastMessage?.user?.userIcon?.loadIfNeeded { photo, e ->
-                    bindOrUnbindPhoto()
-                    bindOrUnbindInitials()
+            bindInitials()
+            if (conversation.lastMessage?.user?.iconLoader?.status == IconStatus.ICON_DOWNLOADED) {
+                bindIconIfPossible()
+            } else if (conversation.lastMessage?.user?.iconLoader?.status == IconStatus.NEED_TO_DOWNLOAD) {
+                conversation.lastMessage?.user?.iconLoader?.loadIcon { icon ->
+                    if (icon != null) {
+                        bindIconIfPossible()
+                    }
                 }
             }
         }

@@ -16,10 +16,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
+import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.repositories.conversations.entities.Message
-import com.dauma.grokimkartu.repositories.conversations.entities.MessageUserIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 import java.sql.Date
@@ -129,7 +129,6 @@ class ConversationAdapter(
         val textView = view.findViewById<TextView>(R.id.text_view)
         val userIconImageView = view.findViewById<ImageView>(R.id.player_icon_image_view)
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(message: Message) {
             nameTextView.text = message.user?.name
@@ -139,42 +138,29 @@ class ConversationAdapter(
             }
             textView.text = message.text
 
-            fun bindOrUnbindPhoto() {
-                if (message.user?.userIcon?.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(message.user?.userIcon?.icon!!)
+            fun bindIconIfPossible() {
+                message.user?.iconLoader?.icon?.let {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(it)
                     userIconImageView.setImageBitmap(ovalPhoto)
-                    spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
                     userIconImageView.visibility = View.VISIBLE
                 }
             }
-            fun bindOrUnbindInitials() {
-                if (message.user?.userIcon?.icon == null) {
-                    val initials = utils.stringUtils.getInitials(message.user?.name ?: "")
-                    initialsViewElement.setInitials(initials)
-                    spinnerViewElement.showAnimation(false)
-                    userIconImageView.visibility = View.GONE
-                    initialsViewElement.visibility = View.VISIBLE
-                }
-            }
-            fun bindDownloadInProgress() {
-                userIconImageView.setImageDrawable(photoIconBackgroundDrawable)
-                initialsViewElement.visibility = View.GONE
-                userIconImageView.visibility = View.VISIBLE
-                spinnerViewElement.showAnimation(true)
+            fun bindInitials() {
+                val initials = utils.stringUtils.getInitials(message.user?.name ?: "")
+                initialsViewElement.setInitials(initials)
+                userIconImageView.visibility = View.GONE
+                initialsViewElement.visibility = View.VISIBLE
             }
 
-            val iconStatus = message.user?.userIcon?.status
-            if (iconStatus == MessageUserIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == MessageUserIconStatus.DOWNLOADED_ICON_SET) {
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-            } else if (iconStatus == MessageUserIconStatus.DOWNLOAD_IN_PROGRESS) {
-                bindDownloadInProgress()
-            } else if (iconStatus == MessageUserIconStatus.NEED_TO_DOWNLOAD) {
-                bindDownloadInProgress()
-                message.user?.userIcon?.loadIfNeeded { photo, e ->
-                    bindOrUnbindPhoto()
-                    bindOrUnbindInitials()
+            bindInitials()
+            if (message.user?.iconLoader?.status == IconStatus.ICON_DOWNLOADED) {
+                bindIconIfPossible()
+            } else if (message.user?.iconLoader?.status == IconStatus.NEED_TO_DOWNLOAD) {
+                message.user?.iconLoader?.loadIcon { icon ->
+                    if (icon != null) {
+                        bindIconIfPossible()
+                    }
                 }
             }
         }

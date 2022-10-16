@@ -7,10 +7,9 @@ import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoResponseStatus
 import com.dauma.grokimkartu.data.thomanns.entities.*
+import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.auth.LoginListener
-import com.dauma.grokimkartu.repositories.players.PlayersErrors
-import com.dauma.grokimkartu.repositories.players.PlayersException
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -265,12 +264,12 @@ class ThomannsRepositoryImpl(
 
         if (thomannsResponse.data != null) {
             thomanns = thomannsResponse.data!!.map { tr ->
-                val loader = { onComplete: (Bitmap?, ThomannsErrors?) -> Unit ->
-                    this.playersDao.playerIcon(tr.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, playersDaoResponseStatus ->
-                        onComplete(icon, null)
+                val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
+                    this.playersDao.playerIcon(tr.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, _ ->
+                        onComplete(icon)
                     }
                 }
-                val icon = ThomannPlayerIcon(loader)
+                val icon = IconLoader(iconDownload)
                 toThomann(tr, icon)
             }
         }
@@ -281,7 +280,7 @@ class ThomannsRepositoryImpl(
         return ThomannsPage(thomanns, isLastPage)
     }
 
-    private fun toThomann(thomannResponse: ThomannResponse, icon: ThomannPlayerIcon): Thomann {
+    private fun toThomann(thomannResponse: ThomannResponse, icon: IconLoader): Thomann {
         val thomannUserConcise = ThomannUserConcise(
             id = thomannResponse.user?.id,
             name = thomannResponse.user?.name
@@ -295,15 +294,15 @@ class ThomannsRepositoryImpl(
             isAccessible = thomannResponse.isAccessible,
             createdAt = thomannResponse.createdAt,
             validUntil = thomannResponse.validUntil,
-            icon = icon
+            iconLoader = icon
         )
     }
 
     private fun toThomannDetails(thomannDetailsResponse: ThomannDetailsResponse): ThomannDetails {
         val thomannUsers = thomannDetailsResponse.users?.map { thomannUserResponse ->
-            val loader = { onComplete: (Bitmap?, ThomannsErrors?) -> Unit ->
+            val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
                 this.playersDao.playerIcon(thomannUserResponse.user?.id ?: -1, user.getBearerAccessToken()!!) { icon, _ ->
-                    onComplete(icon, null)
+                    onComplete(icon)
                 }
             }
             ThomannUser(
@@ -316,7 +315,7 @@ class ThomannsRepositoryImpl(
                 createdAt = thomannUserResponse.createdAt,
                 isCurrentUser = thomannUserResponse.isCurrentUser,
                 actions = thomannUserResponse.actions,
-                icon = ThomannPlayerIcon(loader)
+                iconLoader = IconLoader(iconDownload)
             )
         }
         return ThomannDetails(

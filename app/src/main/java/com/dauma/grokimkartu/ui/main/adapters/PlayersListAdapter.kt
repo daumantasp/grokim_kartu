@@ -17,9 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
+import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.players.entities.Player
-import com.dauma.grokimkartu.repositories.players.entities.PlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
@@ -93,7 +93,6 @@ class PlayersListAdapter(
         val cityTextView = view.findViewById<TextView>(R.id.player_city)
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
         val photoIcon = view.findViewById<ImageView>(R.id.player_icon_image_view)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
 
         fun bind(player: Player) {
             nameTextView.text = player.name
@@ -104,42 +103,29 @@ class PlayersListAdapter(
                 this.onItemClicked(player.userId ?: -1)
             }
 
-            fun bindOrUnbindPhoto() {
-                if (player.icon.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(player.icon.icon!!)
+            fun bindIconIfPossible() {
+                player.iconLoader.icon?.let {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(it)
                     photoIcon.setImageBitmap(ovalPhoto)
-                    spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
                     photoIcon.visibility = View.VISIBLE
                 }
             }
-            fun bindOrUnbindInitials() {
-                if (player.icon.icon == null) {
-                    val initials = utils.stringUtils.getInitials(player.name ?: "")
-                    initialsViewElement.setInitials(initials)
-                    spinnerViewElement.showAnimation(false)
-                    photoIcon.visibility = View.GONE
-                    initialsViewElement.visibility = View.VISIBLE
-                }
-            }
-            fun bindDownloadInProgress() {
-                photoIcon.setImageDrawable(photoIconBackgroundDrawable)
-                initialsViewElement.visibility = View.GONE
-                photoIcon.visibility = View.VISIBLE
-                spinnerViewElement.showAnimation(true)
+            fun bindInitials() {
+                val initials = utils.stringUtils.getInitials(player.name ?: "")
+                initialsViewElement.setInitials(initials)
+                photoIcon.visibility = View.GONE
+                initialsViewElement.visibility = View.VISIBLE
             }
 
-            val iconStatus = player.icon.status
-            if (iconStatus == PlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == PlayerIconStatus.DOWNLOADED_ICON_SET) {
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-            } else if (iconStatus == PlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
-                bindDownloadInProgress()
-            } else if (iconStatus == PlayerIconStatus.NEED_TO_DOWNLOAD) {
-                bindDownloadInProgress()
-                player.icon.loadIfNeeded { photo, e ->
-                    bindOrUnbindPhoto()
-                    bindOrUnbindInitials()
+            bindInitials()
+            if (player.iconLoader.status == IconStatus.ICON_DOWNLOADED) {
+                bindIconIfPossible()
+            } else if (player.iconLoader.status == IconStatus.NEED_TO_DOWNLOAD) {
+                player.iconLoader.loadIcon { icon ->
+                    if (icon != null) {
+                        bindIconIfPossible()
+                    }
                 }
             }
         }

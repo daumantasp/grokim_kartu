@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.thomanns.entities
 
+import com.dauma.grokimkartu.general.IconLoader
 import java.sql.Timestamp
 
 data class Thomann(
@@ -11,5 +12,5 @@ data class Thomann(
     var isAccessible: Boolean?,
     var createdAt: Timestamp?,
     var validUntil: Timestamp?,
-    var icon: ThomannPlayerIcon?
+    var iconLoader: IconLoader
 )

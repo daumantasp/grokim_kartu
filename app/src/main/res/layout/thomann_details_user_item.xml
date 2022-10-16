@@ -31,15 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
-            android:id="@+id/spinner_view_element"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_centerInParent="true"
-            app:unit_dimensions="7dp"
-            app:color="?attr/spinner_color"/>
-
     </RelativeLayout>
 
     <LinearLayout

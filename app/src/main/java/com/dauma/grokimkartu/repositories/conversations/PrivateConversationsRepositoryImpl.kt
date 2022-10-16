@@ -9,6 +9,7 @@ import com.dauma.grokimkartu.data.conversations.entities.MessagesResponse
 import com.dauma.grokimkartu.data.conversations.entities.PostMessageRequest
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
+import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.conversations.entities.*
@@ -257,9 +258,10 @@ class PrivateConversationsRepositoryImpl(
     }
 
     private fun toMessage(messageResponse: MessageResponse) : Message {
-        val loader = { onComplete: (Bitmap?, PlayersErrors?) -> Unit ->
-            val userId = messageResponse.user?.id ?: -1
-            this.playerIcon(userId, onComplete)
+        val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
+            this.playerIcon(messageResponse.user?.id ?: -1) { icon, _ ->
+                onComplete(icon)
+            }
         }
         return Message(
             id = messageResponse.id,
@@ -267,7 +269,7 @@ class PrivateConversationsRepositoryImpl(
                 id = messageResponse.user?.id,
                 name = messageResponse.user?.name,
                 isCurrent = messageResponse.user?.isCurrent,
-                userIcon = MessageUserIcon(loader)
+                iconLoader = IconLoader(iconDownload)
             ),
             conversationId = messageResponse.conversationId,
             text = messageResponse.text,

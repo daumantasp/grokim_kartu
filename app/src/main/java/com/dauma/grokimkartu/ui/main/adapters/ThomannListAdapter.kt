@@ -17,10 +17,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
+import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
-import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannPlayerIconStatus
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 import java.util.*
@@ -96,7 +96,6 @@ class ThomannListAdapter(
         val validUntilTextView = view.findViewById<TextView>(R.id.valid_until_text_view)
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
         val photoIcon = view.findViewById<ImageView>(R.id.thomann_player_icon_image_view)
-        val spinnerViewElement = view.findViewById<SpinnerViewElement>(R.id.spinner_view_element)
         val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.locked_unlocked_icon_image_view)
 
         fun bind(thomann: Thomann) {
@@ -114,43 +113,29 @@ class ThomannListAdapter(
                 this.onItemClicked(thomann.id ?: -1)
             }
 
-            // TODO: Duplicates in playerItem. Refactor
-            fun bindOrUnbindPhoto() {
-                if (thomann.icon?.icon != null) {
-                    val ovalPhoto = utils.imageUtils.getOvalBitmap(thomann.icon!!.icon!!)
+            fun bindIconIfPossible() {
+                thomann.iconLoader.icon?.let {
+                    val ovalPhoto = utils.imageUtils.getOvalBitmap(it)
                     photoIcon.setImageBitmap(ovalPhoto)
-                    spinnerViewElement.showAnimation(false)
                     initialsViewElement.visibility = View.GONE
                     photoIcon.visibility = View.VISIBLE
                 }
             }
-            fun bindOrUnbindInitials() {
-                if (thomann.icon?.icon == null) {
-                    val initials = utils.stringUtils.getInitials(thomann.user?.name ?: "")
-                    initialsViewElement.setInitials(initials)
-                    spinnerViewElement.showAnimation(false)
-                    photoIcon.visibility = View.GONE
-                    initialsViewElement.visibility = View.VISIBLE
-                }
-            }
-            fun bindDownloadInProgress() {
-                photoIcon.setImageDrawable(photoIconBackgroundDrawable)
-                initialsViewElement.visibility = View.GONE
-                photoIcon.visibility = View.VISIBLE
-                spinnerViewElement.showAnimation(true)
+            fun bindInitials() {
+                val initials = utils.stringUtils.getInitials(thomann.user?.name ?: "")
+                initialsViewElement.setInitials(initials)
+                photoIcon.visibility = View.GONE
+                initialsViewElement.visibility = View.VISIBLE
             }
 
-            val iconStatus = thomann.icon?.status
-            if (iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_NOT_SET || iconStatus == ThomannPlayerIconStatus.DOWNLOADED_ICON_SET) {
-                bindOrUnbindPhoto()
-                bindOrUnbindInitials()
-            } else if (iconStatus == ThomannPlayerIconStatus.DOWNLOAD_IN_PROGRESS) {
-                bindDownloadInProgress()
-            } else if (iconStatus == ThomannPlayerIconStatus.NEED_TO_DOWNLOAD) {
-                bindDownloadInProgress()
-                thomann.icon?.loadIfNeeded { photo, e ->
-                    bindOrUnbindPhoto()
-                    bindOrUnbindInitials()
+            bindInitials()
+            if (thomann.iconLoader.status == IconStatus.ICON_DOWNLOADED) {
+                bindIconIfPossible()
+            } else if (thomann.iconLoader.status == IconStatus.NEED_TO_DOWNLOAD) {
+                thomann.iconLoader.loadIcon { icon ->
+                    if (icon != null) {
+                        bindIconIfPossible()
+                    }
                 }
             }
         }
