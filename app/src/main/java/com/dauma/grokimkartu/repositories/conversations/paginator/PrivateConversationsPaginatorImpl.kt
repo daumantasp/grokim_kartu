@@ -6,15 +6,8 @@ import com.dauma.grokimkartu.repositories.conversations.ConversationsErrors
 import com.dauma.grokimkartu.repositories.conversations.ConversationsException
 
 class PrivateConversationsPaginatorImpl(private val privateConversationsDao: PrivateConversationsDao)
-    : PrivateConversationsPaginator {
-    private var _pages: MutableList<MessagesResponse> = mutableListOf()
+    : ConversationsPaginator(), PrivateConversationsPaginator {
     private var _conversationPartnerId: Int? = null
-
-    override val pages: List<MessagesResponse>
-        get() = _pages
-
-    override val pageSize: Int = 20
-
     override var conversationPartnerId: Int?
         get() = _conversationPartnerId
         set(value) {
@@ -40,16 +33,5 @@ class PrivateConversationsPaginatorImpl(private val privateConversationsDao: Pri
         } else {
             throw ConversationsException(ConversationsErrors.CONVERSATION_PARTNER_ID_NOT_SET)
         }
-    }
-
-    override fun clear() {
-        _pages.clear()
-    }
-
-    private fun isLastLoaded(): Boolean {
-        _pages.lastOrNull()?.pageData?.let { pageData ->
-            return pageData.currentPage == pageData.lastPage
-        }
-        return false
     }
 }

@@ -6,15 +6,8 @@ import com.dauma.grokimkartu.repositories.conversations.ConversationsErrors
 import com.dauma.grokimkartu.repositories.conversations.ConversationsException
 
 class ThomannConversationsPaginatorImpl(private val thomannConversationsDao: ThomannConversationsDao)
-    : ThomannConversationsPaginator {
-    private var _pages: MutableList<MessagesResponse> = mutableListOf()
+    : ConversationsPaginator(), ThomannConversationsPaginator {
     private var _thomannId: Int? = null
-
-    override val pages: List<MessagesResponse>
-        get() = _pages
-
-    override val pageSize: Int = 20
-
     override var thomannId: Int?
         get() = _thomannId
         set(value) {
@@ -40,16 +33,5 @@ class ThomannConversationsPaginatorImpl(private val thomannConversationsDao: Tho
         } else {
             throw ConversationsException(ConversationsErrors.THOMANN_ID_NOT_SET)
         }
-    }
-
-    override fun clear() {
-        _pages.clear()
-    }
-
-    private fun isLastLoaded(): Boolean {
-        _pages.lastOrNull()?.pageData?.let { pageData ->
-            return pageData.currentPage == pageData.lastPage
-        }
-        return false
     }
 }

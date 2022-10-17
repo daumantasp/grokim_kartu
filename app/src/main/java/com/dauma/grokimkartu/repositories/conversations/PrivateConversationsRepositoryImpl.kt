@@ -1,37 +1,25 @@
 package com.dauma.grokimkartu.repositories.conversations
 
-import android.graphics.Bitmap
 import android.util.Log
 import com.dauma.grokimkartu.data.conversations.PrivateConversationsDao
-import com.dauma.grokimkartu.data.conversations.entities.ConversationResponse
-import com.dauma.grokimkartu.data.conversations.entities.MessageResponse
-import com.dauma.grokimkartu.data.conversations.entities.MessagesResponse
 import com.dauma.grokimkartu.data.conversations.entities.PostMessageRequest
 import com.dauma.grokimkartu.data.players.PlayersDao
-import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
-import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.conversations.entities.*
+import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
+import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
+import com.dauma.grokimkartu.repositories.conversations.entities.Message
+import com.dauma.grokimkartu.repositories.conversations.entities.PostMessage
 import com.dauma.grokimkartu.repositories.conversations.paginator.PrivateConversationsPaginator
-import com.dauma.grokimkartu.repositories.players.PlayersErrors
 
 class PrivateConversationsRepositoryImpl(
     private val privateConversationsDao: PrivateConversationsDao,
-    private val playersDao: PlayersDao,
+    playersDao: PlayersDao,
     private val paginator: PrivateConversationsPaginator,
     private val user: User,
     private val utils: Utils
-) : PrivateConversationsRepository {
-    private val _pages: MutableList<ConversationPage> = mutableListOf()
+) : ConversationsRepository(playersDao, user), PrivateConversationsRepository {
     private var _conversationPartnerId: Int? = null
-    private var conversationPartnersIcons: MutableMap<Int, Bitmap> = mutableMapOf()
-    private var isReloadInProgress: Boolean = false
-    private val conversationListeners: MutableMap<String, ConversationListener> = mutableMapOf()
-
-    override val pages: List<ConversationPage>
-        get() = _pages
-
     override var conversationPartnerId: Int?
         get() = _conversationPartnerId
         set(value) {
@@ -136,14 +124,6 @@ class PrivateConversationsRepositoryImpl(
         }
     }
 
-    override fun registerListener(id: String, listener: ConversationListener) {
-        conversationListeners[id] = listener
-    }
-
-    override fun unregisterListener(id: String) {
-        conversationListeners.remove(id)
-    }
-
     private fun loadLastMessage(onComplete: (Message?, ConversationsErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
             if (conversationPartnerId != null) {
@@ -218,34 +198,6 @@ class PrivateConversationsRepositoryImpl(
         }
     }
 
-    private fun playerIcon(userId: Int, onComplete: (Bitmap?, PlayersErrors?) -> Unit) {
-        if (user.isUserLoggedIn()) {
-            if (conversationPartnersIcons.containsKey(userId)) {
-                onComplete(conversationPartnersIcons[userId], null)
-            } else {
-                playersDao.playerIcon(userId, user.getBearerAccessToken()!!) { playerIcon, playersDaoResponseStatus ->
-                    if (playerIcon != null) {
-                        this.conversationPartnersIcons[userId] = playerIcon
-                        onComplete(playerIcon, null)
-                    } else {
-                        val error: PlayersErrors
-                        when (playersDaoResponseStatus.error) {
-                            PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND -> {
-                                error = PlayersErrors.ICON_NOT_FOUND
-                            }
-                            else -> {
-                                error = PlayersErrors.UNKNOWN
-                            }
-                        }
-                        onComplete(null, error)
-                    }
-                }
-            }
-        } else {
-            throw ConversationsException(ConversationsErrors.USER_NOT_LOGGED_IN)
-        }
-    }
-
     private fun reset() {
         if (user.isUserLoggedIn()) {
             _pages.clear()
@@ -254,59 +206,6 @@ class PrivateConversationsRepositoryImpl(
             utils.dispatcherUtils.main.cancelPeriodic(CONVERSATION_PERIODIC_RELOAD)
         } else {
             throw ConversationsException(ConversationsErrors.USER_NOT_LOGGED_IN)
-        }
-    }
-
-    private fun toMessage(messageResponse: MessageResponse) : Message {
-        val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
-            this.playerIcon(messageResponse.user?.id ?: -1) { icon, _ ->
-                onComplete(icon)
-            }
-        }
-        return Message(
-            id = messageResponse.id,
-            user = MessageUser(
-                id = messageResponse.user?.id,
-                name = messageResponse.user?.name,
-                isCurrent = messageResponse.user?.isCurrent,
-                iconLoader = IconLoader(iconDownload)
-            ),
-            conversationId = messageResponse.conversationId,
-            text = messageResponse.text,
-            createdAt = messageResponse.createdAt
-        )
-    }
-
-    private fun toConversation(conversationResponse: ConversationResponse) : Conversation {
-        var lastMessage: Message? = null
-        conversationResponse.lastMessage?.let {
-            lastMessage = toMessage(it)
-        }
-        return Conversation(
-            id = conversationResponse.id,
-            isRead = conversationResponse.isRead,
-            createdAt = conversationResponse.createdAt,
-            lastMessage = lastMessage
-        )
-    }
-
-    private fun toConversationPage(messagesResponse: MessagesResponse) : ConversationPage {
-        var messages: List<Message> = listOf()
-        var isLastPage: Boolean = false
-
-        if (messagesResponse.data != null) {
-            messages = messagesResponse.data!!.map { mr -> toMessage(mr) }
-        }
-        if (messagesResponse.pageData?.currentPage != null && messagesResponse.pageData?.lastPage != null) {
-            isLastPage = messagesResponse.pageData?.currentPage == messagesResponse.pageData?.lastPage
-        }
-
-        return ConversationPage(messages, isLastPage)
-    }
-
-    private fun notifyListeners() {
-        for (listener in this.conversationListeners.values) {
-            listener.conversationChanged()
         }
     }
 }
