@@ -57,10 +57,10 @@ class ThomannConversationsRepositoryImpl(
             startImmediately = true,
             repeats = true
         ) {
-            Log.d("PrivateConversationsRepositoryImpl", "reloadConversationPeriodically")
+            Log.d("ThomannConversationsRepositoryImpl", "reloadConversationPeriodically")
             try {
                 isConversationReloadNeeded { isNeeded ->
-                    Log.d("PrivateConversationsRepositoryImpl", "isConversationReloadNeeded isNeeded=$isNeeded")
+                    Log.d("ThomannConversationsRepositoryImpl", "isConversationReloadNeeded isNeeded=$isNeeded")
                     if (isNeeded) {
                         reload { conversationPage, conversationsErrors ->
                             notifyListeners()
@@ -72,7 +72,7 @@ class ThomannConversationsRepositoryImpl(
     }
 
     override fun loadNextPage(onComplete: (ConversationPage?, ConversationsErrors?) -> Unit) {
-        Log.d("PrivateConversationsRepositoryImpl", "loadNextPage")
+        Log.d("ThomannConversationsRepositoryImpl", "loadNextPage")
         if (user.isUserLoggedIn()) {
             if (thomannId != null) {
                 isReloadInProgress = true
@@ -80,7 +80,7 @@ class ThomannConversationsRepositoryImpl(
                     if (messagesResponse != null) {
                         val conversationPage = toConversationPage(messagesResponse)
                         _pages.add(conversationPage)
-                        Log.d("PrivateConversationsRepositoryImpl", "loadNextPage completed")
+                        Log.d("ThomannConversationsRepositoryImpl", "loadNextPage completed")
                         onComplete(conversationPage, null)
                     } else {
                         onComplete(null, ConversationsErrors.UNKNOWN)
