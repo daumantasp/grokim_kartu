@@ -69,6 +69,11 @@ class PlayersFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupObservers() {
         playersViewModel.playerDetails.observe(viewLifecycleOwner, EventObserver { userId ->
             val args = Bundle()

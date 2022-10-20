@@ -121,6 +121,12 @@ class ProfileEditFragment : Fragment() {
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        dialogsManager = null
+    }
+
     private fun setupObservers() {
         profileEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
@@ -247,12 +253,6 @@ class ProfileEditFragment : Fragment() {
                 ))
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        dialogsManager = null
     }
 
     private fun canPick() : Boolean {

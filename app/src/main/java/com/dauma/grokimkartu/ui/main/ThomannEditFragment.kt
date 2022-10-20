@@ -58,6 +58,12 @@ class ThomannEditFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        dialogsManager = null
+    }
+
     private fun setupOnClickListeners() {
         binding.thomannEditHeaderViewElement.setOnBackClick {
             thomannEditViewModel.backClicked()
@@ -155,11 +161,5 @@ class ThomannEditFragment : Fragment() {
                 ))
             }
         })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        dialogsManager = null
     }
 }

@@ -67,6 +67,11 @@ class ThomannsFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setupObservers() {
         thomannsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
