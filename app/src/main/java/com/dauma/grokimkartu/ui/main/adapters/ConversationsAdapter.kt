@@ -20,18 +20,22 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
-import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import java.sql.Date
 import java.sql.Timestamp
 
 class ConversationsAdapter(
     val context: Context,
-    var conversationsListData: MutableList<Conversation>,
+    var conversationsListData: MutableList<Any>,
     private val utils: Utils,
-    private val onItemClicked: (Int) -> Unit
+    private val onItemClicked: (Int, String) -> Unit
 ) : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    companion object {
+        private const val PRIVATE = 1
+        private const val THOMANN = 2
+    }
 
     init {
         // You may need to call mutate() on the drawable or else all icons are affected.
@@ -46,24 +50,41 @@ class ConversationsAdapter(
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        if (conversationsListData[position] is PrivateConversationData) {
+            return PRIVATE
+        } else if (conversationsListData[position] is ThomannConversationData) {
+            return THOMANN
+        }
+        return PRIVATE
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
-        return ConversationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.conversation_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+        if (viewType == PRIVATE) {
+            return PrivateConversationViewHolder(context, LayoutInflater.from(parent.context).inflate(R.layout.conversation_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+        } else if (viewType == THOMANN) {
+            return ThomannConversationViewHolder(context, LayoutInflater.from(parent.context).inflate(R.layout.conversation_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+        }
+        return PrivateConversationViewHolder(context, LayoutInflater.from(parent.context).inflate(R.layout.conversation_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
     }
 
     override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
         val itemData = conversationsListData[position]
-        holder.bind(itemData)
+        if (holder is PrivateConversationViewHolder && itemData is PrivateConversationData) {
+            holder.bind(itemData)
+        }
+        else if (holder is ThomannConversationViewHolder && itemData is ThomannConversationData) {
+            holder.bind(itemData)
+        }
     }
 
     override fun getItemCount(): Int {
         return conversationsListData.size
     }
 
-    class ConversationViewHolder(
+    abstract class ConversationViewHolder(
         val view: View,
-        private val utils: Utils,
-        private val photoIconBackgroundDrawable: Drawable?,
-        private val onItemClicked: (Int) -> Unit
+        protected val utils: Utils,
     ) : RecyclerView.ViewHolder(view) {
         val conversationItemContainer = view.findViewById<LinearLayout>(R.id.conversation_item_container)
         val nameTextView = view.findViewById<TextView>(R.id.player_name_text_view)
@@ -72,13 +93,39 @@ class ConversationsAdapter(
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
         val photoIcon = view.findViewById<ImageView>(R.id.player_icon_image_view)
 
-        fun bind(conversation: Conversation) {
-            nameTextView.text = conversation.lastMessage?.user?.name ?: ""
+        // TODO: refactor
+        protected fun getDateTimeFormat(timestamp: Timestamp): CustomDateTimeFormatPattern {
+            val currentDateTime = utils.timeUtils.getCurrentDateTime()
+            val customDateTime = utils.timeUtils.convertToCustomDateTime(Date(timestamp.time))
+            if (currentDateTime.isSameDay(customDateTime)) {
+                return CustomDateTimeFormatPattern.HHmmss
+            } else {
+                return CustomDateTimeFormatPattern.yyyyMMddHHmmss
+            }
+        }
+    }
+
+    private class PrivateConversationViewHolder(
+        private val context: Context,
+        view: View,
+        utils: Utils,
+        private val photoIconBackgroundDrawable: Drawable?,
+        private val onItemClicked: (Int, String) -> Unit
+    ) : ConversationViewHolder(view, utils) {
+        fun bind(privateConversationData: PrivateConversationData) {
+            val conversation = privateConversationData.conversation
+            nameTextView.text = conversation.partner?.name ?: ""
             conversation.lastMessage?.createdAt?.let {
                 val createdAtFormatted = utils.timeUtils.format(Date(it.time), getDateTimeFormat(it))
                 dateTextView.text = createdAtFormatted
             }
-            textTextView.text = conversation.lastMessage?.text ?: ""
+            val isLastMessageYours = conversation.lastMessage?.user?.isCurrent ?: false
+            val message = if (isLastMessageYours) {
+                "${context.getString(R.string.conversations_you)}: ${conversation.lastMessage?.text}"
+            } else {
+                conversation.lastMessage?.text
+            }
+            textTextView.text = message
 
             if (conversation.isRead == false) {
                 nameTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
@@ -91,11 +138,14 @@ class ConversationsAdapter(
             }
 
             conversationItemContainer.setOnClickListener {
-                this.onItemClicked(conversation.id ?: -1)
+                this.onItemClicked(
+                    conversation.partner?.id ?: -1,
+                    conversation.partner?.name ?: ""
+                )
             }
 
             fun bindIconIfPossible() {
-                conversation.lastMessage?.user?.iconLoader?.icon?.let {
+                conversation.partner?.iconLoader?.icon?.let {
                     val ovalPhoto = utils.imageUtils.getOvalBitmap(it)
                     photoIcon.setImageBitmap(ovalPhoto)
                     initialsViewElement.visibility = View.GONE
@@ -103,33 +153,68 @@ class ConversationsAdapter(
                 }
             }
             fun bindInitials() {
-                val initials = utils.stringUtils.getInitials(conversation.lastMessage?.user?.name ?: "")
+                val initials = utils.stringUtils.getInitials(conversation.partner?.name ?: "")
                 initialsViewElement.setInitials(initials)
                 photoIcon.visibility = View.GONE
                 initialsViewElement.visibility = View.VISIBLE
             }
 
             bindInitials()
-            if (conversation.lastMessage?.user?.iconLoader?.status == IconStatus.ICON_DOWNLOADED) {
+            if (conversation.partner?.iconLoader?.status == IconStatus.ICON_DOWNLOADED) {
                 bindIconIfPossible()
-            } else if (conversation.lastMessage?.user?.iconLoader?.status == IconStatus.NEED_TO_DOWNLOAD) {
-                conversation.lastMessage?.user?.iconLoader?.loadIcon { icon ->
+            } else if (conversation.partner?.iconLoader?.status == IconStatus.NEED_TO_DOWNLOAD) {
+                conversation.partner?.iconLoader?.loadIcon { icon ->
                     if (icon != null) {
                         bindIconIfPossible()
                     }
                 }
             }
         }
+    }
 
-        // TODO: refactor
-        private fun getDateTimeFormat(timestamp: Timestamp): CustomDateTimeFormatPattern {
-            val currentDateTime = utils.timeUtils.getCurrentDateTime()
-            val customDateTime = utils.timeUtils.convertToCustomDateTime(Date(timestamp.time))
-            if (currentDateTime.isSameDay(customDateTime)) {
-                return CustomDateTimeFormatPattern.HHmmss
-            } else {
-                return CustomDateTimeFormatPattern.yyyyMMddHHmmss
+    private class ThomannConversationViewHolder(
+        private val context: Context,
+        view: View,
+        utils: Utils,
+        private val photoIconBackgroundDrawable: Drawable?,
+        private val onItemClicked: (Int, String) -> Unit
+    ) : ConversationViewHolder(view, utils) {
+        fun bind(thomannConversationData: ThomannConversationData) {
+            val conversation = thomannConversationData.conversation
+            val name = "#${conversation.thomannId ?: -1}"
+            nameTextView.text = name
+            conversation.lastMessage?.createdAt?.let {
+                val createdAtFormatted = utils.timeUtils.format(Date(it.time), getDateTimeFormat(it))
+                dateTextView.text = createdAtFormatted
             }
+            val isLastMessageYours = conversation.lastMessage?.user?.isCurrent ?: false
+            val message = if (isLastMessageYours) {
+                "${context.getString(R.string.conversations_you)}: ${conversation.lastMessage?.text}"
+            } else {
+                "${conversation.lastMessage?.user?.name}: ${conversation.lastMessage?.text}"
+            }
+            textTextView.text = message
+
+            if (conversation.isRead == false) {
+                nameTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+                textTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+                dateTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+            } else {
+                nameTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+                textTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+                dateTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+            }
+
+            conversationItemContainer.setOnClickListener {
+                this.onItemClicked(
+                    conversation.thomannId ?: -1,
+                    name
+                )
+            }
+
+            initialsViewElement.setInitials("${conversation.thomannId ?: -1}")
+            photoIcon.visibility = View.GONE
+            initialsViewElement.visibility = View.VISIBLE
         }
     }
 }

@@ -26,12 +26,12 @@ class ConversationViewModel @Inject constructor(
     private val _newConversationPages = MutableLiveData<List<ConversationPage>>()
     private val _nextConversationPage = MutableLiveData<List<ConversationPage>>()
     private val _messagePosted = MutableLiveData<Event<String>>()
-    private val _userName = MutableLiveData<Event<String?>>()
+    private val _id = MutableLiveData<Event<String?>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val newConversationPages: LiveData<List<ConversationPage>> = _newConversationPages
     val nextConversationPage: LiveData<List<ConversationPage>> = _nextConversationPage
     val messagePosted: LiveData<Event<String>> = _messagePosted
-    val userName: LiveData<Event<String?>> = _userName
+    val id: LiveData<Event<String?>> = _id
 
     companion object {
         private val TAG = "ConversationViewModel"
@@ -49,10 +49,10 @@ class ConversationViewModel @Inject constructor(
 
     fun viewIsReady() {
         if (userId != -1) {
-            _userName.value = Event(userNameSaved)
+            _id.value = Event(userNameSaved)
             _newConversationPages.value = privateConversationsRepository.pages
         } else if (thomannId != -1) {
-            _userName.value = Event("*Pokalbis*")
+            _id.value = Event("#$thomannId")
             _newConversationPages.value = thomannConversationsRepository.pages
         }
     }

@@ -6,5 +6,7 @@ data class Conversation(
     var id: Int?,
     var isRead: Boolean?,
     var createdAt: Timestamp?,
-    var lastMessage: Message?
+    var lastMessage: Message?,
+    var partner: ConversationPartner?,
+    var thomannId: Int?
 )

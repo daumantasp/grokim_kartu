@@ -99,6 +99,7 @@
     <string name="conversations_post_message">Rašyti žinutę</string>
     <string name="conversations_private_title">Privatūs</string>
     <string name="conversations_thomann_title">Thomann</string>
+    <string name="conversations_you">Tu</string>
 
     <!--    Profile-->
     <string name="profile_fragment">Paskyra</string>

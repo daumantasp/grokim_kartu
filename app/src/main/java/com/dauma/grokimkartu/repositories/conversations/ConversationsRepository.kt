@@ -8,10 +8,7 @@ import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
-import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
-import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
-import com.dauma.grokimkartu.repositories.conversations.entities.Message
-import com.dauma.grokimkartu.repositories.conversations.entities.MessageUser
+import com.dauma.grokimkartu.repositories.conversations.entities.*
 import com.dauma.grokimkartu.repositories.players.PlayersErrors
 
 abstract class ConversationsRepository(
@@ -87,11 +84,22 @@ abstract class ConversationsRepository(
         conversationResponse.lastMessage?.let {
             lastMessage = toMessage(it)
         }
+        val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
+            this.playerIcon(conversationResponse.partner?.id ?: -1) { icon, _ ->
+                onComplete(icon)
+            }
+        }
         return Conversation(
             id = conversationResponse.id,
             isRead = conversationResponse.isRead,
             createdAt = conversationResponse.createdAt,
-            lastMessage = lastMessage
+            lastMessage = lastMessage,
+            partner = ConversationPartner(
+                id = conversationResponse.partner?.id,
+                name = conversationResponse.partner?.name,
+                iconLoader = IconLoader(iconDownload)
+            ),
+            thomannId = conversationResponse.thomannId
         )
     }
 

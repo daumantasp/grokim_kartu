@@ -114,7 +114,7 @@ class ConversationFragment : Fragment() {
         conversationViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
         })
-        conversationViewModel.userName.observe(viewLifecycleOwner, EventObserver {
+        conversationViewModel.id.observe(viewLifecycleOwner, EventObserver {
             it?.let {
                 binding.conversationsHeaderViewElement.setTitle(it)
             }

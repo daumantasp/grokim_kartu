@@ -9,5 +9,29 @@
         android:name="com.dauma.grokimkartu.ui.main.ConversationsFragment"
         android:label="fragment_conversations"
         tools:layout="@layout/fragment_conversations" >
+        <action
+            android:id="@+id/action_conversationsFragment_to_conversationFragment2"
+            app:destination="@id/conversationFragment2"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationFragment2"
+        android:name="com.dauma.grokimkartu.ui.main.ConversationFragment"
+        android:label="ConversationFragment">
+        <argument
+            android:name="userId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="thomannId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="userName"
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
 </navigation>

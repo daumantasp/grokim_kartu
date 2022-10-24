@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPrivateConversationsBinding
+import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
+import com.dauma.grokimkartu.ui.main.adapters.ConversationAdapter
 import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
+import com.dauma.grokimkartu.ui.main.adapters.PrivateConversationData
 import com.dauma.grokimkartu.viewmodels.main.PrivateConversationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -56,24 +60,36 @@ class PrivateConversationsFragment : Fragment() {
 
     private fun setupObservers() {
         privateConversationsViewModel.privateConversations.observe(viewLifecycleOwner, {
+            val privateConversationData = it.map { c -> PrivateConversationData(c) }
             if (isViewSetup == false) {
-                setupPrivateConversationsRecyclerView(it)
+                setupPrivateConversationsRecyclerView(privateConversationData)
             } else {
+                val conversationsAdapter = binding.privateConversationsRecyclerView.adapter as? ConversationAdapter
+                conversationsAdapter?.conversation?.clear()
+                conversationsAdapter?.conversation?.addAll(privateConversationData)
                 binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
             }
             if (binding.swipeRefreshLayout.isRefreshing) {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         })
+        privateConversationsViewModel.message.observe(viewLifecycleOwner, EventObserver { userData ->
+            val args = Bundle()
+            args.putInt("userId", userData[0] as Int)
+            args.putString("userName", userData[1] as String)
+            this.findNavController().navigate(R.id.action_conversationsFragment_to_conversationFragment2, args)
+        })
     }
 
-    private fun setupPrivateConversationsRecyclerView(conversations: List<Conversation>) {
+    private fun setupPrivateConversationsRecyclerView(conversations: List<PrivateConversationData>) {
         binding.privateConversationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.privateConversationsRecyclerView.adapter = ConversationsAdapter(
             context = requireContext(),
             conversationsListData = conversations.toMutableList(),
             utils = utils,
-            onItemClicked = {}
+            onItemClicked = { userId, name ->
+                this.privateConversationsViewModel.conversationClicked(userId, name)
+            }
         )
         isViewSetup = true
     }
