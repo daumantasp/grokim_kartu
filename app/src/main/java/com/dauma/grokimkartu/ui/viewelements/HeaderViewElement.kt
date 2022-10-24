@@ -28,7 +28,6 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     private val userRelativeLayout: RelativeLayout
     private val initialsViewElement: InitialsViewElement
     private val userIconImageView: ImageView
-    private val spinnerViewElement: SpinnerViewElement
     private val photoIconBackgroundDrawable: Drawable?
     private val rightTextView: TextView
     private val notificationsRelativeLayout: RelativeLayout
@@ -46,7 +45,6 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         userRelativeLayout = findViewById(R.id.user_relative_layout)
         initialsViewElement = findViewById(R.id.initials_view_element)
         userIconImageView = findViewById(R.id.user_icon_image_view)
-        spinnerViewElement = findViewById(R.id.spinner_view_element)
         rightTextView = findViewById(R.id.right_text_view)
         notificationsRelativeLayout = findViewById(R.id.notifications_relative_layout)
         notificationsFrameLayout = findViewById(R.id.notifications_frame_layout)
@@ -110,15 +108,6 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     fun showUnreadNotificationsCount(show: Boolean) {
         // TODO: make animated?
         notificationsFrameLayout.visibility = if (show == true) View.VISIBLE else View.GONE
-    }
-
-    fun showIconLoading(show: Boolean) {
-        if (show == true) {
-            userIconImageView.setImageDrawable(photoIconBackgroundDrawable)
-            initialsViewElement.visibility = View.GONE
-            userIconImageView.visibility = View.VISIBLE
-        }
-        spinnerViewElement.showAnimation(show)
     }
 
     fun showShadow(show: Boolean) {

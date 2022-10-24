@@ -96,15 +96,6 @@
                 android:id="@+id/user_icon_image_view"
                 android:layout_width="45dp"
                 android:layout_height="45dp" />
-
-            <com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
-                android:id="@+id/spinner_view_element"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_centerInParent="true"
-                app:unit_dimensions="4dp"
-                app:color="?attr/spinner_color"/>
         </RelativeLayout>
 
         <TextView

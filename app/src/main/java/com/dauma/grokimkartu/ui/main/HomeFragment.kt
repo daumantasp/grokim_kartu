@@ -60,7 +60,6 @@ class HomeFragment : Fragment() {
         binding.homeHeaderViewElement.setOnInitialsOrIconClick {
             homeViewModel.userIconClicked()
         }
-        binding.homeHeaderViewElement.showIconLoading(true)
         binding.homeHeaderViewElement.setOnNotificationsClick {
             homeViewModel.notificationsClicked()
         }
@@ -86,13 +85,11 @@ class HomeFragment : Fragment() {
     private fun setupObservers() {
         homeViewModel.name.observe(viewLifecycleOwner, { name ->
             binding.homeHeaderViewElement.setTitle(name ?: "")
-            binding.homeHeaderViewElement.showIconLoading(true)
-            this.userInitials = utils.stringUtils.getInitials(name ?: "")
+            userInitials = utils.stringUtils.getInitials(name ?: "")
             this.isUserProfileGot = true
             this.setPhotoOrInitialsInHeaderIfPossible()
         })
         homeViewModel.userIcon.observe(viewLifecycleOwner, {
-            binding.homeHeaderViewElement.showIconLoading(true)
             this.userIcon = it
             this.isUserIconGot = true
             this.setPhotoOrInitialsInHeaderIfPossible()
@@ -118,7 +115,6 @@ class HomeFragment : Fragment() {
 
     private fun setPhotoOrInitialsInHeaderIfPossible() {
         if (isUserProfileGot == true && isUserIconGot == true) {
-            binding.homeHeaderViewElement.showIconLoading(false)
             if (userIcon != null) {
                 binding.homeHeaderViewElement.setPhotoIcon(userIcon!!)
             } else {
