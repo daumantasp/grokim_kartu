@@ -13,6 +13,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.dialog.YesNoDialogData
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
@@ -66,11 +67,11 @@ class ThomannEditFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         binding.thomannEditHeaderViewElement.setOnBackClick {
-            thomannEditViewModel.backClicked()
+            thomannEditViewModel.backClicked(false)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            thomannEditViewModel.backClicked()
+            thomannEditViewModel.backClicked(false)
         }
 
         binding.cityInputEditText.setOnClickListener {
@@ -92,6 +93,20 @@ class ThomannEditFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        thomannEditViewModel.navigateBackConfirmation.observe(viewLifecycleOwner, EventObserver {
+            if (isDialogShown == true) {
+                dialogsManager?.hideBottomDialog()
+                isDialogShown = false
+            } else {
+                utils.dialogUtils.showYesNoDialog(requireContext(), YesNoDialogData(
+                    getString(R.string.thomann_edit_navigate_back_confirmation_text),
+                    getString(R.string.thomann_edit_navigate_back_confirmation_positive),
+                    getString(R.string.thomann_edit_navigate_back_confirmation_negative),
+                    true,
+                    { thomannEditViewModel.backClicked(true) }
+                ))
+            }
+        })
         thomannEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
                 dialogsManager?.hideBottomDialog()

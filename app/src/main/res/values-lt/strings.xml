@@ -101,6 +101,9 @@
     <string name="thomann_edit_city">Miestas</string>
     <string name="thomann_edit_valid_until">Galioja iki</string>
     <string name="thomann_edit_save">Išsaugoti</string>
+    <string name="thomann_edit_navigate_back_confirmation_text">Liko neišsaugotų pakeitimų. Ar tikrai norite grįžti?</string>
+    <string name="thomann_edit_navigate_back_confirmation_positive">Taip</string>
+    <string name="thomann_edit_navigate_back_confirmation_negative">Atšaukti</string>
 
     <!--    Conversations-->
     <string name="conversation_title">Pokalbis</string>

@@ -25,9 +25,11 @@ class ThomannEditViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val thomannId = savedStateHandle.get<Int>("thomannId")
+    private val _navigateBackConfirmation = MutableLiveData<Event<String>>()
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
     private val _validUntil = MutableLiveData<Event<List<Any>>>()
+    val navigateBackConfirmation: LiveData<Event<String>> = _navigateBackConfirmation
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val city: LiveData<Event<String>> = _city
     val validUntil: LiveData<Event<List<Any>>> = _validUntil
@@ -64,8 +66,12 @@ class ThomannEditViewModel @Inject constructor(
         }
     }
 
-    fun backClicked() {
-        _navigateBack.value = Event("")
+    fun backClicked(isConfirmed: Boolean) {
+        if (thomannEditForm.isChanged() && isConfirmed == false) {
+            _navigateBackConfirmation.value = Event("")
+        } else {
+            _navigateBack.value = Event("")
+        }
     }
 
     fun loadDetailsIfNeeded() {
