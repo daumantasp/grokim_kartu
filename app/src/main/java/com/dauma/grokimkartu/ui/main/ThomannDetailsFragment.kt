@@ -205,14 +205,14 @@ class ThomannDetailsFragment : Fragment() {
         }
 
         if (details.isJoinable == true) {
-            recyclerViewData.add(ThomannDetailstButtonData(getString(R.string.thomann_details_join), details.onJoinClicked))
+            recyclerViewData.add(ThomannDetailsButtonData(getString(R.string.thomann_details_join), false, details.onJoinClicked))
         }
         if (details.isOwner == true) {
-            recyclerViewData.add(ThomannDetailstButtonData(getString(R.string.thomann_details_edit), details.onEditClicked))
-            recyclerViewData.add(ThomannDetailstButtonData(getString(R.string.thomann_details_cancel), details.onCancelClicked))
+            recyclerViewData.add(ThomannDetailsButtonData(getString(R.string.thomann_details_edit), false, details.onEditClicked))
+            recyclerViewData.add(ThomannDetailsButtonData(getString(R.string.thomann_details_cancel), true, details.onCancelClicked))
         }
         if (isUserParticipating == true) {
-            recyclerViewData.add(ThomannDetailstButtonData(getString(R.string.thomann_details_post_message), details.onPostMessageClicked))
+            recyclerViewData.add(ThomannDetailsButtonData(getString(R.string.thomann_details_post_message), false, details.onPostMessageClicked))
         }
     }
 }

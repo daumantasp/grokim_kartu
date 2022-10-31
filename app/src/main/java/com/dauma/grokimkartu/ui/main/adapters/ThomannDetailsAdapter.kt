@@ -52,7 +52,7 @@ class ThomannDetailsAdapter(
             return STATUS_ROW
         } else if (data[position] is ThomannDetailsUserData) {
             return USER
-        } else if (data[position] is ThomannDetailstButtonData) {
+        } else if (data[position] is ThomannDetailsButtonData) {
             return BUTTON
         }
         return ROW
@@ -68,7 +68,7 @@ class ThomannDetailsAdapter(
         } else if (viewType == USER) {
             return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_user_item, parent, false), utils, onItemClicked, onLeaveClicked, onKickClicked)
         } else if (viewType == BUTTON) {
-            return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_button_item, parent, false))
+            return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_button_item, parent, false), utils)
         }
         return RowViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_row_item, parent, false))
     }
@@ -83,7 +83,7 @@ class ThomannDetailsAdapter(
             holder.bind(itemData)
         } else if (holder is UserViewHolder && itemData is ThomannDetailsUserData) {
             holder.bind(itemData)
-        } else if (holder is ButtonViewHolder && itemData is ThomannDetailstButtonData) {
+        } else if (holder is ButtonViewHolder && itemData is ThomannDetailsButtonData) {
             holder.bind(itemData)
         }
     }
@@ -276,14 +276,24 @@ class ThomannDetailsAdapter(
         }
     }
 
-    private class ButtonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private class ButtonViewHolder(private val view: View, private val utils: Utils) : RecyclerView.ViewHolder(view) {
         val buttonViewElement = view.findViewById<ButtonViewElement>(R.id.thomann_details_button_view_element)
 
-        fun bind(data: ThomannDetailstButtonData) {
+        fun bind(data: ThomannDetailsButtonData) {
             buttonViewElement.setText(data.title)
             buttonViewElement.setOnClick(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
-                    data.onClick()
+                    if (data.isCancelAction) {
+                        utils.dialogUtils.showYesNoDialog(view.context, YesNoDialogData(
+                            text = view.context.getString(R.string.thomann_details_cancel_confirmation_text),
+                            positiveText = view.context.getString(R.string.thomann_details_cancel_confirmation_positive),
+                            negativeText = view.context.getString(R.string.thomann_details_cancel_confirmation_negative),
+                            cancelable = true,
+                            onPositiveButtonClick = { data.onClick() }
+                        ))
+                    } else {
+                        data.onClick()
+                    }
                 }
             })
         }

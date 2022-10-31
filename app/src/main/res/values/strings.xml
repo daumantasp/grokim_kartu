@@ -90,6 +90,9 @@
     <string name="thomann_details_user_join_date">Joined: {{joinDate}}</string>
     <string name="thomann_details_total_amount">Total amount</string>
     <string name="thomann_details_cancel">Cancel</string>
+    <string name="thomann_details_cancel_confirmation_text">Do you really want to cancel?</string>
+    <string name="thomann_details_cancel_confirmation_positive">Yes</string>
+    <string name="thomann_details_cancel_confirmation_negative">Return</string>
     <string name="thomann_details_edit">Edit</string>
     <string name="thomann_details_join_dialog_title">Amount</string>
     <string name="thomann_details_post_message">Conversation</string>

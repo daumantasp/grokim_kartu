@@ -23,7 +23,8 @@ data class ThomannDetailsStatusData(
 
 data class ThomannDetailsUserData(val user: ThomannUser)
 
-data class ThomannDetailstButtonData(
+data class ThomannDetailsButtonData(
     val title: String,
+    val isCancelAction: Boolean,
     val onClick: () -> Unit
 )
