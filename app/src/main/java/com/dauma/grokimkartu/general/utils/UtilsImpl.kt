@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.general.utils
 
+import com.dauma.grokimkartu.general.utils.dialog.DialogUtils
 import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtils
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import com.dauma.grokimkartu.general.utils.keyboard.KeyboardUtils
@@ -17,5 +18,6 @@ class UtilsImpl(
     override val sharedStorageUtils: SharedStorageUtils,
     override val dispatcherUtils: DispatcherUtils,
     override val localeUtils: LocaleUtils,
+    override val dialogUtils: DialogUtils,
     override val otherUtils: OtherUtils
 ) : Utils
