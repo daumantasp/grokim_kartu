@@ -80,6 +80,9 @@
     <string name="thomann_details_join">Join</string>
     <string name="thomann_details_leave">Leave</string>
     <string name="thomann_details_kick">Kick</string>
+    <string name="thomann_details_kick_confirmation_text">Do you really want to kick {{userName}}?</string>
+    <string name="thomann_details_kick_confirmation_positive">Yes</string>
+    <string name="thomann_details_kick_confirmation_negative">Cancel</string>
     <string name="thomann_details_user_amount">Amount: {{amount}}</string>
     <string name="thomann_details_user_join_date">Joined: {{joinDate}}</string>
     <string name="thomann_details_total_amount">Total amount</string>

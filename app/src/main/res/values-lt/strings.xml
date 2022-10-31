@@ -80,6 +80,9 @@
     <string name="thomann_details_join">Prisijungti</string>
     <string name="thomann_details_leave">Išeiti</string>
     <string name="thomann_details_kick">Išmesti</string>
+    <string name="thomann_details_kick_confirmation_text">Ar tikrai norite išmesti vartotoją {{userName}}?</string>
+    <string name="thomann_details_kick_confirmation_positive">Taip</string>
+    <string name="thomann_details_kick_confirmation_negative">Atšaukti</string>
     <string name="thomann_details_user_amount">Suma: {{amount}}</string>
     <string name="thomann_details_user_join_date">Prisijungė: {{joinDate}}</string>
     <string name="thomann_details_total_amount">Bendra suma</string>

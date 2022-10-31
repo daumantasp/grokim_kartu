@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.dialog.YesNoDialogData
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
@@ -219,7 +220,15 @@ class ThomannDetailsAdapter(
 
                 // TODO: should not disable onClick in viewHolder, viewModel should prevent the action
                 leaveOrKickTextView.setOnClickListener {
-                    this.onKickClicked(data.user.user?.id ?: -1)
+                    val kickText = view.context.getText(R.string.thomann_details_kick_confirmation_text).toString()
+                    val formattedKickText = kickText.replace("{{userName}}", data.user.user?.name ?: "")
+                    utils.dialogUtils.showYesNoDialog(view.context, YesNoDialogData(
+                        text = formattedKickText,
+                        positiveText = view.context.getString(R.string.thomann_details_kick_confirmation_positive),
+                        negativeText = view.context.getString(R.string.thomann_details_kick_confirmation_negative),
+                        cancelable = true,
+                        onPositiveButtonClick = { this.onKickClicked(data.user.user?.id ?: -1) }
+                    ))
                 }
                 rootLayout.setOnClickListener {
                     this.onItemClicked(data.user.user?.id ?: -1)
