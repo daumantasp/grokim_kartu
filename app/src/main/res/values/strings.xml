@@ -124,6 +124,9 @@
     <string name="profile_edit_description">Introduction</string>
     <string name="profile_edit_save">Save</string>
     <string name="profile_edit_chooser_title">Choose a photo</string>
+    <string name="profile_edit_navigate_back_confirmation_text">There are unsaved changes. Do you really want to return?</string>
+    <string name="profile_edit_navigate_back_confirmation_positive">Yes</string>
+    <string name="profile_edit_navigate_back_confirmation_negative">Cancel</string>
 
     <!--    Settings-->
     <string name="settings_fragment">Settings</string>

@@ -20,6 +20,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.dialog.YesNoDialogData
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ProfileEditViewModel
@@ -96,11 +97,11 @@ class ProfileEditFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         binding.profileEditHeaderViewElement.setOnBackClick {
-            profileEditViewModel.backClicked()
+            profileEditViewModel.backClicked(false)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            profileEditViewModel.backClicked()
+            profileEditViewModel.backClicked(false)
         }
 
         binding.cityInputEditText.setOnClickListener {
@@ -128,6 +129,20 @@ class ProfileEditFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        profileEditViewModel.navigateBackConfirmation.observe(viewLifecycleOwner, EventObserver {
+            if (isDialogShown == true) {
+                dialogsManager?.hideBottomDialog()
+                isDialogShown = false
+            } else {
+                utils.dialogUtils.showYesNoDialog(requireContext(), YesNoDialogData(
+                    getString(R.string.profile_edit_navigate_back_confirmation_text),
+                    getString(R.string.profile_edit_navigate_back_confirmation_positive),
+                    getString(R.string.profile_edit_navigate_back_confirmation_negative),
+                    true,
+                    { profileEditViewModel.backClicked(true) }
+                ))
+            }
+        })
         profileEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
                 dialogsManager?.hideBottomDialog()

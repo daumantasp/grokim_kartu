@@ -124,6 +124,9 @@
     <string name="profile_edit_description">Prisistatymas</string>
     <string name="profile_edit_save">Išsaugoti</string>
     <string name="profile_edit_chooser_title">Pasirinkite nuotrauką</string>
+    <string name="profile_edit_navigate_back_confirmation_text">Liko neišsaugotų pakeitimų. Ar tikrai norite grįžti?</string>
+    <string name="profile_edit_navigate_back_confirmation_positive">Taip</string>
+    <string name="profile_edit_navigate_back_confirmation_negative">Atšaukti</string>
 
     <!--    Settings-->
     <string name="settings_fragment">Nustatymai</string>
