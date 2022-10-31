@@ -79,6 +79,9 @@
     <string name="thomann_details_valid_until">Galioja iki</string>
     <string name="thomann_details_join">Prisijungti</string>
     <string name="thomann_details_leave">Išeiti</string>
+    <string name="thomann_details_leave_confirmation_text">Ar tikrai norite išeiti?</string>
+    <string name="thomann_details_leave_confirmation_positive">Taip</string>
+    <string name="thomann_details_leave_confirmation_negative">Atšaukti</string>
     <string name="thomann_details_kick">Išmesti</string>
     <string name="thomann_details_kick_confirmation_text">Ar tikrai norite išmesti vartotoją {{userName}}?</string>
     <string name="thomann_details_kick_confirmation_positive">Taip</string>

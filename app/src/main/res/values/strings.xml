@@ -79,6 +79,9 @@
     <string name="thomann_details_valid_until">Valid until</string>
     <string name="thomann_details_join">Join</string>
     <string name="thomann_details_leave">Leave</string>
+    <string name="thomann_details_leave_confirmation_text">Do you really want to leave?</string>
+    <string name="thomann_details_leave_confirmation_positive">Yes</string>
+    <string name="thomann_details_leave_confirmation_negative">Cancel</string>
     <string name="thomann_details_kick">Kick</string>
     <string name="thomann_details_kick_confirmation_text">Do you really want to kick {{userName}}?</string>
     <string name="thomann_details_kick_confirmation_positive">Yes</string>

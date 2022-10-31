@@ -211,7 +211,13 @@ class ThomannDetailsAdapter(
 
                 // TODO: should not disable onClick in viewHolder, viewModel should prevent the action
                 leaveOrKickTextView.setOnClickListener {
-                    this.onLeaveClicked()
+                    utils.dialogUtils.showYesNoDialog(view.context, YesNoDialogData(
+                        text = view.context.getString(R.string.thomann_details_leave_confirmation_text),
+                        positiveText = view.context.getString(R.string.thomann_details_leave_confirmation_positive),
+                        negativeText = view.context.getString(R.string.thomann_details_leave_confirmation_negative),
+                        cancelable = true,
+                        onPositiveButtonClick = { this.onLeaveClicked() }
+                    ))
                 }
                 rootLayout.setOnClickListener {}
             } else if (data.user.isCurrentUser == false && (data.user.actions ?: listOf()).contains("KICK")) {
