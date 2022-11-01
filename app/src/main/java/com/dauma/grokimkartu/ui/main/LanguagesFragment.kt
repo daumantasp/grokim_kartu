@@ -49,6 +49,10 @@ class LanguagesFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
         bottomMenuManager = null
     }
 

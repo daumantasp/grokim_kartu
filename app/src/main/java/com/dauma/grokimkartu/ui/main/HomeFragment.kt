@@ -77,9 +77,13 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        homeViewModel.viewIsDiscarded()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
         customNavigator = null
         statusBarManager = null
-        homeViewModel.viewIsDiscarded()
     }
 
     private fun setupObservers() {
