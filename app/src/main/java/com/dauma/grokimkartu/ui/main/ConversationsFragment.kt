@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentConversationsBinding
-import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.ConversationsPagerAdapter
 import com.dauma.grokimkartu.viewmodels.main.ConversationsViewModel
@@ -39,11 +36,6 @@ class ConversationsFragment : Fragment() {
         _binding = FragmentConversationsBinding.inflate(inflater, container, false)
         binding.model = conversationsViewModel
         val view = binding.root
-        setupObservers()
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            conversationsViewModel.backClicked()
-        }
 
         val viewPager = binding.conversationsViewPager
         val tabLayout = binding.conversationsTabLayout
@@ -67,11 +59,5 @@ class ConversationsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         conversationsViewModel.viewIsDiscarded()
-    }
-
-    private fun setupObservers() {
-        conversationsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
-        })
     }
 }
