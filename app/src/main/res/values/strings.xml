@@ -49,6 +49,7 @@
 
     <!--    Bottom Dialog-->
     <string name="bottom_dialog_search">Search</string>
+    <string name="bottom_dialog_amount">Amount (€)</string>
     <string name="bottom_dialog_save_button">Save</string>
     <string name="bottom_dialog_cancel_button">Cancel</string>
 

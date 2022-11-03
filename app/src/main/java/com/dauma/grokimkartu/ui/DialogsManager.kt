@@ -7,6 +7,7 @@ interface DialogsManager {
     fun showBottomDialog(data: BottomDialogData)
     fun showBottomDatePickerDialog(data: BottomDialogDatePickerData)
     fun showBottomCodeValueDialog(data: BottomDialogCodeValueData)
+    fun showBottomAmountDialog(data: BottomDialogAmountData)
     fun setCodeValues(codeValues: List<CodeValue>)
     fun hideBottomDialog()
     fun enableBottomDialogSaveButton(isEnabled: Boolean)
@@ -38,5 +39,12 @@ data class BottomDialogCodeValueData (
     val codeValues: List<CodeValue>,
     val onCodeValueClicked: (String) -> Unit,
     val onSearchValueChanged: (String) -> Unit,
+    val onCancelClicked: () -> Unit
+)
+
+data class BottomDialogAmountData(
+    val title: String,
+    val amount: Int,
+    val onSaveClicked: (Int) -> Unit,
     val onCancelClicked: () -> Unit
 )

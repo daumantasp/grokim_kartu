@@ -45,9 +45,9 @@ class ThomannDetailsViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
-    fun joinClicked(amount: Double, onComplete: () -> Unit = {}) {
+    fun joinClicked(amount: Int, onComplete: () -> Unit = {}) {
         if (thomannId != null) {
-            thomannsRepository.join(thomannId, amount) { thomannDetails, thomannsErrors ->
+            thomannsRepository.join(thomannId, amount.toDouble()) { thomannDetails, thomannsErrors ->
                 if (thomannDetails != null) {
                     this.loadDetails()
                 }

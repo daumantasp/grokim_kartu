@@ -49,6 +49,7 @@
 
     <!--    Bottom Dialog-->
     <string name="bottom_dialog_search">Paieška</string>
+    <string name="bottom_dialog_amount">Suma (€)</string>
     <string name="bottom_dialog_save_button">Išsaugoti</string>
     <string name="bottom_dialog_cancel_button">Atšaukti</string>
 

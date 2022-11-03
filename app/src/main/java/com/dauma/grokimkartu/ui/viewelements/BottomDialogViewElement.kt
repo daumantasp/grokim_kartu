@@ -21,7 +21,9 @@ import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.main.adapters.BottomDialogCodeValueAdapter
 import com.dauma.grokimkartu.general.CodeValue
+import com.dauma.grokimkartu.ui.BottomDialogAmountData
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -38,6 +40,8 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     private val codeValueLinearLayout: LinearLayout
     private val codeValueSearchEditText: TextInputEditText
     private val codeValueRecyclerView: RecyclerView
+    private val amountInputLayout: TextInputLayout
+    private val amountInputEditText: EditText
     private val saveButton: ButtonViewElement
     private var onValueChanged: (String) -> Unit = {}
     private var valueCharsLimit: Int? = null
@@ -61,6 +65,8 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         codeValueLinearLayout = findViewById(R.id.code_value_linear_layout)
         codeValueSearchEditText = findViewById(R.id.code_value_text_input_edit_text)
         codeValueRecyclerView = findViewById(R.id.code_value_recycler_view)
+        amountInputLayout = findViewById(R.id.amount_input_layout)
+        amountInputEditText = findViewById(R.id.amount_input_edit_text)
         saveButton = findViewById(R.id.save_button_view_element)
 
         contentLinearLayout.setOnClickListener {}
@@ -81,6 +87,15 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
                 onValueChanged(p0.toString())
             }
         })
+        amountInputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0?.length == 1 && p0.toString() == "0") {
+                    amountInputEditText.setText("")
+                }
+            }
+        })
 
         // Read More: https://stackoverflow.com/questions/21926644/get-height-and-width-of-a-layout-programmatically
         rootRelativeLayout.doOnLayout { hide(animated = false) }
@@ -91,12 +106,18 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         setTitle(data.title)
         setEditableValue(data.value)
         setValueCharsLimit(data.valueLimit)
-        setOnSaveClick { value -> data.onSaveClicked(value) }
+        saveButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                val value = valueEditText.text.toString()
+                data.onSaveClicked(value)
+            }
+        })
         setOnValueChanged { value -> data.onValueChanged(value) }
         setOnCancelClick { data.onCancelClicked() }
 
         datePicker.visibility = View.GONE
         codeValueLinearLayout.visibility = View.GONE
+        amountInputLayout.visibility = View.GONE
         valueEditText.visibility = View.VISIBLE
         saveButton.visibility = View.VISIBLE
     }
@@ -138,6 +159,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
 
         valueEditText.visibility = View.GONE
         codeValueLinearLayout.visibility = View.GONE
+        amountInputLayout.visibility = View.GONE
         datePicker.visibility = View.VISIBLE
         saveButton.visibility = View.VISIBLE
     }
@@ -154,8 +176,29 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
 
         valueEditText.visibility = View.GONE
         datePicker.visibility = View.GONE
+        amountInputLayout.visibility = View.GONE
         saveButton.visibility = View.GONE
         codeValueLinearLayout.visibility = View.VISIBLE
+    }
+
+    fun bindAmountData(data: BottomDialogAmountData) {
+        reset()
+        setTitle(data.title)
+        amountInputEditText.setText(data.amount.toString())
+        setOnCancelClick { data.onCancelClicked() }
+        saveButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                amountInputEditText.text.toString().toIntOrNull()?.let { amount ->
+                    data.onSaveClicked(amount)
+                }
+            }
+        })
+
+        valueEditText.visibility = View.GONE
+        datePicker.visibility = View.GONE
+        amountInputLayout.visibility = View.VISIBLE
+        codeValueLinearLayout.visibility = View.GONE
+        saveButton.visibility = View.VISIBLE
     }
 
     fun setCodeValues(codeValues: List<CodeValue>) {
@@ -179,14 +222,6 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
 
     fun showLoading(isLoading: Boolean) {
         saveButton.showAnimation(isLoading)
-    }
-
-    private fun setOnSaveClick(onClick: (String) -> Unit) {
-        saveButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                onClick(valueEditText.text.toString())
-            }
-        })
     }
 
     private fun setOnCancelClick(onClick: () -> Unit) {
@@ -230,6 +265,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         datePicker.visibility = View.GONE
         codeValues.clear()
         codeValueSearchEditText.setText("")
+        amountInputEditText.setText("")
         hide(animated = false)
     }
 

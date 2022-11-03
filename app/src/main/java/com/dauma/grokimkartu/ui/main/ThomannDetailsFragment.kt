@@ -17,6 +17,7 @@ import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import com.dauma.grokimkartu.databinding.FragmentThomannDetailsBinding
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
+import com.dauma.grokimkartu.ui.BottomDialogAmountData
 import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.main.adapters.*
@@ -116,32 +117,24 @@ class ThomannDetailsFragment : Fragment() {
         })
         thomannDetailsViewModel.join.observe(viewLifecycleOwner, EventObserver {
             this.dialogsManager?.let { manager ->
-                val dialogData = BottomDialogData(
+                val dialogAmountData = BottomDialogAmountData(
                     title = getString(R.string.thomann_details_join_dialog_title),
-                    value = "",
-                    valueLimit = null,
-                    onSaveClicked = { value ->
-                        manager.showBottomDialogLoading(true)
-                        val valueAsDouble = value.toDoubleOrNull()
-                        if (valueAsDouble != null) {
-                            this.thomannDetailsViewModel.joinClicked(valueAsDouble) {
-                                manager.showBottomDialogLoading(false)
-                                manager.hideBottomDialog()
-                                this.utils.keyboardUtils.hideKeyboard(requireView())
-                            }
-                        } else {
+                    amount = 0,
+                    onSaveClicked = { amount ->
+                        this.thomannDetailsViewModel.joinClicked(amount) {
                             manager.showBottomDialogLoading(false)
+                            manager.hideBottomDialog()
+                            utils.keyboardUtils.hideKeyboard(requireView())
+                            isJoinDialogShown = false
                         }
-                    },
-                    onValueChanged = { value ->
-                        manager.enableBottomDialogSaveButton(value.length > 0)
                     },
                     onCancelClicked = {
                         manager.hideBottomDialog()
                         utils.keyboardUtils.hideKeyboard(requireView())
+                        isJoinDialogShown = false
                     }
                 )
-                manager.showBottomDialog(dialogData)
+                manager.showBottomAmountDialog(dialogAmountData)
                 isJoinDialogShown = true
             }
         })

@@ -197,6 +197,15 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         }
     }
 
+    override fun showBottomAmountDialog(data: BottomDialogAmountData) {
+        bottomDialogViewElement?.let { dialog ->
+            bottomNavigationView?.translationZ = -30.0f
+
+            dialog.bindAmountData(data)
+            dialog.show(animated = true)
+        }
+    }
+
     override fun setCodeValues(codeValues: List<CodeValue>) {
         bottomDialogViewElement?.let { dialog ->
             dialog.setCodeValues(codeValues)
