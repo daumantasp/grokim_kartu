@@ -191,7 +191,8 @@ class ConversationsAdapter(
             val message = if (isLastMessageYours) {
                 "${context.getString(R.string.conversations_you)}: ${conversation.lastMessage?.text}"
             } else {
-                "${conversation.lastMessage?.user?.name}: ${conversation.lastMessage?.text}"
+                val userName = conversation.lastMessage?.user?.name ?: context.getString(R.string.conversation_unknown_user)
+                "${userName}: ${conversation.lastMessage?.text}"
             }
             textTextView.text = message
 

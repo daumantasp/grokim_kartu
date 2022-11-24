@@ -113,6 +113,7 @@
     <string name="conversations_private_title">Private</string>
     <string name="conversations_thomann_title">Thomann</string>
     <string name="conversations_you">You</string>
+    <string name="conversation_unknown_user">Unknown User</string>
 
     <!--    Profile-->
     <string name="profile_fragment">Account</string>

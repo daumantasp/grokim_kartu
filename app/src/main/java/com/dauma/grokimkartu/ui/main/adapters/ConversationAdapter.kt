@@ -56,7 +56,7 @@ class ConversationAdapter(
         val data = conversation[position]
         if (data is Message && data.user?.isCurrent == true) {
             return MY_MESSAGE
-        } else if (data is Message && data.user?.isCurrent == false) {
+        } else if (data is Message && data.user?.isCurrent != true) {
             return PARTNER_MESSAGE
         } else if (data is DummyCell) {
             return LAST
@@ -66,13 +66,13 @@ class ConversationAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == MY_MESSAGE) {
-            return MyMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_message_conversation_item, parent, false), utils)
+            return MyMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_message_conversation_item, parent, false), context, utils)
         } else if (viewType == PARTNER_MESSAGE) {
-            return PartnerMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.partner_message_conversation_item, parent, false), utils, photoIconBackgroundDrawable)
+            return PartnerMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.partner_message_conversation_item, parent, false), context, utils, photoIconBackgroundDrawable)
         } else if (viewType == LAST) {
             return MessageLastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.message_last_item, parent, false), loadNextPage)
         }
-        return MyMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_message_conversation_item, parent, false), utils)
+        return MyMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_message_conversation_item, parent, false), context, utils)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -92,6 +92,7 @@ class ConversationAdapter(
 
     class MyMessageViewHolder(
         view: View,
+        private val context: Context,
         private val utils: Utils
     ) : RecyclerView.ViewHolder(view) {
         val nameTextView = view.findViewById<TextView>(R.id.name_text_view)
@@ -99,7 +100,7 @@ class ConversationAdapter(
         val textView = view.findViewById<TextView>(R.id.text_view)
 
         fun bind(message: Message) {
-            nameTextView.text = message.user?.name
+            nameTextView.text = message.user?.name ?: context.getString(R.string.conversation_unknown_user)
             message.createdAt?.let {
                 val createdAtFormatted = utils.timeUtils.format(Date(it.time), getDateTimeFormat(it))
                 dateTextView.text = createdAtFormatted
@@ -121,6 +122,7 @@ class ConversationAdapter(
 
     class PartnerMessageViewHolder(
         view: View,
+        private val context: Context,
         private val utils: Utils,
         private val photoIconBackgroundDrawable: Drawable?,
     ) : RecyclerView.ViewHolder(view) {
@@ -131,7 +133,9 @@ class ConversationAdapter(
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
 
         fun bind(message: Message) {
-            nameTextView.text = message.user?.name
+            val userName = message.user?.name ?: context.getString(R.string.conversation_unknown_user)
+
+            nameTextView.text = userName
             message.createdAt?.let {
                 val createdAtFormatted = utils.timeUtils.format(Date(it.time), getDateTimeFormat(it))
                 dateTextView.text = createdAtFormatted
@@ -147,7 +151,7 @@ class ConversationAdapter(
                 }
             }
             fun bindInitials() {
-                val initials = utils.stringUtils.getInitials(message.user?.name ?: "")
+                val initials = utils.stringUtils.getInitials(userName)
                 initialsViewElement.setInitials(initials)
                 userIconImageView.visibility = View.GONE
                 initialsViewElement.visibility = View.VISIBLE
