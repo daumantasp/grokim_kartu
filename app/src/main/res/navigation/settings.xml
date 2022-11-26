@@ -50,7 +50,7 @@
         android:label="DeleteUserFragment" >
         <action
             android:id="@+id/action_deleteUserFragment_to_authGraph"
-            app:destination="@id/loginFragment"
+            app:destination="@id/auth"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
