@@ -27,7 +27,8 @@ class AuthRepositoryImpl(
     override fun register(
         email: String,
         password: String,
-        name: String
+        name: String,
+        onComplete: (Boolean?, AuthenticationErrors?) -> Unit
     ) {
         if (user.isUserLoggedIn() == false) {
             val registrationRequest = RegistrationRequest(
@@ -38,18 +39,17 @@ class AuthRepositoryImpl(
             )
             authDao.register(registrationRequest) { registrationResponse, authDaoResponseStatus ->
                 if (authDaoResponseStatus.isSuccessful && registrationResponse != null) {
-                    user.login(registrationResponse)
-                    notifyLoginListeners(true, null)
+                    onComplete(true, null)
                 } else {
                     when (authDaoResponseStatus.error) {
                         AuthDaoResponseStatus.Errors.EMAIL_TAKEN -> {
-                            notifyLoginListeners(false, AuthenticationErrors.EMAIL_TAKEN)
+                            onComplete(false, AuthenticationErrors.EMAIL_TAKEN)
                         }
                         AuthDaoResponseStatus.Errors.INVALID_EMAIL -> {
-                            notifyLoginListeners(false, AuthenticationErrors.INVALID_EMAIL)
+                            onComplete(false, AuthenticationErrors.INVALID_EMAIL)
                         }
                         else -> {
-                            notifyLoginListeners(false, AuthenticationErrors.UNKNOWN)
+                            onComplete(false, AuthenticationErrors.UNKNOWN)
                         }
                     }
                 }
