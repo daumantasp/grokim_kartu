@@ -23,6 +23,8 @@ import com.dauma.grokimkartu.data.settings.SettingsDao
 import com.dauma.grokimkartu.data.settings.SettingsDaoImpl
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
+import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
+import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiverImpl
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
@@ -198,6 +200,12 @@ class AppModule {
     @Singleton
     fun providesUser() : User {
         return User()
+    }
+
+    @Provides
+    @Singleton
+    fun providesNetworkChangeReceiver(@ApplicationContext appContext: Context) : NetworkChangeReceiver {
+        return NetworkChangeReceiverImpl(appContext)
     }
 
     @Provides
