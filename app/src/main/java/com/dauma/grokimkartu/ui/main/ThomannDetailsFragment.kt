@@ -153,9 +153,9 @@ class ThomannDetailsFragment : Fragment() {
     private fun setupDetailsRecyclerView() {
         binding.thomannDetailsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.thomannDetailsRecyclerView.adapter = ThomannDetailsAdapter(
-            context = requireContext(),
             data = recyclerViewData,
             utils = utils,
+            dialogsManager = dialogsManager,
             onItemClicked = { userId -> this.thomannDetailsViewModel.userClicked(userId) },
             onLeaveClicked = { this.thomannDetailsViewModel.quitClicked() },
             onKickClicked = { userId -> this.thomannDetailsViewModel.kickClicked(userId) }

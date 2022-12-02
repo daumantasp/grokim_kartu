@@ -28,8 +28,6 @@ import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
-import com.dauma.grokimkartu.general.utils.dialog.DialogUtils
-import com.dauma.grokimkartu.general.utils.dialog.DialogUtilsImpl
 import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtils
 import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
@@ -129,11 +127,6 @@ class AppModule {
     }
 
     @Provides
-    fun dialogUtils() : DialogUtils {
-        return DialogUtilsImpl()
-    }
-
-    @Provides
     fun otherUtils() : OtherUtils {
         return OtherUtilsImpl()
     }
@@ -147,7 +140,6 @@ class AppModule {
         sharedStorageUtils: SharedStorageUtils,
         dispatcherUtils: DispatcherUtils,
         localeUtils: LocaleUtils,
-        dialogUtils: DialogUtils,
         otherUtils: OtherUtils
     ) : Utils {
         return UtilsImpl(
@@ -158,7 +150,6 @@ class AppModule {
             sharedStorageUtils,
             dispatcherUtils,
             localeUtils,
-            dialogUtils,
             otherUtils
         )
     }

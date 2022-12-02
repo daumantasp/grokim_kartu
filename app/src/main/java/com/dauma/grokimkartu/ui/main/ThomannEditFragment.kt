@@ -13,12 +13,12 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.general.utils.dialog.YesNoDialogData
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
+import com.dauma.grokimkartu.ui.YesNoDialogData
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -102,7 +102,7 @@ class ThomannEditFragment : Fragment() {
                 dialogsManager?.hideBottomDialog()
                 isDialogShown = false
             } else {
-                utils.dialogUtils.showYesNoDialog(requireContext(), YesNoDialogData(
+                dialogsManager?.showYesNoDialog(YesNoDialogData(
                     getString(R.string.thomann_edit_navigate_back_confirmation_text),
                     getString(R.string.thomann_edit_navigate_back_confirmation_positive),
                     getString(R.string.thomann_edit_navigate_back_confirmation_negative),

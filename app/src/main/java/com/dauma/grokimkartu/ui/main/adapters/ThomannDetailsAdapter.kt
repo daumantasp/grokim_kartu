@@ -1,6 +1,5 @@
 package com.dauma.grokimkartu.ui.main.adapters
 
-import android.content.Context
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.PorterDuff
@@ -19,17 +18,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.general.utils.dialog.YesNoDialogData
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
+import com.dauma.grokimkartu.ui.DialogsManager
+import com.dauma.grokimkartu.ui.YesNoDialogData
 import com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import com.dauma.grokimkartu.ui.viewelements.RowViewElement
 import java.sql.Date
 
 class ThomannDetailsAdapter(
-    private val context: Context,
     private val data: List<Any>,
     private val utils: Utils,
+    private val dialogsManager: DialogsManager?,
     private val onItemClicked: (Int) -> Unit,
     private val onLeaveClicked: () -> Unit,
     private val onKickClicked: (Int) -> Unit
@@ -66,9 +66,9 @@ class ThomannDetailsAdapter(
         } else if (viewType == STATUS_ROW) {
             return StatusRowViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_row_item, parent, false))
         } else if (viewType == USER) {
-            return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_user_item, parent, false), utils, onItemClicked, onLeaveClicked, onKickClicked)
+            return UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_user_item, parent, false), utils, dialogsManager, onItemClicked, onLeaveClicked, onKickClicked)
         } else if (viewType == BUTTON) {
-            return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_button_item, parent, false), utils)
+            return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_button_item, parent, false), utils, dialogsManager)
         }
         return RowViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_details_row_item, parent, false))
     }
@@ -165,6 +165,7 @@ class ThomannDetailsAdapter(
     private class UserViewHolder(
         private val view: View,
         private val utils: Utils,
+        private val dialogsManager: DialogsManager?,
         private val onItemClicked: (Int) -> Unit,
         private val onLeaveClicked: () -> Unit,
         private val onKickClicked: (Int) -> Unit
@@ -211,7 +212,7 @@ class ThomannDetailsAdapter(
 
                 // TODO: should not disable onClick in viewHolder, viewModel should prevent the action
                 leaveOrKickTextView.setOnClickListener {
-                    utils.dialogUtils.showYesNoDialog(view.context, YesNoDialogData(
+                    dialogsManager?.showYesNoDialog(YesNoDialogData(
                         text = view.context.getString(R.string.thomann_details_leave_confirmation_text),
                         positiveText = view.context.getString(R.string.thomann_details_leave_confirmation_positive),
                         negativeText = view.context.getString(R.string.thomann_details_leave_confirmation_negative),
@@ -228,7 +229,7 @@ class ThomannDetailsAdapter(
                 leaveOrKickTextView.setOnClickListener {
                     val kickText = view.context.getText(R.string.thomann_details_kick_confirmation_text).toString()
                     val formattedKickText = kickText.replace("{{userName}}", data.user.user?.name ?: "")
-                    utils.dialogUtils.showYesNoDialog(view.context, YesNoDialogData(
+                    dialogsManager?.showYesNoDialog(YesNoDialogData(
                         text = formattedKickText,
                         positiveText = view.context.getString(R.string.thomann_details_kick_confirmation_positive),
                         negativeText = view.context.getString(R.string.thomann_details_kick_confirmation_negative),
@@ -276,7 +277,11 @@ class ThomannDetailsAdapter(
         }
     }
 
-    private class ButtonViewHolder(private val view: View, private val utils: Utils) : RecyclerView.ViewHolder(view) {
+    private class ButtonViewHolder(
+        private val view: View,
+        private val utils: Utils,
+        private val dialogsManager: DialogsManager?,
+    ) : RecyclerView.ViewHolder(view) {
         val buttonViewElement = view.findViewById<ButtonViewElement>(R.id.thomann_details_button_view_element)
 
         fun bind(data: ThomannDetailsButtonData) {
@@ -284,7 +289,7 @@ class ThomannDetailsAdapter(
             buttonViewElement.setOnClick(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     if (data.isCancelAction) {
-                        utils.dialogUtils.showYesNoDialog(view.context, YesNoDialogData(
+                        dialogsManager?.showYesNoDialog(YesNoDialogData(
                             text = view.context.getString(R.string.thomann_details_cancel_confirmation_text),
                             positiveText = view.context.getString(R.string.thomann_details_cancel_confirmation_positive),
                             negativeText = view.context.getString(R.string.thomann_details_cancel_confirmation_negative),

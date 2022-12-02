@@ -20,9 +20,9 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.general.utils.dialog.YesNoDialogData
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
+import com.dauma.grokimkartu.ui.YesNoDialogData
 import com.dauma.grokimkartu.viewmodels.main.ProfileEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -138,7 +138,7 @@ class ProfileEditFragment : Fragment() {
                 dialogsManager?.hideBottomDialog()
                 isDialogShown = false
             } else {
-                utils.dialogUtils.showYesNoDialog(requireContext(), YesNoDialogData(
+                dialogsManager?.showYesNoDialog(YesNoDialogData(
                     getString(R.string.profile_edit_navigate_back_confirmation_text),
                     getString(R.string.profile_edit_navigate_back_confirmation_positive),
                     getString(R.string.profile_edit_navigate_back_confirmation_negative),

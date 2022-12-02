@@ -1,5 +1,7 @@
 package com.dauma.grokimkartu.ui
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +21,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.CodeValue
+import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeListener
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtilsImpl
@@ -227,6 +230,26 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
 
     override fun showBottomDialogLoading(show: Boolean) {
         bottomDialogViewElement?.showLoading(show)
+    }
+
+    override fun showYesNoDialog(data: YesNoDialogData) {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        val dialogClickListener = DialogInterface.OnClickListener { dialogInterface, which ->
+            when(which) {
+                DialogInterface.BUTTON_POSITIVE -> data.onPositiveButtonClick()
+                DialogInterface.BUTTON_NEGATIVE -> data.onNegativeButtonClick()
+            }
+            dialogInterface.dismiss()
+        }
+        alertDialogBuilder.setMessage(data.text)
+            .setCancelable(data.cancelable)
+            .setPositiveButton(data.positiveText, dialogClickListener)
+            .setNegativeButton(data.negativeText, dialogClickListener)
+            .show()
+    }
+
+    override fun showBlockingDialog(show: Boolean) {
+        TODO("Not yet implemented")
     }
 
     override fun refreshBottomMenuItemTitles() {

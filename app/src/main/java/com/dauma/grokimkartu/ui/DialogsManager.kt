@@ -12,6 +12,8 @@ interface DialogsManager {
     fun hideBottomDialog()
     fun enableBottomDialogSaveButton(isEnabled: Boolean)
     fun showBottomDialogLoading(show: Boolean)
+    fun showBlockingDialog(show: Boolean)
+    fun showYesNoDialog(data: YesNoDialogData)
 }
 
 data class BottomDialogData(
@@ -47,4 +49,13 @@ data class BottomDialogAmountData(
     val amount: Int,
     val onSaveClicked: (Int) -> Unit,
     val onCancelClicked: () -> Unit
+)
+
+data class YesNoDialogData(
+    val text: String,
+    val positiveText: String,
+    val negativeText: String,
+    val cancelable: Boolean,
+    val onPositiveButtonClick: () -> Unit,
+    val onNegativeButtonClick: () -> Unit = {}
 )
