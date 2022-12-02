@@ -22,6 +22,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.CodeValue
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeListener
+import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtilsImpl
@@ -29,15 +30,19 @@ import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager, BottomMenuManager {
+class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager,
+    BottomMenuManager, NetworkChangeListener {
     private var mainActivityFrameLayout: FrameLayout? = null
     private var statusBarBackgroundFrameLayout: FrameLayout? = null
     private var safeAreaConstraintLayout: ConstraintLayout? = null
     private var bottomNavigationView: BottomNavigationView? = null
     private var bottomDialogViewElement: BottomDialogViewElement? = null
     private var currentStatusBarTheme: StatusBarTheme? = null
+    private var networkLostDialog: DialogsManager.Dialog? = null
+    @Inject lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     companion object {
         val TAG = "MainActivity"
@@ -54,6 +59,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             findViewById<BottomDialogViewElement>(R.id.bottom_dialog_view_element)
         initializeBottomNavigation()
         setupInsets()
+        addNetworkListenerAndShowDialogIfNeeded()
     }
 
     private fun setLocale() {
@@ -125,6 +131,13 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         }
     }
 
+    private fun addNetworkListenerAndShowDialogIfNeeded() {
+        networkChangeReceiver.addListener(this)
+        if (networkChangeReceiver.isNetworkAvailable() == false) {
+            onNetworkLost()
+        }
+    }
+
     // MARK: CustomNavigator
     override fun navigateToProfile() {
         val navHostFragment =
@@ -168,6 +181,20 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
                 @Suppress("DEPRECATION")
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
+        }
+    }
+
+    // MARK: NetworkChangeListener
+    override fun onNetworkAvailable() {
+        if (networkLostDialog != null) {
+            networkLostDialog?.dismiss()
+            networkLostDialog = null
+        }
+    }
+
+    override fun onNetworkLost() {
+        if (networkLostDialog == null) {
+            networkLostDialog = showSimpleDialog(SimpleDialogData(getString(R.string.dialog_network_lost_text), false))
         }
     }
 
@@ -232,6 +259,23 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         bottomDialogViewElement?.showLoading(show)
     }
 
+    override fun showSimpleDialog(data: SimpleDialogData): DialogsManager.Dialog {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        val dialogCancelListener = DialogInterface.OnCancelListener { dialogInterface ->
+            data.onCancelClicked()
+            dialogInterface.dismiss()
+        }
+        val dialog = alertDialogBuilder.setMessage(data.text)
+            .setCancelable(data.cancelable)
+            .setOnCancelListener(dialogCancelListener)
+            .show()
+
+        return object : DialogsManager.Dialog {
+            override fun dismiss() {
+                dialog.dismiss()
+            }
+        }
+    }
     override fun showYesNoDialog(data: YesNoDialogData) {
         val alertDialogBuilder = AlertDialog.Builder(this)
         val dialogClickListener = DialogInterface.OnClickListener { dialogInterface, which ->
@@ -251,10 +295,6 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             .setNegativeButton(data.negativeText, dialogClickListener)
             .setOnCancelListener(dialogCancelListener)
             .show()
-    }
-
-    override fun showBlockingDialog(show: Boolean) {
-        TODO("Not yet implemented")
     }
 
     override fun refreshBottomMenuItemTitles() {

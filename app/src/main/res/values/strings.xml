@@ -53,6 +53,9 @@
     <string name="bottom_dialog_save_button">Save</string>
     <string name="bottom_dialog_cancel_button">Cancel</string>
 
+    <!--    Dialog-->
+    <string name="dialog_network_lost_text">There is no Internet Connection</string>
+
     <!--    Home-->
     <string name="home_players">People</string>
     <string name="home_players_description">Find like-minded musicians</string>
