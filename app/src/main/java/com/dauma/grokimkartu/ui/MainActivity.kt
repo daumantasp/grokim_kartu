@@ -241,10 +241,15 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             }
             dialogInterface.dismiss()
         }
+        val dialogCancelListener = DialogInterface.OnCancelListener { dialogInterface ->
+            data.onCancelClicked()
+            dialogInterface.dismiss()
+        }
         alertDialogBuilder.setMessage(data.text)
             .setCancelable(data.cancelable)
             .setPositiveButton(data.positiveText, dialogClickListener)
             .setNegativeButton(data.negativeText, dialogClickListener)
+            .setOnCancelListener(dialogCancelListener)
             .show()
     }
 

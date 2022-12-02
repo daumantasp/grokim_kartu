@@ -57,5 +57,7 @@ data class YesNoDialogData(
     val negativeText: String,
     val cancelable: Boolean,
     val onPositiveButtonClick: () -> Unit,
-    val onNegativeButtonClick: () -> Unit = {}
+    val onNegativeButtonClick: () -> Unit = {},
+    val onCancelClicked: () -> Unit = {}
+)
 )
