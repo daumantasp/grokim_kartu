@@ -4,12 +4,7 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannsResponse
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsErrors
 
-class ThomannsPaginatorImpl(private val thomannsDao: ThomannsDao) : ThomannsPaginator {
-    private var _pages: MutableList<ThomannsResponse> = mutableListOf()
-    override val pages: List<ThomannsResponse>
-        get() = _pages
-    override val pageSize: Int = 20
-
+class ThomannsPaginatorImpl(private val thomannsDao: ThomannsDao) : ThomannsPaginator(thomannsDao) {
     override fun loadNextPage(accessToken: String, onComplete: (ThomannsResponse?, ThomannsErrors?) -> Unit) {
         if (isLastLoaded() == false) {
             val nextPage = _pages.count() + 1
@@ -24,17 +19,5 @@ class ThomannsPaginatorImpl(private val thomannsDao: ThomannsDao) : ThomannsPagi
         } else {
             onComplete(_pages.lastOrNull(), null)
         }
-
-    }
-
-    override fun clear() {
-        _pages.clear()
-    }
-
-    private fun isLastLoaded(): Boolean {
-        _pages.lastOrNull()?.pageData?.let { pageData ->
-            return pageData.currentPage == pageData.lastPage
-        }
-        return false
     }
 }
