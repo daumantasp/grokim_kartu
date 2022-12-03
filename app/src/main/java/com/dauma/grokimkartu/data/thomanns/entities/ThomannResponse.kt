@@ -10,6 +10,7 @@ data class ThomannResponse(
     @SerializedName("is_owner") var isOwner: Boolean?,
     @SerializedName("is_locked") var isLocked: Boolean?,
     @SerializedName("is_accessible") var isAccessible: Boolean?,
+    @SerializedName("is_deleted") var isDeleted: Boolean?,
     @SerializedName("created_at") var createdAt: Timestamp?,
     @SerializedName("valid_until") var validUntil: Timestamp?
 )
