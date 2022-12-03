@@ -110,6 +110,7 @@ class MyThomannsRepositoryImpl(
             isOwner = thomannResponse.isOwner,
             isLocked = thomannResponse.isLocked,
             isAccessible = thomannResponse.isAccessible,
+            isDeleted = thomannResponse.isDeleted,
             createdAt = thomannResponse.createdAt,
             validUntil = thomannResponse.validUntil,
             iconLoader = icon

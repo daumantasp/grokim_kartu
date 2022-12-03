@@ -10,6 +10,7 @@ data class Thomann(
     var isOwner: Boolean?,
     var isLocked: Boolean?,
     var isAccessible: Boolean?,
+    var isDeleted: Boolean?,
     var createdAt: Timestamp?,
     var validUntil: Timestamp?,
     var iconLoader: IconLoader
