@@ -153,6 +153,37 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
         })
     }
 
+    override fun myThomanns(
+        page: Int,
+        pageSize: Int,
+        accessToken: String,
+        onComplete: (ThomannsResponse?, ThomannsDaoResponseStatus) -> Unit
+    ) {
+        retrofitThomanns.myThomanns(page, pageSize, accessToken).enqueue(object : Callback<ThomannsResponse> {
+            override fun onResponse(
+                call: Call<ThomannsResponse>,
+                response: Response<ThomannsResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val thomannsResponse = response.body()
+                        val status = ThomannsDaoResponseStatus(true, null)
+                        onComplete(thomannsResponse, status)
+                    }
+                    else -> {
+                        val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ThomannsResponse>, t: Throwable) {
+                val status = ThomannsDaoResponseStatus(false, ThomannsDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
     override fun thomannDetails(
         thomannId: Int,
         accessToken: String,
@@ -348,6 +379,13 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
 
         @GET("thomanns")
         fun thomanns(
+            @Query("page") page: Int,
+            @Query("page_size") pageSize: Int,
+            @Header("Authorization") accessToken: String
+        ): Call<ThomannsResponse>
+
+        @GET("mythomanns")
+        fun myThomanns(
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
             @Header("Authorization") accessToken: String
