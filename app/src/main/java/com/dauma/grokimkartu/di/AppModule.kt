@@ -66,8 +66,11 @@ import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import com.dauma.grokimkartu.repositories.profile.ProfileRepositoryImpl
 import com.dauma.grokimkartu.repositories.settings.SettingsRepository
 import com.dauma.grokimkartu.repositories.settings.SettingsRepositoryImpl
+import com.dauma.grokimkartu.repositories.thomanns.MyThomannsRepository
+import com.dauma.grokimkartu.repositories.thomanns.MyThomannsRepositoryImpl
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepositoryImpl
+import com.dauma.grokimkartu.repositories.thomanns.paginator.MyThomannsPaginatorImpl
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginatorImpl
 import com.dauma.grokimkartu.repositories.users.AuthRepositoryImpl
@@ -266,23 +269,32 @@ class AppModule {
     }
 
     @Provides
-    fun provideThomannsPaginator(thomannsDao: ThomannsDao) : ThomannsPaginator {
-        return ThomannsPaginatorImpl(thomannsDao)
-    }
-
-    @Provides
     @Singleton
     fun providesThomannsRepository(
         thomannsDao: ThomannsDao,
         playersDao: PlayersDao,
         citiesDao: CitiesDao,
-        paginator: ThomannsPaginator,
         user: User,
         authRepository: AuthRepository
     ) : ThomannsRepository {
-        val thomannsRepository = ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, paginator, user)
+        val thomannsPaginator = ThomannsPaginatorImpl(thomannsDao)
+        val thomannsRepository = ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, thomannsPaginator, user)
         authRepository.registerLoginListener("THOMANNS_REPOSITORY_LOGIN_LISTENER_ID", thomannsRepository)
         return thomannsRepository
+    }
+
+    @Provides
+    @Singleton
+    fun providesMyThomannsRepository(
+        thomannsDao: ThomannsDao,
+        playersDao: PlayersDao,
+        user: User,
+        authRepository: AuthRepository
+    ) : MyThomannsRepository {
+        val myThommansPaginator = MyThomannsPaginatorImpl(thomannsDao)
+        val myThomannsRepository = MyThomannsRepositoryImpl(thomannsDao, playersDao, myThommansPaginator, user)
+        authRepository.registerLoginListener("THOMANNS_MY_REPOSITORY_LOGIN_LISTENER_ID", myThomannsRepository)
+        return myThomannsRepository
     }
 
     @Provides
