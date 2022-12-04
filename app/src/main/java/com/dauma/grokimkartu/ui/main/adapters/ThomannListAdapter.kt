@@ -64,11 +64,11 @@ class ThomannListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == THOMANN) {
-            return ThomannViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+            return ThomannViewHolder(context, LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
         } else if (viewType == LAST) {
             return ThomannLastViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_last_item, parent, false), loadNextPage)
         }
-        return ThomannViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
+        return ThomannViewHolder(context, LayoutInflater.from(parent.context).inflate(R.layout.thomann_item, parent, false), utils, photoIconBackgroundDrawable, onItemClicked)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -85,6 +85,7 @@ class ThomannListAdapter(
     }
 
     class ThomannViewHolder(
+        private val context: Context,
         val view: View,
         private val utils: Utils,
         private val photoIconBackgroundDrawable: Drawable?,
@@ -99,7 +100,7 @@ class ThomannListAdapter(
         val lockedUnlockedIconImageView = view.findViewById<ImageView>(R.id.locked_unlocked_icon_image_view)
 
         fun bind(thomann: Thomann) {
-            userTextView.text = thomann.user?.name
+            userTextView.text = thomann.user?.name ?: context.getString(R.string.conversation_unknown_user)
             cityTextView.text = thomann.city
             val validUntil = this.utils.timeUtils.format(thomann.validUntil ?: Date(), CustomDateTimeFormatPattern.yyyyMMdd)
             validUntilTextView.text = validUntil
