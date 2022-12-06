@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.players
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.dauma.grokimkartu.data.players.entities.PlayerDetailsResponse
+import com.dauma.grokimkartu.data.players.entities.PlayerRequest
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -14,8 +15,15 @@ import retrofit2.http.*
 class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
     private val retrofitPlayers: RetrofitPlayers = retrofit.create(RetrofitPlayers::class.java)
 
-    override fun players(page: Int, pageSize: Int, accessToken: String, onComplete: (PlayersResponse?, PlayersDaoResponseStatus) -> Unit) {
-        retrofitPlayers.players(page, pageSize, accessToken).enqueue(object : Callback<PlayersResponse> {
+    override fun players(playerRequest: PlayerRequest, accessToken: String, onComplete: (PlayersResponse?, PlayersDaoResponseStatus) -> Unit) {
+        retrofitPlayers.players(
+            page = playerRequest.page,
+            pageSize = playerRequest.pageSize,
+            cityId = playerRequest.cityId,
+            instrumentId = playerRequest.instrumentId,
+            text = playerRequest.text,
+            accessToken = accessToken
+        ).enqueue(object : Callback<PlayersResponse> {
             override fun onResponse(
                 call: Call<PlayersResponse>,
                 response: Response<PlayersResponse>
@@ -171,6 +179,9 @@ class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
         fun players(
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
+            @Query("city_id") cityId: Int?,
+            @Query("instrument_id") instrumentId: Int?,
+            @Query("text") text: String?,
             @Header("Authorization") accessToken: String
         ): Call<PlayersResponse>
 

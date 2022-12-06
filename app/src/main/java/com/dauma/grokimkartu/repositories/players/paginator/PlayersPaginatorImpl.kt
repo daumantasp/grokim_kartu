@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.repositories.players.paginator
 
 import com.dauma.grokimkartu.data.players.PlayersDao
+import com.dauma.grokimkartu.data.players.entities.PlayerRequest
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import com.dauma.grokimkartu.repositories.players.PlayersErrors
 
@@ -13,7 +14,8 @@ class PlayersPaginatorImpl(private val playersDao: PlayersDao) : PlayersPaginato
     override fun loadNextPage(accessToken: String, onComplete: (PlayersResponse?, PlayersErrors?) -> Unit) {
         if (isLastLoaded() == false) {
             val nextPage = _pages.count() + 1
-            playersDao.players(nextPage, pageSize, accessToken) { playersResponse, playersDaoResponseStatus ->
+            val playerRequest = PlayerRequest(nextPage, pageSize)
+            playersDao.players(playerRequest, accessToken) { playersResponse, playersDaoResponseStatus ->
                 if (playersDaoResponseStatus.isSuccessful && playersResponse != null) {
                     _pages.add(playersResponse)
                     onComplete(playersResponse, null)
