@@ -6,6 +6,8 @@ import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 
 interface PlayersRepository {
     val pages: List<PlayersPage>
+    var filter: PlayersFilter
+    val isFilterApplied: Boolean
     fun loadNextPage(onComplete: (PlayersPage?, PlayersErrors?) -> Unit)
     fun playerDetails(userId: Int, onComplete: (PlayerDetails?, PlayersErrors?) -> Unit)
     fun playerPhoto(userId: Int, onComplete: (Bitmap?, PlayersErrors?) -> Unit)

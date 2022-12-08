@@ -11,6 +11,7 @@ import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginator
+import com.dauma.grokimkartu.repositories.players.paginator.PlayersPaginatorFilter
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 
 class PlayersRepositoryImpl(
@@ -22,6 +23,26 @@ class PlayersRepositoryImpl(
 
     override val pages: List<PlayersPage>
         get() = _playersPages
+
+    override var filter: PlayersFilter
+        get() {
+            return PlayersFilter(
+                cityId = paginator.filter.cityId,
+                instrumentId = paginator.filter.instrumentId,
+                text = paginator.filter.text
+            )
+        }
+        set(value) {
+            paginator.filter = PlayersPaginatorFilter(
+                cityId = value.cityId,
+                instrumentId = value.instrumentId,
+                text = value.text
+            )
+            _playersPages.clear()
+        }
+
+    override val isFilterApplied: Boolean
+        get() = paginator.isFilterApplied
 
     override fun loadNextPage(onComplete: (PlayersPage?, PlayersErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
