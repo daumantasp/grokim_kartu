@@ -9,7 +9,21 @@ class PlayersPaginatorImpl(private val playersDao: PlayersDao) : PlayersPaginato
     private var _pages: MutableList<PlayersResponse> = mutableListOf()
     override val pages: List<PlayersResponse>
         get() = _pages
+
     override val pageSize: Int = 20
+
+    private var _filter: PlayersPaginatorFilter = PlayersPaginatorFilter()
+    override var filter: PlayersPaginatorFilter
+        get() = _filter
+        set(value) {
+            _filter = PlayersPaginatorFilter(value)
+            clear()
+        }
+
+    override val isFilterApplied: Boolean
+        get() = _filter.cityId != null ||
+                _filter.instrumentId != null ||
+                _filter.text != null
 
     override fun loadNextPage(accessToken: String, onComplete: (PlayersResponse?, PlayersErrors?) -> Unit) {
         if (isLastLoaded() == false) {
