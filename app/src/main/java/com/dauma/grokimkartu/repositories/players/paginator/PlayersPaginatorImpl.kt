@@ -4,6 +4,7 @@ import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.entities.PlayerRequest
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import com.dauma.grokimkartu.repositories.players.PlayersErrors
+import com.dauma.grokimkartu.repositories.players.PlayersFilter
 
 class PlayersPaginatorImpl(private val playersDao: PlayersDao) : PlayersPaginator {
     private var _pages: MutableList<PlayersResponse> = mutableListOf()
@@ -12,11 +13,11 @@ class PlayersPaginatorImpl(private val playersDao: PlayersDao) : PlayersPaginato
 
     override val pageSize: Int = 20
 
-    private var _filter: PlayersPaginatorFilter = PlayersPaginatorFilter()
-    override var filter: PlayersPaginatorFilter
+    private var _filter: PlayersFilter = PlayersFilter.CLEAR
+    override var filter: PlayersFilter
         get() = _filter
         set(value) {
-            _filter = PlayersPaginatorFilter(value)
+            _filter = value
             clear()
         }
 
