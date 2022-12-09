@@ -18,16 +18,13 @@ class PlayersRepositoryImpl(
     private val paginator: PlayersPaginator,
     private val user: User
 ) : PlayersRepository, LoginListener {
-    private val _playersPages: MutableList<PlayersPage> = mutableListOf()
-
     override val pages: List<PlayersPage>
-        get() = _playersPages
+        get() = paginator.pages.map { pr -> toPlayersPage(pr) }
 
     override var filter: PlayersFilter
         get() = paginator.filter
         set(value) {
             paginator.filter = value
-            _playersPages.clear()
         }
 
     override val isFilterApplied: Boolean
@@ -37,9 +34,7 @@ class PlayersRepositoryImpl(
         if (user.isUserLoggedIn()) {
             paginator.loadNextPage(user.getBearerAccessToken()!!) { playersResponse, isLastPage ->
                 if (playersResponse != null) {
-                    val playersPage = toPlayersPage(playersResponse)
-                    _playersPages.add(playersPage)
-                    onComplete(playersPage, null)
+                    onComplete(toPlayersPage(playersResponse), null)
                 } else {
                     onComplete(null, PlayersErrors.UNKNOWN)
                 }
@@ -137,7 +132,6 @@ class PlayersRepositoryImpl(
 
     private fun reset() {
         if (user.isUserLoggedIn()) {
-            _playersPages.clear()
             paginator.clear()
         } else {
             throw PlayersException(PlayersErrors.USER_NOT_LOGGED_IN)
