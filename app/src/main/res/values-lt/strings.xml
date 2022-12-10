@@ -64,7 +64,7 @@
 
     <!--    Players-->
     <string name="players_title">Žmonės</string>
-    <string name="players_filter_button">Ieškoti</string>
+    <string name="players_filter_button">Paieška</string>
     <string name="player_details_report">Pranešti</string>
     <string name="player_details_name">Vardas</string>
     <string name="player_details_instrument">Instrumentas</string>
@@ -73,7 +73,7 @@
     <string name="player_details_message">Pokalbis</string>
 
     <!--    Players Filter-->
-    <string name="players_filter_title">Ieškoti</string>
+    <string name="players_filter_title">Paieška</string>
     <string name="players_filter_text">Tekstas</string>
     <string name="players_filter_city">Miestas</string>
     <string name="players_filter_instrument">Instrumentas</string>
