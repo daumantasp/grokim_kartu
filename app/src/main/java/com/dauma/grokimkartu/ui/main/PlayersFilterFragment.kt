@@ -96,7 +96,7 @@ class PlayersFilterFragment : Fragment() {
                     onCodeValueClicked = { code ->
                         val id = code.toIntOrNull()
                         if (id != null) {
-//                            this.playersFilterViewModel.citySelected(id)
+                            this.playersFilterViewModel.citySelected(id)
                             manager.hideBottomDialog()
                             this.isDialogShown = false
                         }
@@ -128,7 +128,7 @@ class PlayersFilterFragment : Fragment() {
                     onCodeValueClicked = { code ->
                         val id = code.toIntOrNull()
                         if (id != null) {
-//                            this.playersFilterViewModel.instrumentSelected(id)
+                            this.playersFilterViewModel.instrumentSelected(id)
                             manager.hideBottomDialog()
                             this.isDialogShown = false
                         }

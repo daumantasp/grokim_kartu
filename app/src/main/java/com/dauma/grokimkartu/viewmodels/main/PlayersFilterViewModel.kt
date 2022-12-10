@@ -76,6 +76,21 @@ class PlayersFilterViewModel @Inject constructor(
         }
     }
 
+    fun citySelected(id: Int) {
+        val city = playersFilterForm.pickableCities.firstOrNull { pc -> pc.id == id }
+        if (city != null) {
+            playersFilterForm.city = city
+        }
+
+    }
+
+    fun instrumentSelected(id: Int) {
+        val instrument = playersFilterForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
+        if (instrument != null) {
+            playersFilterForm.instrument = instrument
+        }
+    }
+
     private fun loadPickableCities() {
         playersRepository.cities { citiesResponse, profileErrors ->
             if (citiesResponse != null) {
