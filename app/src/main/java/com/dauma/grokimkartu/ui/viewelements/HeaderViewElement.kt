@@ -30,6 +30,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     private val userIconImageView: ImageView
     private val photoIconBackgroundDrawable: Drawable?
     private val rightTextView: TextView
+    private val rightTextAttentionerImageView: ImageView
     private val notificationsRelativeLayout: RelativeLayout
     private val notificationsFrameLayout: FrameLayout
     private val unreadNotificationsCountTextView: TextView
@@ -46,6 +47,7 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         initialsViewElement = findViewById(R.id.initials_view_element)
         userIconImageView = findViewById(R.id.user_icon_image_view)
         rightTextView = findViewById(R.id.right_text_view)
+        rightTextAttentionerImageView = findViewById(R.id.right_text_attentioner_view)
         notificationsRelativeLayout = findViewById(R.id.notifications_relative_layout)
         notificationsFrameLayout = findViewById(R.id.notifications_frame_layout)
         unreadNotificationsCountTextView = findViewById(R.id.unread_notifications_count_text_view)
@@ -133,6 +135,22 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     fun setOnRightTextClick(onClick: () -> Unit) {
         rightTextView.setOnClickListener { onClick() }
+    }
+
+    fun showRightTextAttentioner(show: Boolean) {
+        val constraintSet = ConstraintSet()
+        if (show) {
+            val marginInPxSides = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5.0f, resources.displayMetrics).toInt()
+            rightTextAttentionerImageView.visibility = View.VISIBLE
+            constraintSet.clone(contentConstraintLayout)
+            constraintSet.connect(R.id.right_text_view, ConstraintSet.END, R.id.right_text_attentioner_view, ConstraintSet.START, marginInPxSides)
+        } else {
+            val marginInPxSides = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20.0f, resources.displayMetrics).toInt()
+            constraintSet.clone(contentConstraintLayout)
+            rightTextAttentionerImageView.visibility = View.GONE
+            constraintSet.connect(R.id.right_text_view, ConstraintSet.END, R.id.content_constraint_layout, ConstraintSet.END, marginInPxSides)
+        }
+        constraintSet.applyTo(contentConstraintLayout)
     }
 
     private fun setType(type: Int) {

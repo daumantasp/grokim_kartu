@@ -17,10 +17,12 @@ class PlayersViewModel @Inject constructor(
     private val _playerDetails = MutableLiveData<Event<Int>>()
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _filter = MutableLiveData<Event<String>>()
+    private val _filterEnabled = MutableLiveData<Event<Boolean>>()
     val playersPages: LiveData<List<PlayersPage>> = _playersPages
     val playerDetails: LiveData<Event<Int>> = _playerDetails
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val filter: LiveData<Event<String>> = _filter
+    val filterEnabled: LiveData<Event<Boolean>> = _filterEnabled
 
     companion object {
         private val TAG = "PlayersViewModel"
@@ -32,6 +34,7 @@ class PlayersViewModel @Inject constructor(
         } else {
             _playersPages.value = playersRepository.pages
         }
+        _filterEnabled.value = Event(playersRepository.isFilterApplied)
     }
 
     fun backClicked() {

@@ -120,6 +120,8 @@
         <item name="active_notification_title_color">@color/black</item>
         <item name="active_notification_text_color">@color/black</item>
         <item name="active_notification_date_color">@color/chambray</item>
+
+        <item name="attentioner_background_color">@color/cherry_red</item>
     </style>
 
     <style name="auth_title">

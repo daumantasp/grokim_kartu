@@ -100,6 +100,8 @@
     <attr name="post_message_icon_inactive_color" format="color" />
     <attr name="post_message_icon_active_color" format="color" />
 
+    <attr name="attentioner_background_color" format="color" />
+
     <declare-styleable name="ButtonViewElement">
         <attr name="text" format="string" />
         <attr name="type" format="enum">

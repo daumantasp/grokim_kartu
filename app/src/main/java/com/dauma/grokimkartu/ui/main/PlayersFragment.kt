@@ -89,6 +89,9 @@ class PlayersFragment : Fragment() {
         playersViewModel.filter.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
         })
+        playersViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
+            binding.playersHeaderViewElement.showRightTextAttentioner(it)
+        })
         playersViewModel.playersPages.observe(viewLifecycleOwner, Observer { playersPages ->
             val data = getAllPlayersFromPages(playersPages)
             if (isPlayersRecyclerViewSetup == false) {
