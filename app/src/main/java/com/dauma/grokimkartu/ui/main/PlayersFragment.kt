@@ -53,6 +53,9 @@ class PlayersFragment : Fragment() {
         binding.playersHeaderViewElement.setOnBackClick {
             playersViewModel.backClicked()
         }
+        binding.playersHeaderViewElement.setOnRightTextClick {
+            playersViewModel.filterClicked()
+        }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             playersViewModel.reload()
@@ -82,6 +85,9 @@ class PlayersFragment : Fragment() {
         })
         playersViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
+        })
+        playersViewModel.filter.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
         })
         playersViewModel.playersPages.observe(viewLifecycleOwner, Observer { playersPages ->
             val data = getAllPlayersFromPages(playersPages)

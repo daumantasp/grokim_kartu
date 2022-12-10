@@ -16,9 +16,11 @@ class PlayersViewModel @Inject constructor(
     private val _playersPages = MutableLiveData<List<PlayersPage>>()
     private val _playerDetails = MutableLiveData<Event<Int>>()
     private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _filter = MutableLiveData<Event<String>>()
     val playersPages: LiveData<List<PlayersPage>> = _playersPages
     val playerDetails: LiveData<Event<Int>> = _playerDetails
     val navigateBack: LiveData<Event<String>> = _navigateBack
+    val filter: LiveData<Event<String>> = _filter
 
     companion object {
         private val TAG = "PlayersViewModel"
@@ -34,6 +36,10 @@ class PlayersViewModel @Inject constructor(
 
     fun backClicked() {
         _navigateBack.value = Event("")
+    }
+
+    fun filterClicked() {
+        _filter.value = Event("")
     }
 
     fun playerClicked(userId: Int) {

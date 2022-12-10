@@ -47,6 +47,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_playersFragment_to_playersFilterFragment"
+            app:destination="@id/playersFilterFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/playerDetailsFragment"
@@ -133,4 +140,8 @@
             app:argType="string"
             android:defaultValue='""' />
     </fragment>
+    <fragment
+        android:id="@+id/playersFilterFragment"
+        android:name="com.dauma.grokimkartu.ui.main.PlayersFilterFragment"
+        android:label="PlayersFilterFragment" />
 </navigation>
