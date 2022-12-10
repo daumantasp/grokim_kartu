@@ -426,4 +426,9 @@ class AppModule {
     fun providesProfileEditForm() : ProfileEditForm {
         return ProfileEditForm()
     }
+
+    @Provides
+    fun providesPlayersFilterForm() : PlayersFilterForm {
+        return PlayersFilterForm()
+    }
 }

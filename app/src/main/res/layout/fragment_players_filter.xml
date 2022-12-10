@@ -13,6 +13,121 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ScrollView
+            android:id="@+id/players_filter_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/text_text_input"
+                    style="@style/main_text_input"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@{model.playersFilterForm.textMaxLength}"
+                    app:counterTextAppearance="@style/input_counter">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_input_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@{model.playersFilterForm.text}"
+                        android:hint="@string/players_filter_text"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"
+                        android:maxLength="@{model.playersFilterForm.textMaxLength}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/instrument_text_input"
+                    style="@style/main_text_input"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@{model.playersFilterForm.instrumentMaxLength}"
+                    app:counterTextAppearance="@style/input_counter">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/instrument_input_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:text="@{model.playersFilterForm.instrument.name}"
+                        android:hint="@string/players_filter_instrument"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"
+                        android:maxLength="@{model.playersFilterForm.instrumentMaxLength}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/city_text_input"
+                    style="@style/main_text_input"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="@{model.playersFilterForm.cityMaxLength}"
+                    app:counterTextAppearance="@style/input_counter">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/city_input_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:text="@{model.playersFilterForm.city.name}"
+                        android:hint="@string/profile_edit_city"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"
+                        android:maxLength="@{model.playersFilterForm.cityMaxLength}"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/apply_filter_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:enabled="@{model.playersFilterForm.isChanged}"
+                    app:text="@string/players_filter_apply"
+                    app:type="primary" />
+
+            </LinearLayout>
+        </ScrollView>
+
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
             android:id="@+id/players_filter_header_view_element"
             android:layout_width="match_parent"

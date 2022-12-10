@@ -4,19 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.models.forms.PlayersFilterForm
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayersFilterViewModel @Inject constructor(
-    private val playersRepository: PlayersRepository
+    private val playersRepository: PlayersRepository,
+    private val playersFilterForm: PlayersFilterForm
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
 
     companion object {
         private val TAG = "PlayersFilterViewModel"
+    }
+
+    fun getPlayersFilterForm() : PlayersFilterForm {
+        return playersFilterForm
     }
 
     fun viewIsReady() {

@@ -65,13 +65,19 @@
     <!--    Players-->
     <string name="players_title">People</string>
     <string name="players_filter_button">Search</string>
-    <string name="players_filter_title">Search</string>
     <string name="player_details_report">Report</string>
     <string name="player_details_name">Name</string>
     <string name="player_details_instrument">Instrument</string>
     <string name="player_details_description">Introduction</string>
     <string name="player_details_city">City</string>
     <string name="player_details_message">Conversation</string>
+
+    <!--    Players Filter-->
+    <string name="players_filter_title">Search</string>
+    <string name="players_filter_text">Text</string>
+    <string name="players_filter_city">City</string>
+    <string name="players_filter_instrument">Instrument</string>
+    <string name="players_filter_apply">Apply</string>
 
     <!--    Thomanns-->
     <string name="thomanns_title">Thomann</string>
