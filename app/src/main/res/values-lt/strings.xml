@@ -78,6 +78,7 @@
     <string name="players_filter_city">Miestas</string>
     <string name="players_filter_instrument">Instrumentas</string>
     <string name="players_filter_apply">Taikyti</string>
+    <string name="players_filter_clear">Išvalyti</string>
 
     <!--    Thomanns-->
     <string name="thomanns_title">Thomann</string>

@@ -125,6 +125,16 @@
                     app:text="@string/players_filter_apply"
                     app:type="primary" />
 
+                <com.dauma.grokimkartu.ui.viewelements.ButtonViewElement
+                    android:id="@+id/clear_filter_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="0dp"
+                    app:enabled="@{model.playersFilterForm.initialEmpty == false}"
+                    app:text="@string/players_filter_clear"
+                    app:type="secondary" />
+
             </LinearLayout>
         </ScrollView>
 

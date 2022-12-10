@@ -76,4 +76,11 @@ class PlayersFilterForm: BaseObservable() {
                 initialText != text ||
                 initialCity.id != city.id
     }
+
+    @Bindable
+    fun isInitialEmpty(): Boolean {
+        return initialInstrument.id == null &&
+                initialCity.id == null &&
+                initialText == ""
+    }
 }

@@ -78,6 +78,7 @@
     <string name="players_filter_city">City</string>
     <string name="players_filter_instrument">Instrument</string>
     <string name="players_filter_apply">Apply</string>
+    <string name="players_filter_clear">Clear</string>
 
     <!--    Thomanns-->
     <string name="thomanns_title">Thomann</string>
