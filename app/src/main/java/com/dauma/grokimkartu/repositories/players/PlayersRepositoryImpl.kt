@@ -1,6 +1,8 @@
 package com.dauma.grokimkartu.repositories.players
 
 import android.graphics.Bitmap
+import com.dauma.grokimkartu.data.cities.CitiesDao
+import com.dauma.grokimkartu.data.instruments.InstrumentsDao
 import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
@@ -16,6 +18,8 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 class PlayersRepositoryImpl(
     private val playersDao: PlayersDao,
     private val paginator: PlayersPaginator,
+    private val citiesDao: CitiesDao,
+    private val instrumentsDao: InstrumentsDao,
     private val user: User
 ) : PlayersRepository, LoginListener {
     override val pages: List<PlayersPage>
