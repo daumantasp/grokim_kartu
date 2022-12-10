@@ -3,12 +3,12 @@ package com.dauma.grokimkartu.models.forms
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.dauma.grokimkartu.BR
-import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
-import com.dauma.grokimkartu.repositories.profile.entities.ProfileInstrument
+import com.dauma.grokimkartu.repositories.players.entities.PlayerCity
+import com.dauma.grokimkartu.repositories.players.entities.PlayerInstrument
 
 class PlayersFilterForm: BaseObservable() {
-    private var initialCity: ProfileCity = ProfileCity()
-    private var initialInstrument: ProfileInstrument = ProfileInstrument()
+    private var initialCity: PlayerCity = PlayerCity()
+    private var initialInstrument: PlayerInstrument = PlayerInstrument()
     private var initialText: String = ""
 
     @get:Bindable
@@ -18,14 +18,14 @@ class PlayersFilterForm: BaseObservable() {
         }
 
     @get:Bindable
-    var city: ProfileCity = ProfileCity()
+    var city: PlayerCity = PlayerCity()
         set(value) {
             field = value
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
         }
-    var pickableCities: List<ProfileCity> = listOf()
-    var filteredPickableCities: List<ProfileCity> = listOf()
+    var pickableCities: List<PlayerCity> = listOf()
+    var filteredPickableCities: List<PlayerCity> = listOf()
 
     @get:Bindable
     var instrumentMaxLength: Int = 30
@@ -34,14 +34,14 @@ class PlayersFilterForm: BaseObservable() {
         }
 
     @get:Bindable
-    var instrument: ProfileInstrument = ProfileInstrument()
+    var instrument: PlayerInstrument = PlayerInstrument()
         set(value) {
             field = value
             notifyPropertyChanged(BR.instrument)
             notifyPropertyChanged(BR.changed)
         }
-    var pickableInstruments: List<ProfileInstrument> = listOf()
-    var filteredPickableInstruments: List<ProfileInstrument> = listOf()
+    var pickableInstruments: List<PlayerInstrument> = listOf()
+    var filteredPickableInstruments: List<PlayerInstrument> = listOf()
 
     @get:Bindable
     var textMaxLength: Int = 30
@@ -58,16 +58,16 @@ class PlayersFilterForm: BaseObservable() {
         }
 
     fun setInitialValues(
-        instrument: ProfileInstrument?,
+        instrument: PlayerInstrument?,
         text: String?,
-        city: ProfileCity?
+        city: PlayerCity?
     ) {
-        this.initialInstrument = instrument ?: ProfileInstrument()
+        this.initialInstrument = instrument ?: PlayerInstrument()
         this.initialText = text ?: ""
-        this.initialCity = city ?: ProfileCity()
-        this.instrument = instrument ?: ProfileInstrument()
+        this.initialCity = city ?: PlayerCity()
+        this.instrument = instrument ?: PlayerInstrument()
         this.text = text ?: ""
-        this.city = city ?: ProfileCity()
+        this.city = city ?: PlayerCity()
     }
 
     @Bindable
