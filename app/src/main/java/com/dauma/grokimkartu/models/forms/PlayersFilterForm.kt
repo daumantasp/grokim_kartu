@@ -23,6 +23,7 @@ class PlayersFilterForm: BaseObservable() {
             field = value
             notifyPropertyChanged(BR.city)
             notifyPropertyChanged(BR.changed)
+            notifyPropertyChanged(BR.initialEmpty)
         }
     var pickableCities: List<PlayerCity> = listOf()
     var filteredPickableCities: List<PlayerCity> = listOf()
@@ -39,6 +40,7 @@ class PlayersFilterForm: BaseObservable() {
             field = value
             notifyPropertyChanged(BR.instrument)
             notifyPropertyChanged(BR.changed)
+            notifyPropertyChanged(BR.initialEmpty)
         }
     var pickableInstruments: List<PlayerInstrument> = listOf()
     var filteredPickableInstruments: List<PlayerInstrument> = listOf()
@@ -53,21 +55,22 @@ class PlayersFilterForm: BaseObservable() {
     var text: String = ""
         set(value) {
             field = value.take(textMaxLength)
-            notifyPropertyChanged(BR.description)
+            notifyPropertyChanged(BR.text)
             notifyPropertyChanged(BR.changed)
+            notifyPropertyChanged(BR.initialEmpty)
         }
 
     fun setInitialValues(
+        city: PlayerCity?,
         instrument: PlayerInstrument?,
-        text: String?,
-        city: PlayerCity?
+        text: String?
     ) {
+        this.initialCity = city ?: PlayerCity()
         this.initialInstrument = instrument ?: PlayerInstrument()
         this.initialText = text ?: ""
-        this.initialCity = city ?: PlayerCity()
         this.instrument = instrument ?: PlayerInstrument()
-        this.text = text ?: ""
         this.city = city ?: PlayerCity()
+        this.text = text ?: ""
     }
 
     @Bindable

@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.PlayersFilterForm
+import com.dauma.grokimkartu.repositories.players.PlayersFilter
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
+import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -30,8 +32,61 @@ class PlayersFilterViewModel @Inject constructor(
     }
 
     fun viewIsReady() {
-        loadPickableCities()
-        loadPickableInstruments()
+        loadPickableValuesAndSetFilter()
+    }
+
+    private fun loadPickableValuesAndSetFilter() {
+        var isPickableCitiesLoaded = false
+        var isPickableInstrumentsLoaded = false
+
+        fun setFilterIfAllValuesLoaded() {
+            if (isPickableCitiesLoaded && isPickableInstrumentsLoaded) {
+                setFilter()
+            }
+        }
+
+        loadPickableCities {
+            isPickableCitiesLoaded = true
+            setFilterIfAllValuesLoaded()
+        }
+        loadPickableInstruments {
+            isPickableInstrumentsLoaded = true
+            setFilterIfAllValuesLoaded()
+        }
+    }
+
+    private fun setFilter() {
+        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
+            pc.id == playersRepository.filter.cityId
+        }
+        val instrumentOrNull = playersFilterForm.pickableInstruments.firstOrNull { pi ->
+            pi.id == playersRepository.filter.instrumentId
+        }
+        playersFilterForm.setInitialValues(
+            city = cityOrNull,
+            instrument = instrumentOrNull,
+            text = playersRepository.filter.text
+        )
+    }
+
+    private fun loadPickableCities(onComplete: () -> Unit = {}) {
+        playersRepository.cities { citiesResponse, profileErrors ->
+            if (citiesResponse != null) {
+                playersFilterForm.pickableCities = citiesResponse
+                playersFilterForm.filteredPickableCities = citiesResponse
+            }
+            onComplete()
+        }
+    }
+
+    private fun loadPickableInstruments(onComplete: () -> Unit = {}) {
+        playersRepository.instruments { instrumentsResponse, profileErrors ->
+            if (instrumentsResponse != null) {
+                playersFilterForm.pickableInstruments = instrumentsResponse
+                playersFilterForm.filteredPickableInstruments = instrumentsResponse
+            }
+            onComplete()
+        }
     }
 
     fun backClicked() {
@@ -91,21 +146,22 @@ class PlayersFilterViewModel @Inject constructor(
         }
     }
 
-    private fun loadPickableCities() {
-        playersRepository.cities { citiesResponse, profileErrors ->
-            if (citiesResponse != null) {
-                playersFilterForm.pickableCities = citiesResponse
-                playersFilterForm.filteredPickableCities = citiesResponse
-            }
+    fun applyFilter() {
+        if (playersFilterForm.isChanged()) {
+            playersRepository.filter = PlayersFilter(
+                cityId = playersFilterForm.city.id,
+                instrumentId = playersFilterForm.instrument.id,
+                text = playersFilterForm.text
+            )
+            _navigateBack.value = Event("")
         }
     }
 
-    private fun loadPickableInstruments() {
-        playersRepository.instruments { instrumentsResponse, profileErrors ->
-            if (instrumentsResponse != null) {
-                playersFilterForm.pickableInstruments = instrumentsResponse
-                playersFilterForm.filteredPickableInstruments = instrumentsResponse
-            }
+    fun clearFilter() {
+        if (playersFilterForm.isInitialEmpty() == false) {
+            playersRepository.filter = PlayersFilter.CLEAR
+            setFilter()
+            _navigateBack.value = Event("")
         }
     }
 }

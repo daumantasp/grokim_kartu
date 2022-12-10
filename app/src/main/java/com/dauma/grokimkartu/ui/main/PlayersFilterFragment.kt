@@ -143,17 +143,24 @@ class PlayersFilterFragment : Fragment() {
         binding.playersFilterHeaderViewElement.setOnBackClick {
             playersFilterViewModel.backClicked()
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             playersFilterViewModel.backClicked()
         }
-
         binding.cityInputEditText.setOnClickListener {
             playersFilterViewModel.cityClicked()
         }
-
         binding.instrumentInputEditText.setOnClickListener {
             playersFilterViewModel.instrumentClicked()
         }
+        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                playersFilterViewModel.applyFilter()
+            }
+        })
+        binding.clearFilterButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                playersFilterViewModel.clearFilter()
+            }
+        })
     }
 }

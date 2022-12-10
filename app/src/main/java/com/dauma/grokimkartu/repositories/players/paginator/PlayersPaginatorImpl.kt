@@ -29,7 +29,13 @@ class PlayersPaginatorImpl(private val playersDao: PlayersDao) : PlayersPaginato
     override fun loadNextPage(accessToken: String, onComplete: (PlayersResponse?, PlayersErrors?) -> Unit) {
         if (isLastLoaded() == false) {
             val nextPage = _pages.count() + 1
-            val playerRequest = PlayerRequest(nextPage, pageSize)
+            val playerRequest = PlayerRequest(
+                page = nextPage,
+                pageSize = pageSize,
+                cityId = _filter.cityId,
+                instrumentId = _filter.instrumentId,
+                text = _filter.text
+            )
             playersDao.players(playerRequest, accessToken) { playersResponse, playersDaoResponseStatus ->
                 if (playersDaoResponseStatus.isSuccessful && playersResponse != null) {
                     _pages.add(playersResponse)

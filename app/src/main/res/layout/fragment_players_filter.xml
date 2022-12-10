@@ -46,7 +46,7 @@
                         android:id="@+id/text_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:text="@{model.playersFilterForm.text}"
+                        android:text="@={model.playersFilterForm.text}"
                         android:hint="@string/players_filter_text"
                         android:singleLine="true"
                         android:maxLines="1"
