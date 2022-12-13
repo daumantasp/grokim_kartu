@@ -9,7 +9,13 @@ class ThomannsPaginatorImpl(private val thomannsDao: ThomannsDao) : ThomannsPagi
     override fun loadNextPage(accessToken: String, onComplete: (ThomannsResponse?, ThomannsErrors?) -> Unit) {
         if (isLastLoaded() == false) {
             val nextPage = _pages.count() + 1
-            val thomannsRequest = ThomannsRequest(nextPage, pageSize)
+            val thomannsRequest = ThomannsRequest(
+                page = nextPage,
+                pageSize = pageSize,
+                cityId = _filter.cityId,
+                validUntil = _filter.validUntil,
+                isLocked = _filter.isLocked
+            )
             thomannsDao.thomanns(thomannsRequest, accessToken) { thomannsResponse, thomannsDaoResponseStatus ->
                 if (thomannsDaoResponseStatus.isSuccessful && thomannsResponse != null) {
                     _pages.add(thomannsResponse)
