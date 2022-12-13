@@ -26,6 +26,15 @@ class ThomannsRepositoryImpl(
     override val pages: List<ThomannsPage>
         get() = _pages
 
+    override var filter: ThomannsFilter
+        get() = paginator.filter
+        set(value) {
+            paginator.filter = value
+        }
+
+    override val isFilterApplied: Boolean
+        get() = paginator.isFilterApplied
+
     override fun loadNextPage(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
             paginator.loadNextPage(user.getBearerAccessToken()!!) { thomannsResponse, isLastPage ->

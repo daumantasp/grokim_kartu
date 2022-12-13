@@ -4,6 +4,8 @@ import com.dauma.grokimkartu.repositories.thomanns.entities.*
 
 interface ThomannsRepository {
     val pages: List<ThomannsPage>
+    var filter: ThomannsFilter
+    val isFilterApplied: Boolean
     fun loadNextPage(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit)
     fun create(createThomann: CreateThomann, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
     fun update(thomannId: Int, updateThomann: UpdateThomann, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
