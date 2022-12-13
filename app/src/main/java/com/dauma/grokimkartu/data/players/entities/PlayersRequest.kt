@@ -1,6 +1,6 @@
 package com.dauma.grokimkartu.data.players.entities
 
-data class PlayerRequest(
+data class PlayersRequest(
     val page: Int,
     val pageSize: Int,
     val cityId: Int? = null,
