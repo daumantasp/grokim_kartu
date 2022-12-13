@@ -21,10 +21,8 @@ class ThomannsRepositoryImpl(
     private val paginator: ThomannsPaginator,
     private val user: User
 ) : ThomannsRepository, LoginListener {
-    private val _pages: MutableList<ThomannsPage> = mutableListOf()
-
     override val pages: List<ThomannsPage>
-        get() = _pages
+        get() = paginator.pages.map { tr -> toThomannsPage(tr) }
 
     override var filter: ThomannsFilter
         get() = paginator.filter
@@ -39,9 +37,7 @@ class ThomannsRepositoryImpl(
         if (user.isUserLoggedIn()) {
             paginator.loadNextPage(user.getBearerAccessToken()!!) { thomannsResponse, isLastPage ->
                 if (thomannsResponse != null) {
-                    val thomannsPage = toThomannsPage(thomannsResponse)
-                    _pages.add(thomannsPage)
-                    onComplete(thomannsPage, null)
+                    onComplete(toThomannsPage(thomannsResponse), null)
                 } else {
                     onComplete(null, ThomannsErrors.UNKNOWN)
                 }
@@ -260,7 +256,6 @@ class ThomannsRepositoryImpl(
 
     private fun reset() {
         if (user.isUserLoggedIn()) {
-            _pages.clear()
             paginator.clear()
         } else {
             throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
