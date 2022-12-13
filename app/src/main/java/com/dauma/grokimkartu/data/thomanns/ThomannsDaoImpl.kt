@@ -6,6 +6,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
+import java.sql.Timestamp
 
 class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
     private val retrofitThomanns: RetrofitThomanns = retrofit.create(RetrofitThomanns::class.java)
@@ -122,13 +123,15 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
         })
     }
 
-    override fun thomanns(
-        page: Int,
-        pageSize: Int,
-        accessToken: String,
-        onComplete: (ThomannsResponse?, ThomannsDaoResponseStatus) -> Unit
-    ) {
-        retrofitThomanns.thomanns(page, pageSize, accessToken).enqueue(object : Callback<ThomannsResponse> {
+    override fun thomanns(thomannsRequest: ThomannsRequest, accessToken: String, onComplete: (ThomannsResponse?, ThomannsDaoResponseStatus) -> Unit) {
+        retrofitThomanns.thomanns(
+            page = thomannsRequest.page,
+            pageSize = thomannsRequest.pageSize,
+            cityId = thomannsRequest.cityId,
+            validUntil = thomannsRequest.validUntil,
+            isLocked = thomannsRequest.isLocked,
+            accessToken = accessToken
+        ).enqueue(object : Callback<ThomannsResponse> {
             override fun onResponse(
                 call: Call<ThomannsResponse>,
                 response: Response<ThomannsResponse>
@@ -381,6 +384,9 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
         fun thomanns(
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
+            @Query("city_id") cityId: Int?,
+            @Query("valid_until") validUntil: Timestamp?,
+            @Query("is_locked") isLocked: Boolean?,
             @Header("Authorization") accessToken: String
         ): Call<ThomannsResponse>
 
