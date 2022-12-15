@@ -59,6 +59,9 @@ class ThomannsFragment : Fragment() {
         binding.thomannsHeaderViewElement.setOnBackClick {
             thomannsViewModel.backClicked()
         }
+        binding.thomannsHeaderViewElement.setOnRightTextClick {
+            thomannsViewModel.filterClicked()
+        }
 
         thomannsViewModel.viewIsReady()
         return view
@@ -75,6 +78,9 @@ class ThomannsFragment : Fragment() {
         })
         thomannsViewModel.navigateToCreation.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
+        })
+        thomannsViewModel.filter.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_thomannFragment_to_thomannsFilterFragment)
         })
     }
 }

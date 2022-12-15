@@ -89,6 +89,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_thomannFragment_to_thomannsFilterFragment"
+            app:destination="@id/thomannsFilterFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/thomannEditFragment"
@@ -144,4 +151,8 @@
         android:id="@+id/playersFilterFragment"
         android:name="com.dauma.grokimkartu.ui.main.PlayersFilterFragment"
         android:label="PlayersFilterFragment" />
+    <fragment
+        android:id="@+id/thomannsFilterFragment"
+        android:name="com.dauma.grokimkartu.ui.main.ThomannsFilterFragment"
+        android:label="ThomannsFilterFragment" />
 </navigation>

@@ -85,6 +85,7 @@
     <string name="thomanns_all_thomanns_title">Visi</string>
     <string name="thomanns_my_thomanns_title">Mano</string>
     <string name="thomanns_unknown_user">Nežinomas Vartotojas</string>
+    <string name="thomanns_filter_button">Paieška</string>
     <string name="thomann_details_title">Thomann</string>
     <string name="thomann_details_name">Koordinatorius</string>
     <string name="thomann_details_city">Miestas</string>

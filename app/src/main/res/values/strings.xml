@@ -85,6 +85,7 @@
     <string name="thomanns_all_thomanns_title">All</string>
     <string name="thomanns_my_thomanns_title">My</string>
     <string name="thomanns_unknown_user">Unknown User</string>
+    <string name="thomanns_filter_button">Search</string>
     <string name="thomann_details_title">Thomann</string>
     <string name="thomann_details_name">Coordinator</string>
     <string name="thomann_details_city">City</string>

@@ -23,6 +23,7 @@
             app:show_icon="false"
             app:header_type="with_back"
             app:header_text_size="small"
+            app:header_right_text="@string/thomanns_filter_button"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

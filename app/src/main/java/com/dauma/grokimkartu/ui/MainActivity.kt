@@ -94,7 +94,8 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
                 R.id.conversationFragment,
                 R.id.languagesFragment,
                 R.id.conversationFragment2,
-                R.id.playersFilterFragment
+                R.id.playersFilterFragment,
+                R.id.thomannsFilterFragment
                 -> showBottomNavigation(false)
                 else -> showBottomNavigation(true)
             }
