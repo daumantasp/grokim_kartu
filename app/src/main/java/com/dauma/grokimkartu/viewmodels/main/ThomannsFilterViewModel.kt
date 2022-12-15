@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.models.forms.ThomannsFilterForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ThomannsFilterViewModel @Inject constructor(
-    private val thomannsRepository: ThomannsRepository
+    private val thomannsRepository: ThomannsRepository,
+    private val thomannsFilterForm: ThomannsFilterForm
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
@@ -21,9 +23,9 @@ class ThomannsFilterViewModel @Inject constructor(
         private val TAG = "ThomannsFilterViewModel"
     }
 
-//    fun getPlayersFilterForm() : PlayersFilterForm {
-//        return playersFilterForm
-//    }
+    fun getThomannsFilterForm() : ThomannsFilterForm {
+        return thomannsFilterForm
+    }
 
     fun viewIsReady() {
 //        loadPickableValuesAndSetFilter()
