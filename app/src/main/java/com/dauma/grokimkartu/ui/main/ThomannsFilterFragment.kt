@@ -152,15 +152,15 @@ class ThomannsFilterFragment : Fragment() {
         binding.validUntilInputEditText.setOnClickListener {
             thomannsFilterViewModel.validUntilClicked()
         }
-//        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
-//            override fun onClick(p0: View?) {
-//                thomannsFilterViewModel.applyFilter()
-//            }
-//        })
-//        binding.clearFilterButton.setOnClick(object : View.OnClickListener {
-//            override fun onClick(p0: View?) {
-//                thomannsFilterViewModel.clearFilter()
-//            }
-//        })
+        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                thomannsFilterViewModel.applyFilter()
+            }
+        })
+        binding.clearFilterButton.setOnClick(object : View.OnClickListener {
+            override fun onClick(p0: View?) {
+                thomannsFilterViewModel.clearFilter()
+            }
+        })
     }
 }

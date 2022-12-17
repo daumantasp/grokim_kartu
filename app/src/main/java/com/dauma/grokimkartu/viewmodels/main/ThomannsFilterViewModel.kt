@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ThomannsFilterForm
+import com.dauma.grokimkartu.repositories.thomanns.ThomannsFilter
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -36,33 +37,23 @@ class ThomannsFilterViewModel @Inject constructor(
     }
 
     private fun loadPickableValuesAndSetFilter() {
-        var isPickableCitiesLoaded = false
-
-//        fun setFilterIfAllValuesLoaded() {
-//            if (isPickableCitiesLoaded && isPickableInstrumentsLoaded) {
-//                setFilter()
-//            }
-//        }
-
         loadPickableCities {
-            isPickableCitiesLoaded = true
-//            setFilterIfAllValuesLoaded()
+            setFilter()
         }
     }
 
-//    private fun setFilter() {
-//        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
-//            pc.id == playersRepository.filter.cityId
-//        }
-//        val instrumentOrNull = playersFilterForm.pickableInstruments.firstOrNull { pi ->
-//            pi.id == playersRepository.filter.instrumentId
-//        }
-//        playersFilterForm.setInitialValues(
-//            city = cityOrNull,
-//            instrument = instrumentOrNull,
-//            text = playersRepository.filter.text
-//        )
-//    }
+    private fun setFilter() {
+        val cityOrNull = thomannsFilterForm.pickableCities.firstOrNull { pc ->
+            pc.id == thomannsRepository.filter.cityId
+        }
+        val showOnlyUnlocked = thomannsRepository.filter.isLocked == false
+
+        thomannsFilterForm.setInitialValues(
+            city = cityOrNull,
+            validUntil = null,
+            showOnlyUnlocked = showOnlyUnlocked
+        )
+    }
 
     private fun loadPickableCities(onComplete: () -> Unit = {}) {
         thomannsRepository.cities { citiesResponse, profileErrors ->
@@ -124,22 +115,22 @@ class ThomannsFilterViewModel @Inject constructor(
         _validUntil.value = Event(listOf(selectedDate, minDate, maxDate, isSaveButtonEnabled))
     }
 
-//    fun applyFilter() {
-//        if (playersFilterForm.isChanged()) {
-//            playersRepository.filter = PlayersFilter(
-//                cityId = playersFilterForm.city.id,
-//                instrumentId = playersFilterForm.instrument.id,
-//                text = playersFilterForm.text
-//            )
-//            _navigateBack.value = Event("")
-//        }
-//    }
+    fun applyFilter() {
+        if (thomannsFilterForm.isChanged()) {
+            thomannsRepository.filter = ThomannsFilter(
+                cityId = thomannsFilterForm.city.id,
+                validUntil = null,
+                isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
+            )
+            _navigateBack.value = Event("")
+        }
+    }
 
-//    fun clearFilter() {
-//        if (playersFilterForm.isInitialEmpty() == false) {
-//            playersRepository.filter = PlayersFilter.CLEAR
-//            setFilter()
-//            _navigateBack.value = Event("")
-//        }
-//    }
+    fun clearFilter() {
+        if (thomannsFilterForm.isInitialEmpty() == false) {
+            thomannsRepository.filter = ThomannsFilter.CLEAR
+            setFilter()
+            _navigateBack.value = Event("")
+        }
+    }
 }
