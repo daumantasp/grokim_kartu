@@ -172,6 +172,10 @@
         <item name="boxStrokeColor">?attr/secondary_text_input_box_stroke_color</item>
     </style>
 
+    <style name="main_checkbox">
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="primary_button">
         <item name="android:background">@drawable/primary_in_auth_button_ripple</item>
         <item name="android:textColor">?attr/auth_primary_button_title_color</item>

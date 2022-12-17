@@ -63,7 +63,7 @@
                     style="@style/main_text_input"
                     android:layout_width="300dp"
                     android:layout_height="100dp"
-                    android:layout_marginBottom="40dp"
+                    android:layout_marginBottom="0dp"
                     android:layout_gravity="center">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -80,6 +80,16 @@
                         android:fontFamily="@font/lato"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
+                
+                <CheckBox
+                    android:id="@+id/show_only_unlocked_checkbox"
+                    style="@style/main_checkbox"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/thomanns_filter_show_only_unlocked"
+                    android:checked="@={model.thomannsFilterForm.showOnlyUnlocked}"/>
 
                 <FrameLayout
                     android:layout_width="match_parent"

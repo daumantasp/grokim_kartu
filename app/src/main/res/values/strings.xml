@@ -126,6 +126,7 @@
     <string name="thomanns_filter_title">Search</string>
     <string name="thomanns_filter_city">City</string>
     <string name="thomanns_filter_valid_until">Valid until</string>
+    <string name="thomanns_filter_show_only_unlocked">Show only unlocked</string>
 
     <!--    Conversations-->
     <string name="conversation_title">Conversation</string>

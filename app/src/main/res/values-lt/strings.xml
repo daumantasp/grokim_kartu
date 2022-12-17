@@ -126,6 +126,7 @@
     <string name="thomanns_filter_title">Paieška</string>
     <string name="thomanns_filter_city">Miestas</string>
     <string name="thomanns_filter_valid_until">Galioja iki</string>
+    <string name="thomanns_filter_show_only_unlocked">Rodyti tik atrakintus</string>
 
     <!--    Conversations-->
     <string name="conversation_title">Pokalbis</string>

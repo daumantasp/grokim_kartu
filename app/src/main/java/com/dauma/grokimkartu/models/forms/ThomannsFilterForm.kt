@@ -8,7 +8,7 @@ import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannCity
 class ThomannsFilterForm: BaseObservable() {
     private var initialCity: ThomannCity = ThomannCity()
     private var initialValidUntil: String = ""
-    private var initialIsLocked: Boolean? = null
+    private var initialShowOnlyUnlocked: Boolean = false
 
     @get:Bindable
     var cityMaxLength: Int = 30
@@ -35,38 +35,38 @@ class ThomannsFilterForm: BaseObservable() {
             notifyPropertyChanged(BR.changed)
         }
 
-    @get:Bindable
-    var _isLocked: Boolean? = null
+    @Bindable
+    var showOnlyUnlocked: Boolean = false
         set(value) {
             field = value
-            notifyPropertyChanged(BR._isLocked)
+            notifyPropertyChanged(BR.showOnlyUnlocked)
             notifyPropertyChanged(BR.changed)
         }
 
     fun setInitialValues(
         city: ThomannCity?,
         validUntil: String?,
-        isLocked: Boolean?
+        showOnlyUnlocked: Boolean
     ) {
         this.initialCity = city ?: ThomannCity()
         this.initialValidUntil = validUntil ?: ""
-        this.initialIsLocked = isLocked
+        this.initialShowOnlyUnlocked = showOnlyUnlocked
         this.city = city ?: ThomannCity()
         this.validUntil = validUntil ?: ""
-        this._isLocked = isLocked
+        this.showOnlyUnlocked = showOnlyUnlocked
     }
 
     @Bindable
     fun isChanged(): Boolean {
         return initialCity.id != city.id ||
                 initialValidUntil != validUntil ||
-                initialIsLocked != _isLocked
+                initialShowOnlyUnlocked != showOnlyUnlocked
     }
 
     @Bindable
     fun isInitialEmpty(): Boolean {
         return initialCity.id == null &&
                 initialValidUntil == "" &&
-                initialIsLocked == null
+                initialShowOnlyUnlocked == false
     }
 }
