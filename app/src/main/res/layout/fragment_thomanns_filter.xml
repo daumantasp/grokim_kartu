@@ -58,6 +58,29 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/valid_until_text_input"
+                    style="@style/main_text_input"
+                    android:layout_width="300dp"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="40dp"
+                    android:layout_gravity="center">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/valid_until_input_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:text="@{model.thomannsFilterForm.validUntil}"
+                        android:hint="@string/thomanns_filter_valid_until"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:lines="1"
+                        android:fontFamily="@font/lato"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

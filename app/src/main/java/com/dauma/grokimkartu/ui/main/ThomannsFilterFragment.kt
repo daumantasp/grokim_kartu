@@ -13,7 +13,10 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsFilterBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTime
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
+import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannsFilterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -105,6 +108,35 @@ class ThomannsFilterFragment : Fragment() {
                 ))
             }
         })
+        thomannsFilterViewModel.validUntil.observe(viewLifecycleOwner, EventObserver {
+            this.isDialogShown = true
+            val currentDate = it[0] as CustomDateTime
+            val minDate = it[1] as CustomDateTime
+            val maxDate = it[2] as CustomDateTime
+            val isSaveButtonEnabled = it[3] as Boolean
+            this.dialogsManager?.let { manager ->
+                manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
+                    title = getString(R.string.thomanns_filter_valid_until),
+                    selectedDate = currentDate,
+                    minDate = minDate,
+                    maxDate = maxDate,
+                    isSaveButtonEnabled = isSaveButtonEnabled,
+                    onSaveClicked = { selectedDate ->
+                        val formattedDate = this.utils.timeUtils.format(selectedDate, CustomDateTimeFormatPattern.yyyyMMdd)
+                        thomannsFilterViewModel.getThomannsFilterForm().validUntil = formattedDate
+                        manager.hideBottomDialog()
+                        this.isDialogShown = false
+                    },
+                    onSelectedDateChanged = { selectedDate ->
+                        manager.enableBottomDialogSaveButton(true)
+                    },
+                    onCancelClicked = {
+                        manager.hideBottomDialog()
+                        this.isDialogShown = false
+                    }
+                ))
+            }
+        })
     }
 
     private fun setupOnClickListeners() {
@@ -116,6 +148,9 @@ class ThomannsFilterFragment : Fragment() {
         }
         binding.cityInputEditText.setOnClickListener {
             thomannsFilterViewModel.cityClicked()
+        }
+        binding.validUntilInputEditText.setOnClickListener {
+            thomannsFilterViewModel.validUntilClicked()
         }
 //        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
 //            override fun onClick(p0: View?) {

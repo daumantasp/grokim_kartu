@@ -122,6 +122,9 @@
     <string name="thomann_edit_navigate_back_confirmation_positive">Taip</string>
     <string name="thomann_edit_navigate_back_confirmation_negative">Atšaukti</string>
 
+    <!--    Thomanns Filter-->
+    <string name="thomanns_filter_valid_until">Galioja iki</string>
+
     <!--    Conversations-->
     <string name="conversation_title">Pokalbis</string>
     <string name="conversations_title">Pokalbiai</string>

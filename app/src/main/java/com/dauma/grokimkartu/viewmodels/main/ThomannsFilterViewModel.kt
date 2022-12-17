@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ThomannsFilterForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,12 +13,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ThomannsFilterViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository,
-    private val thomannsFilterForm: ThomannsFilterForm
+    private val thomannsFilterForm: ThomannsFilterForm,
+    private val utils: Utils
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
+    private val _validUntil = MutableLiveData<Event<List<Any>>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val city: LiveData<Event<String>> = _city
+    val validUntil: LiveData<Event<List<Any>>> = _validUntil
 
     companion object {
         private val TAG = "ThomannsFilterViewModel"
@@ -98,6 +102,26 @@ class ThomannsFilterViewModel @Inject constructor(
         if (city != null) {
             thomannsFilterForm.city = city
         }
+    }
+
+    fun validUntilClicked() {
+        val currentDate = utils.timeUtils.getCurrentDateTime()
+        val minDate = currentDate
+        val maxDate = utils.timeUtils.addYears(currentDate, 1)
+        var selectedDate = currentDate
+        var isSaveButtonEnabled = true
+        if (thomannsFilterForm.validUntil != "") {
+            val validUntilAsCustomDate = utils.timeUtils.parseToCustomDateTime(thomannsFilterForm.validUntil)
+            if (validUntilAsCustomDate != null) {
+                val validUntilInMillis = utils.timeUtils.convertToTimeInMillis(validUntilAsCustomDate)
+                val currentDateInMillis = utils.timeUtils.convertToTimeInMillis(currentDate)
+                if (validUntilInMillis > currentDateInMillis) {
+                    selectedDate = validUntilAsCustomDate
+                    isSaveButtonEnabled = false
+                }
+            }
+        }
+        _validUntil.value = Event(listOf(selectedDate, minDate, maxDate, isSaveButtonEnabled))
     }
 
 //    fun applyFilter() {

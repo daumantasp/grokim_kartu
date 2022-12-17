@@ -122,6 +122,9 @@
     <string name="thomann_edit_navigate_back_confirmation_positive">Yes</string>
     <string name="thomann_edit_navigate_back_confirmation_negative">Cancel</string>
 
+    <!--    Thomanns Filter-->
+    <string name="thomanns_filter_valid_until">Valid until</string>
+
     <!--    Conversations-->
     <string name="conversation_title">Conversation</string>
     <string name="conversations_title">Conversations</string>
