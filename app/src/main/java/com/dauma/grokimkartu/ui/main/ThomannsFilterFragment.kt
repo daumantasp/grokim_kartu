@@ -85,7 +85,7 @@ class ThomannsFilterFragment : Fragment() {
                     .map { pc -> pc.toCodeValue() }
 
                 manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.profile_edit_city),
+                    title = getString(R.string.thomanns_filter_city),
                     codeValues = pickableCitiesAsCodeValues,
                     onSearchValueChanged = { value ->
                         this.thomannsFilterViewModel.searchCity(value) {

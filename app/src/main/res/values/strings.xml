@@ -123,6 +123,8 @@
     <string name="thomann_edit_navigate_back_confirmation_negative">Cancel</string>
 
     <!--    Thomanns Filter-->
+    <string name="thomanns_filter_title">Search</string>
+    <string name="thomanns_filter_city">City</string>
     <string name="thomanns_filter_valid_until">Valid until</string>
 
     <!--    Conversations-->

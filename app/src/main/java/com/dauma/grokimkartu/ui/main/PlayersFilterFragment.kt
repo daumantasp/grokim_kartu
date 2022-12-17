@@ -82,7 +82,7 @@ class PlayersFilterFragment : Fragment() {
                     .map { pc -> pc.toCodeValue() }
 
                 manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.profile_edit_city),
+                    title = getString(R.string.players_filter_city),
                     codeValues = pickableCitiesAsCodeValues,
                     onSearchValueChanged = { value ->
                         this.playersFilterViewModel.searchCity(value) {
@@ -114,7 +114,7 @@ class PlayersFilterFragment : Fragment() {
                     .map { pi -> pi.toCodeValue() }
 
                 manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.profile_edit_instrument),
+                    title = getString(R.string.players_filter_instrument),
                     codeValues = pickableInstrumentsAsCodeValues,
                     onSearchValueChanged = { value ->
                         this.playersFilterViewModel.searchInstrument(value) {

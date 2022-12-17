@@ -123,6 +123,8 @@
     <string name="thomann_edit_navigate_back_confirmation_negative">Atšaukti</string>
 
     <!--    Thomanns Filter-->
+    <string name="thomanns_filter_title">Paieška</string>
+    <string name="thomanns_filter_city">Miestas</string>
     <string name="thomanns_filter_valid_until">Galioja iki</string>
 
     <!--    Conversations-->

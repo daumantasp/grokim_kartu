@@ -101,7 +101,7 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:text="@{model.playersFilterForm.city.name}"
-                        android:hint="@string/profile_edit_city"
+                        android:hint="@string/players_filter_city"
                         android:singleLine="true"
                         android:maxLines="1"
                         android:lines="1"
