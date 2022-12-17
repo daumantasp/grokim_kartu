@@ -1,10 +1,8 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
-import java.sql.Timestamp
-
 class ThomannsFilter(
     val cityId: Int?,
-    val validUntil: Timestamp?,
+    val validUntil: String?,
     val isLocked: Boolean?
 ) {
     companion object {

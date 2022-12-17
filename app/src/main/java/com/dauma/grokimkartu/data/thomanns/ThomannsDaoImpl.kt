@@ -6,7 +6,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
-import java.sql.Timestamp
 
 class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
     private val retrofitThomanns: RetrofitThomanns = retrofit.create(RetrofitThomanns::class.java)
@@ -385,7 +384,7 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
             @Query("city_id") cityId: Int?,
-            @Query("valid_until") validUntil: Timestamp?,
+            @Query("valid_until") validUntil: String?,
             @Query("is_locked") isLocked: Boolean?,
             @Header("Authorization") accessToken: String
         ): Call<ThomannsResponse>

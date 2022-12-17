@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.models.forms.ThomannsFilterForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsFilter
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.sql.Timestamp
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,11 +49,12 @@ class ThomannsFilterViewModel @Inject constructor(
         val cityOrNull = thomannsFilterForm.pickableCities.firstOrNull { pc ->
             pc.id == thomannsRepository.filter.cityId
         }
+        val validUntil: String? = thomannsRepository.filter.validUntil
         val showOnlyUnlocked = thomannsRepository.filter.isLocked == false
 
         thomannsFilterForm.setInitialValues(
             city = cityOrNull,
-            validUntil = null,
+            validUntil = validUntil,
             showOnlyUnlocked = showOnlyUnlocked
         )
     }
@@ -117,9 +121,16 @@ class ThomannsFilterViewModel @Inject constructor(
 
     fun applyFilter() {
         if (thomannsFilterForm.isChanged()) {
+            var formattedValidUntil: String? = null
+            if (thomannsFilterForm.validUntil.isNotBlank()) {
+                val validUntilAsCustomDateTime = utils.timeUtils.parseToCustomDateTime(thomannsFilterForm.validUntil)
+                validUntilAsCustomDateTime?.let {
+                    formattedValidUntil = utils.timeUtils.format(it, CustomDateTimeFormatPattern.yyyyMMdd)
+                }
+            }
             thomannsRepository.filter = ThomannsFilter(
                 cityId = thomannsFilterForm.city.id,
-                validUntil = null,
+                validUntil = formattedValidUntil,
                 isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
             )
             _navigateBack.value = Event("")
