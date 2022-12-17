@@ -15,15 +15,19 @@ class ThomannsViewModel @Inject constructor(
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _navigateToCreation = MutableLiveData<Event<String>>()
     private val _filter = MutableLiveData<Event<String>>()
+    private val _filterEnabled = MutableLiveData<Event<Boolean>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val navigateToCreation: LiveData<Event<String>> = _navigateToCreation
     val filter: LiveData<Event<String>> = _filter
+    val filterEnabled: LiveData<Event<Boolean>> = _filterEnabled
 
     companion object {
         private val TAG = "ThomannsViewModel"
     }
 
-    fun viewIsReady() {}
+    fun viewIsReady() {
+        _filterEnabled.value = Event(thomannsRepository.isFilterApplied)
+    }
 
     fun backClicked() {
         _navigateBack.value = Event("")

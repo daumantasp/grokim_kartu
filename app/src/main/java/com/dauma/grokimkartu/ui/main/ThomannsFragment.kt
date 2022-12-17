@@ -82,5 +82,8 @@ class ThomannsFragment : Fragment() {
         thomannsViewModel.filter.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannsFilterFragment)
         })
+        thomannsViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
+            binding.thomannsHeaderViewElement.showRightTextAttentioner(it)
+        })
     }
 }
