@@ -28,23 +28,23 @@ class ThomannsFilterViewModel @Inject constructor(
     }
 
     fun viewIsReady() {
-//        loadPickableValuesAndSetFilter()
+        loadPickableValuesAndSetFilter()
     }
 
-//    private fun loadPickableValuesAndSetFilter() {
-//        var isPickableCitiesLoaded = false
-//
+    private fun loadPickableValuesAndSetFilter() {
+        var isPickableCitiesLoaded = false
+
 //        fun setFilterIfAllValuesLoaded() {
 //            if (isPickableCitiesLoaded && isPickableInstrumentsLoaded) {
 //                setFilter()
 //            }
 //        }
-//
-//        loadPickableCities {
-//            isPickableCitiesLoaded = true
+
+        loadPickableCities {
+            isPickableCitiesLoaded = true
 //            setFilterIfAllValuesLoaded()
-//        }
-//    }
+        }
+    }
 
 //    private fun setFilter() {
 //        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
@@ -60,46 +60,45 @@ class ThomannsFilterViewModel @Inject constructor(
 //        )
 //    }
 
-//    private fun loadPickableCities(onComplete: () -> Unit = {}) {
-//        playersRepository.cities { citiesResponse, profileErrors ->
-//            if (citiesResponse != null) {
-//                playersFilterForm.pickableCities = citiesResponse
-//                playersFilterForm.filteredPickableCities = citiesResponse
-//            }
-//            onComplete()
-//        }
-//    }
+    private fun loadPickableCities(onComplete: () -> Unit = {}) {
+        thomannsRepository.cities { citiesResponse, profileErrors ->
+            if (citiesResponse != null) {
+                thomannsFilterForm.pickableCities = citiesResponse
+                thomannsFilterForm.filteredPickableCities = citiesResponse
+            }
+            onComplete()
+        }
+    }
 
     fun backClicked() {
         _navigateBack.value = Event("")
     }
 
-//    fun cityClicked() {
-//        playersFilterForm.filteredPickableCities = playersFilterForm.pickableCities
-//        _city.value = Event("")
-//    }
+    fun cityClicked() {
+        thomannsFilterForm.filteredPickableCities = thomannsFilterForm.pickableCities
+        _city.value = Event("")
+    }
 
-//    fun searchCity(value: String, onComplete: () -> Unit) {
-//        if (value.length > 2) {
-//            playersRepository.searchCity(value) { citiesResponse, profileErrors ->
-//                if (citiesResponse != null) {
-//                    playersFilterForm.filteredPickableCities = citiesResponse
-//                }
-//                onComplete()
-//            }
-//        } else {
-//            playersFilterForm.filteredPickableCities = playersFilterForm.pickableCities
-//            onComplete()
-//        }
-//    }
+    fun searchCity(value: String, onComplete: () -> Unit) {
+        if (value.length > 2) {
+            thomannsRepository.searchCity(value) { citiesResponse, profileErrors ->
+                if (citiesResponse != null) {
+                    thomannsFilterForm.filteredPickableCities = citiesResponse
+                }
+                onComplete()
+            }
+        } else {
+            thomannsFilterForm.filteredPickableCities = thomannsFilterForm.pickableCities
+            onComplete()
+        }
+    }
 
-//    fun citySelected(id: Int) {
-//        val city = playersFilterForm.pickableCities.firstOrNull { pc -> pc.id == id }
-//        if (city != null) {
-//            playersFilterForm.city = city
-//        }
-//
-//    }
+    fun citySelected(id: Int) {
+        val city = thomannsFilterForm.pickableCities.firstOrNull { pc -> pc.id == id }
+        if (city != null) {
+            thomannsFilterForm.city = city
+        }
+    }
 
 //    fun applyFilter() {
 //        if (playersFilterForm.isChanged()) {

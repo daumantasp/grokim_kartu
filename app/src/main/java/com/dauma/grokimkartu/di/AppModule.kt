@@ -87,9 +87,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import com.google.firebase.storage.FirebaseStorage as GoogleFirebaseStorage
 
-val BASE_URL = "http://192.168.0.105:8000/api/"
+//val BASE_URL = "http://192.168.0.105:8000/api/"
 //val BASE_URL = "http://127.0.0.1:8000/api/"
-//val BASE_URL = "http://10.0.2.2:8000/api/"
+val BASE_URL = "http://10.0.2.2:8000/api/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -432,5 +432,10 @@ class AppModule {
     @Provides
     fun providesPlayersFilterForm() : PlayersFilterForm {
         return PlayersFilterForm()
+    }
+
+    @Provides
+    fun providesThomannsFilterForm() : ThomannsFilterForm {
+        return ThomannsFilterForm()
     }
 }

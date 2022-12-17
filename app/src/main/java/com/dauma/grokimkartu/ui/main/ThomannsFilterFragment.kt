@@ -9,9 +9,11 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsFilterBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannsFilterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,50 +73,50 @@ class ThomannsFilterFragment : Fragment() {
                 this.findNavController().popBackStack()
             }
         })
-//        thomannsFilterViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
-//            this.isDialogShown = true
-//            this.dialogsManager?.let { manager ->
-//                val pickableCitiesAsCodeValues = thomannsFilterViewModel
-//                    .getPlayersFilterForm()
-//                    .filteredPickableCities
-//                    .map { pc -> pc.toCodeValue() }
-//
-//                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-//                    title = getString(R.string.profile_edit_city),
-//                    codeValues = pickableCitiesAsCodeValues,
-//                    onSearchValueChanged = { value ->
-//                        this.thomannsFilterViewModel.searchCity(value) {
-//                            val pickableCitiesAsCodeValues = thomannsFilterViewModel
-//                                .getPlayersFilterForm()
-//                                .filteredPickableCities
-//                                .map { pc -> pc.toCodeValue() }
-//                            manager.setCodeValues(pickableCitiesAsCodeValues)
-//                        }
-//                    },
-//                    onCodeValueClicked = { code ->
-//                        val id = code.toIntOrNull()
-//                        if (id != null) {
-//                            this.thomannsFilterViewModel.citySelected(id)
-//                            manager.hideBottomDialog()
-//                            this.isDialogShown = false
-//                        }
-//                    },
-//                    onCancelClicked = {}
-//                ))
-//            }
-//        })
+        thomannsFilterViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
+            this.isDialogShown = true
+            this.dialogsManager?.let { manager ->
+                val pickableCitiesAsCodeValues = thomannsFilterViewModel
+                    .getThomannsFilterForm()
+                    .filteredPickableCities
+                    .map { pc -> pc.toCodeValue() }
+
+                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                    title = getString(R.string.profile_edit_city),
+                    codeValues = pickableCitiesAsCodeValues,
+                    onSearchValueChanged = { value ->
+                        this.thomannsFilterViewModel.searchCity(value) {
+                            val pickableCitiesAsCodeValues = thomannsFilterViewModel
+                                .getThomannsFilterForm()
+                                .filteredPickableCities
+                                .map { pc -> pc.toCodeValue() }
+                            manager.setCodeValues(pickableCitiesAsCodeValues)
+                        }
+                    },
+                    onCodeValueClicked = { code ->
+                        val id = code.toIntOrNull()
+                        if (id != null) {
+                            this.thomannsFilterViewModel.citySelected(id)
+                            manager.hideBottomDialog()
+                            this.isDialogShown = false
+                        }
+                    },
+                    onCancelClicked = {}
+                ))
+            }
+        })
     }
 
     private fun setupOnClickListeners() {
-        binding.thomannFilterHeaderViewElement.setOnBackClick {
+        binding.thomannsFilterHeaderViewElement.setOnBackClick {
             thomannsFilterViewModel.backClicked()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             thomannsFilterViewModel.backClicked()
         }
-//        binding.cityInputEditText.setOnClickListener {
-//            playersFilterViewModel.cityClicked()
-//        }
+        binding.cityInputEditText.setOnClickListener {
+            thomannsFilterViewModel.cityClicked()
+        }
 //        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
 //            override fun onClick(p0: View?) {
 //                thomannsFilterViewModel.applyFilter()
