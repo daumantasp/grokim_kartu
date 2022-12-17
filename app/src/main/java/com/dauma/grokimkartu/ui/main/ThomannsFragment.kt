@@ -13,6 +13,7 @@ import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.ThomannsPagerAdapter
 import com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -56,6 +57,15 @@ class ThomannsFragment : Fragment() {
 
         setupObservers()
 
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.position?.let {
+                    thomannsViewModel.tabSelected(it == 0)
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
         binding.thomannsHeaderViewElement.setOnBackClick {
             thomannsViewModel.backClicked()
         }
@@ -78,6 +88,9 @@ class ThomannsFragment : Fragment() {
         })
         thomannsViewModel.navigateToCreation.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
+        })
+        thomannsViewModel.allThomannsDisplayed.observe(viewLifecycleOwner, EventObserver {
+            binding.thomannsHeaderViewElement.showRightTextAsDisabled(it == false)
         })
         thomannsViewModel.filter.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_thomannFragment_to_thomannsFilterFragment)

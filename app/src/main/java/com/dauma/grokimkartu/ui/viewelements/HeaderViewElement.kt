@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -36,6 +37,10 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     private val unreadNotificationsCountTextView: TextView
     @Inject lateinit var utils: Utils
     private var isTranslatedZ: Boolean = false
+    private var isRightTextAttentionerDisabled: Boolean = false
+    private var rightTextDefaultColor: Int? = null
+    private var attentionerBackgroundDefaultColor: Int? = null
+    private var disabledColor: Int? = null
 
     init {
         inflate(context, R.layout.element_header, this)
@@ -64,15 +69,24 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             TextViewCompat.setAutoSizeTextTypeWithDefaults(titleTextView, AUTO_SIZE_TEXT_TYPE_UNIFORM)
         }
+        context.theme.resolveAttribute(R.attr.disabled_color, typedValue, true)
+        disabledColor = typedValue.data
+        context.theme.resolveAttribute(R.attr.attentioner_background_color, typedValue, true)
+        attentionerBackgroundDefaultColor = typedValue.data
 
-        val attributes = context.obtainStyledAttributes(attrs, R.styleable.HeaderViewElement)
+        var attributes = context.obtainStyledAttributes(attrs, R.styleable.HeaderViewElement)
         val title = attributes.getString(R.styleable.HeaderViewElement_title)
         val isIconVisible = attributes.getBoolean(R.styleable.HeaderViewElement_show_icon, false)
         val isBottomBorderVisible = attributes.getBoolean(R.styleable.HeaderViewElement_show_bottom_border, false)
         val type = attributes.getInt(R.styleable.HeaderViewElement_header_type, 0)
         val textSize = attributes.getInt(R.styleable.HeaderViewElement_header_text_size, 0)
         val rightText = attributes.getString(R.styleable.HeaderViewElement_header_right_text)
+
+        val rightTextAttributeSet = intArrayOf(android.R.attr.textColor)
+        attributes = context.obtainStyledAttributes(R.style.header_right_text, rightTextAttributeSet)
+        rightTextDefaultColor = attributes.getColor(0, Color.BLACK)
         attributes.recycle()
+
         titleTextView.text = title
         userRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE
         notificationsRelativeLayout.visibility = if (isIconVisible == true) View.VISIBLE else View.GONE
@@ -135,6 +149,24 @@ class HeaderViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
 
     fun setOnRightTextClick(onClick: () -> Unit) {
         rightTextView.setOnClickListener { onClick() }
+    }
+
+    fun showRightTextAsDisabled(showAsDisabled: Boolean) {
+        if (showAsDisabled && isRightTextAttentionerDisabled == false) {
+            disabledColor?.let {
+                rightTextView.setTextColor(it)
+                rightTextAttentionerImageView.backgroundTintList = ColorStateList.valueOf(it)
+            }
+            isRightTextAttentionerDisabled = true
+        } else if (showAsDisabled == false && isRightTextAttentionerDisabled == true) {
+            rightTextDefaultColor?.let {
+                rightTextView.setTextColor(it)
+            }
+            attentionerBackgroundDefaultColor?.let {
+                rightTextAttentionerImageView.backgroundTintList = ColorStateList.valueOf(it)
+            }
+            isRightTextAttentionerDisabled = false
+        }
     }
 
     fun showRightTextAttentioner(show: Boolean) {
