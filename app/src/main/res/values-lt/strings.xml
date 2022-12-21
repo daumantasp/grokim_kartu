@@ -168,6 +168,12 @@
     <!--    Language-->
     <string name="languages_title">Kalba</string>
 
+    <!--    Settings-->
+    <string name="ui_mode_title">Vartotojo sąsaja</string>
+    <string name="ui_mode_light">Šviesi</string>
+    <string name="ui_mode_dark">Tamsi</string>
+    <string name="ui_mode_device">Įrenginio nustatymas</string>
+
     <!--    Delete User-->
     <string name="delete_user_title">Panaikinti vartotoją</string>
     <string name="delete_user_password">Slaptažodis</string>

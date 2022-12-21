@@ -170,6 +170,12 @@
     <string name="language_en" translatable="false">English</string>
     <string name="language_lt" translatable="false">Lietuvių</string>
 
+    <!--    Settings-->
+    <string name="ui_mode_title">User interface</string>
+    <string name="ui_mode_light">Light</string>
+    <string name="ui_mode_dark">Dark</string>
+    <string name="ui_mode_device">Device mode</string>
+
     <!--    Delete User-->
     <string name="delete_user_title">Delete my account</string>
     <string name="delete_user_password">Password</string>

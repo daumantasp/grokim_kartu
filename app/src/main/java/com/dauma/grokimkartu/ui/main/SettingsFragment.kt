@@ -59,6 +59,9 @@ class SettingsFragment : Fragment() {
         settingsViewModel.navigateToLanguages.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_languagesFragment)
         })
+        settingsViewModel.navigateToUiModes.observe(viewLifecycleOwner, EventObserver {
+            this.findNavController().navigate(R.id.action_settingsFragment_to_uiModesFragment)
+        })
         settingsViewModel.language.observe(viewLifecycleOwner, EventObserver {
             updateLanguageRowValue(it)
         })

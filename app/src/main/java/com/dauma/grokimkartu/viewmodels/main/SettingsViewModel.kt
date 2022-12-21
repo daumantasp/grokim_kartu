@@ -26,12 +26,14 @@ class SettingsViewModel @Inject constructor(
     private val _navigateToLogin = MutableLiveData<Event<String>>()
     private val _navigateToDeleteUser = MutableLiveData<Event<String>>()
     private val _navigateToLanguages = MutableLiveData<Event<String>>()
+    private val _navigateToUiModes = MutableLiveData<Event<String>>()
     private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
     private val _language = MutableLiveData<Event<Language>>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
     val navigateToDeleteUser: LiveData<Event<String>> = _navigateToDeleteUser
     val navigateToLanguages: LiveData<Event<String>> = _navigateToLanguages
+    val navigateToUiModes: LiveData<Event<String>> = _navigateToUiModes
     val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
     val language: LiveData<Event<Language>> = _language
@@ -71,6 +73,10 @@ class SettingsViewModel @Inject constructor(
 
     fun changeLanguage() {
         _navigateToLanguages.value = Event("")
+    }
+
+    fun changeUiModeClicked() {
+        _navigateToUiModes.value = Event("")
     }
 
     private fun selectLanguage(context: Context) {

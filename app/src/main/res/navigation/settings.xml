@@ -39,6 +39,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_uiModesFragment"
+            app:destination="@id/uiModesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/passwordChangeFragment"
@@ -62,4 +69,8 @@
         android:id="@+id/languagesFragment"
         android:name="com.dauma.grokimkartu.ui.main.LanguagesFragment"
         android:label="LanguagesFragment" />
+    <fragment
+        android:id="@+id/uiModesFragment"
+        android:name="com.dauma.grokimkartu.ui.main.UiModesFragment"
+        android:label="UiModesFragment" />
 </navigation>
