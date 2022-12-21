@@ -160,6 +160,7 @@
     <string name="settings_email">Email address</string>
     <string name="settings_show_me_in_list">Show me on the list</string>
     <string name="settings_language">Language</string>
+    <string name="settings_ui_mode">User interface</string>
     <string name="settings_change_password">Change password</string>
     <string name="settings_delete_user">Delete my account</string>
     <string name="settings_logout">Logout</string>
