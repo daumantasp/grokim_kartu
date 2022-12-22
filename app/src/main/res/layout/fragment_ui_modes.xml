@@ -28,22 +28,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:row_title="@string/ui_mode_light"
-                app:row_show_icon="true"
-                app:row_borders="bottom"/>
+                app:row_show_icon="false"
+                app:row_borders="bottom"
+                app:row_custom_icon="@drawable/ic_check"
+                app:row_icon_width="30dp"
+                app:row_icon_height="30dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:row_title="@string/ui_mode_dark"
-                app:row_show_icon="true"
-                app:row_borders="bottom"/>
+                app:row_show_icon="false"
+                app:row_borders="bottom"
+                app:row_custom_icon="@drawable/ic_check"
+                app:row_icon_width="30dp"
+                app:row_icon_height="30dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:row_title="@string/ui_mode_device"
-                app:row_show_icon="true"
-                app:row_borders="bottom"/>
+                app:row_show_icon="false"
+                app:row_borders="bottom"
+                app:row_custom_icon="@drawable/ic_check"
+                app:row_icon_width="30dp"
+                app:row_icon_height="30dp" />
 
         </LinearLayout>
 
