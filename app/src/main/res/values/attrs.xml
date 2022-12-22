@@ -145,6 +145,8 @@
         <attr name="row_show_switch" format="boolean" />
         <attr name="row_multiline" format="boolean" />
         <attr name="row_custom_icon" format="reference" />
+        <attr name="row_icon_width" format="dimension" />
+        <attr name="row_icon_height" format="dimension" />
         <attr name="row_borders" format="enum">
             <enum name="top" value="0" />
             <enum name="bottom" value="1" />

@@ -9,6 +9,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -42,6 +43,8 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val isSwitchVisible = attributes.getBoolean(R.styleable.RowViewElement_row_show_switch, false)
         val isMultiline = attributes.getBoolean(R.styleable.RowViewElement_row_multiline, false)
         val customIcon = attributes.getDrawable(R.styleable.RowViewElement_row_custom_icon)
+        val customIconWidth = attributes.getDimension(R.styleable.RowViewElement_row_icon_width, 0f)
+        val customIconHeight = attributes.getDimension(R.styleable.RowViewElement_row_icon_height, 0f)
         val valueColor = attributes.getInt(R.styleable.RowViewElement_row_value_color, 0)
         attributes.recycle()
 
@@ -51,6 +54,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         showSwitch(isSwitchVisible)
         setMultiline(isMultiline)
         setCustomIconIfNeeded(customIcon)
+        setIconSizeIfNeeded(customIconWidth, customIconHeight)
         setValueColor(valueColor)
     }
 
@@ -118,9 +122,17 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
     }
 
     fun setCustomIconIfNeeded(icon: Drawable?) {
-        if (icon != null) {
-            iconImageView.background = icon!!
+        icon?.let {
+            iconImageView.background = it
             iconImageView.rotation = 0.0f
+        }
+    }
+
+    fun setIconSizeIfNeeded(width: Float, height: Float) {
+        if (width > 0.0 || height > 0.0) {
+            iconImageView.layoutParams.width = width.toInt()
+            iconImageView.layoutParams.height = height.toInt()
+            iconImageView.requestLayout()
         }
     }
 
