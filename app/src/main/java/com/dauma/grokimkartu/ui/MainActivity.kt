@@ -23,18 +23,24 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.CodeValue
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeListener
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
+import com.dauma.grokimkartu.general.thememodemanager.ThemeManager
+import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtilsImpl
 import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager,
-    BottomMenuManager, NetworkChangeListener {
+    BottomMenuManager, NetworkChangeListener, ThemeManager {
     private var mainActivityFrameLayout: FrameLayout? = null
     private var statusBarBackgroundFrameLayout: FrameLayout? = null
     private var safeAreaConstraintLayout: ConstraintLayout? = null
@@ -48,7 +54,15 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         val TAG = "MainActivity"
     }
 
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface ComponentsFactory {
+        fun themeModeManager() : ThemeModeManager
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val componentsFactory = EntryPointAccessors.fromApplication(this, ComponentsFactory::class.java)
+        componentsFactory.themeModeManager().also { it.with(this) }
         setLocale()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

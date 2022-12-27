@@ -124,6 +124,10 @@
         <item name="attentioner_background_color">@color/cherry_red</item>
     </style>
 
+    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="background_color">@color/cherry_red</item>
+    </style>
+
     <style name="auth_title">
         <item name="android:textColor">?attr/auth_title_color</item>
         <item name="android:fontFamily">@font/raleway</item>

@@ -1,0 +1,68 @@
+package com.dauma.grokimkartu.general.thememodemanager
+
+import androidx.appcompat.app.AppCompatDelegate
+import com.dauma.grokimkartu.R
+import com.dauma.grokimkartu.general.utils.Utils
+
+class ThemeModeManagerImpl(
+    private val utils: Utils
+): ThemeModeManager {
+    private var themeManager: ThemeManager? = null
+
+    private var _currentThemeMode: ThemeMode = ThemeModeManagerImpl.DEFAULT_UI_MODE
+    override val currentThemeMode: ThemeMode
+        get() = _currentThemeMode
+
+    private var _availableThemeModes: MutableList<ThemeMode> = mutableListOf()
+    override val availableThemeModes: List<ThemeMode>
+        get() = _availableThemeModes
+
+    companion object {
+        private val DEFAULT_UI_MODE = ThemeMode.Light
+        private const val UI_MODE_SHARED_PREF_KEY = "UI_MODE_SHARED_PREF_KEY"
+    }
+
+    override fun selectThemeMode(themeMode: ThemeMode) {
+        if (themeMode != _currentThemeMode && _availableThemeModes.contains(themeMode)) {
+            // TODO: change ui mode
+            _currentThemeMode = themeMode
+            saveCurrentUiModeToSharedPrefs()
+        }
+    }
+
+    override fun with(themeManager: ThemeManager) {
+        this.themeManager = themeManager
+        setDark()
+    }
+
+    private fun setLight() {
+        themeManager?.let {
+            it.setTheme(R.style.LightTheme)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
+    private fun setDark() {
+        themeManager?.let {
+            it.setTheme(R.style.DarkTheme)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+    }
+
+    private fun saveCurrentUiModeToSharedPrefs() {
+        utils.sharedStorageUtils.save(UI_MODE_SHARED_PREF_KEY, currentThemeMode.toString())
+    }
+
+    private fun loadCurrentUiModeFromSharedPrefs() : ThemeMode? {
+        val currentUiModeAsString = utils.sharedStorageUtils.getEntry(UI_MODE_SHARED_PREF_KEY)
+        currentUiModeAsString?.let {
+            return when (it) {
+                ThemeMode.Light.toString() -> ThemeMode.Light
+                ThemeMode.Dark.toString() -> ThemeMode.Dark
+                ThemeMode.Device.toString() -> ThemeMode.Device
+                else -> null
+            }
+        }
+        return null
+    }
+}

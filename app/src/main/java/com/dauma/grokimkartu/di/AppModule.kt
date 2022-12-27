@@ -25,6 +25,8 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiverImpl
+import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
+import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManagerImpl
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
@@ -71,7 +73,6 @@ import com.dauma.grokimkartu.repositories.thomanns.MyThomannsRepositoryImpl
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepositoryImpl
 import com.dauma.grokimkartu.repositories.thomanns.paginator.MyThomannsPaginatorImpl
-import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginatorImpl
 import com.dauma.grokimkartu.repositories.users.AuthRepositoryImpl
 import dagger.Module
@@ -437,5 +438,11 @@ class AppModule {
     @Provides
     fun providesThomannsFilterForm() : ThomannsFilterForm {
         return ThomannsFilterForm()
+    }
+
+    @Provides
+    @Singleton
+    fun providesThemeModeManager(utils: Utils) : ThemeModeManager {
+        return ThemeModeManagerImpl(utils)
     }
 }
