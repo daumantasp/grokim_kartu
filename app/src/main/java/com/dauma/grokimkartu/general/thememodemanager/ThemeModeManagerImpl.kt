@@ -9,7 +9,7 @@ class ThemeModeManagerImpl(
 ): ThemeModeManager {
     private var themeManager: ThemeManager? = null
 
-    private var _currentThemeMode: ThemeMode = ThemeModeManagerImpl.DEFAULT_UI_MODE
+    private var _currentThemeMode: ThemeMode = ThemeModeManagerImpl.DEFAULT_THEME_MODE
     override val currentThemeMode: ThemeMode
         get() = _currentThemeMode
 
@@ -18,7 +18,7 @@ class ThemeModeManagerImpl(
         get() = _availableThemeModes
 
     companion object {
-        private val DEFAULT_UI_MODE = ThemeMode.Light
+        private val DEFAULT_THEME_MODE = ThemeMode.Light
         private const val UI_MODE_SHARED_PREF_KEY = "UI_MODE_SHARED_PREF_KEY"
     }
 
@@ -26,13 +26,12 @@ class ThemeModeManagerImpl(
         if (themeMode != _currentThemeMode && _availableThemeModes.contains(themeMode)) {
             // TODO: change ui mode
             _currentThemeMode = themeMode
-            saveCurrentUiModeToSharedPrefs()
+            saveCurrentThemeModeToSharedPrefs()
         }
     }
 
     override fun with(themeManager: ThemeManager) {
         this.themeManager = themeManager
-        setDark()
     }
 
     private fun setLight() {
@@ -49,11 +48,11 @@ class ThemeModeManagerImpl(
         }
     }
 
-    private fun saveCurrentUiModeToSharedPrefs() {
+    private fun saveCurrentThemeModeToSharedPrefs() {
         utils.sharedStorageUtils.save(UI_MODE_SHARED_PREF_KEY, currentThemeMode.toString())
     }
 
-    private fun loadCurrentUiModeFromSharedPrefs() : ThemeMode? {
+    private fun loadCurrentThemeModeFromSharedPrefs() : ThemeMode? {
         val currentUiModeAsString = utils.sharedStorageUtils.getEntry(UI_MODE_SHARED_PREF_KEY)
         currentUiModeAsString?.let {
             return when (it) {

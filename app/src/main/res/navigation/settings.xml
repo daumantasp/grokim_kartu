@@ -71,6 +71,6 @@
         android:label="LanguagesFragment" />
     <fragment
         android:id="@+id/uiModesFragment"
-        android:name="com.dauma.grokimkartu.ui.main.UiModesFragment"
+        android:name="com.dauma.grokimkartu.ui.main.ThemeModesFragment"
         android:label="UiModesFragment" />
 </navigation>
