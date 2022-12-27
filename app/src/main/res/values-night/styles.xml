@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!--        Status bar-->
+        <item name="colorPrimaryDark">@color/violet</item>
+        <!--        Menu icon color-->
+        <item name="android:textColorPrimary">@color/violet</item>
+
+        <item name="auth_background_start_color">@color/violet</item>
+        <item name="auth_background_end_color">@color/chambray</item>
+        <item name="auth_spinner_color">@color/white</item>
+        <item name="auth_icon_color">@color/white</item>
+        <item name="auth_title_color">@color/white</item>
+        <item name="auth_text_color">@color/champagne_pink</item>
+        <item name="auth_text_secondary_color">@color/white</item>
+        <item name="auth_primary_button_color">@color/cadet_blue</item>
+        <item name="auth_primary_button_pressed_color">@color/cadet</item>
+        <item name="auth_primary_button_title_color">@color/white</item>
+
+        <item name="background_color">@color/cherry_red</item>
+        <item name="spinner_color">@color/white</item>
+        <item name="last_item_spinner_color">@color/chambray</item>
+        <item name="swipe_to_refresh_progress_spinner_color">@color/chambray</item>
+        <item name="border_color">@color/grey</item>
+        <item name="main_status_bar_color">@color/white</item>
+        <item name="disabled_color">@color/grey</item>
+        <item name="warning_color">@color/cherry_red</item>
+        <item name="title_color">@color/black</item>
+        <item name="text_color">@color/dark_grey</item>
+        <item name="text_secondary_color">@color/black</item>
+
+        <item name="bottom_dialog_background_color">@color/black_50</item>
+        <item name="bottom_dialog_color">@color/white</item>
+        <item name="bottom_dialog_title_color">@color/black</item>
+        <item name="bottom_dialog_value_color">@color/dark_grey</item>
+        <item name="bottom_dialog_separator_color">@color/chambray</item>
+        <item name="bottom_dialog_text_input_background_color">@color/light_grey</item>
+        <item name="bottom_dialog_text_input_hint_color">@color/chambray</item>
+
+        <item name="primary_button_color">@color/chambray</item>
+        <item name="primary_button_pressed_color">@color/violet</item>
+        <item name="primary_button_ripple_color">@color/white</item>
+        <item name="primary_button_title_color">@color/white</item>
+
+        <item name="secondary_button_color">@color/white</item>
+        <item name="secondary_button_border_color">@color/light_grey</item>
+        <item name="secondary_button_pressed_color">@color/cadet_blue</item>
+        <item name="secondary_button_ripple_color">@color/white</item>
+        <item name="secondary_button_title_color">@color/chambray</item>
+
+        <item name="primary_text_input_background_color">@color/white</item>
+        <item name="primary_text_input_hint_color">@color/cherry_red</item>
+        <item name="primary_text_input_box_stroke_color">@color/cherry_red</item>
+
+        <item name="secondary_text_input_background_color">@color/light_grey</item>
+        <item name="secondary_text_input_hint_color">@color/chambray</item>
+        <item name="secondary_text_input_box_stroke_color">@color/chambray</item>
+
+        <item name="bottom_menu_background_color">@color/white</item>
+        <item name="bottom_menu_active_color">@color/chambray</item>
+        <item name="bottom_menu_inactive_color">@color/grey</item>
+
+        <item name="header_background_color">@color/white</item>
+        <item name="header_icon_color">@color/black</item>
+
+        <item name="notifications_counter_background_color">@color/cherry_red</item>
+        <item name="notifications_counter_value_color">@color/white</item>
+
+        <item name="card_1_start_color">@color/chambray</item>
+        <item name="card_1_end_color">@color/violet</item>
+        <item name="card_2_start_color">@color/cambridge_blue</item>
+        <item name="card_2_end_color">@color/cadet_blue</item>
+
+        <item name="initials_text_color">@color/white</item>
+        <item name="initials_background_color_1">#00AA55</item>
+        <item name="initials_background_color_2">#009FD4</item>
+        <item name="initials_background_color_3">#B381B3</item>
+        <item name="initials_background_color_4">#939393</item>
+        <item name="initials_background_color_5">#E3BC00</item>
+        <item name="initials_background_color_6">#D47500</item>
+        <item name="initials_background_color_7">#DC2A2A</item>
+
+        <item name="photo_placeholder_color">@color/grey</item>
+        <item name="select_photo_icon_background_color">@color/chambray</item>
+        <item name="select_photo_icon_color">@color/white</item>
+
+        <item name="locked_icon_background_color">@color/cherry_red</item>
+        <item name="unlocked_icon_background_color">@color/cadet_blue</item>
+        <item name="lock_icon_color">@color/white</item>
+
+        <item name="my_message_bubble_background_color">@color/light_grey</item>
+        <item name="my_message_bubble_stroke_color">@color/grey</item>
+        <item name="my_message_bubble_text_color">@color/black</item>
+        <item name="my_message_bubble_name_color">@color/black</item>
+        <item name="my_message_bubble_date_color">@color/dark_grey</item>
+
+        <item name="friend_message_bubble_background_color">@color/white</item>
+        <item name="friend_message_bubble_stroke_color">@color/grey</item>
+        <item name="friend_message_bubble_text_color">@color/black</item>
+        <item name="friend_message_bubble_name_color">@color/black</item>
+        <item name="friend_message_bubble_date_color">@color/dark_grey</item>
+
+        <item name="post_message_container_background_color">@color/white</item>
+        <item name="post_message_input_background_color">@color/white</item>
+        <item name="post_message_input_stroke_color">@color/grey</item>
+        <item name="post_message_icon_inactive_color">@color/chambray</item>
+        <item name="post_message_icon_active_color">@color/violet</item>
+
+        <item name="unread_notification_background_color">@color/sky_blue</item>
+        <item name="unread_notification_title_color">@color/black</item>
+        <item name="unread_notification_text_color">@color/black_50</item>
+        <item name="unread_notification_date_color">@color/chambray</item>
+
+        <item name="inactive_notification_background_color">@color/light_grey</item>
+        <item name="inactive_notification_title_color">@color/black_50</item>
+        <item name="inactive_notification_text_color">@color/black_50</item>
+        <item name="inactive_notification_date_color">@color/black_50</item>
+
+        <item name="active_notification_background_color">@color/white</item>
+        <item name="active_notification_title_color">@color/black</item>
+        <item name="active_notification_text_color">@color/black</item>
+        <item name="active_notification_date_color">@color/chambray</item>
+
+        <item name="attentioner_background_color">@color/cherry_red</item>
+    </style>
+</resources>
+
+    <!--    https://zoolatech.com/blog/android-themes-styles-and-attributes/-->
+    <!--    https://www.linuxtopia.org/online_books/android/devguide/guide/topics/ui/themes.html-->

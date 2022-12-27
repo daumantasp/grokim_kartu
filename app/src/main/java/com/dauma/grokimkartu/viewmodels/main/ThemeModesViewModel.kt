@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
+import com.dauma.grokimkartu.general.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ThemeModesViewModel @Inject constructor(
-    private val themeModeManager: ThemeModeManager
+    private val themeModeManager: ThemeModeManager,
+    private val utils: Utils
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _availableThemeModes = MutableLiveData<Event<List<ThemeMode>>>()
@@ -50,7 +52,12 @@ class ThemeModesViewModel @Inject constructor(
 
     private fun setCurrentThemeModeAndNavigateBack() {
         setCurrentThemeMode()
-//        backClicked()
+        // NOTE: Theme change requires to recreate activity
+        // which takes some time. Navigation does not look
+        // good if it occurs during theme change
+        utils.dispatcherUtils.main.asyncAfterSeconds(0.3) {
+            backClicked()
+        }
     }
 
     private fun setCurrentThemeMode() {

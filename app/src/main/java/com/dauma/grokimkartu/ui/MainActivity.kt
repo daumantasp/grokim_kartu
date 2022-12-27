@@ -50,6 +50,9 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     private var networkLostDialog: DialogsManager.Dialog? = null
     @Inject lateinit var networkChangeReceiver: NetworkChangeReceiver
 
+    override val uiMode: Int
+        get() = resources.configuration.uiMode
+
     companion object {
         val TAG = "MainActivity"
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!--        Status bar-->
         <item name="colorPrimaryDark">@color/violet</item>
         <!--        Menu icon color-->
@@ -122,10 +122,6 @@
         <item name="active_notification_date_color">@color/chambray</item>
 
         <item name="attentioner_background_color">@color/cherry_red</item>
-    </style>
-
-    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="background_color">@color/cherry_red</item>
     </style>
 
     <style name="auth_title">

@@ -1,7 +1,7 @@
 package com.dauma.grokimkartu.general.thememodemanager
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.utils.Utils
 
 class ThemeModeManagerImpl(
@@ -9,7 +9,7 @@ class ThemeModeManagerImpl(
 ): ThemeModeManager {
     private var themeManager: ThemeManager? = null
 
-    private var _currentThemeMode: ThemeMode
+    private var _currentThemeMode: ThemeMode = ThemeMode.Light
     override val currentThemeMode: ThemeMode
         get() = _currentThemeMode
 
@@ -18,14 +18,35 @@ class ThemeModeManagerImpl(
         get() = _availableThemeModes
 
     companion object {
-        private val DEFAULT_THEME_MODE = ThemeMode.Light
-        private const val UI_MODE_SHARED_PREF_KEY = "UI_MODE_SHARED_PREF_KEY"
+        private const val THEME_MODE_SHARED_PREF_KEY = "THEME_MODE_SHARED_PREF_KEY"
     }
 
-    init {
-        _currentThemeMode = loadCurrentThemeModeFromSharedPrefs() ?: DEFAULT_THEME_MODE
-        // DEVELOPMENT
-        _availableThemeModes = mutableListOf(ThemeMode.Light, ThemeMode.Dark)
+    private fun init() {
+        setAvailableThemeModes()
+        setCurrentThemeMode()
+    }
+
+    private fun setAvailableThemeModes() {
+        _availableThemeModes.add(ThemeMode.Light)
+        _availableThemeModes.add(ThemeMode.Dark)
+        if (isDeviceModeAvailable()) {
+            _availableThemeModes.add(ThemeMode.Device)
+        }
+    }
+
+    private fun isDeviceModeAvailable() : Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    }
+
+    private fun setCurrentThemeMode() {
+        val currentThemeModeFromSharedPrefs = loadCurrentThemeModeFromSharedPrefs()
+        if (currentThemeModeFromSharedPrefs != null) {
+            selectThemeMode(currentThemeModeFromSharedPrefs)
+        } else if (isDeviceModeAvailable()) {
+            selectThemeMode(ThemeMode.Device)
+        } else {
+            selectThemeMode(ThemeMode.Light)
+        }
     }
 
     override fun selectThemeMode(themeMode: ThemeMode) {
@@ -42,32 +63,33 @@ class ThemeModeManagerImpl(
 
     override fun with(themeManager: ThemeManager) {
         this.themeManager = themeManager
+        init()
     }
 
     private fun setLight() {
         themeManager?.let {
-            it.setTheme(R.style.LightTheme)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
+        } ?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
     }
 
     private fun setDark() {
         themeManager?.let {
-            it.setTheme(R.style.DarkTheme)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
+        } ?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
     }
 
     private fun setDevice() {
-        // TODO
+        themeManager?.let {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        } ?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
     }
 
     private fun saveCurrentThemeModeToSharedPrefs() {
-        utils.sharedStorageUtils.save(UI_MODE_SHARED_PREF_KEY, currentThemeMode.toString())
+        utils.sharedStorageUtils.save(THEME_MODE_SHARED_PREF_KEY, currentThemeMode.toString())
     }
 
     private fun loadCurrentThemeModeFromSharedPrefs() : ThemeMode? {
-        val currentUiModeAsString = utils.sharedStorageUtils.getEntry(UI_MODE_SHARED_PREF_KEY)
+        val currentUiModeAsString = utils.sharedStorageUtils.getEntry(THEME_MODE_SHARED_PREF_KEY)
         currentUiModeAsString?.let {
             return when (it) {
                 ThemeMode.Light.toString() -> ThemeMode.Light
