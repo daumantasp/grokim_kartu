@@ -9,7 +9,7 @@ class ThemeModeManagerImpl(
 ): ThemeModeManager {
     private var themeManager: ThemeManager? = null
 
-    private var _currentThemeMode: ThemeMode = ThemeModeManagerImpl.DEFAULT_THEME_MODE
+    private var _currentThemeMode: ThemeMode
     override val currentThemeMode: ThemeMode
         get() = _currentThemeMode
 
@@ -23,6 +23,7 @@ class ThemeModeManagerImpl(
     }
 
     init {
+        _currentThemeMode = loadCurrentThemeModeFromSharedPrefs() ?: DEFAULT_THEME_MODE
         // DEVELOPMENT
         _availableThemeModes = mutableListOf(ThemeMode.Light, ThemeMode.Dark)
     }

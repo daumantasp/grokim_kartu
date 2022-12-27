@@ -57,6 +57,11 @@ class ThemeModesFragment : Fragment() {
                 binding.deviceModeRowViewElement.visibility = View.VISIBLE
             }
         })
+        themeModesViewModel.currentThemeMode.observe(viewLifecycleOwner, EventObserver {
+            binding.lightModeRowViewElement.showIcon(it == ThemeMode.Light)
+            binding.darkModeRowViewElement.showIcon(it == ThemeMode.Dark)
+            binding.deviceModeRowViewElement.showIcon(it == ThemeMode.Device)
+        })
     }
 
     private fun setupBackHandlers() {

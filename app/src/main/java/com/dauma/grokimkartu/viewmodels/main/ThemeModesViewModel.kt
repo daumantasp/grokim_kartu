@@ -15,14 +15,17 @@ class ThemeModesViewModel @Inject constructor(
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _availableThemeModes = MutableLiveData<Event<List<ThemeMode>>>()
+    private val _currentThemeMode = MutableLiveData<Event<ThemeMode>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val availableThemeModes: LiveData<Event<List<ThemeMode>>> = _availableThemeModes
+    val currentThemeMode: LiveData<Event<ThemeMode>> = _currentThemeMode
 
     companion object {
         private val TAG = "ThemeModesViewModel"
     }
 
     fun viewIsReady() {
+        setCurrentThemeMode()
         setAvailableThemeModes()
     }
 
@@ -32,14 +35,26 @@ class ThemeModesViewModel @Inject constructor(
 
     fun lightClicked() {
         themeModeManager.selectThemeMode(ThemeMode.Light)
+        setCurrentThemeModeAndNavigateBack()
     }
 
     fun darkClicked() {
         themeModeManager.selectThemeMode(ThemeMode.Dark)
+        setCurrentThemeModeAndNavigateBack()
     }
 
     fun deviceClicked() {
         themeModeManager.selectThemeMode(ThemeMode.Device)
+        setCurrentThemeModeAndNavigateBack()
+    }
+
+    private fun setCurrentThemeModeAndNavigateBack() {
+        setCurrentThemeMode()
+//        backClicked()
+    }
+
+    private fun setCurrentThemeMode() {
+        _currentThemeMode.value = Event(themeModeManager.currentThemeMode)
     }
 
     private fun setAvailableThemeModes() {
