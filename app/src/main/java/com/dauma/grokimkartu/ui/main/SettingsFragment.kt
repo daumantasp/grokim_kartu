@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSettingsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.viewmodels.main.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,6 +66,9 @@ class SettingsFragment : Fragment() {
         settingsViewModel.language.observe(viewLifecycleOwner, EventObserver {
             updateLanguageRowValue(it)
         })
+        settingsViewModel.themeMode.observe(viewLifecycleOwner, EventObserver {
+            updateThemeModeRowValue(it)
+        })
     }
 
     private fun updateLanguageRowValue(language: Language) {
@@ -73,5 +77,13 @@ class SettingsFragment : Fragment() {
             Language.EN -> getString(R.string.language_en)
         }
         binding.languageRowViewElement.setValue(value)
+    }
+
+    private fun updateThemeModeRowValue(themeMode: ThemeMode) {
+        binding.uiModeRowViewElement.setValue(when (themeMode) {
+            ThemeMode.Light -> getString(R.string.ui_mode_light)
+            ThemeMode.Dark -> getString(R.string.ui_mode_dark)
+            ThemeMode.Device -> getString(R.string.ui_mode_device)
+        })
     }
 }
