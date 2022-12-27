@@ -118,6 +118,12 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             constraintSet.clone(rowConstraintLayout)
             constraintSet.connect(R.id.value_text_view, ConstraintSet.END, R.id.icon_image_view, ConstraintSet.START)
             constraintSet.applyTo(rowConstraintLayout)
+        } else {
+            iconImageView.visibility = View.GONE
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(rowConstraintLayout)
+            constraintSet.connect(R.id.value_text_view, ConstraintSet.END, R.id.row_constraint_layout, ConstraintSet.END)
+            constraintSet.applyTo(rowConstraintLayout)
         }
     }
 
