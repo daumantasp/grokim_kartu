@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentThemeModesBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.viewmodels.main.ThemeModesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,6 +45,17 @@ class ThemeModesFragment : Fragment() {
     private fun setupObservers() {
         themeModesViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
+        })
+        themeModesViewModel.availableThemeModes.observe(viewLifecycleOwner, EventObserver {
+            if (it.contains(ThemeMode.Light)) {
+                binding.lightModeRowViewElement.visibility = View.VISIBLE
+            }
+            if (it.contains(ThemeMode.Dark)) {
+                binding.darkModeRowViewElement.visibility = View.VISIBLE
+            }
+            if (it.contains(ThemeMode.Device)) {
+                binding.deviceModeRowViewElement.visibility = View.VISIBLE
+            }
         })
     }
 

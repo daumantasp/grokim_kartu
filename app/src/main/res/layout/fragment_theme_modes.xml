@@ -25,8 +25,10 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                android:id="@+id/light_mode_row_view_element"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:row_title="@string/ui_mode_light"
                 app:row_show_icon="false"
                 app:row_borders="bottom"
@@ -35,8 +37,10 @@
                 app:row_icon_height="30dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                android:id="@+id/dark_mode_row_view_element"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:row_title="@string/ui_mode_dark"
                 app:row_show_icon="false"
                 app:row_borders="bottom"
@@ -45,8 +49,10 @@
                 app:row_icon_height="30dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                android:id="@+id/device_mode_row_view_element"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:row_title="@string/ui_mode_device"
                 app:row_show_icon="false"
                 app:row_borders="bottom"

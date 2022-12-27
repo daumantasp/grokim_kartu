@@ -22,6 +22,11 @@ class ThemeModeManagerImpl(
         private const val UI_MODE_SHARED_PREF_KEY = "UI_MODE_SHARED_PREF_KEY"
     }
 
+    init {
+        // DEVELOPMENT
+        _availableThemeModes = mutableListOf(ThemeMode.Light, ThemeMode.Dark)
+    }
+
     override fun selectThemeMode(themeMode: ThemeMode) {
         if (themeMode != _currentThemeMode && _availableThemeModes.contains(themeMode)) {
             // TODO: change ui mode
