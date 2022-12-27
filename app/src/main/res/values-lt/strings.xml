@@ -169,10 +169,10 @@
     <string name="languages_title">Kalba</string>
 
     <!--    Settings-->
-    <string name="ui_mode_title">Vartotojo sąsaja</string>
-    <string name="ui_mode_light">Šviesi</string>
-    <string name="ui_mode_dark">Tamsi</string>
-    <string name="ui_mode_device">Įrenginio nustatymas</string>
+    <string name="theme_mode_title">Vartotojo sąsaja</string>
+    <string name="theme_mode_light">Šviesi</string>
+    <string name="theme_mode_dark">Tamsi</string>
+    <string name="theme_mode_device">Įrenginio nustatymas</string>
 
     <!--    Delete User-->
     <string name="delete_user_title">Panaikinti vartotoją</string>

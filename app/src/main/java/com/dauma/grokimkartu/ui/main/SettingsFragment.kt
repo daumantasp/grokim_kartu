@@ -80,10 +80,10 @@ class SettingsFragment : Fragment() {
     }
 
     private fun updateThemeModeRowValue(themeMode: ThemeMode) {
-        binding.uiModeRowViewElement.setValue(when (themeMode) {
-            ThemeMode.Light -> getString(R.string.ui_mode_light)
-            ThemeMode.Dark -> getString(R.string.ui_mode_dark)
-            ThemeMode.Device -> getString(R.string.ui_mode_device)
+        binding.themeModeRowViewElement.setValue(when (themeMode) {
+            ThemeMode.Light -> getString(R.string.theme_mode_light)
+            ThemeMode.Dark -> getString(R.string.theme_mode_dark)
+            ThemeMode.Device -> getString(R.string.theme_mode_device)
         })
     }
 }

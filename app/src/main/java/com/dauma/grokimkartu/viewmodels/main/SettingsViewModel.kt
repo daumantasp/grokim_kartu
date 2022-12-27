@@ -81,7 +81,7 @@ class SettingsViewModel @Inject constructor(
         _navigateToLanguages.value = Event("")
     }
 
-    fun changeUiModeClicked() {
+    fun changeThemeModeClicked() {
         _navigateToUiModes.value = Event("")
     }
 

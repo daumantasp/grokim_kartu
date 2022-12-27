@@ -58,12 +58,12 @@
                     app:row_borders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
-                    android:id="@+id/ui_mode_row_view_element"
+                    android:id="@+id/theme_mode_row_view_element"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:row_title="@string/settings_ui_mode"
                     app:row_show_icon="true"
-                    app:onClick="@{() -> model.changeUiModeClicked()}"
+                    app:onClick="@{() -> model.changeThemeModeClicked()}"
                     app:row_borders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
