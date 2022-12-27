@@ -30,6 +30,18 @@ class ThemeModesViewModel @Inject constructor(
         _navigateBack.value = Event("")
     }
 
+    fun lightClicked() {
+        themeModeManager.selectThemeMode(ThemeMode.Light)
+    }
+
+    fun darkClicked() {
+        themeModeManager.selectThemeMode(ThemeMode.Dark)
+    }
+
+    fun deviceClicked() {
+        themeModeManager.selectThemeMode(ThemeMode.Device)
+    }
+
     private fun setAvailableThemeModes() {
         _availableThemeModes.value = Event(themeModeManager.availableThemeModes)
     }

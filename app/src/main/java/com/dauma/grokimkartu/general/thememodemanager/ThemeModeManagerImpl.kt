@@ -29,7 +29,11 @@ class ThemeModeManagerImpl(
 
     override fun selectThemeMode(themeMode: ThemeMode) {
         if (themeMode != _currentThemeMode && _availableThemeModes.contains(themeMode)) {
-            // TODO: change ui mode
+            when (themeMode) {
+                ThemeMode.Light -> setLight()
+                ThemeMode.Dark -> setDark()
+                ThemeMode.Device -> setDevice()
+            }
             _currentThemeMode = themeMode
             saveCurrentThemeModeToSharedPrefs()
         }
@@ -51,6 +55,10 @@ class ThemeModeManagerImpl(
             it.setTheme(R.style.DarkTheme)
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
+    }
+
+    private fun setDevice() {
+        // TODO
     }
 
     private fun saveCurrentThemeModeToSharedPrefs() {

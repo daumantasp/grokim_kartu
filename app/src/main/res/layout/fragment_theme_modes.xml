@@ -34,7 +34,8 @@
                 app:row_borders="bottom"
                 app:row_custom_icon="@drawable/ic_check"
                 app:row_icon_width="30dp"
-                app:row_icon_height="30dp" />
+                app:row_icon_height="30dp"
+                app:onClick="@{() -> model.lightClicked()}" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                 android:id="@+id/dark_mode_row_view_element"
@@ -46,7 +47,8 @@
                 app:row_borders="bottom"
                 app:row_custom_icon="@drawable/ic_check"
                 app:row_icon_width="30dp"
-                app:row_icon_height="30dp" />
+                app:row_icon_height="30dp"
+                app:onClick="@{() -> model.darkClicked()}" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                 android:id="@+id/device_mode_row_view_element"
@@ -58,7 +60,8 @@
                 app:row_borders="bottom"
                 app:row_custom_icon="@drawable/ic_check"
                 app:row_icon_width="30dp"
-                app:row_icon_height="30dp" />
+                app:row_icon_height="30dp"
+                app:onClick="@{() -> model.deviceClicked()}" />
 
         </LinearLayout>
 
