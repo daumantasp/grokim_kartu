@@ -5,5 +5,7 @@ class ThemeModeException(error: ThemeModeErrors)
 
 
 enum class ThemeModeErrors {
-    THEME_MANAGER_IS_NOT_SET
+    THEME_MANAGER_IS_NOT_SET,
+    THEME_MODE_IS_NOT_AVAILABLE,
+    UNKNOWN
 }

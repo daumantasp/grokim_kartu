@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background_color">
 
         <ScrollView
             android:id="@+id/settings_scroll_view"
@@ -55,7 +56,8 @@
                     app:row_title="@string/settings_language"
                     app:row_show_icon="true"
                     app:onClick="@{() -> model.changeLanguage()}"
-                    app:row_borders="bottom"/>
+                    app:row_borders="bottom"
+                    app:row_icon_tint_color="?attr/text_secondary_color" />
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:id="@+id/theme_mode_row_view_element"
@@ -64,7 +66,8 @@
                     app:row_title="@string/settings_ui_mode"
                     app:row_show_icon="true"
                     app:onClick="@{() -> model.changeThemeModeClicked()}"
-                    app:row_borders="bottom"/>
+                    app:row_borders="bottom"
+                    app:row_icon_tint_color="?attr/text_secondary_color" />
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
@@ -72,7 +75,8 @@
                     app:row_title="@string/settings_change_password"
                     app:row_show_icon="true"
                     app:onClick="@{() -> model.changePassword()}"
-                    app:row_borders="bottom"/>
+                    app:row_borders="bottom"
+                    app:row_icon_tint_color="?attr/text_secondary_color" />
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                     android:layout_width="match_parent"
@@ -80,7 +84,8 @@
                     app:row_title="@string/settings_delete_user"
                     app:row_show_icon="true"
                     app:onClick="@{() -> model.deleteUserClicked()}"
-                    app:row_borders="bottom"/>
+                    app:row_borders="bottom"
+                    app:row_icon_tint_color="?attr/text_secondary_color" />
 
 <!--                <Switch-->
 <!--                    android:id="@+id/showMeSwitch"-->

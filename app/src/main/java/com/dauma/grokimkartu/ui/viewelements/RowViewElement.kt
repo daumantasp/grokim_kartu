@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.ui.viewelements
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD
 import android.os.Build
@@ -46,6 +47,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         val customIconWidth = attributes.getDimension(R.styleable.RowViewElement_row_icon_width, 0f)
         val customIconHeight = attributes.getDimension(R.styleable.RowViewElement_row_icon_height, 0f)
         val valueColor = attributes.getInt(R.styleable.RowViewElement_row_value_color, 0)
+        val iconTintColor = attributes.getInt(R.styleable.RowViewElement_row_icon_tint_color, 0)
         attributes.recycle()
 
         setTitle(title ?: "")
@@ -56,6 +58,7 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         setCustomIconIfNeeded(customIcon)
         setIconSizeIfNeeded(customIconWidth, customIconHeight)
         setValueColor(valueColor)
+        setIconTintColor(iconTintColor)
     }
 
     companion object {
@@ -139,6 +142,12 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
             iconImageView.layoutParams.width = width.toInt()
             iconImageView.layoutParams.height = height.toInt()
             iconImageView.requestLayout()
+        }
+    }
+
+    fun setIconTintColor(color: Int) {
+        if (color != 0) {
+            iconImageView.backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 

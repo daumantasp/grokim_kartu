@@ -29,7 +29,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="?attr/background_color">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/profile_photo_or_initials_constraint_layout"

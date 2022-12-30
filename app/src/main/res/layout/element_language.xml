@@ -43,6 +43,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/ic_check"
+        android:backgroundTint="?attr/check_selected_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/language_text_view"
         app:layout_constraintBottom_toBottomOf="@id/language_text_view" />

@@ -10,7 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background_color">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -38,6 +39,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/password_text_input_edit_text"
+                        style="@style/main_text_input_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:hint="@string/delete_user_password"

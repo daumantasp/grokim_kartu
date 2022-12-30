@@ -13,21 +13,46 @@
         <item name="auth_title_color">@color/white</item>
         <item name="auth_text_color">@color/champagne_pink</item>
         <item name="auth_text_secondary_color">@color/white</item>
+
         <item name="auth_primary_button_color">@color/cadet_blue</item>
+        <item name="auth_primary_button_disabled_color">@color/grey</item>
         <item name="auth_primary_button_pressed_color">@color/cadet</item>
         <item name="auth_primary_button_title_color">@color/white</item>
+        <item name="auth_primary_button_title_disabled_color">@color/dark_grey</item>
+
+        <item name="auth_status_bar_color">@color/violet</item>
+        <item name="main_status_bar_color">@color/white</item>
 
         <item name="background_color">@color/white</item>
         <item name="spinner_color">@color/white</item>
         <item name="last_item_spinner_color">@color/chambray</item>
         <item name="swipe_to_refresh_progress_spinner_color">@color/chambray</item>
         <item name="border_color">@color/grey</item>
-        <item name="main_status_bar_color">@color/white</item>
         <item name="disabled_color">@color/grey</item>
         <item name="warning_color">@color/cherry_red</item>
+        <item name="attentioner_background_color">@color/cherry_red</item>
+        <item name="check_selected_color">@color/cadet_blue</item>
+        <!--        Recycler view over scroll-->
+        <item name="android:colorEdgeEffect">@color/chambray</item>
+
         <item name="title_color">@color/black</item>
         <item name="text_color">@color/dark_grey</item>
         <item name="text_secondary_color">@color/black</item>
+
+        <item name="tab_selected_text_color">@color/chambray</item>
+        <item name="tab_text_color">@color/dark_grey</item>
+        <item name="tab_indicator_color">@color/chambray</item>
+
+        <item name="switch_active_color">@color/chambray</item>
+        <item name="switch_inactive_thumb_color">@color/grey</item>
+        <item name="switch_inactive_track_color">@color/dark_grey</item>
+
+        <item name="checkbox_active">@color/chambray</item>
+        <item name="checkbox_inactive">@color/dark_grey</item>
+
+        <item name="dialog_accent_color">@color/chambray</item>
+        <item name="dialog_text_color">@color/black</item>
+        <item name="dialog_background_color">@color/white</item>
 
         <item name="bottom_dialog_background_color">@color/black_50</item>
         <item name="bottom_dialog_color">@color/white</item>
@@ -36,17 +61,23 @@
         <item name="bottom_dialog_separator_color">@color/chambray</item>
         <item name="bottom_dialog_text_input_background_color">@color/light_grey</item>
         <item name="bottom_dialog_text_input_hint_color">@color/chambray</item>
+        <item name="bottom_dialog_text_input_text_color">@color/black</item>
 
         <item name="primary_button_color">@color/chambray</item>
+        <item name="primary_button_disabled_color">@color/grey</item>
         <item name="primary_button_pressed_color">@color/violet</item>
         <item name="primary_button_ripple_color">@color/white</item>
         <item name="primary_button_title_color">@color/white</item>
+        <item name="primary_button_title_disabled_color">@color/dark_grey</item>
 
         <item name="secondary_button_color">@color/white</item>
+        <item name="secondary_button_disabled_color">@color/grey</item>
         <item name="secondary_button_border_color">@color/light_grey</item>
+        <item name="secondary_button_border_disabled_color">@color/grey</item>
         <item name="secondary_button_pressed_color">@color/cadet_blue</item>
         <item name="secondary_button_ripple_color">@color/white</item>
         <item name="secondary_button_title_color">@color/chambray</item>
+        <item name="secondary_button_title_disabled_color">@color/dark_grey</item>
 
         <item name="primary_text_input_background_color">@color/white</item>
         <item name="primary_text_input_hint_color">@color/cherry_red</item>
@@ -55,6 +86,7 @@
         <item name="secondary_text_input_background_color">@color/light_grey</item>
         <item name="secondary_text_input_hint_color">@color/chambray</item>
         <item name="secondary_text_input_box_stroke_color">@color/chambray</item>
+        <item name="secondary_text_input_edit_text_color">@color/black</item>
 
         <item name="bottom_menu_background_color">@color/white</item>
         <item name="bottom_menu_active_color">@color/chambray</item>
@@ -87,6 +119,7 @@
         <item name="locked_icon_background_color">@color/cherry_red</item>
         <item name="unlocked_icon_background_color">@color/cadet_blue</item>
         <item name="lock_icon_color">@color/white</item>
+        <item name="switch_lock_icon_color">@color/black</item>
 
         <item name="my_message_bubble_background_color">@color/light_grey</item>
         <item name="my_message_bubble_stroke_color">@color/grey</item>
@@ -120,8 +153,6 @@
         <item name="active_notification_title_color">@color/black</item>
         <item name="active_notification_text_color">@color/black</item>
         <item name="active_notification_date_color">@color/chambray</item>
-
-        <item name="attentioner_background_color">@color/cherry_red</item>
     </style>
 
     <style name="auth_title">
@@ -172,8 +203,28 @@
         <item name="boxStrokeColor">?attr/secondary_text_input_box_stroke_color</item>
     </style>
 
+    <style name="main_text_input_edit_text">
+        <item name="android:textColor">?attr/secondary_text_input_edit_text_color</item>
+    </style>
+
     <style name="main_checkbox">
         <item name="android:textSize">16sp</item>
+        <item name="buttonTint">@color/main_checkbox_selector</item>
+    </style>
+
+    <style name="main_tab">
+        <item name="tabSelectedTextColor">?attr/tab_selected_text_color</item>
+        <item name="tabTextColor">?attr/tab_text_color</item>
+        <item name="tabIndicatorColor">?attr/tab_indicator_color</item>
+    </style>
+
+    <style name="main_switch">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">?attr/switch_active_color</item>
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">?attr/switch_inactive_thumb_color</item>
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">?attr/switch_inactive_track_color</item>
     </style>
 
     <style name="primary_button">
@@ -255,6 +306,10 @@
         <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
+    <style name="dialog_text_input_edit_text">
+        <item name="android:textColor">?attr/secondary_text_input_edit_text_color</item>
+    </style>
+
     <style name="bottom_dialog_title">
         <item name="android:textColor">?attr/bottom_dialog_title_color</item>
         <item name="android:textSize">22sp</item>
@@ -291,6 +346,19 @@
 
     <style name="input_counter" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="main_dialog" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textColorPrimary">?attr/dialog_text_color</item>
+        <item name="android:background">?attr/dialog_background_color</item>
+    </style>
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/dialog_accent_color</item>
+    </style>
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">?attr/dialog_accent_color</item>
     </style>
 </resources>
 

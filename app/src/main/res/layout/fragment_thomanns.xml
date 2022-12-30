@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background_color">
 
         <com.dauma.grokimkartu.ui.viewelements.HeaderViewElement
             android:id="@+id/thomanns_header_view_element"
@@ -30,8 +31,10 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/thomanns_tab_layout"
+            style="@style/main_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/background_color"
             app:layout_constraintTop_toBottomOf="@id/thomanns_header_view_element"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

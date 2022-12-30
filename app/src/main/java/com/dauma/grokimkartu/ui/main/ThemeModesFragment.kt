@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,15 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentThemeModesBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
+import com.dauma.grokimkartu.ui.StatusBarManager
+import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.viewmodels.main.ThemeModesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ThemeModesFragment : Fragment() {
     private val themeModesViewModel by viewModels<ThemeModesViewModel>()
+    private var statusBarManager: StatusBarManager? = null
 
     private var _binding: FragmentThemeModesBinding? = null
     // This property is only valid between onCreateView and
@@ -37,9 +41,19 @@ class ThemeModesFragment : Fragment() {
         return view
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        statusBarManager = context as? StatusBarManager
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        statusBarManager = null
     }
 
     private fun setupObservers() {
@@ -61,6 +75,7 @@ class ThemeModesFragment : Fragment() {
             binding.lightModeRowViewElement.showIcon(it == ThemeMode.Light)
             binding.darkModeRowViewElement.showIcon(it == ThemeMode.Dark)
             binding.deviceModeRowViewElement.showIcon(it == ThemeMode.Device)
+            statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
         })
     }
 

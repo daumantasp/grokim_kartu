@@ -21,4 +21,16 @@
     <color name="cherry_red">#C15A71</color>
     <color name="brown">#9E6450</color>
     <color name="champagne_pink">#DBC5D0</color>
+
+    <!--    Dark mode colors-->
+    <color name="bunker_black">#0a0f14</color>
+    <color name="clay_brown">#222831</color>
+    <color name="iron_grey">#bfc1c3</color>
+    <color name="abbey_grey">#4c5158</color>
+    <color name="bright_grey">#393E46</color>
+    <color name="navy_blue">#16213E</color>
+    <color name="downriver_blue">#0F3460</color>
+    <color name="san_juan_blue">#344D67</color>
+    <color name="cutty_sark_green">#497174</color>
+    <color name="orange">#D65A31</color>
 </resources>

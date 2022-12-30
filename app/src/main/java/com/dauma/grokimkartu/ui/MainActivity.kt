@@ -23,6 +23,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.CodeValue
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeListener
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
+import com.dauma.grokimkartu.general.thememodemanager.Theme
 import com.dauma.grokimkartu.general.thememodemanager.ThemeManager
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.utils.locale.Language
@@ -47,7 +48,9 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     private var bottomNavigationView: BottomNavigationView? = null
     private var bottomDialogViewElement: BottomDialogViewElement? = null
     private var currentStatusBarTheme: StatusBarTheme? = null
+    private var currentTheme: Theme? = null
     private var networkLostDialog: DialogsManager.Dialog? = null
+    private var themeModeManager: ThemeModeManager? = null
     @Inject lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     override val uiMode: Int
@@ -65,7 +68,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val componentsFactory = EntryPointAccessors.fromApplication(this, ComponentsFactory::class.java)
-        componentsFactory.themeModeManager().also { it.with(this) }
+        themeModeManager = componentsFactory.themeModeManager().also { it.with(this) }
         setLocale()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -167,14 +170,15 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
 
     // MARK: StatusBarManager
     override fun changeStatusBarTheme(theme: StatusBarTheme) {
-        if (currentStatusBarTheme == theme) {
+        if (currentStatusBarTheme == theme && currentTheme == themeModeManager?.currentTheme) {
             return
         }
-
         currentStatusBarTheme = theme
+        currentTheme = themeModeManager?.currentTheme
+
         val typedValue = TypedValue()
         val attributeId =
-            if (theme == StatusBarTheme.LOGIN) R.attr.colorPrimaryDark else R.attr.main_status_bar_color
+            if (theme == StatusBarTheme.LOGIN) R.attr.auth_status_bar_color else R.attr.main_status_bar_color
         this.theme.resolveAttribute(attributeId, typedValue, true)
         val statusBarBackgroundColor = typedValue.resourceId
 
@@ -185,8 +189,12 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             if (theme == StatusBarTheme.LOGIN) {
                 window?.decorView?.windowInsetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
             } else if (theme == StatusBarTheme.MAIN) {
-                window?.decorView?.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS or APPEARANCE_LIGHT_NAVIGATION_BARS,
-                    APPEARANCE_LIGHT_STATUS_BARS or APPEARANCE_LIGHT_NAVIGATION_BARS)
+                if (themeModeManager?.currentTheme == Theme.Dark) {
+                    window?.decorView?.windowInsetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+                } else {
+                    window?.decorView?.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS or APPEARANCE_LIGHT_NAVIGATION_BARS,
+                        APPEARANCE_LIGHT_STATUS_BARS or APPEARANCE_LIGHT_NAVIGATION_BARS)
+                }
             }
             window.navigationBarColor = ContextCompat.getColor(this, R.color.white)
             @Suppress("DEPRECATION")
@@ -197,8 +205,14 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
                 window.decorView.systemUiVisibility =
                     window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             } else if (theme == StatusBarTheme.MAIN) {
-                @Suppress("DEPRECATION")
-                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                if (themeModeManager?.currentTheme == Theme.Dark) {
+                    @Suppress("DEPRECATION")
+                    window.decorView.systemUiVisibility =
+                        window.decorView.systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                } else {
+                    @Suppress("DEPRECATION")
+                    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
             }
         }
     }
@@ -279,7 +293,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     }
 
     override fun showSimpleDialog(data: SimpleDialogData): DialogsManager.Dialog {
-        val alertDialogBuilder = AlertDialog.Builder(this)
+        val alertDialogBuilder = AlertDialog.Builder(this, R.style.main_dialog)
         val dialogCancelListener = DialogInterface.OnCancelListener { dialogInterface ->
             data.onCancelClicked()
             dialogInterface.dismiss()
@@ -296,7 +310,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         }
     }
     override fun showYesNoDialog(data: YesNoDialogData) {
-        val alertDialogBuilder = AlertDialog.Builder(this)
+        val alertDialogBuilder = AlertDialog.Builder(this, R.style.main_dialog)
         val dialogClickListener = DialogInterface.OnClickListener { dialogInterface, which ->
             when(which) {
                 DialogInterface.BUTTON_POSITIVE -> data.onPositiveButtonClick()

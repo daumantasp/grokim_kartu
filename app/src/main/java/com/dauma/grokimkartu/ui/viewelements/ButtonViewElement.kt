@@ -11,6 +11,7 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     private val button: Button
     private val spinner: SpinnerViewElement
     private val text: String
+    private val type: Int
 
     init {
         inflate(context, R.layout.element_button, this)
@@ -21,13 +22,14 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.ButtonViewElement)
         text = attributes.getString(R.styleable.ButtonViewElement_text) ?: ""
         setText(text)
-        val type = attributes.getInt(R.styleable.ButtonViewElement_type, 0)
+        type = attributes.getInt(R.styleable.ButtonViewElement_type, 0)
         attributes.recycle()
         setType(type)
     }
 
     override fun setEnabled(isEnabled: Boolean) {
         button.isEnabled = isEnabled
+        setTitleColor(type)
     }
 
     fun setText(text: String) {
@@ -47,20 +49,43 @@ class ButtonViewElement(context: Context, attrs: AttributeSet) : FrameLayout(con
     }
 
     private fun setType(type: Int) {
+        _setBackgroundColor(type)
+        setTitleColor(type)
+    }
+
+    private fun _setBackgroundColor(type: Int) {
         if (type == 0) {
             // Default, PrimaryInAuth, change programmatically not implemented
         } else if (type == 1) {
             // Primary
-            val typedValue = TypedValue()
-            context.theme.resolveAttribute(R.attr.primary_button_title_color, typedValue, true)
-            button.setTextColor(typedValue.data)
             button.setBackgroundResource(R.drawable.primary_button_ripple)
         } else if (type == 2) {
             // Secondary
-            val typedValue = TypedValue()
-            context.theme.resolveAttribute(R.attr.secondary_button_title_color, typedValue, true)
-            button.setTextColor(typedValue.data)
             button.setBackgroundResource(R.drawable.secondary_button_ripple)
         }
+    }
+
+    private fun setTitleColor(type: Int) {
+        val typedValue = TypedValue()
+        if (type == 0) {
+            if (button.isEnabled) {
+                context.theme.resolveAttribute(R.attr.auth_primary_button_title_color, typedValue, true)
+            } else {
+                context.theme.resolveAttribute(R.attr.auth_primary_button_title_disabled_color, typedValue, true)
+            }
+        } else if (type == 1) {
+            if (button.isEnabled) {
+                context.theme.resolveAttribute(R.attr.primary_button_title_color, typedValue, true)
+            } else {
+                context.theme.resolveAttribute(R.attr.primary_button_title_disabled_color, typedValue, true)
+            }
+        } else if (type == 2) {
+            if (button.isEnabled) {
+                context.theme.resolveAttribute(R.attr.secondary_button_title_color, typedValue, true)
+            } else {
+                context.theme.resolveAttribute(R.attr.secondary_button_title_disabled_color, typedValue, true)
+            }
+        }
+        button.setTextColor(typedValue.data)
     }
 }

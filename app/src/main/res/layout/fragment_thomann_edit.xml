@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background_color">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -43,6 +44,7 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/city_input_edit_text"
+                            style="@style/main_text_input_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="60dp"
                             android:clickable="true"
@@ -67,6 +69,7 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/valid_until_input_edit_text"
+                            style="@style/main_text_input_edit_text"
                             android:layout_width="match_parent"
                             android:layout_height="60dp"
                             android:clickable="true"

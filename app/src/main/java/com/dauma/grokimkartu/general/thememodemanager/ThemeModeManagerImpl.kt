@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.general.thememodemanager
 
+import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import com.dauma.grokimkartu.general.utils.Utils
@@ -12,6 +13,9 @@ class ThemeModeManagerImpl(
     private var _currentThemeMode: ThemeMode = ThemeMode.Light
     override val currentThemeMode: ThemeMode
         get() = _currentThemeMode
+
+    override val currentTheme: Theme
+        get() = getTheme()
 
     private var _availableThemeModes: MutableList<ThemeMode> = mutableListOf()
     override val availableThemeModes: List<ThemeMode>
@@ -49,15 +53,23 @@ class ThemeModeManagerImpl(
         }
     }
 
+    // NOTE: Sometimes bug occurs but I didn't find all the reasons why this is happening.
+    // If app and OS have opposite theme settings, then only MainActivity is colorized according
+    // to the app settings, while all the fragments gets theme according to OS setting.
+    // I think this is related with the fact that theme mode is selected before onCreate
+    // in MainActivity and thus this method (selectThemeMode) is called before fragments creation.
+    // But I don't understand why this bug only occurs sometimes.
     override fun selectThemeMode(themeMode: ThemeMode) {
-        if (themeMode != _currentThemeMode && _availableThemeModes.contains(themeMode)) {
+        if (_availableThemeModes.contains(themeMode)) {
             when (themeMode) {
-                ThemeMode.Light -> setLight()
-                ThemeMode.Dark -> setDark()
-                ThemeMode.Device -> setDevice()
+                ThemeMode.Light -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                ThemeMode.Dark -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                ThemeMode.Device -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
             _currentThemeMode = themeMode
             saveCurrentThemeModeToSharedPrefs()
+        } else {
+            throw ThemeModeException(ThemeModeErrors.THEME_MODE_IS_NOT_AVAILABLE)
         }
     }
 
@@ -66,22 +78,16 @@ class ThemeModeManagerImpl(
         init()
     }
 
-    private fun setLight() {
+    // https://stackoverflow.com/questions/41391404/how-to-get-appcompatdelegate-current-mode-if-default-is-auto
+    private fun getTheme() : Theme {
         themeManager?.let {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        } ?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
-    }
-
-    private fun setDark() {
-        themeManager?.let {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } ?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
-    }
-
-    private fun setDevice() {
-        themeManager?.let {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        } ?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
+            val currentNightMode = it.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            return when (currentNightMode) {
+                Configuration.UI_MODE_NIGHT_NO -> Theme.Light // Night mode is not active, we're using the light theme
+                Configuration.UI_MODE_NIGHT_YES -> Theme.Dark // Night mode is active, we're using dark theme
+                else -> throw ThemeModeException(ThemeModeErrors.UNKNOWN)
+            }
+        }?: throw ThemeModeException(ThemeModeErrors.THEME_MANAGER_IS_NOT_SET)
     }
 
     private fun saveCurrentThemeModeToSharedPrefs() {

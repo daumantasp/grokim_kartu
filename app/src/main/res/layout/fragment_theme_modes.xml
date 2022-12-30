@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background_color">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,6 +34,7 @@
                 app:row_show_icon="false"
                 app:row_borders="bottom"
                 app:row_custom_icon="@drawable/ic_check"
+                app:row_icon_tint_color="?attr/check_selected_color"
                 app:row_icon_width="30dp"
                 app:row_icon_height="30dp"
                 app:onClick="@{() -> model.lightClicked()}" />
@@ -46,6 +48,7 @@
                 app:row_show_icon="false"
                 app:row_borders="bottom"
                 app:row_custom_icon="@drawable/ic_check"
+                app:row_icon_tint_color="?attr/check_selected_color"
                 app:row_icon_width="30dp"
                 app:row_icon_height="30dp"
                 app:onClick="@{() -> model.darkClicked()}" />
@@ -59,6 +62,7 @@
                 app:row_show_icon="false"
                 app:row_borders="bottom"
                 app:row_custom_icon="@drawable/ic_check"
+                app:row_icon_tint_color="?attr/check_selected_color"
                 app:row_icon_width="30dp"
                 app:row_icon_height="30dp"
                 app:onClick="@{() -> model.deviceClicked()}" />

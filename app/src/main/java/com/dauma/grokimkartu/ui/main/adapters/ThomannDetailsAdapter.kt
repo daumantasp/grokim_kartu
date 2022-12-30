@@ -139,7 +139,6 @@ class ThomannDetailsAdapter(
 
             val typedValue = TypedValue()
             val statusText: String
-            val statusColor: Int
             if (data.isLocked == true) {
                 statusText = view.context.getText(R.string.thomann_details_status_locked).toString()
                 view.context.theme.resolveAttribute(R.attr.locked_icon_background_color, typedValue, true)
@@ -147,12 +146,15 @@ class ThomannDetailsAdapter(
                 statusText = view.context.getText(R.string.thomann_details_status_unlocked).toString()
                 view.context.theme.resolveAttribute(R.attr.unlocked_icon_background_color, typedValue, true)
             }
-            statusColor = typedValue.data
+            val statusColor: Int = typedValue.data
+            view.context.theme.resolveAttribute(R.attr.switch_lock_icon_color, typedValue, true)
+            val switchLockColor = typedValue.data
 
             rowViewElement.setValue(statusText)
             rowViewElement.setValueColor(statusColor)
             rowViewElement.showIcon(true)
             rowViewElement.setCustomIconIfNeeded(view.context.getDrawable(R.drawable.ic_change_lock))
+            rowViewElement.setIconTintColor(switchLockColor)
 
             rowViewElement.setOnClick(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
