@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.data.profile
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.dauma.grokimkartu.data.profile.entities.ProfileResponse
+import com.dauma.grokimkartu.data.profile.entities.ProfileUnreadCountResponse
 import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
 import okhttp3.MediaType
@@ -213,11 +214,41 @@ class ProfileDaoImpl(
         })
     }
 
+    override fun unreadCount(
+        accessToken: String,
+        onComplete: (ProfileUnreadCountResponse?, ProfileDaoResponseStatus) -> Unit
+    ) {
+        retrofitProfile.unreadCount(accessToken).enqueue(object : Callback<ProfileUnreadCountResponse> {
+            override fun onResponse(
+                call: Call<ProfileUnreadCountResponse>,
+                response: Response<ProfileUnreadCountResponse>
+            ) {
+                when (response.code()) {
+                    200 -> {
+                        val profileUnreadCountResponse = response.body()
+                        val status = ProfileDaoResponseStatus(true, null)
+                        onComplete(profileUnreadCountResponse, status)
+                    }
+                    else -> {
+                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                        onComplete(null, status)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ProfileUnreadCountResponse>, t: Throwable) {
+                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                onComplete(null, status)
+            }
+        })
+    }
+
     private interface RetrofitProfile {
         @GET("profile") fun profile(@Header("Authorization") accessToken: String): Call<ProfileResponse>
         @PUT("profile") fun update(@Header("Authorization") accessToken: String, @Body updateRequest: UpdateProfileRequest): Call<ProfileResponse>
         @GET("profile/icon") fun icon(@Header("Authorization") accessToken: String): Call<ResponseBody>
         @GET("profile/photo") fun photo(@Header("Authorization") accessToken: String): Call<ResponseBody>
         @Multipart @POST("profile/photo") fun updatePhoto(@Header("Authorization") accessToken: String, @Part image: MultipartBody.Part): Call<ResponseBody>
+        @GET("profile/unreadCount") fun unreadCount(@Header("Authorization") accessToken: String): Call<ProfileUnreadCountResponse>
     }
 }
