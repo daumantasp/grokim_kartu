@@ -8,19 +8,57 @@ import com.dauma.grokimkartu.data.instruments.entities.InstrumentResponse
 import com.dauma.grokimkartu.data.profile.ProfileDao
 import com.dauma.grokimkartu.data.profile.ProfileDaoResponseStatus
 import com.dauma.grokimkartu.data.profile.entities.ProfileResponse
+import com.dauma.grokimkartu.data.profile.entities.ProfileUnreadCountResponse
 import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
 import com.dauma.grokimkartu.general.user.User
-import com.dauma.grokimkartu.repositories.profile.entities.Profile
-import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
-import com.dauma.grokimkartu.repositories.profile.entities.ProfileInstrument
-import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
+import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.profile.entities.*
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
     private val citiesDao: CitiesDao,
     private val instrumentsDao: InstrumentsDao,
-    private val user: User
+    private val user: User,
+    private val utils: Utils
 ) : ProfileRepository {
+    private var _unreadCount: ProfileUnreadCount? = null
+    private val profileListeners: MutableMap<String, ProfileListener> = mutableMapOf()
+
+    override val unreadCount: ProfileUnreadCount?
+        get() = _unreadCount?.let { ProfileUnreadCount(it) }
+
+    companion object {
+        private const val PROFILE_UNREAD_COUNT_PERIODIC_RELOAD = "PROFILE_UNREAD_COUNT_PERIODIC_RELOAD"
+    }
+
+    init {
+        reloadUnreadCountPeriodically()
+    }
+
+    private fun reloadUnreadCountPeriodically() {
+        utils.dispatcherUtils.main.periodic(
+            operationKey = PROFILE_UNREAD_COUNT_PERIODIC_RELOAD,
+            period = 60.0,
+            startImmediately = true,
+            repeats = true
+        ) {
+            try {
+                this.unreadCount { unreadCount, notificationsErrors ->
+                    if (this._unreadCount?.unreadNotificationsCount != unreadCount?.unreadNotificationsCount) {
+                        this.profileListeners.forEach { it.value.notificationsCountChanged() }
+                    }
+                    if (this._unreadCount?.unreadPrivateConversationsCount != unreadCount?.unreadPrivateConversationsCount) {
+                        this.profileListeners.forEach { it.value.privateConversationsCountChanged() }
+                    }
+                    if (this._unreadCount?.unreadThomannConversationsCount != unreadCount?.unreadThomannConversationsCount) {
+                        this.profileListeners.forEach { it.value.thomannConversationsCountChanged() }
+                    }
+                    this._unreadCount = unreadCount
+                }
+            } catch (e: ProfileException) {}
+        }
+    }
+
     override fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit) {
         if (user.isUserLoggedIn()) {
             profileDao.profile(user.getBearerAccessToken()!!) { profileResponse, profileDaoResponseStatus ->
@@ -185,6 +223,29 @@ class ProfileRepositoryImpl(
         }
     }
 
+    override fun unreadCount(onComplete: (ProfileUnreadCount?, ProfileErrors?) -> Unit) {
+        if (user.isUserLoggedIn()) {
+            profileDao.unreadCount(user.getBearerAccessToken()!!) { unreadCountResponse, profileDaoResponseStatus ->
+                if (profileDaoResponseStatus.isSuccessful && unreadCountResponse != null) {
+                    val profileUnreadCount = toProfileUnreadCount(unreadCountResponse)
+                    onComplete(profileUnreadCount, null)
+                } else {
+                    onComplete(null, ProfileErrors.UNKNOWN)
+                }
+            }
+        } else {
+            throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    override fun registerListener(id: String, listener: ProfileListener) {
+        profileListeners[id] = listener
+    }
+
+    override fun unregisterListener(id: String) {
+        profileListeners.remove(id)
+    }
+
     private fun toProfile(profileResponse: ProfileResponse): Profile {
         val profileCity = ProfileCity(
             profileResponse.city?.id,
@@ -215,6 +276,14 @@ class ProfileRepositoryImpl(
         return ProfileInstrument(
             id = instrumentResponse.id,
             name = instrumentResponse.name
+        )
+    }
+
+    private fun toProfileUnreadCount(profileUnreadCountResponse: ProfileUnreadCountResponse): ProfileUnreadCount {
+        return ProfileUnreadCount(
+            unreadNotificationsCount = profileUnreadCountResponse.unreadNotificationsCount,
+            unreadPrivateConversationsCount = profileUnreadCountResponse.unreadPrivateConversationsCount,
+            unreadThomannConversationsCount = profileUnreadCountResponse.unreadThomannConversationsCount
         )
     }
 }

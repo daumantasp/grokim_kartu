@@ -1,12 +1,10 @@
 package com.dauma.grokimkartu.repositories.profile
 
 import android.graphics.Bitmap
-import com.dauma.grokimkartu.repositories.profile.entities.Profile
-import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
-import com.dauma.grokimkartu.repositories.profile.entities.ProfileInstrument
-import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
+import com.dauma.grokimkartu.repositories.profile.entities.*
 
 interface ProfileRepository {
+    val unreadCount: ProfileUnreadCount?
     fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit)
     fun cities(onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit)
     fun searchCity(value: String, onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit)
@@ -16,4 +14,7 @@ interface ProfileRepository {
     fun icon(onComplete: (Bitmap?, ProfileErrors?) -> Unit)
     fun photo(onComplete: (Bitmap?, ProfileErrors?) -> Unit)
     fun updatePhoto(photo: Bitmap, onComplete: (Bitmap?, ProfileErrors?) -> Unit)
+    fun unreadCount(onComplete: (ProfileUnreadCount?, ProfileErrors?) -> Unit)
+    fun registerListener(id: String, listener: ProfileListener)
+    fun unregisterListener(id: String)
 }
