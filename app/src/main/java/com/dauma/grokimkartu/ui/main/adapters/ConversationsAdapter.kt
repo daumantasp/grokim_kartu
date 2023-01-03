@@ -92,6 +92,7 @@ class ConversationsAdapter(
         val textTextView = view.findViewById<TextView>(R.id.message_text_text_view)
         val initialsViewElement = view.findViewById<InitialsViewElement>(R.id.initials_view_element)
         val photoIcon = view.findViewById<ImageView>(R.id.player_icon_image_view)
+        val rightTextAttentionerView = view.findViewById<ImageView>(R.id.right_text_attentioner_view)
 
         // TODO: refactor
         protected fun getDateTimeFormat(timestamp: Timestamp): CustomDateTimeFormatPattern {
@@ -131,10 +132,12 @@ class ConversationsAdapter(
                 nameTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 textTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 dateTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+                rightTextAttentionerView.visibility = View.VISIBLE
             } else {
                 nameTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 textTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 dateTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+                rightTextAttentionerView.visibility = View.GONE
             }
 
             conversationItemContainer.setOnClickListener {
@@ -200,10 +203,12 @@ class ConversationsAdapter(
                 nameTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 textTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
                 dateTextView.setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+                rightTextAttentionerView.visibility = View.VISIBLE
             } else {
                 nameTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 textTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
                 dateTextView.setTypeface(Typeface.DEFAULT, Typeface.NORMAL)
+                rightTextAttentionerView.visibility = View.GONE
             }
 
             conversationItemContainer.setOnClickListener {
