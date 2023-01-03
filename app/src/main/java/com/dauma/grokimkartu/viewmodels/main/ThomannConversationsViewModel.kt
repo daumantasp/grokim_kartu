@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.repositories.conversations.ThomannConversationsRepository
 import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ThomannConversationsViewModel @Inject constructor(
     private val thomannConversationsRepository: ThomannConversationsRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
     private val _thomannConversations = MutableLiveData<List<Conversation>>()
     private val _message = MutableLiveData<Event<Array<Any>>>() // TODO: refactor
@@ -24,6 +26,7 @@ class ThomannConversationsViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadConversations()
+        profileRepository.reloadUnreadCount()
     }
 
     fun viewIsDiscarded() {
@@ -34,6 +37,7 @@ class ThomannConversationsViewModel @Inject constructor(
 
     fun reload() {
         loadConversations()
+        profileRepository.reloadUnreadCount()
     }
 
     fun conversationClicked(thomannId: Int, name: String) {

@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepository
 import com.dauma.grokimkartu.repositories.conversations.entities.Conversation
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PrivateConversationsViewModel @Inject constructor(
-    private val privateConversationsRepository: PrivateConversationsRepository
+    private val privateConversationsRepository: PrivateConversationsRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
     private val _privateConversations = MutableLiveData<List<Conversation>>()
     private val _message = MutableLiveData<Event<Array<Any>>>() // TODO: refactor
@@ -24,6 +26,7 @@ class PrivateConversationsViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadConversations()
+        profileRepository.reloadUnreadCount()
     }
 
     fun viewIsDiscarded() {
@@ -34,6 +37,7 @@ class PrivateConversationsViewModel @Inject constructor(
 
     fun reload() {
         loadConversations()
+        profileRepository.reloadUnreadCount()
     }
 
     fun conversationClicked(userId: Int, name: String) {
