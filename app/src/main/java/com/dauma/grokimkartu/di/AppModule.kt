@@ -261,9 +261,14 @@ class AppModule {
         profileDao: ProfileDao,
         citiesDao: CitiesDao,
         instrumentsDao: InstrumentsDao,
-        user: User
+        user: User,
+        utils: Utils,
+        authRepository: AuthRepository
     ) : ProfileRepository {
-        return ProfileRepositoryImpl(profileDao, citiesDao, instrumentsDao, user)
+        val profileRepository = ProfileRepositoryImpl(profileDao, citiesDao, instrumentsDao, user, utils)
+        authRepository.registerLoginListener("PROFILE_REPOSITORY_LOGIN_LISTENER", profileRepository)
+        authRepository.registerLogoutListener("PROFILE_REPOSITORY_LOGOUT_LISTENER", profileRepository)
+        return profileRepository
     }
 
     @Provides
@@ -326,11 +331,12 @@ class AppModule {
         notificationsDao: NotificationsDao,
         paginator: NotificationsPaginator,
         user: User,
-        utils: Utils,
-        authRepository: AuthRepository
+        authRepository: AuthRepository,
+        profileRepository: ProfileRepository
     ) : NotificationsRepository {
-        val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user, utils)
+        val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user)
         authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
+        profileRepository.registerListener("NOTIFICATIONS_REPOSITORY_PROFILE_LISTENER", notificationsRepository)
         return notificationsRepository
     }
 
