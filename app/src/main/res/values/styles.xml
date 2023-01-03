@@ -153,6 +153,8 @@
         <item name="active_notification_title_color">@color/black</item>
         <item name="active_notification_text_color">@color/black</item>
         <item name="active_notification_date_color">@color/chambray</item>
+
+        <item name="badgeStyle">@style/BottomMenuAttentioner</item>
     </style>
 
     <style name="auth_title">
@@ -359,6 +361,13 @@
     </style>
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">?attr/dialog_accent_color</item>
+    </style>
+
+    <style name="BottomMenuAttentioner" parent="Widget.MaterialComponents.Badge">
+        <item name="backgroundColor">?attr/notifications_counter_background_color</item>
+        <item name="badgeTextColor">?attr/notifications_counter_value_color</item>
+        <item name="verticalOffsetWithText">5dp</item>
+        <item name="maxCharacterCount">2</item>
     </style>
 </resources>
 

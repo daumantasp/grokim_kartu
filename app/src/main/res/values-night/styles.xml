@@ -153,6 +153,8 @@
         <item name="active_notification_title_color">@color/white</item>
         <item name="active_notification_text_color">@color/white</item>
         <item name="active_notification_date_color">@color/white</item>
+
+        <item name="badgeStyle">@style/BottomMenuAttentioner</item>
     </style>
 </resources>
 
