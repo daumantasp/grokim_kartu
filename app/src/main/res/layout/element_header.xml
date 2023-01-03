@@ -55,9 +55,12 @@
                 android:id="@+id/notifications_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                app:tint="?attr/header_icon_color"
-                app:srcCompat="@drawable/ic_notifications" />
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                app:srcCompat="@drawable/ic_notifications"
+                app:tint="?attr/header_icon_color" />
 
             <FrameLayout
                 android:id="@+id/notifications_frame_layout"

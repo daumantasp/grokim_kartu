@@ -29,6 +29,8 @@ import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtilsImpl
+import com.dauma.grokimkartu.repositories.profile.ProfileListener
+import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import com.dauma.grokimkartu.ui.viewelements.BottomDialogViewElement
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,7 +43,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, DialogsManager,
-    BottomMenuManager, NetworkChangeListener, ThemeManager {
+    BottomMenuManager, NetworkChangeListener, ThemeManager, ProfileListener {
     private var mainActivityFrameLayout: FrameLayout? = null
     private var statusBarBackgroundFrameLayout: FrameLayout? = null
     private var safeAreaConstraintLayout: ConstraintLayout? = null
@@ -52,12 +54,14 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     private var networkLostDialog: DialogsManager.Dialog? = null
     private var themeModeManager: ThemeModeManager? = null
     @Inject lateinit var networkChangeReceiver: NetworkChangeReceiver
+    @Inject lateinit var profileRepository: ProfileRepository
 
     override val uiMode: Int
         get() = resources.configuration.uiMode
 
     companion object {
         val TAG = "MainActivity"
+        private val MAIN_ACTIVITY_PROFILE_LISTENER_ID = "MAIN_ACTIVITY_PROFILE_LISTENER_ID"
     }
 
     @EntryPoint
@@ -80,6 +84,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         initializeBottomNavigation()
         setupInsets()
         addNetworkListenerAndShowDialogIfNeeded()
+        profileRepository.registerListener(MAIN_ACTIVITY_PROFILE_LISTENER_ID, this)
     }
 
     private fun setLocale() {
@@ -120,6 +125,9 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
                 else -> showBottomNavigation(true)
             }
         }
+
+        bottomNavigationView!!.getOrCreateBadge(R.id.conversations)
+        showIfNeededConversationsCountBadgeInBottomNavigation()
     }
 
     private fun showBottomNavigation(show: Boolean) {
@@ -128,6 +136,21 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         }
 
         bottomNavigationView!!.visibility = if (show == true) View.VISIBLE else View.GONE
+    }
+
+    private fun showIfNeededConversationsCountBadgeInBottomNavigation() {
+        bottomNavigationView?.getBadge(R.id.conversations)?.let {
+            val unreadPrivateConversationsCount = profileRepository.unreadCount?.unreadPrivateConversationsCount ?: 0
+            val unreadThomannConversationsCount = profileRepository.unreadCount?.unreadThomannConversationsCount ?: 0
+            val totalCount = unreadPrivateConversationsCount + unreadThomannConversationsCount
+            if (totalCount > 0) {
+                it.isVisible = true
+                it.number = totalCount
+            } else {
+                it.isVisible = false
+                it.clearNumber()
+            }
+        }
     }
 
     private fun setupInsets() {
@@ -337,5 +360,14 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             it.findItem(R.id.profile).title = getString(R.string.menu_profile)
             it.findItem(R.id.settings).title = getString(R.string.menu_settings)
         }
+    }
+
+    // MARK: ProfileListener
+    override fun notificationsCountChanged() {}
+    override fun privateConversationsCountChanged() {
+        showIfNeededConversationsCountBadgeInBottomNavigation()
+    }
+    override fun thomannConversationsCountChanged() {
+        showIfNeededConversationsCountBadgeInBottomNavigation()
     }
 }
