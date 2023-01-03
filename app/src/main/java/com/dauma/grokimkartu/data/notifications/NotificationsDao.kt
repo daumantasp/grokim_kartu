@@ -6,6 +6,5 @@ import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationReque
 
 interface NotificationsDao {
     fun notifications(page: Int, pageSize: Int, accessToken: String, onComplete: (NotificationsResponse?, NotificationsDaoResponseStatus) -> Unit)
-    fun unreadCount(accessToken: String, onComplete: (Int?, NotificationsDaoResponseStatus) -> Unit)
     fun update(notificationId: Int, updateRequest: UpdateNotificationRequest, accessToken: String, onComplete: (NotificationResponse?, NotificationsDaoResponseStatus) -> Unit)
 }

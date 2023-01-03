@@ -2,7 +2,6 @@ package com.dauma.grokimkartu.data.notifications
 
 import com.dauma.grokimkartu.data.notifications.entities.NotificationResponse
 import com.dauma.grokimkartu.data.notifications.entities.NotificationsResponse
-import com.dauma.grokimkartu.data.notifications.entities.UnreadNotificationsResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,32 +37,6 @@ class NotificationsDaoImpl(retrofit: Retrofit) : NotificationsDao {
             }
 
             override fun onFailure(call: Call<NotificationsResponse>, t: Throwable) {
-                val status = NotificationsDaoResponseStatus(false, NotificationsDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
-    }
-
-    override fun unreadCount(
-        accessToken: String,
-        onComplete: (Int?, NotificationsDaoResponseStatus) -> Unit
-    ) {
-        retrofitNotifications.unreadCount(accessToken).enqueue(object : Callback<UnreadNotificationsResponse> {
-            override fun onResponse(call: Call<UnreadNotificationsResponse>, response: Response<UnreadNotificationsResponse>) {
-                when (response.code()) {
-                    200 -> {
-                        val unreadCountResponse = response.body()
-                        val status = NotificationsDaoResponseStatus(true, null)
-                        onComplete(unreadCountResponse?.unreadCount, status)
-                    }
-                    else -> {
-                        val status = NotificationsDaoResponseStatus(false, NotificationsDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<UnreadNotificationsResponse>, t: Throwable) {
                 val status = NotificationsDaoResponseStatus(false, NotificationsDaoResponseStatus.Errors.UNKNOWN)
                 onComplete(null, status)
             }
@@ -117,7 +90,6 @@ class NotificationsDaoImpl(retrofit: Retrofit) : NotificationsDao {
             @Header("Authorization") accessToken: String
         ) : Call<NotificationsResponse>
 
-        @GET("notifications/unreadcount") fun unreadCount(@Header("Authorization") accessToken: String) : Call<UnreadNotificationsResponse>
         @PUT("notifications") fun updateNotification(@Header("Authorization") accessToken: String, @Query("id") id: Int, @Body updateRequest: UpdateNotificationRequest) : Call<NotificationResponse>
     }
 }
