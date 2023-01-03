@@ -12,7 +12,10 @@ import com.dauma.grokimkartu.data.profile.entities.ProfileUnreadCountResponse
 import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.auth.LoginListener
+import com.dauma.grokimkartu.repositories.auth.LogoutListener
 import com.dauma.grokimkartu.repositories.profile.entities.*
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
@@ -20,7 +23,7 @@ class ProfileRepositoryImpl(
     private val instrumentsDao: InstrumentsDao,
     private val user: User,
     private val utils: Utils
-) : ProfileRepository {
+) : ProfileRepository, LoginListener, LogoutListener {
     private var _unreadCount: ProfileUnreadCount? = null
     private val profileListeners: MutableMap<String, ProfileListener> = mutableMapOf()
 
@@ -29,34 +32,6 @@ class ProfileRepositoryImpl(
 
     companion object {
         private const val PROFILE_UNREAD_COUNT_PERIODIC_RELOAD = "PROFILE_UNREAD_COUNT_PERIODIC_RELOAD"
-    }
-
-    init {
-        reloadUnreadCountPeriodically()
-    }
-
-    private fun reloadUnreadCountPeriodically() {
-        utils.dispatcherUtils.main.periodic(
-            operationKey = PROFILE_UNREAD_COUNT_PERIODIC_RELOAD,
-            period = 60.0,
-            startImmediately = true,
-            repeats = true
-        ) {
-            try {
-                this.unreadCount { unreadCount, notificationsErrors ->
-                    if (this._unreadCount?.unreadNotificationsCount != unreadCount?.unreadNotificationsCount) {
-                        this.profileListeners.forEach { it.value.notificationsCountChanged() }
-                    }
-                    if (this._unreadCount?.unreadPrivateConversationsCount != unreadCount?.unreadPrivateConversationsCount) {
-                        this.profileListeners.forEach { it.value.privateConversationsCountChanged() }
-                    }
-                    if (this._unreadCount?.unreadThomannConversationsCount != unreadCount?.unreadThomannConversationsCount) {
-                        this.profileListeners.forEach { it.value.thomannConversationsCountChanged() }
-                    }
-                    this._unreadCount = unreadCount
-                }
-            } catch (e: ProfileException) {}
-        }
     }
 
     override fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit) {
@@ -223,18 +198,29 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun unreadCount(onComplete: (ProfileUnreadCount?, ProfileErrors?) -> Unit) {
+    override fun reloadUnreadCount() {
         if (user.isUserLoggedIn()) {
             profileDao.unreadCount(user.getBearerAccessToken()!!) { unreadCountResponse, profileDaoResponseStatus ->
                 if (profileDaoResponseStatus.isSuccessful && unreadCountResponse != null) {
-                    val profileUnreadCount = toProfileUnreadCount(unreadCountResponse)
-                    onComplete(profileUnreadCount, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
+                    val previousUnreadCount = this._unreadCount
+                    this._unreadCount = toProfileUnreadCount(unreadCountResponse)
+                    this.notifyListenersIfNeeded(previousUnreadCount)
                 }
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
+        }
+    }
+
+    private fun notifyListenersIfNeeded(previousUnreadCount: ProfileUnreadCount?) {
+        if (previousUnreadCount?.unreadNotificationsCount != unreadCount?.unreadNotificationsCount) {
+            this.profileListeners.forEach { it.value.notificationsCountChanged() }
+        }
+        if (previousUnreadCount?.unreadPrivateConversationsCount != unreadCount?.unreadPrivateConversationsCount) {
+            this.profileListeners.forEach { it.value.privateConversationsCountChanged() }
+        }
+        if (previousUnreadCount?.unreadThomannConversationsCount != unreadCount?.unreadThomannConversationsCount) {
+            this.profileListeners.forEach { it.value.thomannConversationsCountChanged() }
         }
     }
 
@@ -285,5 +271,26 @@ class ProfileRepositoryImpl(
             unreadPrivateConversationsCount = profileUnreadCountResponse.unreadPrivateConversationsCount,
             unreadThomannConversationsCount = profileUnreadCountResponse.unreadThomannConversationsCount
         )
+    }
+
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            _unreadCount = null
+            utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
+            utils.dispatcherUtils.main.periodic(
+                operationKey = PROFILE_UNREAD_COUNT_PERIODIC_RELOAD,
+                period = 60.0,
+                startImmediately = true,
+                repeats = true
+            ) {
+                reloadUnreadCount()
+            }
+        }
+    }
+
+    override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
+        }
     }
 }

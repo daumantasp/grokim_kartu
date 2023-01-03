@@ -14,7 +14,7 @@ interface ProfileRepository {
     fun icon(onComplete: (Bitmap?, ProfileErrors?) -> Unit)
     fun photo(onComplete: (Bitmap?, ProfileErrors?) -> Unit)
     fun updatePhoto(photo: Bitmap, onComplete: (Bitmap?, ProfileErrors?) -> Unit)
-    fun unreadCount(onComplete: (ProfileUnreadCount?, ProfileErrors?) -> Unit)
+    fun reloadUnreadCount()
     fun registerListener(id: String, listener: ProfileListener)
     fun unregisterListener(id: String)
 }
