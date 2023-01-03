@@ -64,9 +64,9 @@ class ThomannConversationsFragment : Fragment() {
             if (isViewSetup == false) {
                 setupThomannConversationsRecyclerView(thomannConversationData)
             } else {
-                val conversationsAdapter = binding.thomannConversationsRecyclerView.adapter as? ConversationAdapter
-                conversationsAdapter?.conversation?.clear()
-                conversationsAdapter?.conversation?.addAll(thomannConversationData)
+                val conversationsAdapter = binding.thomannConversationsRecyclerView.adapter as? ConversationsAdapter
+                conversationsAdapter?.conversationsListData?.clear()
+                conversationsAdapter?.conversationsListData?.addAll(thomannConversationData)
                 binding.thomannConversationsRecyclerView.adapter?.notifyDataSetChanged()
             }
             if (binding.swipeRefreshLayout.isRefreshing) {

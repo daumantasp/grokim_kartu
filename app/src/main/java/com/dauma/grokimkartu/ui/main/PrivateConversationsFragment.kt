@@ -64,9 +64,9 @@ class PrivateConversationsFragment : Fragment() {
             if (isViewSetup == false) {
                 setupPrivateConversationsRecyclerView(privateConversationData)
             } else {
-                val conversationsAdapter = binding.privateConversationsRecyclerView.adapter as? ConversationAdapter
-                conversationsAdapter?.conversation?.clear()
-                conversationsAdapter?.conversation?.addAll(privateConversationData)
+                val conversationsAdapter = binding.privateConversationsRecyclerView.adapter as? ConversationsAdapter
+                conversationsAdapter?.conversationsListData?.clear()
+                conversationsAdapter?.conversationsListData?.addAll(privateConversationData)
                 binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
             }
             if (binding.swipeRefreshLayout.isRefreshing) {
