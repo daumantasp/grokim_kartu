@@ -23,6 +23,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.CodeValue
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeListener
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
+import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
 import com.dauma.grokimkartu.general.thememodemanager.Theme
 import com.dauma.grokimkartu.general.thememodemanager.ThemeManager
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     private var themeModeManager: ThemeModeManager? = null
     @Inject lateinit var networkChangeReceiver: NetworkChangeReceiver
     @Inject lateinit var profileRepository: ProfileRepository
+    @Inject lateinit var pushNotificationsManager: PushNotificationsManager
 
     override val uiMode: Int
         get() = resources.configuration.uiMode
@@ -85,6 +87,7 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         setupInsets()
         addNetworkListenerAndShowDialogIfNeeded()
         profileRepository.registerListener(MAIN_ACTIVITY_PROFILE_LISTENER_ID, this)
+        pushNotificationsManager.withContext(this)
     }
 
     private fun setLocale() {

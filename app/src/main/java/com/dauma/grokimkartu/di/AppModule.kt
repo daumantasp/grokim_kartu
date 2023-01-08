@@ -25,6 +25,8 @@ import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDaoImpl
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiverImpl
+import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
+import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManagerImpl
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManagerImpl
 import com.dauma.grokimkartu.general.user.User
@@ -450,5 +452,11 @@ class AppModule {
     @Singleton
     fun providesThemeModeManager(utils: Utils) : ThemeModeManager {
         return ThemeModeManagerImpl(utils)
+    }
+
+    @Provides
+    @Singleton
+    fun providesPushNotificationsManager() : PushNotificationsManager {
+        return PushNotificationsManagerImpl()
     }
 }
