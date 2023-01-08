@@ -10,6 +10,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PushNotificationsService : FirebaseMessagingService() {
     @Inject lateinit var utils: Utils
+    @Inject lateinit var pushNotificationsManager: PushNotificationsManager
 
     companion object {
         private val TAG = "PushNotificationsService"
@@ -25,6 +26,13 @@ class PushNotificationsService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        Log.d(TAG, "Message received, title: $message")
+        super.onMessageReceived(message)
+        Log.d(TAG, "Message received: $message")
+        message.notification?.let {
+            pushNotificationsManager.showPushNotification(
+                title = it.title ?: "",
+                body = it.body ?: ""
+            )
+        }
     }
 }
