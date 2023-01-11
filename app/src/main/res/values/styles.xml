@@ -43,9 +43,12 @@
         <item name="tab_text_color">@color/dark_grey</item>
         <item name="tab_indicator_color">@color/chambray</item>
 
-        <item name="switch_active_color">@color/chambray</item>
+        <item name="switch_active_thumb_color">@color/chambray</item>
+        <item name="switch_active_track_color">@color/chambray_30</item>
         <item name="switch_inactive_thumb_color">@color/grey</item>
-        <item name="switch_inactive_track_color">@color/dark_grey</item>
+        <item name="switch_inactive_track_color">@color/grey_50</item>
+        <item name="switch_disabled_thumb_color">@color/dark_grey</item>
+        <item name="switch_disabled_track_color">@color/dark_grey_50</item>
 
         <item name="checkbox_active">@color/chambray</item>
         <item name="checkbox_inactive">@color/dark_grey</item>
@@ -221,12 +224,8 @@
     </style>
 
     <style name="main_switch">
-        <!-- active thumb & track color (30% transparency) -->
-        <item name="colorControlActivated">?attr/switch_active_color</item>
-        <!-- inactive thumb color -->
-        <item name="colorSwitchThumbNormal">?attr/switch_inactive_thumb_color</item>
-        <!-- inactive track color (30% transparency) -->
-        <item name="android:colorForeground">?attr/switch_inactive_track_color</item>
+        <item name="thumbTint">@color/main_switch_thumb_selector</item>
+        <item name="trackTint">@color/main_switch_track_selector</item>
     </style>
 
     <style name="primary_button">

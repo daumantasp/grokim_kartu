@@ -43,9 +43,12 @@
         <item name="tab_text_color">@color/iron_grey</item>
         <item name="tab_indicator_color">@color/white</item>
 
-        <item name="switch_active_color">@color/cutty_sark_green</item>
+        <item name="switch_active_thumb_color">@color/cutty_sark_green</item>
+        <item name="switch_active_track_color">@color/cutty_sark_green_30</item>
         <item name="switch_inactive_thumb_color">@color/dark_grey</item>
-        <item name="switch_inactive_track_color">@color/iron_grey</item>
+        <item name="switch_inactive_track_color">@color/iron_grey_30</item>
+        <item name="switch_disabled_thumb_color">@color/bunker_black</item>
+        <item name="switch_disabled_track_color">@color/bunker_black_50</item>
 
         <item name="checkbox_active">@color/cutty_sark_green</item>
         <item name="checkbox_inactive">@color/iron_grey</item>

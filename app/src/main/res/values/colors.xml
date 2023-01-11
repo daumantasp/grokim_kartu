@@ -3,13 +3,16 @@
     <color name="black">#000000</color>
     <color name="black_50">#80000000</color>
     <color name="dark_grey">#808080</color>
+    <color name="dark_grey_50">#4D808080</color>
     <color name="grey">#DFE0DF</color>
+    <color name="grey_50">#80DFE0DF</color>
     <color name="light_grey">#F5F5F5</color>
     <color name="white">#FFFFFF</color>
     <color name="yellow">#FFB319</color>
     <color name="beige">#FFE194</color>
     <color name="violet">#3B2E5A</color>
     <color name="chambray">#394989</color>
+    <color name="chambray_30">#4D394989</color>
     <color name="cadet">#37737A</color>
     <color name="cadet_blue">#4EA0AE</color>
     <color name="cambridge_blue">#B8DFD8</color>
@@ -23,14 +26,17 @@
     <color name="champagne_pink">#DBC5D0</color>
 
     <!--    Dark mode colors-->
-    <color name="bunker_black">#0a0f14</color>
+    <color name="bunker_black">#0A0F14</color>
+    <color name="bunker_black_50">#800A0F14</color>
     <color name="clay_brown">#222831</color>
-    <color name="iron_grey">#bfc1c3</color>
-    <color name="abbey_grey">#4c5158</color>
+    <color name="iron_grey">#BFC1C3</color>
+    <color name="iron_grey_30">#4DBFC1C3</color>
+    <color name="abbey_grey">#4C5158</color>
     <color name="bright_grey">#393E46</color>
     <color name="navy_blue">#16213E</color>
     <color name="downriver_blue">#0F3460</color>
     <color name="san_juan_blue">#344D67</color>
     <color name="cutty_sark_green">#497174</color>
+    <color name="cutty_sark_green_30">#4D497174</color>
     <color name="orange">#D65A31</color>
 </resources>

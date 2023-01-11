@@ -35,9 +35,12 @@
     <attr name="tab_text_color" format="color" />
     <attr name="tab_indicator_color" format="color" />
 
-    <attr name="switch_active_color" format="color" />
+    <attr name="switch_active_thumb_color" format="color" />
     <attr name="switch_inactive_thumb_color" format="color" />
+    <attr name="switch_disabled_thumb_color" format="color" />
+    <attr name="switch_active_track_color" format="color" />
     <attr name="switch_inactive_track_color" format="color" />
+    <attr name="switch_disabled_track_color" format="color" />
 
     <attr name="checkbox_inactive" format="color" />
     <attr name="checkbox_active" format="color" />
