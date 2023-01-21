@@ -6,6 +6,8 @@ class SettingsDaoResponseStatus (
 ) {
     enum class Errors {
         PROFILE_NOT_FOUND,
+        TOKEN_IS_NOT_PROVIDED,
+        DEVICE_ID_IS_NOT_PROVIDED,
         UNKNOWN
     }
 }
