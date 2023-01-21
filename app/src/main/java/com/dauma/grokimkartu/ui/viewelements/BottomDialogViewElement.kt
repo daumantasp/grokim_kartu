@@ -275,15 +275,15 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         if (animated == true) {
             val backgroundLayoutAlphaAnimator = ObjectAnimator.ofFloat(backgroundFrameLayout, "alpha", 0.5f, 1.0f)
             backgroundLayoutAlphaAnimator.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                     backgroundFrameLayout.alpha = 0.5f
                     rootRelativeLayout.visibility = View.VISIBLE
                 }
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     onComplete()
                 }
-                override fun onAnimationCancel(p0: Animator?) {}
-                override fun onAnimationRepeat(p0: Animator?) {}
+                override fun onAnimationCancel(p0: Animator) {}
+                override fun onAnimationRepeat(p0: Animator) {}
             })
             val contentLayoutTranslationYAnimator = ObjectAnimator.ofFloat(contentLinearLayout, "translationY", height.toFloat(), 0.0f)
             val animatorSet = AnimatorSet()
@@ -302,14 +302,14 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         if (animated == true) {
             val backgroundLayoutAlphaAnimator = ObjectAnimator.ofFloat(backgroundFrameLayout, "alpha", 1.0f, 0.5f)
             backgroundLayoutAlphaAnimator.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {}
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {}
+                override fun onAnimationEnd(p0: Animator) {
                     backgroundFrameLayout.alpha = 0.5f
                     rootRelativeLayout.visibility = View.GONE
                     onComplete()
                 }
-                override fun onAnimationCancel(p0: Animator?) {}
-                override fun onAnimationRepeat(p0: Animator?) {}
+                override fun onAnimationCancel(p0: Animator) {}
+                override fun onAnimationRepeat(p0: Animator) {}
             })
             val contentLayoutTranslationYAnimator = ObjectAnimator.ofFloat(contentLinearLayout, "translationY", 0.0f, height.toFloat())
             val animatorSet = AnimatorSet()
