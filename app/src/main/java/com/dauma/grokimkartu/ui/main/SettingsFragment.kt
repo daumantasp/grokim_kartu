@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSettingsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsSettings
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.viewmodels.main.SettingsViewModel
@@ -35,6 +36,9 @@ class SettingsFragment : Fragment() {
         if (savedInstanceState == null) {
             // TODO: Still reloads on device rotate, probably need to save state instance
             settingsViewModel.loadSettings()
+        }
+        binding.arePushNotificationsEnabledRowViewElement.setOnSwitchChecked {
+            this.settingsViewModel.enablePushNotificationsChanged()
         }
         settingsViewModel.viewIsReady(requireContext())
 
@@ -68,6 +72,9 @@ class SettingsFragment : Fragment() {
         })
         settingsViewModel.themeMode.observe(viewLifecycleOwner, EventObserver {
             updateThemeModeRowValue(it)
+        })
+        settingsViewModel.pushNotificationsSettingsEnabled.observe(viewLifecycleOwner, EventObserver {
+            binding.arePushNotificationsEnabledRowViewElement.setSwitchEnabled(it != PushNotificationsSettings.DISABLED)
         })
     }
 

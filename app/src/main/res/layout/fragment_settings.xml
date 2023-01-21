@@ -45,8 +45,16 @@
                     app:row_title="@string/settings_show_me_in_list"
                     app:row_show_switch="true"
                     app:switchChecked="@={model.settingsForm.visible}"
-                    app:onClick="@{() -> model.changePassword()}"
                     app:onSwitchChecked="@{() -> model.saveChanges()}"
+                    app:row_borders="bottom"/>
+
+                <com.dauma.grokimkartu.ui.viewelements.RowViewElement
+                    android:id="@+id/arePushNotificationsEnabledRowViewElement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:row_title="@string/settings_enable_push_notifications"
+                    app:row_show_switch="true"
+                    app:switchChecked="@={model.settingsForm.arePushNotificationsEnabled}"
                     app:row_borders="bottom"/>
 
                 <com.dauma.grokimkartu.ui.viewelements.RowViewElement

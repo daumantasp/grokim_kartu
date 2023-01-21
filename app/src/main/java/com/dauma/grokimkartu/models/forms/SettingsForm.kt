@@ -22,10 +22,18 @@ class SettingsForm: BaseObservable() {
             notifyPropertyChanged(BR.changed)
         }
 
+    @get:Bindable
+    var arePushNotificationsEnabled: Boolean = false
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.arePushNotificationsEnabled)
+            notifyPropertyChanged(BR.changed)
+        }
+
     fun setInitialValues(email: String?, isVisible: Boolean?) {
         this.email = email ?: ""
-        this.isVisible = isVisible ?: false
         this.initialIsVisible = isVisible ?: false
+        this.isVisible = isVisible ?: false
     }
 
     @Bindable

@@ -159,6 +159,7 @@
     <string name="settings_fragment">Nustatymai</string>
     <string name="settings_email">El. paštas</string>
     <string name="settings_show_me_in_list">Rodyti mane sąraše</string>
+    <string name="settings_enable_push_notifications">Leisti „Push” pranešimus</string>
     <string name="settings_language">Kalba</string>
     <string name="settings_ui_mode">Vartotojo sąsaja</string>
     <string name="settings_change_password">Keisti slaptažodį</string>
