@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
+import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.LoginForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.auth.LoginListener
@@ -17,7 +20,10 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val loginForm: LoginForm
+    private val loginForm: LoginForm,
+    private val pushNotificationsManager: PushNotificationsManager,
+    private val user: User,
+    private val utils: Utils
 ) : ViewModel(), LoginListener {
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
     private val _navigateToRegistration = MutableLiveData<Event<String>>()
@@ -26,6 +32,7 @@ class LoginViewModel @Inject constructor(
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     private val _loginInProgress = MutableLiveData<Boolean>()
+    private val _askForNotificationsPermissionIfAllowed = MutableLiveData<Event<String>>()
     val navigateToPlayers: LiveData<Event<String>> = _navigateToPlayers
     val navigateToRegistration: LiveData<Event<String>> = _navigateToRegistration
     val navigateToForgotPassword: LiveData<Event<String>> = _navigateToForgotPassword
@@ -33,18 +40,37 @@ class LoginViewModel @Inject constructor(
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
     val loginInProgress: LiveData<Boolean> = _loginInProgress
+    val askForNotificationsPermissionIfAllowed: LiveData<Event<String>> = _askForNotificationsPermissionIfAllowed
 
     companion object {
         private val TAG = "LoginViewModel"
         private const val LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID = "LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID"
+        private const val IS_NOTIFICATIONS_PERMISSION_ASKED_KEY = "IS_NOTIFICATIONS_PERMISSION_ASKED_KEY"
     }
 
     fun viewIsReady() {
         authRepository.registerLoginListener(LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID, this)
+        askForNotificationsPermissionIfAllowed()
     }
 
     fun viewIsDiscarded() {
         authRepository.unregisterLoginListener(LOGIN_VIEW_MODEL_LOGIN_LISTENER_ID)
+    }
+
+    private fun askForNotificationsPermissionIfAllowed() {
+        val hasNotificationPermissionShown = user.hasNotificationsPermissionShown ?: false
+        if (!hasNotificationPermissionShown) {
+            _askForNotificationsPermissionIfAllowed.value = Event("")
+            user.hasNotificationsPermissionShown = true
+        }
+    }
+
+    fun enableNotifications(isEnabled: Boolean) {
+        if (isEnabled) {
+            pushNotificationsManager.subscribe { _ -> }
+        } else {
+            pushNotificationsManager.unsubscribe { _ -> }
+        }
     }
 
     fun loginUser(email: String, password: String) {

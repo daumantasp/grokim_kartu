@@ -11,6 +11,7 @@ class User {
     var createdAt: Timestamp? = null
     var photoId: String? = null
     var accessToken: String? = null
+    var hasNotificationsPermissionShown: Boolean? = null
 
     fun isUserLoggedIn(): Boolean {
         return accessToken.isNullOrEmpty() == false
