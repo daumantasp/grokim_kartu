@@ -117,10 +117,11 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
     }
 
     override fun logout(
+        logoutRequest: LogoutRequest,
         accessToken: String,
         onComplete: (AuthDaoResponseStatus) -> Unit
     ) {
-        retrofitAuth.logout(accessToken).enqueue(object : Callback<Array<String>> {
+        retrofitAuth.logout(accessToken, logoutRequest).enqueue(object : Callback<Array<String>> {
             override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
                 when (response.code()) {
                     200 -> {
@@ -204,7 +205,7 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
         @POST("register") fun register(@Body registrationRequest: RegistrationRequest): Call<LoginResponse>
         @POST("login") fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
         @POST("reauthenticate") fun tokenLogin(@Body reauthenticateRequest: ReauthenticateRequest): Call<LoginResponse>
-        @POST("logout") fun logout(@Header("Authorization") accessToken: String): Call<Array<String>>
+        @POST("logout") fun logout(@Header("Authorization") accessToken: String, @Body logoutRequest: LogoutRequest): Call<Array<String>>
         @DELETE("user/delete") fun delete(@Header("Authorization") accessToken: String) : Call<Array<String>>
         @POST("user/changepassword") fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Call<Array<String>>
     }

@@ -2,10 +2,7 @@ package com.dauma.grokimkartu.repositories.users
 
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoResponseStatus
-import com.dauma.grokimkartu.data.auth.entities.ChangePasswordRequest
-import com.dauma.grokimkartu.data.auth.entities.LoginRequest
-import com.dauma.grokimkartu.data.auth.entities.ReauthenticateRequest
-import com.dauma.grokimkartu.data.auth.entities.RegistrationRequest
+import com.dauma.grokimkartu.data.auth.entities.*
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
@@ -124,7 +121,8 @@ class AuthRepositoryImpl(
 
     override fun logout() {
         if (user.isUserLoggedIn()) {
-            authDao.logout(user.getBearerAccessToken()!!) { authDaoResponseStatus ->
+            val logoutRequest = LogoutRequest(utils.appUtils.deviceId())
+            authDao.logout(logoutRequest, user.getBearerAccessToken()!!) { authDaoResponseStatus ->
                 if (authDaoResponseStatus.isSuccessful) {
                     user.logout()
                     removeAccessTokenFromStorage()
