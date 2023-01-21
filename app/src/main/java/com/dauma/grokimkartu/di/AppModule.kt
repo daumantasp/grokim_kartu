@@ -32,6 +32,8 @@ import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManagerImpl
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.UtilsImpl
+import com.dauma.grokimkartu.general.utils.app.AppUtils
+import com.dauma.grokimkartu.general.utils.app.AppUtilsImpl
 import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtils
 import com.dauma.grokimkartu.general.utils.dispatcher.DispatcherUtilsImpl
 import com.dauma.grokimkartu.general.utils.image.ImageUtils
@@ -98,6 +100,11 @@ val BASE_URL = "http://10.0.2.2:8000/api/"
 @InstallIn(SingletonComponent::class)
 class AppModule {
     @Provides
+    fun providesAppUtils(@ApplicationContext appContext: Context) : AppUtils {
+        return AppUtilsImpl(appContext)
+    }
+
+    @Provides
     fun providesStringUtils() : StringUtils {
         return StringUtilsImpl()
     }
@@ -139,6 +146,7 @@ class AppModule {
 
     @Provides
     fun providesUtils(
+        appUtils: AppUtils,
         imageUtils: ImageUtils,
         stringUtils: StringUtils,
         keyboardUtils: KeyboardUtils,
@@ -149,6 +157,7 @@ class AppModule {
         otherUtils: OtherUtils
     ) : Utils {
         return UtilsImpl(
+            appUtils,
             imageUtils,
             stringUtils,
             keyboardUtils,
