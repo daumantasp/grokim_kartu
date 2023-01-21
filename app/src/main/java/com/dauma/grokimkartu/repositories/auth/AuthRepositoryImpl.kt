@@ -115,7 +115,10 @@ class AuthRepositoryImpl(
                 notifyLoginListeners(false, AuthenticationErrors.ACCESS_TOKEN_NOT_PROVIDED)
             }
         } else {
-            throw AuthenticationException(AuthenticationErrors.USER_ALREADY_LOGGED_IN)
+//            Crashes when user receives push notification and app is in the background
+//            So instead notify login listeners
+//            throw AuthenticationException(AuthenticationErrors.USER_ALREADY_LOGGED_IN)
+            this.notifyLoginListeners(true, null)
         }
     }
 
