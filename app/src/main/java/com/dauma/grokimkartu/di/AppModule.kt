@@ -27,6 +27,7 @@ import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiver
 import com.dauma.grokimkartu.general.networkchangereceiver.NetworkChangeReceiverImpl
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManagerImpl
+import com.dauma.grokimkartu.general.pushnotificationsshower.PushNotificationsShowerImpl
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManagerImpl
 import com.dauma.grokimkartu.general.user.User
@@ -465,7 +466,19 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesPushNotificationsManager() : PushNotificationsManager {
-        return PushNotificationsManagerImpl()
+    fun providesPushNotificationsManager(
+        settingsDao: SettingsDao,
+        user: User,
+        utils: Utils,
+        authRepository: AuthRepository,
+    ) : PushNotificationsManager {
+        val pushNotificationsManager = PushNotificationsManagerImpl(
+            pushNotificationsShower = PushNotificationsShowerImpl(),
+            settingsDao = settingsDao,
+            user = user,
+            utils = utils
+        )
+        authRepository.registerLoginListener("PUSH_NOTIFICATIONS_MANAGER", pushNotificationsManager)
+        return pushNotificationsManager
     }
 }

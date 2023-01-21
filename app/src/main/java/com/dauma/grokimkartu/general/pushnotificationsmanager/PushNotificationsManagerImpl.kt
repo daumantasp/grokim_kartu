@@ -1,74 +1,152 @@
 package com.dauma.grokimkartu.general.pushnotificationsmanager
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.media.RingtoneManager
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.ui.MainActivity
-import kotlin.random.Random
+import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
+import com.dauma.grokimkartu.data.settings.SettingsDao
+import com.dauma.grokimkartu.data.settings.SettingsDaoResponseStatus
+import com.dauma.grokimkartu.data.settings.entities.DeletePushNotificationsTokenRequest
+import com.dauma.grokimkartu.data.settings.entities.PushNotificationsTokenRequest
+import com.dauma.grokimkartu.general.pushnotificationsshower.PushNotificationsShower
+import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.repositories.auth.LoginListener
+import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
+import com.google.firebase.messaging.FirebaseMessaging
 
-class PushNotificationsManagerImpl: PushNotificationsManager {
+class PushNotificationsManagerImpl(
+    private val pushNotificationsShower: PushNotificationsShower,
+    private val settingsDao: SettingsDao,
+    private val user: User,
+    private val utils: Utils
+): PushNotificationsManager, LoginListener {
     private var context: Context? = null
 
     companion object {
-        private const val PUSH_NOTIFICATIONS_CHANNEL_ID = "PUSH_NOTIFICATIONS_CHANNEL_ID"
+        private const val PUSH_NOTIFICATIONS_ARE_SUBSCRIBED = "PUSH_NOTIFICATIONS_ARE_SUBSCRIBED"
+    }
+
+    init {
+        addOnMoveToForegroundObserver()
+    }
+
+    private fun addOnMoveToForegroundObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                if (event == Lifecycle.Event.ON_START && user.isUserLoggedIn()) {
+                    if (arePushNotificationsSettingsEnabled() == PushNotificationsSettings.ENABLED_AND_SUBSCRIBED) {
+                        getToken { token, _ ->
+                            updateToken(PushNotificationsTokenRequest(token, utils.appUtils.deviceId())) { _ -> }
+                        }
+                    } else {
+                        deleteToken { _ -> }
+                    }
+                }
+            }
+        })
     }
 
     override fun withContext(context: Context) {
         this.context = context
+        pushNotificationsShower.withContext(context)
+    }
+
+    override fun onTokenChanged(token: String) {
+        if (user.isUserLoggedIn() && arePushNotificationsSettingsEnabled() == PushNotificationsSettings.ENABLED_AND_SUBSCRIBED) {
+            updateToken(PushNotificationsTokenRequest(token, utils.appUtils.deviceId()))
+        }
     }
 
     override fun showPushNotification(title: String, body: String) {
+        pushNotificationsShower.showPushNotification(title, body)
+    }
+
+    override fun arePushNotificationsSettingsEnabled(): PushNotificationsSettings {
         context?.let {
-            val notificationManager = it.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val notificationId = Random.nextInt()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createPushNotificationsChannel(notificationManager)
-            }
-
-            val intent = Intent(it, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                setAction(Intent.ACTION_MAIN)
-                addCategory(Intent.CATEGORY_LAUNCHER)
-            }
-
-            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PendingIntent.getActivity(it, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
+            val areNotificationsEnabled = NotificationManagerCompat.from(it).areNotificationsEnabled()
+            val areSubscribed = utils.sharedStorageUtils.getEntry(PUSH_NOTIFICATIONS_ARE_SUBSCRIBED) ?: "false"
+            if (areNotificationsEnabled && areSubscribed == "true") {
+                return PushNotificationsSettings.ENABLED_AND_SUBSCRIBED
+            } else if (areNotificationsEnabled && areSubscribed == "false") {
+                return PushNotificationsSettings.ENABLED_NOT_SUBSCRIBED
             } else {
-                PendingIntent.getActivity(it, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+                return PushNotificationsSettings.DISABLED
             }
+        } ?: throw PushNotificationsManagerException(PushNotificationsManagerErrors.CONTEXT_IS_NOT_SET)
+    }
 
-            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val notification = NotificationCompat.Builder(it, PUSH_NOTIFICATIONS_CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setSmallIcon(R.drawable.ic_profile)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent)
-                .build()
-
-            notificationManager.notify(notificationId, notification)
+    override fun subscribe(onComplete: (PushNotificationsManagerErrors?) -> Unit) {
+        utils.sharedStorageUtils.save(PUSH_NOTIFICATIONS_ARE_SUBSCRIBED, "true")
+        getToken { token, pushNotificationsManagerErrors ->
+            if (user.isUserLoggedIn() && arePushNotificationsSettingsEnabled() == PushNotificationsSettings.ENABLED_AND_SUBSCRIBED) {
+                updateToken(PushNotificationsTokenRequest(token, utils.appUtils.deviceId())) { _ ->
+                    onComplete(pushNotificationsManagerErrors)
+                }
+            } else {
+                onComplete(pushNotificationsManagerErrors)
+            }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createPushNotificationsChannel(notificationManager: NotificationManager) {
-        val channel = NotificationChannel(
-            PUSH_NOTIFICATIONS_CHANNEL_ID,
-            "Push Notifications",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "Push Notifications"
-            enableLights(true)
+    override fun unsubscribe(onComplete: (PushNotificationsManagerErrors?) -> Unit) {
+        utils.sharedStorageUtils.save(PUSH_NOTIFICATIONS_ARE_SUBSCRIBED, "false")
+        FirebaseMessaging.getInstance().deleteToken()
+        if (user.isUserLoggedIn()) {
+            deleteToken { _ ->
+                onComplete(null)
+            }
         }
-        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun getToken(onComplete: (String?, PushNotificationsManagerErrors?) -> Unit) {
+        FirebaseMessaging.getInstance().token
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    onComplete(it.result, null)
+                } else {
+                    onComplete(null, PushNotificationsManagerErrors.UNKNOWN)
+                }
+            }
+            .addOnFailureListener {
+                onComplete(null, PushNotificationsManagerErrors.UNKNOWN)
+            }
+            .addOnCanceledListener {
+                onComplete(null, PushNotificationsManagerErrors.UNKNOWN)
+            }
+    }
+
+    // MARK: LoginListener
+    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+        if (isSuccessful) {
+            if (arePushNotificationsSettingsEnabled() == PushNotificationsSettings.ENABLED_AND_SUBSCRIBED) {
+                getToken { token, _ ->
+                    updateToken(PushNotificationsTokenRequest(token, utils.appUtils.deviceId())) { _ -> }
+                }
+            } else {
+                deleteToken { _ -> }
+            }
+        }
+    }
+
+    private fun updateToken(
+        pushNotificationsTokenRequest: PushNotificationsTokenRequest,
+        onComplete: (SettingsDaoResponseStatus) -> Unit = {}) {
+        settingsDao.pushNotificationsToken(
+            pushNotificationsTokenRequest = pushNotificationsTokenRequest,
+            accessToken = user.getBearerAccessToken()!!,
+            onComplete = onComplete
+        )
+    }
+
+    private fun deleteToken(onComplete: (SettingsDaoResponseStatus) -> Unit = {}) {
+        settingsDao.deletePushNotificationsToken(
+            deletePushNotificationsTokenRequest = DeletePushNotificationsTokenRequest(utils.appUtils.deviceId()),
+            accessToken = user.getBearerAccessToken()!!,
+            onComplete = onComplete
+        )
     }
 }
+
