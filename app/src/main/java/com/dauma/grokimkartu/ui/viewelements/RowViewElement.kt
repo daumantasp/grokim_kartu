@@ -108,6 +108,10 @@ class RowViewElement(context: Context, attrs: AttributeSet) : ConstraintLayout(c
         this.onSwitchChecked = onSwitchChecked
     }
 
+    fun setSwitchEnabled(enabled: Boolean) {
+        switch.isEnabled = enabled
+    }
+
     fun setValueColor(color: Int) {
         if (color != 0) {
             valueTextView.setTextColor(color)
