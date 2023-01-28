@@ -54,7 +54,7 @@ class PlayersFragment : Fragment() {
             playersViewModel.backClicked()
         }
         binding.playersHeaderViewElement.setOnRightTextClick {
-            playersViewModel.filterClicked()
+            findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -78,16 +78,8 @@ class PlayersFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        playersViewModel.playerDetails.observe(viewLifecycleOwner, EventObserver { userId ->
-            val args = Bundle()
-            args.putInt("userId", userId)
-            this.findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment, args)
-        })
         playersViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
-        })
-        playersViewModel.filter.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
         })
         playersViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
             binding.playersHeaderViewElement.showRightTextAttentioner(it)
@@ -124,7 +116,11 @@ class PlayersFragment : Fragment() {
             context = requireContext(),
             playersListData = playersListData.toMutableList(),
             utils = utils,
-            onItemClicked = { userId -> this.playersViewModel.playerClicked(userId) },
+            onItemClicked = { userId ->
+                val args = Bundle()
+                args.putInt("userId", userId)
+                this.findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment, args)
+            },
             loadNextPage = { this.playersViewModel.loadNextPlayersPage() })
         isPlayersRecyclerViewSetup = true
     }

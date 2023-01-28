@@ -110,11 +110,6 @@ class ThomannDetailsFragment : Fragment() {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         }
-        thomannDetailsViewModel.userDetails.observe(viewLifecycleOwner, EventObserver { userId ->
-            val args = Bundle()
-            args.putInt("userId", userId)
-            this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_playerDetailsFragment, args)
-        })
         thomannDetailsViewModel.join.observe(viewLifecycleOwner, EventObserver {
             this.dialogsManager?.let { manager ->
                 val dialogAmountData = BottomDialogAmountData(
@@ -156,7 +151,11 @@ class ThomannDetailsFragment : Fragment() {
             data = recyclerViewData,
             utils = utils,
             dialogsManager = dialogsManager,
-            onItemClicked = { userId -> this.thomannDetailsViewModel.userClicked(userId) },
+            onItemClicked = { userId ->
+                val args = Bundle()
+                args.putInt("userId", userId)
+                findNavController().navigate(R.id.action_thomannDetailsFragment_to_playerDetailsFragment, args)
+            },
             onLeaveClicked = { this.thomannDetailsViewModel.quitClicked() },
             onKickClicked = { userId -> this.thomannDetailsViewModel.kickClicked(userId) }
         )

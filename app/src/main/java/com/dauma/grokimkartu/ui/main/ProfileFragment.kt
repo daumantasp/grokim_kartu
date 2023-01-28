@@ -32,6 +32,7 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.model = profileViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
         setupScrollView()
 
@@ -42,6 +43,12 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupOnClickers() {
+        binding.editProfileButton.setOnClick {
+            findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)
+        }
     }
 
     private fun setupObservers() {
@@ -56,9 +63,6 @@ class ProfileFragment : Fragment() {
                 binding.photoImageView.visibility = View.VISIBLE
             }
             binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
-        })
-        profileViewModel.profileEdit.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)
         })
     }
 

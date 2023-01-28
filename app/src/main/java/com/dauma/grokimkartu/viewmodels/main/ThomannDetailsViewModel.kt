@@ -24,14 +24,12 @@ class ThomannDetailsViewModel @Inject constructor(
     private val thomannId = savedStateHandle.get<Int>("thomannId")
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _detailsLoaded = MutableLiveData<ThomannDetails>()
-    private val _userDetails = MutableLiveData<Event<Int>>()
     private val _message = MutableLiveData<Event<Int>>() // TODO: refactor
     private val _join = MutableLiveData<Event<Int>>()
     private val _quit = MutableLiveData<Event<Int>>()
     private val _edit = MutableLiveData<Event<Int>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val detailsLoaded: LiveData<ThomannDetails> = _detailsLoaded
-    val userDetails: LiveData<Event<Int>> = _userDetails
     val join: LiveData<Event<Int>> = _join
     val quit: LiveData<Event<Int>> = _quit
     val edit: LiveData<Event<Int>> = _edit
@@ -99,10 +97,6 @@ class ThomannDetailsViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun userClicked(userId: Int) {
-        _userDetails.value = Event(userId)
     }
 
     fun editClicked() {

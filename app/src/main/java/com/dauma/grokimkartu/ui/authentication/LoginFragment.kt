@@ -67,10 +67,10 @@ class LoginFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         binding.registerTextView.setOnClickListener {
-            loginViewModel.registrationClicked()
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
         }
         binding.forgotPasswordTextView.setOnClickListener {
-            loginViewModel.forgotPasswordClicked()
+            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
         }
     }
 
@@ -88,12 +88,6 @@ class LoginFragment : Fragment() {
         // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
         loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_loginFragment_to_homeGraph)
-        })
-        loginViewModel.navigateToRegistration.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
-        })
-        loginViewModel.navigateToForgotPassword.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
         })
         loginViewModel.emailError.observe(viewLifecycleOwner, Observer {
             this.binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""

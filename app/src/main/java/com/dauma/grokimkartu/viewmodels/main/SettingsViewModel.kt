@@ -30,19 +30,11 @@ class SettingsViewModel @Inject constructor(
     private val utils: Utils
 ) : ViewModel(), LogoutListener {
     private val _navigateToLogin = MutableLiveData<Event<String>>()
-    private val _navigateToDeleteUser = MutableLiveData<Event<String>>()
-    private val _navigateToLanguages = MutableLiveData<Event<String>>()
-    private val _navigateToUiModes = MutableLiveData<Event<String>>()
-    private val _navigateToPasswordChange = MutableLiveData<Event<String>>()
     private val _passwordError = MutableLiveData<Int>()
     private val _language = MutableLiveData<Event<Language>>()
     private val _themeMode = MutableLiveData<Event<ThemeMode>>()
     private val _pushNotificationsSettingsEnabled = MutableLiveData<Event<PushNotificationsSettings>>()
     val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
-    val navigateToDeleteUser: LiveData<Event<String>> = _navigateToDeleteUser
-    val navigateToLanguages: LiveData<Event<String>> = _navigateToLanguages
-    val navigateToUiModes: LiveData<Event<String>> = _navigateToUiModes
-    val navigateToPasswordChange: LiveData<Event<String>> = _navigateToPasswordChange
     val passwordError: LiveData<Int> = _passwordError
     val language: LiveData<Event<Language>> = _language
     val themeMode: LiveData<Event<ThemeMode>> = _themeMode
@@ -100,18 +92,6 @@ class SettingsViewModel @Inject constructor(
         _pushNotificationsSettingsEnabled.value = Event(arePushNotificationSettingsEnabled)
     }
 
-    fun deleteUserClicked() {
-        _navigateToDeleteUser.value = Event("")
-    }
-
-    fun changeLanguage() {
-        _navigateToLanguages.value = Event("")
-    }
-
-    fun changeThemeModeClicked() {
-        _navigateToUiModes.value = Event("")
-    }
-
     private fun selectLanguage(context: Context) {
         val currentLanguage = localeUtils.getCurrentLanguage(context)
         _language.value = Event(currentLanguage)
@@ -119,10 +99,6 @@ class SettingsViewModel @Inject constructor(
 
     private fun selectThemeMode() {
         _themeMode.value = Event(themeModeManager.currentThemeMode)
-    }
-
-    fun changePassword() {
-        _navigateToPasswordChange.value = Event("")
     }
 
     fun enablePushNotificationsChanged() {

@@ -7,7 +7,6 @@ import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.models.forms.PlayersFilterForm
 import com.dauma.grokimkartu.repositories.players.PlayersFilter
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
-import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

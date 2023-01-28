@@ -26,16 +26,12 @@ class LoginViewModel @Inject constructor(
     private val utils: Utils
 ) : ViewModel(), LoginListener {
     private val _navigateToPlayers = MutableLiveData<Event<String>>()
-    private val _navigateToRegistration = MutableLiveData<Event<String>>()
-    private val _navigateToForgotPassword = MutableLiveData<Event<String>>()
     private val _closeApp = MutableLiveData<Event<String>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     private val _loginInProgress = MutableLiveData<Boolean>()
     private val _askForNotificationsPermissionIfAllowed = MutableLiveData<Event<String>>()
     val navigateToPlayers: LiveData<Event<String>> = _navigateToPlayers
-    val navigateToRegistration: LiveData<Event<String>> = _navigateToRegistration
-    val navigateToForgotPassword: LiveData<Event<String>> = _navigateToForgotPassword
     val closeApp: LiveData<Event<String>> = _closeApp
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
@@ -84,14 +80,6 @@ class LoginViewModel @Inject constructor(
 
     fun getLoginForm() : LoginForm {
         return loginForm
-    }
-
-    fun registrationClicked() {
-        _navigateToRegistration.value = Event("")
-    }
-
-    fun forgotPasswordClicked() {
-        _navigateToForgotPassword.value = Event("")
     }
 
     fun backClicked() {

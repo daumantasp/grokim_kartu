@@ -10,9 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannConversationsBinding
-import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.ui.main.adapters.ConversationAdapter
 import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
 import com.dauma.grokimkartu.ui.main.adapters.ThomannConversationData
 import com.dauma.grokimkartu.viewmodels.main.ThomannConversationsViewModel
@@ -73,12 +71,6 @@ class ThomannConversationsFragment : Fragment() {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         })
-        thomannConversationsViewModel.message.observe(viewLifecycleOwner, EventObserver { userData ->
-            val args = Bundle()
-            args.putInt("thomannId", userData[0] as Int)
-            args.putString("userName", userData[1] as String)
-            this.findNavController().navigate(R.id.action_conversationsFragment_to_conversationFragment2, args)
-        })
     }
 
     private fun setupThomannConversationsRecyclerView(conversations: List<ThomannConversationData>) {
@@ -88,7 +80,10 @@ class ThomannConversationsFragment : Fragment() {
             conversationsListData = conversations.toMutableList(),
             utils = utils,
             onItemClicked = { thomannId, name ->
-                this.thomannConversationsViewModel.conversationClicked(thomannId, name)
+                val args = Bundle()
+                args.putInt("thomannId", thomannId)
+                args.putString("userName", name)
+                this.findNavController().navigate(R.id.action_conversationsFragment_to_conversationFragment2, args)
             }
         )
         isViewSetup = true

@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.repositories.profile.ProfileListener
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,17 +16,9 @@ class HomeViewModel @Inject constructor(
     private val _name = MutableLiveData<String?>()
     private val _userIcon = MutableLiveData<Bitmap?>()
     private val _unreadCount = MutableLiveData<Int?>()
-    private val _navigateToProfile = MutableLiveData<Event<String>>()
-    private val _navigateToNotifications = MutableLiveData<Event<String>>()
-    private val _navigateToPlayers = MutableLiveData<Event<String>>()
-    private val _navigateToThomann = MutableLiveData<Event<String>>()
     val name: LiveData<String?> = _name
     val userIcon: LiveData<Bitmap?> = _userIcon
     val unreadCount: LiveData<Int?> = _unreadCount
-    val navigateToProfile: LiveData<Event<String>> = _navigateToProfile
-    val navigateToNotifications: LiveData<Event<String>> = _navigateToNotifications
-    val navigateToPlayers = _navigateToPlayers
-    val navigateToThomann = _navigateToThomann
 
     companion object {
         private val TAG = "HomeViewModel"
@@ -43,22 +34,6 @@ class HomeViewModel @Inject constructor(
 
     fun viewIsDiscarded() {
         profileRepository.unregisterListener(HOME_VIEW_MODEL_PROFILE_LISTENER_ID)
-    }
-
-    fun userIconClicked() {
-        _navigateToProfile.value = Event("")
-    }
-
-    fun notificationsClicked() {
-        _navigateToNotifications.value = Event("")
-    }
-
-    fun playersClicked() {
-        _navigateToPlayers.value = Event("")
-    }
-
-    fun thomannClicked() {
-        _navigateToThomann.value = Event("")
     }
 
     private fun loadUserIcon() {

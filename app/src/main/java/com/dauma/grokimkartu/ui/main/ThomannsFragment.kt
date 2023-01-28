@@ -55,6 +55,7 @@ class ThomannsFragment : Fragment() {
             tab.text = tabTitles[position]
         }.attach()
 
+        setupOnClickers()
         setupObservers()
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -82,12 +83,15 @@ class ThomannsFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupOnClickers() {
+        binding.createThomannItemButton.setOnClick {
+            findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
+        }
+    }
+
     private fun setupObservers() {
         thomannsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().popBackStack()
-        })
-        thomannsViewModel.navigateToCreation.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
         })
         thomannsViewModel.allThomannsDisplayed.observe(viewLifecycleOwner, EventObserver {
             binding.thomannsHeaderViewElement.showRightTextAsDisabled(it == false)

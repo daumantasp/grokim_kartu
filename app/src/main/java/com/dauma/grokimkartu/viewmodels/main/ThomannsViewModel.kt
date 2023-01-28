@@ -13,13 +13,11 @@ class ThomannsViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository
 ): ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
-    private val _navigateToCreation = MutableLiveData<Event<String>>()
     private val _allThomannsDisplayed = MutableLiveData<Event<Boolean>>()
     private val _filter = MutableLiveData<Event<String>>()
     private val _filterEnabled = MutableLiveData<Event<Boolean>>()
     private var isAllThomannsTabSelected: Boolean = true
     val navigateBack: LiveData<Event<String>> = _navigateBack
-    val navigateToCreation: LiveData<Event<String>> = _navigateToCreation
     val allThomannsDisplayed: LiveData<Event<Boolean>> = _allThomannsDisplayed
     val filter: LiveData<Event<String>> = _filter
     val filterEnabled: LiveData<Event<Boolean>> = _filterEnabled
@@ -45,9 +43,5 @@ class ThomannsViewModel @Inject constructor(
         if (isAllThomannsTabSelected) {
             _filter.value = Event("")
         }
-    }
-
-    fun createClicked() {
-        _navigateToCreation.value = Event("")
     }
 }

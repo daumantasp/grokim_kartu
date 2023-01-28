@@ -32,6 +32,7 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.model = settingsViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
         if (savedInstanceState == null) {
             // TODO: Still reloads on device rotate, probably need to save state instance
@@ -51,21 +52,24 @@ class SettingsFragment : Fragment() {
         settingsViewModel.viewIsDiscarded()
     }
 
+    private fun setupOnClickers() {
+        binding.languageRowViewElement.setOnClick {
+            findNavController().navigate(R.id.action_settingsFragment_to_languagesFragment)
+        }
+        binding.themeModeRowViewElement.setOnClick {
+            findNavController().navigate(R.id.action_settingsFragment_to_uiModesFragment)
+        }
+        binding.changePasswordRowViewElement.setOnClick {
+            findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
+        }
+        binding.deleteMyAccountRowViewElement.setOnClick {
+            findNavController().navigate(R.id.action_settingsFragment_to_deleteUserFragment)
+        }
+    }
+
     private fun setupObservers() {
         settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
             this.findNavController().navigate(R.id.action_settingsFragment_to_authGraph)
-        })
-        settingsViewModel.navigateToDeleteUser.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_deleteUserFragment)
-        })
-        settingsViewModel.navigateToPasswordChange.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
-        })
-        settingsViewModel.navigateToLanguages.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_languagesFragment)
-        })
-        settingsViewModel.navigateToUiModes.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_uiModesFragment)
         })
         settingsViewModel.language.observe(viewLifecycleOwner, EventObserver {
             updateLanguageRowValue(it)

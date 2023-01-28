@@ -19,13 +19,11 @@ class ProfileEditViewModel @Inject constructor(
 ) : ViewModel() {
     private val _navigateBack = MutableLiveData<Event<String>>()
     private val _navigateBackConfirmation = MutableLiveData<Event<String>>()
-    private val _selectPhoto = MutableLiveData<Event<String>>()
     private val _profileLoaded = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
     private val _instrument = MutableLiveData<Event<String>>()
     val navigateBack: LiveData<Event<String>> = _navigateBack
     val navigateBackConfirmation: LiveData<Event<String>> = _navigateBackConfirmation
-    val selectPhoto: LiveData<Event<String>> = _selectPhoto
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
     val city: LiveData<Event<String>> = _city
     val instrument: LiveData<Event<String>> = _instrument
@@ -93,10 +91,6 @@ class ProfileEditViewModel @Inject constructor(
                 profileEditForm.filteredPickableInstruments = instrumentsResponse
             }
         }
-    }
-
-    fun selectPhoto() {
-        _selectPhoto.value = Event("")
     }
 
     fun cityClicked() {

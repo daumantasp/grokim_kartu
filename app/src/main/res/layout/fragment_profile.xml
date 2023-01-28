@@ -111,7 +111,6 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="30dp"
                     app:type="primary"
-                    app:onClick="@{() -> model.editClicked()}"
                     app:text="@string/profile_edit_button" />
 
             </LinearLayout>

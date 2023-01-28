@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentHomeBinding
-import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.CustomNavigator
 import com.dauma.grokimkartu.ui.StatusBarManager
@@ -58,16 +57,16 @@ class HomeFragment : Fragment() {
         setupObservers()
 
         binding.homeHeaderViewElement.setOnInitialsOrIconClick {
-            homeViewModel.userIconClicked()
+            customNavigator?.navigateToProfile()
         }
         binding.homeHeaderViewElement.setOnNotificationsClick {
-            homeViewModel.notificationsClicked()
+            findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment)
         }
         binding.playersCardViewElement.setOnClick {
-            homeViewModel.playersClicked()
+            findNavController().navigate(R.id.action_homeFragment_to_playersFragment)
         }
         binding.thomannCardViewElement.setOnClick {
-            homeViewModel.thomannClicked()
+            findNavController().navigate(R.id.action_homeFragment_to_thomannFragment)
         }
 
         homeViewModel.viewIsReady()
@@ -102,18 +101,6 @@ class HomeFragment : Fragment() {
             val unreadCountNotNUll = unreadCount ?: 0
             binding.homeHeaderViewElement.setUnreadNotificationsCount(unreadCountNotNUll.toString())
             binding.homeHeaderViewElement.showUnreadNotificationsCount(unreadCountNotNUll > 0)
-        })
-        homeViewModel.navigateToProfile.observe(viewLifecycleOwner, EventObserver {
-            customNavigator?.navigateToProfile()
-        })
-        homeViewModel.navigateToNotifications.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment)
-        })
-        homeViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_homeFragment_to_playersFragment)
-        })
-        homeViewModel.navigateToThomann.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(R.id.action_homeFragment_to_thomannFragment)
         })
     }
 

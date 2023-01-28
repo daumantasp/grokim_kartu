@@ -15,9 +15,7 @@ class ProfileViewModel @Inject constructor(
     private val profileForm: ProfileForm
 ) : ViewModel() {
     private val _profileLoaded = MutableLiveData<Event<String>>()
-    private val _profileEdit = MutableLiveData<Event<String>>()
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
-    val profileEdit: LiveData<Event<String>> = _profileEdit
 
     companion object {
         private val TAG = "ProfileViewModelImpl"
@@ -56,9 +54,5 @@ class ProfileViewModel @Inject constructor(
             isPhotoLoaded = true
             checkIfFullProfileLoaded()
         }
-    }
-
-    fun editClicked() {
-        _profileEdit.value = Event("")
     }
 }

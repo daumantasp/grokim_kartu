@@ -104,6 +104,48 @@ class ProfileEditFragment : Fragment() {
             profileEditViewModel.backClicked(false)
         }
 
+        binding.selectPhotoButton.setOnClickListener {
+            val pickIntent: Intent? = if (canPick()) Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) else null
+            var captureIntent: Intent? = null
+            if (canCapture()) {
+                photoFile = null
+                try {
+                    photoFile = utils.imageUtils.createUniqueImageFile()
+                } catch (ex: java.io.IOException) { }
+
+                photoFile?.let { photoFile ->
+                    val photoUri = FileProvider.getUriForFile(
+                        requireContext(),
+                        "com.dauma.grokimkartu.fileprovider",
+                        photoFile
+                    )
+                    captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    captureIntent!!.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+
+                    val intentActivities = requireContext().packageManager.queryIntentActivities(
+                        captureIntent!!,
+                        PackageManager.MATCH_DEFAULT_ONLY
+                    )
+                    intentActivities
+                        .map { it.activityInfo.packageName }
+                        .forEach { requireContext().grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
+                }
+            }
+
+            if (pickIntent != null && captureIntent != null) {
+                val chooser = Intent(Intent.ACTION_CHOOSER)
+                chooser.putExtra(Intent.EXTRA_INTENT, pickIntent)
+                chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.profile_edit_chooser_title))
+                val intentArray = arrayOf(captureIntent)
+                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+                pickCaptureResult.launch(chooser)
+            } else if (pickIntent != null) {
+                pickCaptureResult.launch(pickIntent)
+            } else if (captureIntent != null) {
+                pickCaptureResult.launch(captureIntent)
+            }
+        }
+
         binding.cityInputEditText.setOnClickListener {
             profileEditViewModel.cityClicked()
         }
@@ -166,47 +208,6 @@ class ProfileEditFragment : Fragment() {
                 binding.photoImageView.visibility = View.VISIBLE
             }
             binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
-        })
-        profileEditViewModel.selectPhoto.observe(viewLifecycleOwner, EventObserver {
-            val pickIntent: Intent? = if (canPick()) Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) else null
-            var captureIntent: Intent? = null
-            if (canCapture()) {
-                photoFile = null
-                try {
-                    photoFile = utils.imageUtils.createUniqueImageFile()
-                } catch (ex: java.io.IOException) { }
-
-                photoFile?.let { photoFile ->
-                    val photoUri = FileProvider.getUriForFile(
-                        requireContext(),
-                        "com.dauma.grokimkartu.fileprovider",
-                        photoFile
-                    )
-                    captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    captureIntent!!.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-
-                    val intentActivities = requireContext().packageManager.queryIntentActivities(
-                        captureIntent!!,
-                        PackageManager.MATCH_DEFAULT_ONLY
-                    )
-                    intentActivities
-                        .map { it.activityInfo.packageName }
-                        .forEach { requireContext().grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
-                }
-            }
-
-            if (pickIntent != null && captureIntent != null) {
-                val chooser = Intent(Intent.ACTION_CHOOSER)
-                chooser.putExtra(Intent.EXTRA_INTENT, pickIntent)
-                chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.profile_edit_chooser_title))
-                val intentArray = arrayOf(captureIntent)
-                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                pickCaptureResult.launch(chooser)
-            } else if (pickIntent != null) {
-                pickCaptureResult.launch(pickIntent)
-            } else if (captureIntent != null) {
-                pickCaptureResult.launch(captureIntent)
-            }
         })
         profileEditViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
             this.isDialogShown = true
