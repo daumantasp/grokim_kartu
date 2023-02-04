@@ -1,11 +1,14 @@
 package com.dauma.grokimkartu.viewmodels.splash
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
+import com.dauma.grokimkartu.ui.splash.SplashFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,10 +16,8 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel(), LoginListener {
-    private val _navigateToLogin = MutableLiveData<Event<String>>()
-    private val _navigateToPlayers = MutableLiveData<Event<String>>()
-    val navigateToLogin = _navigateToLogin
-    val navigateToPlayers = _navigateToPlayers
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
 
     companion object {
         private val TAG = "SplashViewModelImpl"
@@ -33,10 +34,11 @@ class SplashViewModel @Inject constructor(
     }
 
     override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        if (isSuccessful) {
-            _navigateToPlayers.value = Event("")
+        val navDirection = if (isSuccessful) {
+            SplashFragmentDirections.actionSplashFragmentToHomeGraph()
         } else {
-            _navigateToLogin.value = Event("")
+            SplashFragmentDirections.actionSplashFragmentToLoginFragment()
         }
+        _navigation.value = Event(NavigationCommand.ToDirection(navDirection))
     }
 }

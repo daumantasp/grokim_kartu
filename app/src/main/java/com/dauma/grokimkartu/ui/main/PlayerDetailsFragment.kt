@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayerDetailsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.viewmodels.main.PlayerDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,14 +55,8 @@ class PlayerDetailsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        playerDetailsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
-        })
-        playerDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { userData ->
-            val args = Bundle()
-            args.putInt("userId", userData[0] as Int)
-            args.putString("userName", userData[1] as String)
-            this.findNavController().navigate(R.id.action_playerDetailsFragment_to_conversationFragment, args)
+        playerDetailsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         playerDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner, EventObserver {
             if (playerDetailsViewModel.getPlayerDetailsForm().photo == null) {
@@ -76,5 +70,13 @@ class PlayerDetailsFragment : Fragment() {
             }
             binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

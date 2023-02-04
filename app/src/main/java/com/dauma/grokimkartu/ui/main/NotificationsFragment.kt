@@ -14,6 +14,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentNotificationsBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
@@ -73,8 +74,8 @@ class NotificationsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        notificationsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+        notificationsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         notificationsViewModel.notificationsPages.observe(viewLifecycleOwner, { notificationsPages ->
             val data = getAllNotificationsFromPages(notificationsPages)
@@ -187,6 +188,14 @@ class NotificationsFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
+        }
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

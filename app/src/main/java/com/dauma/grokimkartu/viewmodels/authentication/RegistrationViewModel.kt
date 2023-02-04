@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.RegistrationForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -20,14 +21,14 @@ class RegistrationViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationForm: RegistrationForm,
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _emailVerificationSent = MutableLiveData<Event<Boolean>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     private val _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
     private val _enableResendButton = MutableLiveData<Boolean>()
     private val _registrationInProgress = MutableLiveData<Boolean>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val emailVerificationSent: LiveData<Event<Boolean>> = _emailVerificationSent
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
@@ -102,7 +103,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun cleanUp() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     private fun handleAuthenticationError(error: AuthenticationErrors) {

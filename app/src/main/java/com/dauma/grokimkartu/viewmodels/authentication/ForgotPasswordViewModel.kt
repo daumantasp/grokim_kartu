@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.ForgotPasswordForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,11 +15,11 @@ class ForgotPasswordViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val forgotPasswordForm: ForgotPasswordForm
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _showSuccess = MutableLiveData<Event<Boolean>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordResetInProgress = MutableLiveData<Boolean>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val showSuccess: LiveData<Event<Boolean>> = _showSuccess
     val emailError: LiveData<Int> = _emailError
     val passwordResetInProgress = _passwordResetInProgress
@@ -47,11 +48,11 @@ class ForgotPasswordViewModel @Inject constructor(
     }
 
     fun okClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
 //    private fun handleAuthenticationError(error: AuthenticationError) {

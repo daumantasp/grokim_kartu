@@ -15,6 +15,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
@@ -78,8 +79,8 @@ class PlayersFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        playersViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+        playersViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         playersViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
             binding.playersHeaderViewElement.showRightTextAttentioner(it)
@@ -188,6 +189,14 @@ class PlayersFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
+        }
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

@@ -19,6 +19,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentConversationBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
 import com.dauma.grokimkartu.repositories.conversations.entities.Message
@@ -111,8 +112,8 @@ class ConversationFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        conversationViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+        conversationViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         conversationViewModel.id.observe(viewLifecycleOwner, EventObserver {
             it?.let {
@@ -238,6 +239,14 @@ class ConversationFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
+        }
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

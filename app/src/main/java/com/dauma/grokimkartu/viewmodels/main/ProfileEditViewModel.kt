@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
@@ -17,12 +18,12 @@ class ProfileEditViewModel @Inject constructor(
     private val profileEditForm: ProfileEditForm,
     private val utils: Utils
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _navigateBackConfirmation = MutableLiveData<Event<String>>()
     private val _profileLoaded = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
     private val _instrument = MutableLiveData<Event<String>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val navigateBackConfirmation: LiveData<Event<String>> = _navigateBackConfirmation
     val profileLoaded: LiveData<Event<String>> = _profileLoaded
     val city: LiveData<Event<String>> = _city
@@ -36,7 +37,7 @@ class ProfileEditViewModel @Inject constructor(
         if (profileEditForm.isChanged() && isConfirmed == false) {
             _navigateBackConfirmation.value = Event("")
         } else {
-            _navigateBack.value = Event("")
+            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 

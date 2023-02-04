@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.PasswordChangeForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -18,18 +19,18 @@ class PasswordChangeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val passwordChangeForm: PasswordChangeForm
 ) : ViewModel() {
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _showSuccess = MutableLiveData<Event<Boolean>>()
     private val _oldPasswordError = MutableLiveData<Int>()
     private val _newPasswordError = MutableLiveData<Int>()
     private val _repeatPasswordError = MutableLiveData<Int>()
     private val _changeInProgress = MutableLiveData<Boolean>()
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val showSuccess: LiveData<Event<Boolean>> = _showSuccess
     val oldPasswordError: LiveData<Int> = _oldPasswordError
     val newPasswordError: LiveData<Int> = _newPasswordError
     val repeatPasswordError: LiveData<Int> = _repeatPasswordError
     val changeInProgress: LiveData<Boolean> = _changeInProgress
-    val navigateBack: LiveData<Event<String>> = _navigateBack
 
     companion object {
         private val TAG = "PasswordChangeViewModel"
@@ -70,11 +71,11 @@ class PasswordChangeViewModel @Inject constructor(
     }
 
     fun okClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     private fun handleAuthenticationError(error: AuthenticationErrors) {

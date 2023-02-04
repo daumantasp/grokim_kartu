@@ -4,14 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.models.forms.ThomannsFilterForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsFilter
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.sql.Timestamp
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,10 +19,10 @@ class ThomannsFilterViewModel @Inject constructor(
     private val thomannsFilterForm: ThomannsFilterForm,
     private val utils: Utils
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _city = MutableLiveData<Event<String>>()
     private val _validUntil = MutableLiveData<Event<List<Any>>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val city: LiveData<Event<String>> = _city
     val validUntil: LiveData<Event<List<Any>>> = _validUntil
 
@@ -70,7 +69,7 @@ class ThomannsFilterViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun cityClicked() {
@@ -133,7 +132,7 @@ class ThomannsFilterViewModel @Inject constructor(
                 validUntil = formattedValidUntil,
                 isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
             )
-            _navigateBack.value = Event("")
+            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 
@@ -141,7 +140,7 @@ class ThomannsFilterViewModel @Inject constructor(
         if (thomannsFilterForm.isInitialEmpty() == false) {
             thomannsRepository.filter = ThomannsFilter.CLEAR
             setFilter()
-            _navigateBack.value = Event("")
+            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 }

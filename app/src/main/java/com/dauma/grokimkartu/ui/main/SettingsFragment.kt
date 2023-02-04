@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSettingsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsSettings
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.general.utils.locale.Language
@@ -54,22 +55,22 @@ class SettingsFragment : Fragment() {
 
     private fun setupOnClickers() {
         binding.languageRowViewElement.setOnClick {
-            findNavController().navigate(R.id.action_settingsFragment_to_languagesFragment)
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToLanguagesFragment())
         }
         binding.themeModeRowViewElement.setOnClick {
-            findNavController().navigate(R.id.action_settingsFragment_to_uiModesFragment)
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToUiModesFragment())
         }
         binding.changePasswordRowViewElement.setOnClick {
-            findNavController().navigate(R.id.action_settingsFragment_to_passwordChangeFragment)
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToPasswordChangeFragment())
         }
         binding.deleteMyAccountRowViewElement.setOnClick {
-            findNavController().navigate(R.id.action_settingsFragment_to_deleteUserFragment)
+            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToDeleteUserFragment())
         }
     }
 
     private fun setupObservers() {
-        settingsViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_settingsFragment_to_authGraph)
+        settingsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         settingsViewModel.language.observe(viewLifecycleOwner, EventObserver {
             updateLanguageRowValue(it)
@@ -96,5 +97,13 @@ class SettingsFragment : Fragment() {
             ThemeMode.Dark -> getString(R.string.theme_mode_dark)
             ThemeMode.Device -> getString(R.string.theme_mode_device)
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

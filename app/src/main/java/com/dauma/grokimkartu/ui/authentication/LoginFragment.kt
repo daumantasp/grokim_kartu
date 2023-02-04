@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.ui.MainActivity
 import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.viewmodels.authentication.LoginViewModel
@@ -75,6 +76,11 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
+        // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
+        loginViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
+        })
         loginViewModel.getLoginForm().getFormFields().observe(viewLifecycleOwner) {
             this.loginViewModel.loginUser(it.get(0), it.get(1))
         }
@@ -84,19 +90,11 @@ class LoginFragment : Fragment() {
         loginViewModel.loginInProgress.observe(viewLifecycleOwner) {
             this.binding.loginButton.showAnimation(it)
         }
-        // https://stackoverflow.com/questions/50740757/how-to-use-android-navigation-without-binding-to-ui-in-viewmodel-mvvm
-        // https://stackoverflow.com/questions/60622645/navigate-from-one-fragment-to-another-when-using-mvvm-pattern-for-android
-        loginViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_loginFragment_to_homeGraph)
-        })
         loginViewModel.emailError.observe(viewLifecycleOwner, Observer {
             this.binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
         loginViewModel.passwordError.observe(viewLifecycleOwner, Observer {
             this.binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        })
-        loginViewModel.closeApp.observe(viewLifecycleOwner, EventObserver {
-            this.activity?.finish()
         })
     }
 
@@ -109,6 +107,14 @@ class LoginFragment : Fragment() {
             }
         } else {
             loginViewModel.enableNotifications(true)
+        }
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

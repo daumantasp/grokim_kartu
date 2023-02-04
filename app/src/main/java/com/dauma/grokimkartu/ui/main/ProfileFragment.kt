@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
@@ -47,7 +46,7 @@ class ProfileFragment : Fragment() {
 
     private fun setupOnClickers() {
         binding.editProfileButton.setOnClick {
-            findNavController().navigate(R.id.action_profileFragment_to_profileEditFragment)
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToProfileEditFragment())
         }
     }
 

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersFilterBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
@@ -65,12 +66,12 @@ class PlayersFilterFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        playersFilterViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+        playersFilterViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
                 dialogsManager?.hideBottomDialog()
                 isDialogShown = false
             } else {
-                this.findNavController().popBackStack()
+                handleNavigation(it)
             }
         })
         playersFilterViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
@@ -162,5 +163,13 @@ class PlayersFilterFragment : Fragment() {
                 playersFilterViewModel.clearFilter()
             }
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

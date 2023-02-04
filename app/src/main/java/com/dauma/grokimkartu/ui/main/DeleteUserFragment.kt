@@ -8,9 +8,9 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentDeleteUserBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.main.DeleteUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,17 +48,22 @@ class DeleteUserFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        deleteUserViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
+        })
         deleteUserViewModel.passwordError.observe(viewLifecycleOwner) {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         }
-        deleteUserViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_deleteUserFragment_to_authGraph)
-        })
-        deleteUserViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
-        })
         deleteUserViewModel.deleteInProgress.observe(viewLifecycleOwner, {
             binding.deleteUserButton.showAnimation(it)
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

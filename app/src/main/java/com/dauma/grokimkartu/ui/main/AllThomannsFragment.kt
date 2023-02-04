@@ -13,6 +13,7 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentAllThomannsBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
@@ -76,10 +77,8 @@ class AllThomannsFragment : Fragment() {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         })
-        allThomannsViewModel.thomannDetails.observe(viewLifecycleOwner, EventObserver { thomannId ->
-            val args = Bundle()
-            args.putInt("thomannId", thomannId)
-            this.findNavController().navigate(R.id.action_thomannFragment_to_thomannDetailsFragment, args)
+        allThomannsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
     }
 
@@ -170,6 +169,14 @@ class AllThomannsFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
+        }
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

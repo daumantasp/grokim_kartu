@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils
@@ -16,9 +17,9 @@ class LanguagesViewModel @Inject constructor(
     private val localeUtils: LocaleUtils,
     private val sharedStorageUtils: SharedStorageUtils
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _language = MutableLiveData<Event<Language>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val language: LiveData<Event<Language>> = _language
 
     companion object {
@@ -31,7 +32,7 @@ class LanguagesViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun languageClicked(context: Context, language: Language) {

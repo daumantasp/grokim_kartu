@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.utils.Utils
@@ -15,10 +16,10 @@ class ThemeModesViewModel @Inject constructor(
     private val themeModeManager: ThemeModeManager,
     private val utils: Utils
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _availableThemeModes = MutableLiveData<Event<List<ThemeMode>>>()
     private val _currentThemeMode = MutableLiveData<Event<ThemeMode>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val availableThemeModes: LiveData<Event<List<ThemeMode>>> = _availableThemeModes
     val currentThemeMode: LiveData<Event<ThemeMode>> = _currentThemeMode
 
@@ -32,7 +33,7 @@ class ThemeModesViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun lightClicked() {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.PlayersFilterForm
 import com.dauma.grokimkartu.repositories.players.PlayersFilter
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
@@ -15,10 +16,10 @@ class PlayersFilterViewModel @Inject constructor(
     private val playersRepository: PlayersRepository,
     private val playersFilterForm: PlayersFilterForm
 ) : ViewModel() {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _city = MutableLiveData<Event<String>>()
     private val _instrument = MutableLiveData<Event<String>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val city: LiveData<Event<String>> = _city
     val instrument: LiveData<Event<String>> = _instrument
 
@@ -89,7 +90,7 @@ class PlayersFilterViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun cityClicked() {
@@ -152,7 +153,7 @@ class PlayersFilterViewModel @Inject constructor(
                 instrumentId = playersFilterForm.instrument.id,
                 text = playersFilterForm.text
             )
-            _navigateBack.value = Event("")
+            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 
@@ -160,7 +161,7 @@ class PlayersFilterViewModel @Inject constructor(
         if (playersFilterForm.isInitialEmpty() == false) {
             playersRepository.filter = PlayersFilter.CLEAR
             setFilter()
-            _navigateBack.value = Event("")
+            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 }

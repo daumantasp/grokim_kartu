@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentPasswordChangeBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.main.PasswordChangeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -66,11 +67,19 @@ class PasswordChangeFragment : Fragment() {
                 binding.passwordChangeSuccessfulLinearLayout.visibility = View.VISIBLE
             }
         })
-        passwordChangeViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
+        passwordChangeViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         passwordChangeViewModel.changeInProgress.observe(viewLifecycleOwner, {
             binding.changePasswordButton.showAnimation(it)
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

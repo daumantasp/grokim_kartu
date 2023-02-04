@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
@@ -22,13 +23,13 @@ class ThomannDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val thomannId = savedStateHandle.get<Int>("thomannId")
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _detailsLoaded = MutableLiveData<ThomannDetails>()
     private val _message = MutableLiveData<Event<Int>>() // TODO: refactor
     private val _join = MutableLiveData<Event<Int>>()
     private val _quit = MutableLiveData<Event<Int>>()
     private val _edit = MutableLiveData<Event<Int>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val detailsLoaded: LiveData<ThomannDetails> = _detailsLoaded
     val join: LiveData<Event<Int>> = _join
     val quit: LiveData<Event<Int>> = _quit
@@ -40,7 +41,7 @@ class ThomannDetailsViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun joinClicked(amount: Int, onComplete: () -> Unit = {}) {
@@ -78,7 +79,7 @@ class ThomannDetailsViewModel @Inject constructor(
         if (thomannId != null) {
             thomannsRepository.delete(thomannId) { thomannsErrors ->
                 if (thomannsErrors == null) {
-                    _navigateBack.value = Event("")
+                    _navigation.value = Event(NavigationCommand.Back)
                 }
             }
         }

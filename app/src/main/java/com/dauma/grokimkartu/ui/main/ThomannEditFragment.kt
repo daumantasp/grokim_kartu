@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
@@ -111,12 +112,12 @@ class ThomannEditFragment : Fragment() {
                 ))
             }
         })
-        thomannEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+        thomannEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
                 dialogsManager?.hideBottomDialog()
                 isDialogShown = false
             } else {
-                this.findNavController().popBackStack()
+                handleNavigation(it)
             }
         })
         thomannEditViewModel.city.observe(viewLifecycleOwner, EventObserver {
@@ -180,5 +181,13 @@ class ThomannEditFragment : Fragment() {
                 ))
             }
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

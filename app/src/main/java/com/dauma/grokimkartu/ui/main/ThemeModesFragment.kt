@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentThemeModesBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.ui.StatusBarManager
 import com.dauma.grokimkartu.ui.StatusBarTheme
@@ -57,8 +58,8 @@ class ThemeModesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        themeModesViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
+        themeModesViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         themeModesViewModel.availableThemeModes.observe(viewLifecycleOwner, EventObserver {
             if (it.contains(ThemeMode.Light)) {
@@ -89,5 +90,13 @@ class ThemeModesFragment : Fragment() {
     }
 
     private fun setupOnClicks() {
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

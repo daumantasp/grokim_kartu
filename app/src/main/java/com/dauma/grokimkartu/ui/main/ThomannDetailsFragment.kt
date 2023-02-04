@@ -15,10 +15,10 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import com.dauma.grokimkartu.databinding.FragmentThomannDetailsBinding
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogAmountData
-import com.dauma.grokimkartu.ui.BottomDialogData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.main.adapters.*
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetails
@@ -95,8 +95,8 @@ class ThomannDetailsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        thomannDetailsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+        thomannDetailsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         thomannDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner) {
             this.binding.thomannDetailsHeaderViewElement.setTitle(getString(R.string.thomann_details_title))
@@ -134,14 +134,12 @@ class ThomannDetailsFragment : Fragment() {
             }
         })
         thomannDetailsViewModel.edit.observe(viewLifecycleOwner, EventObserver { thomannId ->
-            val args = Bundle()
-            args.putInt("thomannId", thomannId)
-            this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_thomannEditFragment, args)
+            findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToThomannEditFragment(thomannId))
         })
         thomannDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { thomannId ->
-            val args = Bundle()
-            args.putInt("thomannId", thomannId)
-            this.findNavController().navigate(R.id.action_thomannDetailsFragment_to_conversationFragment, args)
+            findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToConversationFragment(
+                thomannId = thomannId
+            ))
         })
     }
 
@@ -152,9 +150,7 @@ class ThomannDetailsFragment : Fragment() {
             utils = utils,
             dialogsManager = dialogsManager,
             onItemClicked = { userId ->
-                val args = Bundle()
-                args.putInt("userId", userId)
-                findNavController().navigate(R.id.action_thomannDetailsFragment_to_playerDetailsFragment, args)
+                findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToPlayerDetailsFragment(userId))
             },
             onLeaveClicked = { this.thomannDetailsViewModel.quitClicked() },
             onKickClicked = { userId -> this.thomannDetailsViewModel.kickClicked(userId) }
@@ -211,4 +207,12 @@ class ThomannDetailsFragment : Fragment() {
             recyclerViewData.add(ThomannDetailsButtonData(getString(R.string.thomann_details_post_message), false, details.onPostMessageClicked))
         }
     }
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
+    }
+
 }

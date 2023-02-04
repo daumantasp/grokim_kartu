@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPrivateConversationsBinding
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
@@ -80,10 +79,11 @@ class PrivateConversationsFragment : Fragment() {
             conversationsListData = conversations.toMutableList(),
             utils = utils,
             onItemClicked = { userId, name ->
-                val args = Bundle()
-                args.putInt("userId", userId)
-                args.putString("userName", name)
-                this.findNavController().navigate(R.id.action_conversationsFragment_to_conversationFragment2, args)
+                findNavController().navigate(ConversationsFragmentDirections.actionConversationsFragmentToConversationFragment2(
+                    userId = userId,
+                    thomannId = -1,
+                    userName = name
+                ))
             }
         )
         isViewSetup = true

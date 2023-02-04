@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSplashBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,11 +41,14 @@ class SplashFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        splashViewModel.navigateToLogin.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+        splashViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
-        splashViewModel.navigateToPlayers.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_splashFragment_to_homeGraph)
-        })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+        }
     }
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -61,8 +62,16 @@ class ForgotPasswordFragment : Fragment() {
                 binding.forgotPasswordResetSuccessLinearLayout.visibility = View.VISIBLE
             }
         })
-        forgotPasswordViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
+        forgotPasswordViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

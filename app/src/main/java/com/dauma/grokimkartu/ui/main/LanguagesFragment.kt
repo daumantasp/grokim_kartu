@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLanguagesBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.ui.BottomMenuManager
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
@@ -57,8 +58,8 @@ class LanguagesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        languagesViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
+        languagesViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         languagesViewModel.language.observe(viewLifecycleOwner, EventObserver {
             selectLanguage(it)
@@ -105,5 +106,13 @@ class LanguagesFragment : Fragment() {
 
     private fun refreshMenuItemTitles() {
         bottomMenuManager?.refreshBottomMenuItemTitles()
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

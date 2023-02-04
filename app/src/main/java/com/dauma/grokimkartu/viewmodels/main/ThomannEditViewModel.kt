@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.models.forms.ThomannEditForm
@@ -25,12 +26,12 @@ class ThomannEditViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val thomannId = savedStateHandle.get<Int>("thomannId")
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _navigateBackConfirmation = MutableLiveData<Event<String>>()
-    private val _navigateBack = MutableLiveData<Event<String>>()
     private val _city = MutableLiveData<Event<String>>()
     private val _validUntil = MutableLiveData<Event<List<Any>>>()
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val navigateBackConfirmation: LiveData<Event<String>> = _navigateBackConfirmation
-    val navigateBack: LiveData<Event<String>> = _navigateBack
     val city: LiveData<Event<String>> = _city
     val validUntil: LiveData<Event<List<Any>>> = _validUntil
 
@@ -70,7 +71,7 @@ class ThomannEditViewModel @Inject constructor(
         if (thomannEditForm.isChanged() && isConfirmed == false) {
             _navigateBackConfirmation.value = Event("")
         } else {
-            _navigateBack.value = Event("")
+            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 
@@ -138,7 +139,7 @@ class ThomannEditViewModel @Inject constructor(
                 )
                 thomannsRepository.create(createThomann) { thomannDetails, thomannsErrors ->
                     if (thomannDetails != null) {
-                        _navigateBack.value = Event("")
+                        _navigation.value = Event(NavigationCommand.Back)
                     }
                     onComplete()
                 }
@@ -150,7 +151,7 @@ class ThomannEditViewModel @Inject constructor(
                 )
                 thomannsRepository.update(thomannId!!, updateThomann) { thomannDetails, thomannsErrors ->
                     if (thomannDetails != null) {
-                        _navigateBack.value = Event("")
+                        _navigation.value = Event(NavigationCommand.Back)
                     }
                     onComplete()
                 }

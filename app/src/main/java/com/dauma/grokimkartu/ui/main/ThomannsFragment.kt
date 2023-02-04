@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.ThomannsPagerAdapter
 import com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel
@@ -90,17 +91,25 @@ class ThomannsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        thomannsViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().popBackStack()
+        thomannsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
         thomannsViewModel.allThomannsDisplayed.observe(viewLifecycleOwner, EventObserver {
             binding.thomannsHeaderViewElement.showRightTextAsDisabled(it == false)
         })
         thomannsViewModel.filter.observe(viewLifecycleOwner, EventObserver {
-            this.findNavController().navigate(R.id.action_thomannFragment_to_thomannsFilterFragment)
+            findNavController().navigate(ThomannsFragmentDirections.actionThomannFragmentToThomannsFilterFragment())
         })
         thomannsViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
             binding.thomannsHeaderViewElement.showRightTextAttentioner(it)
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

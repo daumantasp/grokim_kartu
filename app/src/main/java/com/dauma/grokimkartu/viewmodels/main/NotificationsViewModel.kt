@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.repositories.notifications.NotificationsListener
 import com.dauma.grokimkartu.repositories.notifications.NotificationsRepository
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
@@ -14,10 +15,10 @@ import javax.inject.Inject
 class NotificationsViewModel @Inject constructor(
     private val notificationsRepository: NotificationsRepository,
 ) : ViewModel(), NotificationsListener {
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _notificationsUpdated = MutableLiveData<List<NotificationsPage>>()
     private val _notificationsPages = MutableLiveData<List<NotificationsPage>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val notificationsUpdated: LiveData<List<NotificationsPage>> = _notificationsUpdated
     val notificationsPages: LiveData<List<NotificationsPage>> = _notificationsPages
 
@@ -40,7 +41,7 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun notificationClicked(notificationId: Int) {

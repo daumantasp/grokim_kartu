@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.authentication.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -69,8 +70,8 @@ class RegistrationFragment : Fragment() {
         registrationViewModel.passwordError.observe(viewLifecycleOwner, Observer {
             binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
         })
-        registrationViewModel.navigateBack.observe(viewLifecycleOwner, {
-            findNavController().popBackStack()
+        registrationViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
         })
 //        registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
 //            binding.resendTextView.isEnabled = it
@@ -84,5 +85,13 @@ class RegistrationFragment : Fragment() {
 //            }
 //            binding.resendTextView.text = resendButtonTitle
 //        })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

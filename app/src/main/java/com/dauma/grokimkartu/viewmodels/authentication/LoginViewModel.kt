@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
@@ -14,6 +15,7 @@ import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
+import com.dauma.grokimkartu.ui.authentication.LoginFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -25,14 +27,12 @@ class LoginViewModel @Inject constructor(
     private val user: User,
     private val utils: Utils
 ) : ViewModel(), LoginListener {
-    private val _navigateToPlayers = MutableLiveData<Event<String>>()
-    private val _closeApp = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _emailError = MutableLiveData<Int>()
     private val _passwordError = MutableLiveData<Int>()
     private val _loginInProgress = MutableLiveData<Boolean>()
     private val _askForNotificationsPermissionIfAllowed = MutableLiveData<Event<String>>()
-    val navigateToPlayers: LiveData<Event<String>> = _navigateToPlayers
-    val closeApp: LiveData<Event<String>> = _closeApp
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val emailError: LiveData<Int> = _emailError
     val passwordError: LiveData<Int> = _passwordError
     val loginInProgress: LiveData<Boolean> = _loginInProgress
@@ -83,13 +83,13 @@ class LoginViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _closeApp.value = Event("")
+        _navigation.value = Event(NavigationCommand.CloseApp)
     }
 
     override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
         if (isSuccessful) {
             clearAuthenticationErrors()
-            _navigateToPlayers.value = Event("")
+            _navigation.value = Event(NavigationCommand.ToDirection(LoginFragmentDirections.actionLoginFragmentToHomeGraph()))
         } else {
             if (errors != null) {
                 handleAuthenticationError(errors)

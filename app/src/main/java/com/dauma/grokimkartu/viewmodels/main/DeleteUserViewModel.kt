@@ -5,10 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.DeleteUserForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
+import com.dauma.grokimkartu.ui.main.DeleteUserFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -17,12 +19,10 @@ class DeleteUserViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val deleteUserForm: DeleteUserForm
 ) : ViewModel() {
-    private val _navigateToLogin = MutableLiveData<Event<String>>()
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _passwordError = MutableLiveData<Int>()
     private val _deleteInProgress = MutableLiveData<Boolean>()
-    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val passwordError: LiveData<Int> = _passwordError
     val deleteInProgress: LiveData<Boolean> = _deleteInProgress
 
@@ -35,7 +35,7 @@ class DeleteUserViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun deleteUserClicked() {
@@ -47,7 +47,7 @@ class DeleteUserViewModel @Inject constructor(
             _deleteInProgress.value = true
             authRepository.delete { isSuccessful, authenticationErrors ->
                 if (isSuccessful) {
-                    _navigateToLogin.value = Event("")
+                    _navigation.value = Event(NavigationCommand.ToDirection(DeleteUserFragmentDirections.actionDeleteUserFragmentToAuthGraph()))
                 } else if (authenticationErrors != null) {
                         handleAuthenticationError(authenticationErrors)
                 }

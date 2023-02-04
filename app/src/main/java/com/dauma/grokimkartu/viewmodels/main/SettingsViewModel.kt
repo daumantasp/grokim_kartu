@@ -3,6 +3,7 @@ package com.dauma.grokimkartu.viewmodels.main
 import android.content.Context
 import androidx.lifecycle.*
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsSettings
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
@@ -16,6 +17,7 @@ import com.dauma.grokimkartu.repositories.auth.LogoutListener
 import com.dauma.grokimkartu.repositories.settings.SettingsRepository
 import com.dauma.grokimkartu.repositories.settings.entities.Settings
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
+import com.dauma.grokimkartu.ui.main.SettingsFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -29,12 +31,12 @@ class SettingsViewModel @Inject constructor(
     private val pushNotificationsManager: PushNotificationsManager,
     private val utils: Utils
 ) : ViewModel(), LogoutListener {
-    private val _navigateToLogin = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _passwordError = MutableLiveData<Int>()
     private val _language = MutableLiveData<Event<Language>>()
     private val _themeMode = MutableLiveData<Event<ThemeMode>>()
     private val _pushNotificationsSettingsEnabled = MutableLiveData<Event<PushNotificationsSettings>>()
-    val navigateToLogin: LiveData<Event<String>> = _navigateToLogin
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val passwordError: LiveData<Int> = _passwordError
     val language: LiveData<Event<Language>> = _language
     val themeMode: LiveData<Event<ThemeMode>> = _themeMode
@@ -142,7 +144,7 @@ class SettingsViewModel @Inject constructor(
 
     override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
         if (isSuccessful) {
-            _navigateToLogin.value = Event("")
+            _navigation.value = Event(NavigationCommand.ToDirection(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph()))
         }
     }
 

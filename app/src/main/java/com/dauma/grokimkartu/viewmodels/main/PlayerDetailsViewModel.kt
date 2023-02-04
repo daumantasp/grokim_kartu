@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.PlayerDetailsForm
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
+import com.dauma.grokimkartu.ui.main.PlayerDetailsFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -18,12 +20,10 @@ class PlayerDetailsViewModel @Inject constructor(
 ) : ViewModel() {
     // READ https://medium.com/@fabioCollini/android-data-binding-f9f9d3afc761
     private val userId = savedStateHandle.get<Int>("userId")
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _detailsLoaded = MutableLiveData<Event<String>>()
-    private val _message = MutableLiveData<Event<Array<Any>>>() // TODO: refactor
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val detailsLoaded: LiveData<Event<String>> = _detailsLoaded
-    val message: LiveData<Event<Array<Any>>> = _message
 
     companion object {
         private val TAG = "DetailsViewModel"
@@ -34,7 +34,7 @@ class PlayerDetailsViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun reportClicked() {
@@ -44,7 +44,9 @@ class PlayerDetailsViewModel @Inject constructor(
     fun messageClicked() {
         userId?.let { userId ->
             val name = playerDetailsForm.name
-            _message.value = Event(arrayOf<Any>(userId, name))
+            _navigation.value = Event(NavigationCommand.ToDirection(
+                PlayerDetailsFragmentDirections.actionPlayerDetailsFragmentToConversationFragment(userId, -1, name))
+            )
         }
     }
 

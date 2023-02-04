@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsFilterBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
@@ -68,12 +69,12 @@ class ThomannsFilterFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        thomannsFilterViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+        thomannsFilterViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
                 dialogsManager?.hideBottomDialog()
                 isDialogShown = false
             } else {
-                this.findNavController().popBackStack()
+                handleNavigation(it)
             }
         })
         thomannsFilterViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
@@ -162,5 +163,13 @@ class ThomannsFilterFragment : Fragment() {
                 thomannsFilterViewModel.clearFilter()
             }
         })
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

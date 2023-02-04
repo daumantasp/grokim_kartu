@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
@@ -189,12 +190,12 @@ class ProfileEditFragment : Fragment() {
                 ))
             }
         })
-        profileEditViewModel.navigateBack.observe(viewLifecycleOwner, EventObserver {
+        profileEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
             if (isDialogShown == true) {
                 dialogsManager?.hideBottomDialog()
                 isDialogShown = false
             } else {
-                this.findNavController().popBackStack()
+                handleNavigation(it)
             }
         })
         profileEditViewModel.profileLoaded.observe(viewLifecycleOwner, EventObserver {
@@ -283,5 +284,13 @@ class ProfileEditFragment : Fragment() {
     private fun canCapture() : Boolean {
         val captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         return captureIntent.resolveActivity(requireContext().packageManager) != null
+    }
+
+    private fun handleNavigation(navigationCommand: NavigationCommand) {
+        when (navigationCommand) {
+            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
+            is NavigationCommand.Back -> findNavController().popBackStack()
+            is NavigationCommand.CloseApp -> activity?.finish()
+        }
     }
 }

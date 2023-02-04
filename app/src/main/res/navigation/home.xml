@@ -100,7 +100,11 @@
     <fragment
         android:id="@+id/thomannEditFragment"
         android:name="com.dauma.grokimkartu.ui.main.ThomannEditFragment"
-        android:label="ThomannEditFragment" />
+        android:label="ThomannEditFragment" >
+        <argument
+            android:name="thomannId"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/thomannDetailsFragment"
         android:name="com.dauma.grokimkartu.ui.main.ThomannDetailsFragment"

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentHomeBinding
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.CustomNavigator
@@ -60,13 +59,13 @@ class HomeFragment : Fragment() {
             customNavigator?.navigateToProfile()
         }
         binding.homeHeaderViewElement.setOnNotificationsClick {
-            findNavController().navigate(R.id.action_homeFragment_to_notificationsFragment)
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNotificationsFragment())
         }
         binding.playersCardViewElement.setOnClick {
-            findNavController().navigate(R.id.action_homeFragment_to_playersFragment)
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPlayersFragment())
         }
         binding.thomannCardViewElement.setOnClick {
-            findNavController().navigate(R.id.action_homeFragment_to_thomannFragment)
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToThomannFragment())
         }
 
         homeViewModel.viewIsReady()

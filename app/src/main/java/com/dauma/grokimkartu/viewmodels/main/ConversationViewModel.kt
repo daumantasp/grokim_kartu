@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.repositories.conversations.ConversationListener
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepository
 import com.dauma.grokimkartu.repositories.conversations.ThomannConversationsRepository
@@ -22,12 +23,12 @@ class ConversationViewModel @Inject constructor(
     private val userId = savedStateHandle.get<Int>("userId")
     private val thomannId = savedStateHandle.get<Int>("thomannId")
     private val userNameSaved = savedStateHandle.get<String>("userName")
-    private val _navigateBack = MutableLiveData<Event<String>>()
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _newConversationPages = MutableLiveData<List<ConversationPage>>()
     private val _nextConversationPage = MutableLiveData<List<ConversationPage>>()
     private val _messagePosted = MutableLiveData<Event<String>>()
     private val _id = MutableLiveData<Event<String?>>()
-    val navigateBack: LiveData<Event<String>> = _navigateBack
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val newConversationPages: LiveData<List<ConversationPage>> = _newConversationPages
     val nextConversationPage: LiveData<List<ConversationPage>> = _nextConversationPage
     val messagePosted: LiveData<Event<String>> = _messagePosted
@@ -65,7 +66,7 @@ class ConversationViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun postMessageClicked(messageText: String) {

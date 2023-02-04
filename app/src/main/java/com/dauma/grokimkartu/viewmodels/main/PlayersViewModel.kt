@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
+import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,11 +14,11 @@ import javax.inject.Inject
 class PlayersViewModel @Inject constructor(
     private val playersRepository: PlayersRepository
 ) : ViewModel() {
+    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _playersPages = MutableLiveData<List<PlayersPage>>()
-    private val _navigateBack = MutableLiveData<Event<String>>()
     private val _filterEnabled = MutableLiveData<Event<Boolean>>()
+    val navigation: LiveData<Event<NavigationCommand>> = _navigation
     val playersPages: LiveData<List<PlayersPage>> = _playersPages
-    val navigateBack: LiveData<Event<String>> = _navigateBack
     val filterEnabled: LiveData<Event<Boolean>> = _filterEnabled
 
     companion object {
@@ -34,7 +35,7 @@ class PlayersViewModel @Inject constructor(
     }
 
     fun backClicked() {
-        _navigateBack.value = Event("")
+        _navigation.value = Event(NavigationCommand.Back)
     }
 
     fun loadNextPlayersPage() {
