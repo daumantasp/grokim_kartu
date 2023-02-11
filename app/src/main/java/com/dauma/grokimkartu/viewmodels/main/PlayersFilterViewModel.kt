@@ -17,21 +17,17 @@ class PlayersFilterViewModel @Inject constructor(
     private val playersFilterForm: PlayersFilterForm
 ) : ViewModel() {
     private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _city = MutableLiveData<Event<String>>()
-    private val _instrument = MutableLiveData<Event<String>>()
+    private val _uiState = MutableLiveData<UiState>()
     val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val city: LiveData<Event<String>> = _city
-    val instrument: LiveData<Event<String>> = _instrument
+    val uiState: LiveData<UiState> = _uiState
 
-    companion object {
-        private val TAG = "PlayersFilterViewModel"
+    enum class UiState {
+        FORM,
+        CITY,
+        INSTRUMENT
     }
 
-    fun getPlayersFilterForm() : PlayersFilterForm {
-        return playersFilterForm
-    }
-
-    fun viewIsReady() {
+    init {
         loadPickableValuesAndSetFilter()
     }
 
@@ -89,18 +85,30 @@ class PlayersFilterViewModel @Inject constructor(
         }
     }
 
+    fun getPlayersFilterForm() : PlayersFilterForm {
+        return playersFilterForm
+    }
+
     fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
+        if (listOf(UiState.CITY, UiState.INSTRUMENT).contains(_uiState.value)) {
+            _uiState.value = UiState.FORM
+        } else {
+            _navigation.value = Event(NavigationCommand.Back)
+        }
+    }
+
+    fun cancelPickerClicked() {
+        _uiState.value = UiState.FORM
     }
 
     fun cityClicked() {
         playersFilterForm.filteredPickableCities = playersFilterForm.pickableCities
-        _city.value = Event("")
+        _uiState.value = UiState.CITY
     }
 
     fun instrumentClicked() {
         playersFilterForm.filteredPickableInstruments = playersFilterForm.pickableInstruments
-        _instrument.value = Event("")
+        _uiState.value = UiState.INSTRUMENT
     }
 
     fun searchCity(value: String, onComplete: () -> Unit) {
@@ -133,16 +141,17 @@ class PlayersFilterViewModel @Inject constructor(
 
     fun citySelected(id: Int) {
         val city = playersFilterForm.pickableCities.firstOrNull { pc -> pc.id == id }
-        if (city != null) {
-            playersFilterForm.city = city
+        city?.let {
+            playersFilterForm.city = it
+            _uiState.value = UiState.FORM
         }
-
     }
 
     fun instrumentSelected(id: Int) {
         val instrument = playersFilterForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
-        if (instrument != null) {
-            playersFilterForm.instrument = instrument
+        instrument?.let {
+            playersFilterForm.instrument = it
+            _uiState.value = UiState.FORM
         }
     }
 

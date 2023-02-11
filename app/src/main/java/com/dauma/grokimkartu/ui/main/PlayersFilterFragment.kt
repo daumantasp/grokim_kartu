@@ -24,17 +24,12 @@ import javax.inject.Inject
 class PlayersFilterFragment : Fragment() {
     private val playersFilterViewModel by viewModels<PlayersFilterViewModel>()
     private var dialogsManager: DialogsManager? = null
-    private var isDialogShown: Boolean = false
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentPlayersFilterBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    companion object {
-        private var TAG = "PlayersFilterFragment"
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,15 +39,16 @@ class PlayersFilterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPlayersFilterBinding.inflate(inflater, container, false)
         binding.model = playersFilterViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupOnClickListeners()
-
-        playersFilterViewModel.viewIsReady()
-        return view
     }
 
     override fun onDestroyView() {
@@ -67,77 +63,16 @@ class PlayersFilterFragment : Fragment() {
 
     private fun setupObservers() {
         playersFilterViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            if (isDialogShown == true) {
-                dialogsManager?.hideBottomDialog()
-                isDialogShown = false
-            } else {
-                handleNavigation(it)
-            }
+            handleNavigation(it)
         })
-        playersFilterViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
-            this.isDialogShown = true
-            this.dialogsManager?.let { manager ->
-                val pickableCitiesAsCodeValues = playersFilterViewModel
-                    .getPlayersFilterForm()
-                    .filteredPickableCities
-                    .map { pc -> pc.toCodeValue() }
-
-                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.players_filter_city),
-                    codeValues = pickableCitiesAsCodeValues,
-                    onSearchValueChanged = { value ->
-                        this.playersFilterViewModel.searchCity(value) {
-                            val pickableCitiesAsCodeValues = playersFilterViewModel
-                                .getPlayersFilterForm()
-                                .filteredPickableCities
-                                .map { pc -> pc.toCodeValue() }
-                            manager.setCodeValues(pickableCitiesAsCodeValues)
-                        }
-                    },
-                    onCodeValueClicked = { code ->
-                        val id = code.toIntOrNull()
-                        if (id != null) {
-                            this.playersFilterViewModel.citySelected(id)
-                            manager.hideBottomDialog()
-                            this.isDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {}
-                ))
+        playersFilterViewModel.uiState.observe(viewLifecycleOwner) {
+            when (it) {
+                PlayersFilterViewModel.UiState.FORM -> showForm()
+                PlayersFilterViewModel.UiState.CITY -> showCitiesPicker()
+                PlayersFilterViewModel.UiState.INSTRUMENT -> showInstrumentsPicker()
+                null -> {}
             }
-        })
-        playersFilterViewModel.instrument.observe(viewLifecycleOwner, EventObserver { codeValues ->
-            this.isDialogShown = true
-            this.dialogsManager?.let { manager ->
-                val pickableInstrumentsAsCodeValues = playersFilterViewModel
-                    .getPlayersFilterForm()
-                    .filteredPickableInstruments
-                    .map { pi -> pi.toCodeValue() }
-
-                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.players_filter_instrument),
-                    codeValues = pickableInstrumentsAsCodeValues,
-                    onSearchValueChanged = { value ->
-                        this.playersFilterViewModel.searchInstrument(value) {
-                            val pickableInstrumentsAsCodeValues = playersFilterViewModel
-                                .getPlayersFilterForm()
-                                .filteredPickableInstruments
-                                .map { pi -> pi.toCodeValue() }
-                            manager.setCodeValues(pickableInstrumentsAsCodeValues)
-                        }
-                    },
-                    onCodeValueClicked = { code ->
-                        val id = code.toIntOrNull()
-                        if (id != null) {
-                            this.playersFilterViewModel.instrumentSelected(id)
-                            manager.hideBottomDialog()
-                            this.isDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {}
-                ))
-            }
-        })
+        }
     }
 
     private fun setupOnClickListeners() {
@@ -153,16 +88,72 @@ class PlayersFilterFragment : Fragment() {
         binding.instrumentInputEditText.setOnClickListener {
             playersFilterViewModel.instrumentClicked()
         }
-        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                playersFilterViewModel.applyFilter()
-            }
-        })
-        binding.clearFilterButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                playersFilterViewModel.clearFilter()
-            }
-        })
+        binding.applyFilterButton.setOnClick {
+            playersFilterViewModel.applyFilter()
+        }
+        binding.clearFilterButton.setOnClick {
+            playersFilterViewModel.clearFilter()
+        }
+    }
+
+    private fun showCitiesPicker() {
+        dialogsManager?.let { manager ->
+            val pickableCitiesAsCodeValues = playersFilterViewModel
+                .getPlayersFilterForm()
+                .filteredPickableCities
+                .map { pc -> pc.toCodeValue() }
+            manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                title = getString(R.string.players_filter_city),
+                codeValues = pickableCitiesAsCodeValues,
+                onSearchValueChanged = { value ->
+                    playersFilterViewModel.searchCity(value) {
+                        val filteredPickableCitiesAsCodeValues = playersFilterViewModel
+                            .getPlayersFilterForm()
+                            .filteredPickableCities
+                            .map { pc -> pc.toCodeValue() }
+                        manager.setCodeValues(filteredPickableCitiesAsCodeValues)
+                    }
+                },
+                onCodeValueClicked = { code ->
+                    code.toIntOrNull()?.let {
+                        playersFilterViewModel.citySelected(it)
+                    }
+                },
+                onCancelClicked = { playersFilterViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showInstrumentsPicker() {
+        dialogsManager?.let { manager ->
+            val pickableInstrumentsAsCodeValues = playersFilterViewModel
+                .getPlayersFilterForm()
+                .filteredPickableInstruments
+                .map { pi -> pi.toCodeValue() }
+            manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                title = getString(R.string.players_filter_instrument),
+                codeValues = pickableInstrumentsAsCodeValues,
+                onSearchValueChanged = { value ->
+                    playersFilterViewModel.searchInstrument(value) {
+                        val filteredPickableInstrumentsAsCodeValues = playersFilterViewModel
+                            .getPlayersFilterForm()
+                            .filteredPickableInstruments
+                            .map { pi -> pi.toCodeValue() }
+                        manager.setCodeValues(filteredPickableInstrumentsAsCodeValues)
+                    }
+                },
+                onCodeValueClicked = { code ->
+                    code.toIntOrNull()?.let {
+                        playersFilterViewModel.instrumentSelected(it)
+                    }
+                },
+                onCancelClicked = { playersFilterViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showForm() {
+        dialogsManager?.hideBottomDialog()
     }
 
     private fun handleNavigation(navigationCommand: NavigationCommand) {
