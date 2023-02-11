@@ -13,14 +13,18 @@ import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.databinding.Observable
+import androidx.databinding.Observable.OnPropertyChangedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
 import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.models.forms.ProfileEditForm
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.YesNoDialogData
@@ -35,7 +39,6 @@ class ProfileEditFragment : Fragment() {
     private var dialogsManager: DialogsManager? = null
     @Inject lateinit var utils: Utils
     private var pickCaptureResult: ActivityResultLauncher<Intent>
-    private var isDialogShown: Boolean = false
     private var photoFile: File? = null
 
     private var _binding: FragmentProfileEditBinding? = null
@@ -48,7 +51,186 @@ class ProfileEditFragment : Fragment() {
     }
 
     init {
-        pickCaptureResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        pickCaptureResult = getPickCaptureResult()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dialogsManager = context as? DialogsManager
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileEditBinding.inflate(inflater, container, false)
+        binding.model = profileEditViewModel
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupObservers()
+        setupOnClickListeners()
+    }
+
+    private fun setupOnClickListeners() {
+        binding.profileEditHeaderViewElement.setOnBackClick {
+            profileEditViewModel.backClicked()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            profileEditViewModel.backClicked()
+        }
+        binding.selectPhotoButton.setOnClickListener {
+            showPhotoChooser()
+        }
+        binding.cityInputEditText.setOnClickListener {
+            profileEditViewModel.cityClicked()
+        }
+        binding.instrumentInputEditText.setOnClickListener {
+            profileEditViewModel.instrumentClicked()
+        }
+        binding.saveChangesButton.setOnClick {
+            binding.saveChangesButton.showAnimation(true)
+            profileEditViewModel.saveChanges {
+                binding.saveChangesButton.showAnimation(false)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        dialogsManager = null
+    }
+
+    private fun setupObservers() {
+        profileEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
+        })
+        profileEditViewModel.uiState.observe(viewLifecycleOwner) {
+            when (it) {
+                ProfileEditViewModel.UiState.FORM -> showForm()
+                ProfileEditViewModel.UiState.CITY -> showCitiesPicker()
+                ProfileEditViewModel.UiState.INSTRUMENT -> showInstrumentsPicker()
+                ProfileEditViewModel.UiState.BACK_CONFIRMATION -> showBackConfirmationDialog()
+                null -> {}
+            }
+        }
+        profileEditViewModel.getProfileEditForm().addOnPropertyChangedCallback(onPhotoOrNameChanged())
+    }
+
+    private fun onPhotoOrNameChanged() : OnPropertyChangedCallback {
+        return object : OnPropertyChangedCallback() {
+            var isProfileLoaded = false
+            var isPhotoLoaded = false
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                fun checkIfFullProfileLoaded() {
+                    if (isProfileLoaded == true && isPhotoLoaded == true) {
+                        val profileEditForm = sender as ProfileEditForm
+                        profileEditForm.photo?.let {
+                            binding.photoImageView.setImageBitmap(it)
+                            binding.profileInitialsViewElement.visibility = View.GONE
+                            binding.photoImageView.visibility = View.VISIBLE
+                            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
+                        } ?: run {
+                            val initials = utils.stringUtils.getInitials(profileEditForm.name)
+                            binding.profileInitialsViewElement.setInitials(initials)
+                            binding.photoImageView.visibility = View.GONE
+                            binding.profileInitialsViewElement.visibility = View.VISIBLE
+                            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                if (propertyId == BR.photo) {
+                    isPhotoLoaded = true
+                    checkIfFullProfileLoaded()
+                } else if (propertyId == BR.name) {
+                    isProfileLoaded = true
+                    checkIfFullProfileLoaded()
+                }
+            }
+        }
+    }
+
+    private fun showCitiesPicker() {
+        dialogsManager?.let { manager ->
+            val pickableCitiesAsCodeValues = profileEditViewModel
+                .getProfileEditForm()
+                .filteredPickableCities
+                .map { pc -> pc.toCodeValue() }
+            manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                title = getString(R.string.profile_edit_city),
+                codeValues = pickableCitiesAsCodeValues,
+                onSearchValueChanged = { value ->
+                    profileEditViewModel.searchCity(value) {
+                        val filteredPickableCitiesAsCodeValues = profileEditViewModel
+                            .getProfileEditForm()
+                            .filteredPickableCities
+                            .map { pc -> pc.toCodeValue() }
+                        manager.setCodeValues(filteredPickableCitiesAsCodeValues)
+                    }
+                },
+                onCodeValueClicked = { code ->
+                    code.toIntOrNull()?.let {
+                        profileEditViewModel.citySelected(it)
+                    }
+                },
+                onCancelClicked = { profileEditViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showInstrumentsPicker() {
+        dialogsManager?.let { manager ->
+            val pickableInstrumentsAsCodeValues = profileEditViewModel
+                .getProfileEditForm()
+                .filteredPickableInstruments
+                .map { pi -> pi.toCodeValue() }
+            manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                title = getString(R.string.profile_edit_instrument),
+                codeValues = pickableInstrumentsAsCodeValues,
+                onSearchValueChanged = { value ->
+                    profileEditViewModel.searchInstrument(value) {
+                        val filteredPickableInstrumentsAsCodeValues = profileEditViewModel
+                            .getProfileEditForm()
+                            .filteredPickableInstruments
+                            .map { pi -> pi.toCodeValue() }
+                        manager.setCodeValues(filteredPickableInstrumentsAsCodeValues)
+                    }
+                },
+                onCodeValueClicked = { code ->
+                    code.toIntOrNull()?.let {
+                        profileEditViewModel.instrumentSelected(it)
+                    }
+                },
+                onCancelClicked = { profileEditViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showBackConfirmationDialog() {
+        dialogsManager?.showYesNoDialog(YesNoDialogData(
+            text = getString(R.string.profile_edit_navigate_back_confirmation_text),
+            positiveText = getString(R.string.profile_edit_navigate_back_confirmation_positive),
+            negativeText = getString(R.string.profile_edit_navigate_back_confirmation_negative),
+            cancelable = true,
+            onPositiveButtonClick = { profileEditViewModel.backClicked() },
+            onNegativeButtonClick = { profileEditViewModel.cancelBackClicked() },
+            onCancelClicked = { profileEditViewModel.cancelBackClicked() }
+        ))
+    }
+
+    private fun showForm() {
+        dialogsManager?.hideBottomDialog()
+    }
+
+    private fun getPickCaptureResult() : ActivityResultLauncher<Intent> {
+        return registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val width = resources.getDimensionPixelSize(R.dimen.default_profile_photo_width)
                 val height = resources.getDimensionPixelSize(R.dimen.default_profile_photo_height)
@@ -77,203 +259,46 @@ class ProfileEditFragment : Fragment() {
         }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        dialogsManager = context as? DialogsManager
-    }
+    private fun showPhotoChooser() {
+        val pickIntent: Intent? = if (canPick()) Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) else null
+        var captureIntent: Intent? = null
+        if (canCapture()) {
+            photoFile = null
+            try {
+                photoFile = utils.imageUtils.createUniqueImageFile()
+            } catch (ex: java.io.IOException) { }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentProfileEditBinding.inflate(inflater, container, false)
-        binding.model = profileEditViewModel
-        val view = binding.root
-        setupObservers()
-        setupOnClickListeners()
+            photoFile?.let { photoFile ->
+                val photoUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.dauma.grokimkartu.fileprovider",
+                    photoFile
+                )
+                captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                captureIntent!!.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
 
-        profileEditViewModel.viewIsReady()
-        return view
-    }
-
-    private fun setupOnClickListeners() {
-        binding.profileEditHeaderViewElement.setOnBackClick {
-            profileEditViewModel.backClicked(false)
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            profileEditViewModel.backClicked(false)
-        }
-
-        binding.selectPhotoButton.setOnClickListener {
-            val pickIntent: Intent? = if (canPick()) Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI) else null
-            var captureIntent: Intent? = null
-            if (canCapture()) {
-                photoFile = null
-                try {
-                    photoFile = utils.imageUtils.createUniqueImageFile()
-                } catch (ex: java.io.IOException) { }
-
-                photoFile?.let { photoFile ->
-                    val photoUri = FileProvider.getUriForFile(
-                        requireContext(),
-                        "com.dauma.grokimkartu.fileprovider",
-                        photoFile
-                    )
-                    captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    captureIntent!!.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-
-                    val intentActivities = requireContext().packageManager.queryIntentActivities(
-                        captureIntent!!,
-                        PackageManager.MATCH_DEFAULT_ONLY
-                    )
-                    intentActivities
-                        .map { it.activityInfo.packageName }
-                        .forEach { requireContext().grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
-                }
-            }
-
-            if (pickIntent != null && captureIntent != null) {
-                val chooser = Intent(Intent.ACTION_CHOOSER)
-                chooser.putExtra(Intent.EXTRA_INTENT, pickIntent)
-                chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.profile_edit_chooser_title))
-                val intentArray = arrayOf(captureIntent)
-                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
-                pickCaptureResult.launch(chooser)
-            } else if (pickIntent != null) {
-                pickCaptureResult.launch(pickIntent)
-            } else if (captureIntent != null) {
-                pickCaptureResult.launch(captureIntent)
+                val intentActivities = requireContext().packageManager.queryIntentActivities(
+                    captureIntent!!,
+                    PackageManager.MATCH_DEFAULT_ONLY
+                )
+                intentActivities
+                    .map { it.activityInfo.packageName }
+                    .forEach { requireContext().grantUriPermission(it, photoUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
             }
         }
 
-        binding.cityInputEditText.setOnClickListener {
-            profileEditViewModel.cityClicked()
+        if (pickIntent != null && captureIntent != null) {
+            val chooser = Intent(Intent.ACTION_CHOOSER)
+            chooser.putExtra(Intent.EXTRA_INTENT, pickIntent)
+            chooser.putExtra(Intent.EXTRA_TITLE, getString(R.string.profile_edit_chooser_title))
+            val intentArray = arrayOf(captureIntent)
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
+            pickCaptureResult.launch(chooser)
+        } else if (pickIntent != null) {
+            pickCaptureResult.launch(pickIntent)
+        } else if (captureIntent != null) {
+            pickCaptureResult.launch(captureIntent)
         }
-
-        binding.instrumentInputEditText.setOnClickListener {
-            profileEditViewModel.instrumentClicked()
-        }
-
-        binding.saveChangesButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                binding.saveChangesButton.showAnimation(true)
-                profileEditViewModel.saveChanges {
-                    binding.saveChangesButton.showAnimation(false)
-                }
-            }
-        })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        dialogsManager = null
-    }
-
-    private fun setupObservers() {
-        profileEditViewModel.navigateBackConfirmation.observe(viewLifecycleOwner, EventObserver {
-            if (isDialogShown == true) {
-                dialogsManager?.hideBottomDialog()
-                isDialogShown = false
-            } else {
-                dialogsManager?.showYesNoDialog(YesNoDialogData(
-                    getString(R.string.profile_edit_navigate_back_confirmation_text),
-                    getString(R.string.profile_edit_navigate_back_confirmation_positive),
-                    getString(R.string.profile_edit_navigate_back_confirmation_negative),
-                    true,
-                    { profileEditViewModel.backClicked(true) }
-                ))
-            }
-        })
-        profileEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            if (isDialogShown == true) {
-                dialogsManager?.hideBottomDialog()
-                isDialogShown = false
-            } else {
-                handleNavigation(it)
-            }
-        })
-        profileEditViewModel.profileLoaded.observe(viewLifecycleOwner, EventObserver {
-            if (profileEditViewModel.getProfileEditForm().photo == null) {
-                val initials = utils.stringUtils.getInitials(profileEditViewModel.getProfileEditForm().name)
-                binding.profileInitialsViewElement.setInitials(initials)
-                binding.photoImageView.visibility = View.GONE
-                binding.profileInitialsViewElement.visibility = View.VISIBLE
-            } else {
-                binding.profileInitialsViewElement.visibility = View.GONE
-                binding.photoImageView.visibility = View.VISIBLE
-            }
-            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
-        })
-        profileEditViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
-            this.isDialogShown = true
-            this.dialogsManager?.let { manager ->
-                val pickableCitiesAsCodeValues = profileEditViewModel
-                    .getProfileEditForm()
-                    .filteredPickableCities
-                    .map { pc -> pc.toCodeValue() }
-
-                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.profile_edit_city),
-                    codeValues = pickableCitiesAsCodeValues,
-                    onSearchValueChanged = { value ->
-                        this.profileEditViewModel.searchCity(value) {
-                            val pickableCitiesAsCodeValues = profileEditViewModel
-                                .getProfileEditForm()
-                                .filteredPickableCities
-                                .map { pc -> pc.toCodeValue() }
-                            manager.setCodeValues(pickableCitiesAsCodeValues)
-                        }
-                    },
-                    onCodeValueClicked = { code ->
-                        val id = code.toIntOrNull()
-                        if (id != null) {
-                            this.profileEditViewModel.citySelected(id)
-                            manager.hideBottomDialog()
-                            this.isDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {}
-                ))
-            }
-        })
-        profileEditViewModel.instrument.observe(viewLifecycleOwner, EventObserver { codeValues ->
-            this.isDialogShown = true
-            this.dialogsManager?.let { manager ->
-                val pickableInstrumentsAsCodeValues = profileEditViewModel
-                    .getProfileEditForm()
-                    .filteredPickableInstruments
-                    .map { pi -> pi.toCodeValue() }
-
-                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.profile_edit_instrument),
-                    codeValues = pickableInstrumentsAsCodeValues,
-                    onSearchValueChanged = { value ->
-                        this.profileEditViewModel.searchInstrument(value) {
-                            val pickableInstrumentsAsCodeValues = profileEditViewModel
-                                .getProfileEditForm()
-                                .filteredPickableInstruments
-                                .map { pi -> pi.toCodeValue() }
-                            manager.setCodeValues(pickableInstrumentsAsCodeValues)
-                        }
-                    },
-                    onCodeValueClicked = { code ->
-                        val id = code.toIntOrNull()
-                        if (id != null) {
-                            this.profileEditViewModel.instrumentSelected(id)
-                            manager.hideBottomDialog()
-                            this.isDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {}
-                ))
-            }
-        })
     }
 
     private fun canPick() : Boolean {

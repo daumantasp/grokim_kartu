@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dauma.grokimkartu.general.event.Event
 import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
-import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
@@ -15,64 +14,37 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
-    private val profileEditForm: ProfileEditForm,
-    private val utils: Utils
+    private val profileEditForm: ProfileEditForm
 ) : ViewModel() {
     private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _navigateBackConfirmation = MutableLiveData<Event<String>>()
-    private val _profileLoaded = MutableLiveData<Event<String>>()
-    private val _city = MutableLiveData<Event<String>>()
-    private val _instrument = MutableLiveData<Event<String>>()
+    private val _uiState = MutableLiveData<UiState>()
     val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val navigateBackConfirmation: LiveData<Event<String>> = _navigateBackConfirmation
-    val profileLoaded: LiveData<Event<String>> = _profileLoaded
-    val city: LiveData<Event<String>> = _city
-    val instrument: LiveData<Event<String>> = _instrument
+    val uiState: LiveData<UiState> = _uiState
 
-    fun getProfileEditForm(): ProfileEditForm {
-        return profileEditForm
+    enum class UiState {
+        FORM,
+        BACK_CONFIRMATION,
+        INSTRUMENT,
+        CITY
     }
 
-    fun backClicked(isConfirmed: Boolean) {
-        if (profileEditForm.isChanged() && isConfirmed == false) {
-            _navigateBackConfirmation.value = Event("")
-        } else {
-            _navigation.value = Event(NavigationCommand.Back)
-        }
-    }
-
-    fun viewIsReady() {
+    init {
         loadProfile()
         loadPickableCities()
         loadPickableInstruments()
     }
 
-    fun loadProfile() {
-        var isProfileLoaded = false
-        var isPhotoLoaded = false
-        fun checkIfFullProfileLoaded() {
-            if (isProfileLoaded == true && isPhotoLoaded == true) {
-                _profileLoaded.value = Event("")
-            }
-        }
-
-        profileRepository.profile { profile, profileErrors ->
-            this.profileEditForm.setInitialValues(
+    private fun loadProfile() {
+        profileRepository.profile { profile, _ ->
+            profileEditForm.setInitialValues(
                 name = profile?.name,
                 instrument = profile?.instrument,
                 description = profile?.description,
                 city = profile?.city
             )
-            isProfileLoaded = true
-            checkIfFullProfileLoaded()
         }
-
-        profileRepository.photo { photo, profileErrors ->
-            if (photo != null) {
-                this.profileEditForm.setInitialPhoto(photo)
-            }
-            isPhotoLoaded = true
-            checkIfFullProfileLoaded()
+        profileRepository.photo { photo, _ ->
+            profileEditForm.setInitialPhoto(photo)
         }
     }
 
@@ -94,14 +66,39 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
-    fun cityClicked() {
-        profileEditForm.filteredPickableCities = profileEditForm.pickableCities
-        _city.value = Event("")
+    fun getProfileEditForm(): ProfileEditForm {
+        return profileEditForm
     }
 
-    fun instrumentClicked() {
-        profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
-        _instrument.value = Event("")
+    fun backClicked() {
+        if (listOf(UiState.CITY, UiState.INSTRUMENT).contains(_uiState.value)) {
+            _uiState.value = UiState.FORM
+        } else if (profileEditForm.isChanged() && _uiState.value == UiState.FORM) {
+            _uiState.value = UiState.BACK_CONFIRMATION
+        } else {
+            _navigation.value = Event(NavigationCommand.Back)
+        }
+    }
+
+    fun cancelBackClicked() {
+        _uiState.value = UiState.FORM
+    }
+
+    fun cancelPickerClicked() {
+        _uiState.value = UiState.FORM
+    }
+
+    fun cityClicked() {
+        profileEditForm.filteredPickableCities = profileEditForm.pickableCities
+        _uiState.value = UiState.CITY
+    }
+
+    fun citySelected(id: Int) {
+        val city = profileEditForm.pickableCities.firstOrNull { pc -> pc.id == id }
+        city?.let {
+            profileEditForm.city = it
+            _uiState.value = UiState.FORM
+        }
     }
 
     fun searchCity(value: String, onComplete: () -> Unit) {
@@ -118,6 +115,19 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
+    fun instrumentClicked() {
+        profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
+        _uiState.value = UiState.INSTRUMENT
+    }
+
+    fun instrumentSelected(id: Int) {
+        val instrument = profileEditForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
+        instrument?.let {
+            profileEditForm.instrument = it
+            _uiState.value = UiState.FORM
+        }
+    }
+
     fun searchInstrument(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
             profileRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
@@ -129,20 +139,6 @@ class ProfileEditViewModel @Inject constructor(
         } else {
             profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
             onComplete()
-        }
-    }
-
-    fun citySelected(id: Int) {
-        val city = profileEditForm.pickableCities.firstOrNull { pc -> pc.id == id }
-        if (city != null) {
-            profileEditForm.city = city
-        }
-    }
-
-    fun instrumentSelected(id: Int) {
-        val instrument = profileEditForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
-        if (instrument != null) {
-            profileEditForm.instrument = instrument
         }
     }
 

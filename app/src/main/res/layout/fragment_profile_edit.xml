@@ -62,7 +62,6 @@
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:layout_gravity="center"
-                        android:src="@{model.getProfileEditForm().photo}"
                         android:visibility="invisible"
                         app:layout_constraintWidth_max="244dp"
                         app:layout_constraintBottom_toBottomOf="parent"
