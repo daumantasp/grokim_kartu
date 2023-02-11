@@ -47,6 +47,8 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     private var valueCharsLimit: Int? = null
     private var codeValues: MutableList<CodeValue> = mutableListOf()
     @Inject lateinit var utils: Utils
+    private var isLayouted: Boolean = false
+    private var isVisible: Boolean = false
 
     companion object {
         private const val DEFAULT_ANIMATION_DURATION: Long = 300L
@@ -98,7 +100,18 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         })
 
         // Read More: https://stackoverflow.com/questions/21926644/get-height-and-width-of-a-layout-programmatically
-        rootRelativeLayout.doOnLayout { hide(animated = false) }
+        rootRelativeLayout.doOnLayout {
+            isLayouted = true
+            restoreState()
+        }
+    }
+
+    private fun restoreState() {
+        val wasVisible = isVisible
+        hide(animated = false)
+        if (wasVisible) {
+            show(animated = true)
+        }
     }
 
     fun bindValueData(data: BottomDialogData) {
@@ -271,6 +284,11 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
 
     // Read more about animations https://www.raywenderlich.com/2785491-android-animation-tutorial-with-kotlin
     fun show(animated: Boolean, onComplete: () -> Unit = {}) {
+        isVisible = true
+        if (isLayouted == false) {
+            return
+        }
+
         val height = contentLinearLayout.height
         if (animated == true) {
             val backgroundLayoutAlphaAnimator = ObjectAnimator.ofFloat(backgroundFrameLayout, "alpha", 0.5f, 1.0f)
@@ -298,6 +316,11 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
     }
 
     fun hide(animated: Boolean, onComplete: () -> Unit = {}) {
+        isVisible = false
+        if (isLayouted == false) {
+            return
+        }
+
         val height = contentLinearLayout.height
         if (animated == true) {
             val backgroundLayoutAlphaAnimator = ObjectAnimator.ofFloat(backgroundFrameLayout, "alpha", 1.0f, 0.5f)
