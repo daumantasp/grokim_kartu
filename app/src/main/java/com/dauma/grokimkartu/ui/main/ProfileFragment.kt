@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.Observable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
-import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.models.forms.ProfileForm
 import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -27,16 +29,17 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.model = profileViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
         setupScrollView()
-
-        profileViewModel.viewIsReady()
-        return view
     }
 
     override fun onDestroyView() {
@@ -51,18 +54,40 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        profileViewModel.profileLoaded.observe(viewLifecycleOwner, EventObserver {
-            if (profileViewModel.getProfileForm().photo == null) {
-                val initials = utils.stringUtils.getInitials(profileViewModel.getProfileForm().name ?: "")
-                binding.profileInitialsViewElement.setInitials(initials)
-                binding.photoImageView.visibility = View.GONE
-                binding.profileInitialsViewElement.visibility = View.VISIBLE
-            } else {
-                binding.profileInitialsViewElement.visibility = View.GONE
-                binding.photoImageView.visibility = View.VISIBLE
+        profileViewModel.getProfileForm().addOnPropertyChangedCallback(onPhotoOrNameChanged())
+    }
+
+    private fun onPhotoOrNameChanged() : Observable.OnPropertyChangedCallback {
+        return object : Observable.OnPropertyChangedCallback() {
+            var isProfileLoaded = false
+            var isPhotoLoaded = false
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                fun checkIfFullProfileLoaded() {
+                    if (isProfileLoaded == true && isPhotoLoaded == true) {
+                        val profileEditForm = sender as ProfileForm
+                        profileEditForm.photo?.let {
+                            binding.photoImageView.setImageBitmap(it)
+                            binding.profileInitialsViewElement.visibility = View.GONE
+                            binding.photoImageView.visibility = View.VISIBLE
+                            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
+                        } ?: run {
+                            val initials = utils.stringUtils.getInitials(profileEditForm.name)
+                            binding.profileInitialsViewElement.setInitials(initials)
+                            binding.photoImageView.visibility = View.GONE
+                            binding.profileInitialsViewElement.visibility = View.VISIBLE
+                            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                if (propertyId == BR.photo) {
+                    isPhotoLoaded = true
+                    checkIfFullProfileLoaded()
+                } else if (propertyId == BR.name) {
+                    isProfileLoaded = true
+                    checkIfFullProfileLoaded()
+                }
             }
-            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
-        })
+        }
     }
 
     private fun setupScrollView() {
