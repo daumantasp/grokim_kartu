@@ -27,17 +27,12 @@ import javax.inject.Inject
 class ThomannsFilterFragment : Fragment() {
     private val thomannsFilterViewModel by viewModels<ThomannsFilterViewModel>()
     private var dialogsManager: DialogsManager? = null
-    private var isDialogShown: Boolean = false
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentThomannsFilterBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    companion object {
-        private var TAG = "ThomannsFilterFragment"
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,15 +42,16 @@ class ThomannsFilterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThomannsFilterBinding.inflate(inflater, container, false)
         binding.model = thomannsFilterViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupOnClickListeners()
-
-        thomannsFilterViewModel.viewIsReady()
-        return view
     }
 
     override fun onDestroyView() {
@@ -70,74 +66,20 @@ class ThomannsFilterFragment : Fragment() {
 
     private fun setupObservers() {
         thomannsFilterViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            if (isDialogShown == true) {
-                dialogsManager?.hideBottomDialog()
-                isDialogShown = false
-            } else {
-                handleNavigation(it)
-            }
+            handleNavigation(it)
         })
-        thomannsFilterViewModel.city.observe(viewLifecycleOwner, EventObserver { codeValues ->
-            this.isDialogShown = true
-            this.dialogsManager?.let { manager ->
-                val pickableCitiesAsCodeValues = thomannsFilterViewModel
-                    .getThomannsFilterForm()
-                    .filteredPickableCities
-                    .map { pc -> pc.toCodeValue() }
-
-                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.thomanns_filter_city),
-                    codeValues = pickableCitiesAsCodeValues,
-                    onSearchValueChanged = { value ->
-                        this.thomannsFilterViewModel.searchCity(value) {
-                            val pickableCitiesAsCodeValues = thomannsFilterViewModel
-                                .getThomannsFilterForm()
-                                .filteredPickableCities
-                                .map { pc -> pc.toCodeValue() }
-                            manager.setCodeValues(pickableCitiesAsCodeValues)
-                        }
-                    },
-                    onCodeValueClicked = { code ->
-                        val id = code.toIntOrNull()
-                        if (id != null) {
-                            this.thomannsFilterViewModel.citySelected(id)
-                            manager.hideBottomDialog()
-                            this.isDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {}
-                ))
+        thomannsFilterViewModel.uiState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ThomannsFilterViewModel.UiState.Form -> showForm()
+                is ThomannsFilterViewModel.UiState.City -> showCitiesPicker()
+                is ThomannsFilterViewModel.UiState.ValidUntil -> showValidUntilPicker(
+                    currentDate = it.currentDate,
+                    minDate = it.minDateTime,
+                    maxDate = it.maxDateTime,
+                    isSaveButtonEnabled = it.isSaveButtonEnabled
+                )
             }
-        })
-        thomannsFilterViewModel.validUntil.observe(viewLifecycleOwner, EventObserver {
-            this.isDialogShown = true
-            val currentDate = it[0] as CustomDateTime
-            val minDate = it[1] as CustomDateTime
-            val maxDate = it[2] as CustomDateTime
-            val isSaveButtonEnabled = it[3] as Boolean
-            this.dialogsManager?.let { manager ->
-                manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
-                    title = getString(R.string.thomanns_filter_valid_until),
-                    selectedDate = currentDate,
-                    minDate = minDate,
-                    maxDate = maxDate,
-                    isSaveButtonEnabled = isSaveButtonEnabled,
-                    onSaveClicked = { selectedDate ->
-                        val formattedDate = this.utils.timeUtils.format(selectedDate, CustomDateTimeFormatPattern.yyyyMMdd)
-                        thomannsFilterViewModel.getThomannsFilterForm().validUntil = formattedDate
-                        manager.hideBottomDialog()
-                        this.isDialogShown = false
-                    },
-                    onSelectedDateChanged = { selectedDate ->
-                        manager.enableBottomDialogSaveButton(true)
-                    },
-                    onCancelClicked = {
-                        manager.hideBottomDialog()
-                        this.isDialogShown = false
-                    }
-                ))
-            }
-        })
+        }
     }
 
     private fun setupOnClickListeners() {
@@ -153,16 +95,69 @@ class ThomannsFilterFragment : Fragment() {
         binding.validUntilInputEditText.setOnClickListener {
             thomannsFilterViewModel.validUntilClicked()
         }
-        binding.applyFilterButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                thomannsFilterViewModel.applyFilter()
-            }
-        })
-        binding.clearFilterButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                thomannsFilterViewModel.clearFilter()
-            }
-        })
+        binding.applyFilterButton.setOnClick {
+            thomannsFilterViewModel.applyFilter()
+        }
+        binding.clearFilterButton.setOnClick {
+            thomannsFilterViewModel.clearFilter()
+        }
+    }
+
+    private fun showCitiesPicker() {
+        dialogsManager?.let { manager ->
+            val pickableCitiesAsCodeValues = thomannsFilterViewModel
+                .getThomannsFilterForm()
+                .filteredPickableCities
+                .map { pc -> pc.toCodeValue() }
+
+            manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                title = getString(R.string.thomanns_filter_city),
+                codeValues = pickableCitiesAsCodeValues,
+                onSearchValueChanged = { value ->
+                    thomannsFilterViewModel.searchCity(value) {
+                        val filteredPickableCitiesAsCodeValues = thomannsFilterViewModel
+                            .getThomannsFilterForm()
+                            .filteredPickableCities
+                            .map { pc -> pc.toCodeValue() }
+                        manager.setCodeValues(filteredPickableCitiesAsCodeValues)
+                    }
+                },
+                onCodeValueClicked = { code ->
+                    code.toIntOrNull()?.let {
+                        thomannsFilterViewModel.citySelected(it)
+                    }
+                },
+                onCancelClicked = { thomannsFilterViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showValidUntilPicker(
+        currentDate: CustomDateTime,
+        minDate: CustomDateTime,
+        maxDate: CustomDateTime,
+        isSaveButtonEnabled: Boolean
+    ) {
+        dialogsManager?.let { manager ->
+            manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
+                title = getString(R.string.thomanns_filter_valid_until),
+                selectedDate = currentDate,
+                minDate = minDate,
+                maxDate = maxDate,
+                isSaveButtonEnabled = isSaveButtonEnabled,
+                onSaveClicked = { selectedDate ->
+                    thomannsFilterViewModel.validUntilSelected(selectedDate)
+                },
+                onSelectedDateChanged = { selectedDate ->
+                    manager.enableBottomDialogSaveButton(true)
+                },
+                onCancelClicked = { thomannsFilterViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showForm() {
+        dialogsManager?.hideBottomDialog()
     }
 
     private fun handleNavigation(navigationCommand: NavigationCommand) {
