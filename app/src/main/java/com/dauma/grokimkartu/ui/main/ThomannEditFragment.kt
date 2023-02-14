@@ -29,16 +29,11 @@ class ThomannEditFragment : Fragment() {
     private val thomannEditViewModel by viewModels<ThomannEditViewModel>()
     private var dialogsManager: DialogsManager? = null
     @Inject lateinit var utils: Utils
-    private var isDialogShown: Boolean = false
 
     private var _binding: FragmentThomannEditBinding? = null
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    companion object {
-        private var TAG = "ThomannEditFragment"
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -49,15 +44,16 @@ class ThomannEditFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThomannEditBinding.inflate(inflater, container, false)
         binding.model = thomannEditViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupOnClickListeners()
-
-        thomannEditViewModel.viewIsReady()
-        return view
     }
 
     override fun onDestroyView() {
@@ -72,115 +68,110 @@ class ThomannEditFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         binding.thomannEditHeaderViewElement.setOnBackClick {
-            thomannEditViewModel.backClicked(false)
+            thomannEditViewModel.backClicked()
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            thomannEditViewModel.backClicked(false)
+            thomannEditViewModel.backClicked()
         }
-
         binding.cityInputEditText.setOnClickListener {
             thomannEditViewModel.cityClicked()
         }
-
         binding.validUntilInputEditText.setOnClickListener {
             thomannEditViewModel.validUntilClicked()
         }
-
-        binding.saveThomannButton.setOnClick(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                binding.saveThomannButton.showAnimation(true)
-                thomannEditViewModel.saveChanges {
-                    binding.saveThomannButton.showAnimation(false)
-                }
+        binding.saveThomannButton.setOnClick {
+            binding.saveThomannButton.showAnimation(true)
+            thomannEditViewModel.saveChanges {
+                binding.saveThomannButton.showAnimation(false)
             }
-        })
+        }
     }
 
     private fun setupObservers() {
-        thomannEditViewModel.navigateBackConfirmation.observe(viewLifecycleOwner, EventObserver {
-            if (isDialogShown == true) {
-                dialogsManager?.hideBottomDialog()
-                isDialogShown = false
-            } else {
-                dialogsManager?.showYesNoDialog(YesNoDialogData(
-                    getString(R.string.thomann_edit_navigate_back_confirmation_text),
-                    getString(R.string.thomann_edit_navigate_back_confirmation_positive),
-                    getString(R.string.thomann_edit_navigate_back_confirmation_negative),
-                    true,
-                    { thomannEditViewModel.backClicked(true) }
-                ))
-            }
-        })
         thomannEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            if (isDialogShown == true) {
-                dialogsManager?.hideBottomDialog()
-                isDialogShown = false
-            } else {
-                handleNavigation(it)
-            }
+            handleNavigation(it)
         })
-        thomannEditViewModel.city.observe(viewLifecycleOwner, EventObserver {
-            this.isDialogShown = true
-            this.dialogsManager?.let { manager ->
-                val pickableCitiesAsCodeValues = thomannEditViewModel
-                    .thomannEditForm()
-                    .filteredPickableCities
-                    .map { pc -> pc.toCodeValue() }
+        thomannEditViewModel.uiState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ThomannEditViewModel.UiState.Form -> showForm()
+                is ThomannEditViewModel.UiState.BackConfirmation -> showBackConfirmationDialog()
+                is ThomannEditViewModel.UiState.City -> showCitiesPicker()
+                is ThomannEditViewModel.UiState.ValidUntil -> showValidUntilPicker(
+                    currentDate = it.currentDate,
+                    minDate = it.minDateTime,
+                    maxDate = it.maxDateTime,
+                    isSaveButtonEnabled = it.isSaveButtonEnabled
+                )
+            }
+        }
+    }
 
-                manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
-                    title = getString(R.string.thomann_edit_city),
-                    codeValues = pickableCitiesAsCodeValues,
-                    onSearchValueChanged = { value ->
-                        this.thomannEditViewModel.searchCity(value) {
-                            val pickableCitiesAsCodeValues = thomannEditViewModel
-                                .thomannEditForm()
-                                .filteredPickableCities
-                                .map { pc -> pc.toCodeValue() }
-                            manager.setCodeValues(pickableCitiesAsCodeValues)
-                        }
-                    },
-                    onCodeValueClicked = { code ->
-                        val id = code.toIntOrNull()
-                        if (id != null) {
-                            this.thomannEditViewModel.citySelected(id)
-                            manager.hideBottomDialog()
-                            this.isDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {}
-                ))
-            }
-        })
-        thomannEditViewModel.validUntil.observe(viewLifecycleOwner, EventObserver {
-            this.isDialogShown = true
-            val currentDate = it[0] as CustomDateTime
-            val minDate = it[1] as CustomDateTime
-            val maxDate = it[2] as CustomDateTime
-            val isSaveButtonEnabled = it[3] as Boolean
-            this.dialogsManager?.let { manager ->
-                manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
-                    title = getString(R.string.thomann_edit_valid_until),
-                    selectedDate = currentDate,
-                    minDate = minDate,
-                    maxDate = maxDate,
-                    isSaveButtonEnabled = isSaveButtonEnabled,
-                    onSaveClicked = { selectedDate ->
-                        val formattedDate = this.utils.timeUtils.format(selectedDate, CustomDateTimeFormatPattern.yyyyMMdd)
-                        thomannEditViewModel.thomannEditForm().validUntil = formattedDate
-                        manager.hideBottomDialog()
-                        this.isDialogShown = false
-                    },
-                    onSelectedDateChanged = { selectedDate ->
-                        manager.enableBottomDialogSaveButton(true)
-                    },
-                    onCancelClicked = {
-                        manager.hideBottomDialog()
-                        this.isDialogShown = false
+    private fun showCitiesPicker() {
+        dialogsManager?.let { manager ->
+            val pickableCitiesAsCodeValues = thomannEditViewModel
+                .thomannEditForm()
+                .filteredPickableCities
+                .map { pc -> pc.toCodeValue() }
+            manager.showBottomCodeValueDialog(BottomDialogCodeValueData(
+                title = getString(R.string.thomann_edit_city),
+                codeValues = pickableCitiesAsCodeValues,
+                onSearchValueChanged = { value ->
+                    thomannEditViewModel.searchCity(value) {
+                        val filteredPickableCitiesAsCodeValues = thomannEditViewModel
+                            .thomannEditForm()
+                            .filteredPickableCities
+                            .map { pc -> pc.toCodeValue() }
+                        manager.setCodeValues(filteredPickableCitiesAsCodeValues)
                     }
-                ))
-            }
-        })
+                },
+                onCodeValueClicked = { code ->
+                    code.toIntOrNull()?.let {
+                        thomannEditViewModel.citySelected(it)
+                    }
+                },
+                onCancelClicked = { thomannEditViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showValidUntilPicker(
+        currentDate: CustomDateTime,
+        minDate: CustomDateTime,
+        maxDate: CustomDateTime,
+        isSaveButtonEnabled: Boolean
+    ) {
+        dialogsManager?.let { manager ->
+            manager.showBottomDatePickerDialog(BottomDialogDatePickerData(
+                title = getString(R.string.thomanns_filter_valid_until),
+                selectedDate = currentDate,
+                minDate = minDate,
+                maxDate = maxDate,
+                isSaveButtonEnabled = isSaveButtonEnabled,
+                onSaveClicked = { selectedDate ->
+                    thomannEditViewModel.validUntilSelected(selectedDate)
+                },
+                onSelectedDateChanged = { selectedDate ->
+                    manager.enableBottomDialogSaveButton(true)
+                },
+                onCancelClicked = { thomannEditViewModel.cancelPickerClicked() }
+            ))
+        }
+    }
+
+    private fun showBackConfirmationDialog() {
+        dialogsManager?.showYesNoDialog(YesNoDialogData(
+            text = getString(R.string.thomann_edit_navigate_back_confirmation_text),
+            positiveText = getString(R.string.thomann_edit_navigate_back_confirmation_positive),
+            negativeText = getString(R.string.thomann_edit_navigate_back_confirmation_negative),
+            cancelable = true,
+            onPositiveButtonClick = { thomannEditViewModel.backClicked() },
+            onNegativeButtonClick = { thomannEditViewModel.cancelBackClicked() },
+            onCancelClicked = { thomannEditViewModel.cancelBackClicked() }
+        ))
+    }
+
+    private fun showForm() {
+        dialogsManager?.hideBottomDialog()
     }
 
     private fun handleNavigation(navigationCommand: NavigationCommand) {
