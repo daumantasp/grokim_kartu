@@ -29,19 +29,58 @@ class ThomannsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    companion object {
-        private var TAG = "ThomannsFragment"
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThomannsBinding.inflate(inflater, container, false)
         binding.model = thomannsViewModel
-        val view = binding.root
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupTabLayout()
+        setupOnClickers()
+        setupObservers()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupOnClickers() {
+        binding.createThomannItemButton.setOnClick {
+            findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
+        }
+        binding.thomannsHeaderViewElement.setOnBackClick {
+            thomannsViewModel.backClicked()
+        }
+        binding.thomannsHeaderViewElement.setOnRightTextClick {
+            thomannsViewModel.filterClicked()
+        }
+    }
+
+    private fun setupObservers() {
+        thomannsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
+            handleNavigation(it)
+        })
+        thomannsViewModel.uiState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ThomannsViewModel.UiState.AllThomanns -> {
+                    binding.thomannsHeaderViewElement.showRightTextAsDisabled(false)
+                    binding.thomannsHeaderViewElement.showRightTextAttentioner(it.isFilterEnabled)
+                }
+                is ThomannsViewModel.UiState.MyThomanns -> {
+                    binding.thomannsHeaderViewElement.showRightTextAsDisabled(true)
+                }
+            }
+        }
+    }
+
+    private fun setupTabLayout() {
         val viewPager = binding.thomannsViewPager
         val tabLayout = binding.thomannsTabLayout
 
@@ -56,9 +95,6 @@ class ThomannsFragment : Fragment() {
             tab.text = tabTitles[position]
         }.attach()
 
-        setupOnClickers()
-        setupObservers()
-
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.position?.let {
@@ -67,41 +103,6 @@ class ThomannsFragment : Fragment() {
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-        binding.thomannsHeaderViewElement.setOnBackClick {
-            thomannsViewModel.backClicked()
-        }
-        binding.thomannsHeaderViewElement.setOnRightTextClick {
-            thomannsViewModel.filterClicked()
-        }
-
-        thomannsViewModel.viewIsReady()
-        return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    private fun setupOnClickers() {
-        binding.createThomannItemButton.setOnClick {
-            findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
-        }
-    }
-
-    private fun setupObservers() {
-        thomannsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        thomannsViewModel.allThomannsDisplayed.observe(viewLifecycleOwner, EventObserver {
-            binding.thomannsHeaderViewElement.showRightTextAsDisabled(it == false)
-        })
-        thomannsViewModel.filter.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(ThomannsFragmentDirections.actionThomannFragmentToThomannsFilterFragment())
-        })
-        thomannsViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
-            binding.thomannsHeaderViewElement.showRightTextAttentioner(it)
         })
     }
 
