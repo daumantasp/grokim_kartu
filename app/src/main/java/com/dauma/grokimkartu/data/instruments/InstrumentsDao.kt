@@ -1,8 +1,9 @@
 package com.dauma.grokimkartu.data.instruments
 
+import com.dauma.grokimkartu.data.DaoResult
 import com.dauma.grokimkartu.data.instruments.entities.InstrumentResponse
 
 interface InstrumentsDao {
-    fun instruments(accessToken: String, onComplete: (List<InstrumentResponse>?, InstrumentsDaoResponseStatus) -> Unit)
-    fun search(value: String, accessToken: String, onComplete: (List<InstrumentResponse>?, InstrumentsDaoResponseStatus) -> Unit)
+    suspend fun instruments(accessToken: String): DaoResult<List<InstrumentResponse>?, InstrumentsDaoResponseStatus>
+    suspend fun search(value: String, accessToken: String): DaoResult<List<InstrumentResponse>?, InstrumentsDaoResponseStatus>
 }
