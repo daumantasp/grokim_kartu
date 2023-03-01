@@ -2,12 +2,11 @@ package com.dauma.grokimkartu.data.players
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.dauma.grokimkartu.data.DaoResult
 import com.dauma.grokimkartu.data.players.entities.PlayerDetailsResponse
 import com.dauma.grokimkartu.data.players.entities.PlayersRequest
 import com.dauma.grokimkartu.data.players.entities.PlayersResponse
 import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
@@ -15,181 +14,173 @@ import retrofit2.http.*
 class PlayersDaoImpl(retrofit: Retrofit) : PlayersDao {
     private val retrofitPlayers: RetrofitPlayers = retrofit.create(RetrofitPlayers::class.java)
 
-    override fun players(playersRequest: PlayersRequest, accessToken: String, onComplete: (PlayersResponse?, PlayersDaoResponseStatus) -> Unit) {
-        retrofitPlayers.players(
+    override suspend fun players(
+        playersRequest: PlayersRequest,
+        accessToken: String
+    ): DaoResult<PlayersResponse?, PlayersDaoResponseStatus> {
+        val response = retrofitPlayers.players(
             page = playersRequest.page,
             pageSize = playersRequest.pageSize,
             cityId = playersRequest.cityId,
             instrumentId = playersRequest.instrumentId,
             text = playersRequest.text,
             accessToken = accessToken
-        ).enqueue(object : Callback<PlayersResponse> {
-            override fun onResponse(
-                call: Call<PlayersResponse>,
-                response: Response<PlayersResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        val playersResponse = response.body()
-                        val status = PlayersDaoResponseStatus(true, null)
-                        onComplete(playersResponse, status)
-                    }
-                    else -> {
-                        val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
+        )
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val playersResponse = response.body()
+                    val status = PlayersDaoResponseStatus(true, null)
+                    return DaoResult(playersResponse, status)
+                }
+                else -> {
+                    val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<PlayersResponse>, t: Throwable) {
-                val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun playerDetails(
+    override suspend fun playerDetails(
         userId: Int,
-        accessToken: String,
-        onComplete: (PlayerDetailsResponse?, PlayersDaoResponseStatus) -> Unit
-    ) {
-        retrofitPlayers.playerDetails(accessToken, userId).enqueue(object : Callback<PlayerDetailsResponse> {
-            override fun onResponse(
-                call: Call<PlayerDetailsResponse>,
-                response: Response<PlayerDetailsResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        val playerDetailsResponse = response.body()
+        accessToken: String
+    ): DaoResult<PlayerDetailsResponse?, PlayersDaoResponseStatus> {
+        val response = retrofitPlayers.playerDetails(accessToken, userId)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val playerDetailsResponse = response.body()
+                    val status = PlayersDaoResponseStatus(true, null)
+                    return DaoResult(playerDetailsResponse, status)
+                }
+                403 -> {
+                    val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.FORBIDDEN)
+                    return DaoResult(null, status)
+                }
+                404 -> {
+                    val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
+            }
+        } else {
+            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
+    }
+
+    override suspend fun playerPhoto(
+        userId: Int,
+        accessToken: String
+    ): DaoResult<Bitmap?, PlayersDaoResponseStatus> {
+        val response = retrofitPlayers.photo(accessToken, userId)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val playerPhotoResponseData = response.body()
+                    val stream = playerPhotoResponseData?.byteStream()
+                    if (stream != null) {
+                        val bitmap = BitmapFactory.decodeStream(stream)
                         val status = PlayersDaoResponseStatus(true, null)
-                        onComplete(playerDetailsResponse, status)
+                        return DaoResult(bitmap, status)
+                    } else {
+                        val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+                        return DaoResult(null, status)
                     }
-                    403 -> {
-                        val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.FORBIDDEN)
-                        onComplete(null, status)
-                    }
-                    404 -> {
+                }
+                404 -> {
+                    val errorBody = response.errorBody()?.string() ?: ""
+                    if (errorBody.contains(PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND.toString(), true)) {
                         val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND)
-                        onComplete(null, status)
-                    }
-                    else -> {
+                        return DaoResult(null, status)
+                    } else if (errorBody.contains(PlayersDaoResponseStatus.Errors.PHOTO_NOT_FOUND.toString(), true)) {
+                        val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PHOTO_NOT_FOUND)
+                        return DaoResult(null, status)
+                    } else {
                         val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
+                else -> {
+                    val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
             }
-
-            override fun onFailure(call: Call<PlayerDetailsResponse>, t: Throwable) {
-                val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun playerPhoto(
+    override suspend fun playerIcon(
         userId: Int,
-        accessToken: String,
-        onComplete: (Bitmap?, PlayersDaoResponseStatus) -> Unit
-    ) {
-        retrofitPlayers.photo(accessToken, userId).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when (response.code()) {
-                    200 -> {
-                        val playerPhotoResponseData = response.body()
-                        val stream = playerPhotoResponseData?.byteStream()
-                        if (stream != null) {
-                            val bitmap = BitmapFactory.decodeStream(stream)
-                            val status = PlayersDaoResponseStatus(true, null)
-                            onComplete(bitmap, status)
-                        } else {
-                            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                            onComplete(null, status)
-                        }
-                    }
-                    404 -> {
-                        val errorBody = response.errorBody()?.string() ?: ""
-                        if (errorBody.contains(PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND.toString(), true)) {
-                            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND)
-                            onComplete(null,status)
-                        } else if (errorBody.contains(PlayersDaoResponseStatus.Errors.PHOTO_NOT_FOUND.toString(), true)) {
-                            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PHOTO_NOT_FOUND)
-                            onComplete(null, status)
-                        }
-                    }
-                    else -> {
+        accessToken: String
+    ): DaoResult<Bitmap?, PlayersDaoResponseStatus> {
+        val response = retrofitPlayers.icon(accessToken, userId)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val playerPhotoResponseData = response.body()
+                    val stream = playerPhotoResponseData?.byteStream()
+                    if (stream != null) {
+                        val bitmap = BitmapFactory.decodeStream(stream)
+                        val status = PlayersDaoResponseStatus(true, null)
+                        return DaoResult(bitmap, status)
+                    } else {
                         val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
-    }
-
-    override fun playerIcon(
-        userId: Int,
-        accessToken: String,
-        onComplete: (Bitmap?, PlayersDaoResponseStatus) -> Unit
-    ) {
-        retrofitPlayers.icon(accessToken, userId).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when (response.code()) {
-                    200 -> {
-                        val playerPhotoResponseData = response.body()
-                        val stream = playerPhotoResponseData?.byteStream()
-                        if (stream != null) {
-                            val bitmap = BitmapFactory.decodeStream(stream)
-                            val status = PlayersDaoResponseStatus(true, null)
-                            onComplete(bitmap, status)
-                        } else {
-                            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                            onComplete(null, status)
-                        }
-                    }
-                    404 -> {
-                        val errorBody = response.errorBody()?.string() ?: ""
-                        if (errorBody.contains(PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND.toString(), true)) {
-                            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND)
-                            onComplete(null,status)
-                        } else if (errorBody.contains(PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND.toString(), true)) {
-                            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND)
-                            onComplete(null, status)
-                        }
-                    }
-                    else -> {
+                404 -> {
+                    val errorBody = response.errorBody()?.string() ?: ""
+                    if (errorBody.contains(PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND.toString(), true)) {
+                        val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.PLAYER_NOT_FOUND)
+                        return DaoResult(null, status)
+                    } else if (errorBody.contains(PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND.toString(), true)) {
+                        val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND)
+                        return DaoResult(null, status)
+                    } else {
                         val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
+                else -> {
+                    val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
             }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = PlayersDaoResponseStatus(false, PlayersDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
     private interface RetrofitPlayers {
         @GET("players")
-        fun players(
+        suspend fun players(
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
             @Query("city_id") cityId: Int?,
             @Query("instrument_id") instrumentId: Int?,
             @Query("text") text: String?,
             @Header("Authorization") accessToken: String
-        ): Call<PlayersResponse>
+        ): Response<PlayersResponse>
 
-        @GET("players/details") fun playerDetails(@Header("Authorization") accessToken: String, @Query("id") id: Int) : Call<PlayerDetailsResponse>
-        @GET("players/icon") fun icon(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<ResponseBody>
+        @GET("players/details") suspend fun playerDetails(@Header("Authorization") accessToken: String, @Query("id") id: Int) : Response<PlayerDetailsResponse>
+        @GET("players/icon") suspend fun icon(@Header("Authorization") accessToken: String, @Query("id") id: Int): Response<ResponseBody>
 
         @Headers("Connection: close")
         @GET("players/photo")
-        fun photo(@Header("Authorization") accessToken: String, @Query("id") id: Int): Call<ResponseBody>
+        suspend fun photo(@Header("Authorization") accessToken: String, @Query("id") id: Int): Response<ResponseBody>
     }
 }
