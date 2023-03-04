@@ -2,6 +2,7 @@ package com.dauma.grokimkartu.data.profile
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.dauma.grokimkartu.data.DaoResult
 import com.dauma.grokimkartu.data.profile.entities.ProfileResponse
 import com.dauma.grokimkartu.data.profile.entities.ProfileUnreadCountResponse
 import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
@@ -10,8 +11,6 @@ import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
@@ -22,233 +21,201 @@ class ProfileDaoImpl(
 ): ProfileDao {
     private val retrofitProfile: RetrofitProfile = retrofit.create(RetrofitProfile::class.java)
 
-    override fun profile(
-        accessToken: String,
-        onComplete: (ProfileResponse?, ProfileDaoResponseStatus) -> Unit
-    ) {
-        retrofitProfile.profile(accessToken).enqueue(object : Callback<ProfileResponse> {
-            override fun onResponse(
-                call: Call<ProfileResponse>,
-                response: Response<ProfileResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        val profileResponseData = response.body()
-                        val status = ProfileDaoResponseStatus(true, null)
-                        onComplete(profileResponseData, status)
-                    }
-                    500 -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PROFILE_NOT_FOUND)
-                        onComplete(null, status)
-                    }
-                    else -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
+    override suspend fun profile(accessToken: String): DaoResult<ProfileResponse?, ProfileDaoResponseStatus> {
+        val response = retrofitProfile.profile(accessToken)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val profileResponseData = response.body()
+                    val status = ProfileDaoResponseStatus(true, null)
+                    return DaoResult(profileResponseData, status)
+                }
+                500 -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PROFILE_NOT_FOUND)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
-                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun update(
+    override suspend fun update(
         updateProfileRequest: UpdateProfileRequest,
-        accessToken: String,
-        onComplete: (ProfileResponse?, ProfileDaoResponseStatus) -> Unit
-    ) {
-        retrofitProfile.update(accessToken, updateProfileRequest).enqueue(object : Callback<ProfileResponse> {
-            override fun onResponse(
-                call: Call<ProfileResponse>,
-                response: Response<ProfileResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        val profileResponseData = response.body()
+        accessToken: String
+    ): DaoResult<ProfileResponse?, ProfileDaoResponseStatus> {
+        val response = retrofitProfile.update(accessToken, updateProfileRequest)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val profileResponseData = response.body()
+                    val status = ProfileDaoResponseStatus(true, null)
+                    return DaoResult(profileResponseData, status)
+                }
+                500 -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PROFILE_NOT_FOUND)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
+            }
+        } else {
+            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
+    }
+
+    override suspend fun icon(accessToken: String): DaoResult<Bitmap?, ProfileDaoResponseStatus> {
+        val response = retrofitProfile.icon(accessToken)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val profileResponseData = response.body()
+                    val stream = profileResponseData?.byteStream()
+                    if (stream != null) {
+                        val bitmap = BitmapFactory.decodeStream(stream)
                         val status = ProfileDaoResponseStatus(true, null)
-                        onComplete(profileResponseData, status)
-                    }
-                    500 -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PROFILE_NOT_FOUND)
-                        onComplete(null, status)
-                    }
-                    else -> {
+                        return DaoResult(bitmap, status)
+                    } else {
                         val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
-            }
-
-            override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
-                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
-    }
-
-    override fun icon(
-        accessToken: String,
-        onComplete: (Bitmap?, ProfileDaoResponseStatus) -> Unit
-    ) {
-        retrofitProfile.icon(accessToken).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when (response.code()) {
-                    200 -> {
-                        val profileResponseData = response.body()
-                        val stream = profileResponseData?.byteStream()
-                        if (stream != null) {
-                            val bitmap = BitmapFactory.decodeStream(stream)
-                            val status = ProfileDaoResponseStatus(true, null)
-                            onComplete(bitmap, status)
-                        } else {
-                            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                            onComplete(null, status)
-                        }
-                    }
-                    404 -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.ICON_NOT_FOUND)
-                        onComplete(null, status)
-                    }
-                    else -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
+                404 -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.ICON_NOT_FOUND)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun photo(
-        accessToken: String,
-        onComplete: (Bitmap?, ProfileDaoResponseStatus) -> Unit
-    ) {
-        retrofitProfile.photo(accessToken).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when (response.code()) {
-                    200 -> {
-                        val profileResponseData = response.body()
-                        val stream = profileResponseData?.byteStream()
-                        if (stream != null) {
-                            val bitmap = BitmapFactory.decodeStream(stream)
-                            val status = ProfileDaoResponseStatus(true, null)
-                            onComplete(bitmap, status)
-                        } else {
-                            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                            onComplete(null, status)
-                        }
-                    }
-                    404 -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PHOTO_NOT_FOUND)
-                        onComplete(null, status)
-                    }
-                    else -> {
+    override suspend fun photo(accessToken: String): DaoResult<Bitmap?, ProfileDaoResponseStatus> {
+        val response = retrofitProfile.photo(accessToken)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val profileResponseData = response.body()
+                    val stream = profileResponseData?.byteStream()
+                    if (stream != null) {
+                        val bitmap = BitmapFactory.decodeStream(stream)
+                        val status = ProfileDaoResponseStatus(true, null)
+                        return DaoResult(bitmap, status)
+                    } else {
                         val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
+                404 -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PHOTO_NOT_FOUND)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
             }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun updatePhoto(
+    override suspend fun updatePhoto(
         accessToken: String,
-        photo: Bitmap,
-        onComplete: (Bitmap?, ProfileDaoResponseStatus) -> Unit
-    ) {
+        photo: Bitmap
+    ): DaoResult<Bitmap?, ProfileDaoResponseStatus> {
         val photoByteArray = imageUtils.convertBitmapToByteArray(photo)
         val photoRequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), photoByteArray);
         val body = MultipartBody.Part.createFormData("image", "image.jpg", photoRequestBody)
 
-        retrofitProfile.updatePhoto(accessToken, body).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when (response.code()) {
-                    200 -> {
-                        val profileResponseData = response.body()
-                        val stream = profileResponseData?.byteStream()
-                        if (stream != null) {
-                            val bitmap = BitmapFactory.decodeStream(stream)
-                            val status = ProfileDaoResponseStatus(true, null)
-                            onComplete(bitmap, status)
-                        } else {
-                            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                            onComplete(null, status)
-                        }
-                    }
-                    400 -> {
-                        val errorBody = response.errorBody()?.string() ?: ""
-                        if (errorBody.contains(ProfileDaoResponseStatus.Errors.PHOTO_NOT_ATTACHED.toString(), true)) {
-                            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PHOTO_NOT_ATTACHED)
-                            onComplete(null, status)
-                        } else if (errorBody.contains(ProfileDaoResponseStatus.Errors.ATTACHED_PHOTO_IS_INVALID.toString(), true)) {
-                            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.ATTACHED_PHOTO_IS_INVALID)
-                            onComplete(null, status)
-                        } else if (errorBody.contains(ProfileDaoResponseStatus.Errors.INCORRECT_PHOTO_IMAGE_FORMAT.toString(), true)) {
-                            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.INCORRECT_PHOTO_IMAGE_FORMAT)
-                            onComplete(null, status)
-                        }
-                    }
-                    else -> {
+        val response = retrofitProfile.updatePhoto(accessToken, body)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val profileResponseData = response.body()
+                    val stream = profileResponseData?.byteStream()
+                    if (stream != null) {
+                        val bitmap = BitmapFactory.decodeStream(stream)
+                        val status = ProfileDaoResponseStatus(true, null)
+                        return DaoResult(bitmap, status)
+                    } else {
                         val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
+                400 -> {
+                    val errorBody = response.errorBody()?.string() ?: ""
+                    if (errorBody.contains(ProfileDaoResponseStatus.Errors.PHOTO_NOT_ATTACHED.toString(), true)) {
+                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.PHOTO_NOT_ATTACHED)
+                        return DaoResult(null, status)
+                    } else if (errorBody.contains(ProfileDaoResponseStatus.Errors.ATTACHED_PHOTO_IS_INVALID.toString(), true)) {
+                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.ATTACHED_PHOTO_IS_INVALID)
+                        return DaoResult(null, status)
+                    } else if (errorBody.contains(ProfileDaoResponseStatus.Errors.INCORRECT_PHOTO_IMAGE_FORMAT.toString(), true)) {
+                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.INCORRECT_PHOTO_IMAGE_FORMAT)
+                        return DaoResult(null, status)
+                    } else {
+                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                        return DaoResult(null, status)
+                    }
+                }
+                else -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
             }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun unreadCount(
-        accessToken: String,
-        onComplete: (ProfileUnreadCountResponse?, ProfileDaoResponseStatus) -> Unit
-    ) {
-        retrofitProfile.unreadCount(accessToken).enqueue(object : Callback<ProfileUnreadCountResponse> {
-            override fun onResponse(
-                call: Call<ProfileUnreadCountResponse>,
-                response: Response<ProfileUnreadCountResponse>
-            ) {
-                when (response.code()) {
-                    200 -> {
-                        val profileUnreadCountResponse = response.body()
-                        val status = ProfileDaoResponseStatus(true, null)
-                        onComplete(profileUnreadCountResponse, status)
-                    }
-                    else -> {
-                        val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
+    override suspend fun unreadCount(accessToken: String): DaoResult<ProfileUnreadCountResponse?, ProfileDaoResponseStatus> {
+        val response = retrofitProfile.unreadCount(accessToken)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val profileUnreadCountResponse = response.body()
+                    val status = ProfileDaoResponseStatus(true, null)
+                    return DaoResult(profileUnreadCountResponse, status)
+                }
+                else -> {
+                    val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<ProfileUnreadCountResponse>, t: Throwable) {
-                val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = ProfileDaoResponseStatus(false, ProfileDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
     private interface RetrofitProfile {
-        @GET("profile") fun profile(@Header("Authorization") accessToken: String): Call<ProfileResponse>
-        @PUT("profile") fun update(@Header("Authorization") accessToken: String, @Body updateRequest: UpdateProfileRequest): Call<ProfileResponse>
-        @GET("profile/icon") fun icon(@Header("Authorization") accessToken: String): Call<ResponseBody>
-        @GET("profile/photo") fun photo(@Header("Authorization") accessToken: String): Call<ResponseBody>
-        @Multipart @POST("profile/photo") fun updatePhoto(@Header("Authorization") accessToken: String, @Part image: MultipartBody.Part): Call<ResponseBody>
-        @GET("profile/unreadCount") fun unreadCount(@Header("Authorization") accessToken: String): Call<ProfileUnreadCountResponse>
+        @GET("profile") suspend fun profile(@Header("Authorization") accessToken: String): Response<ProfileResponse>
+        @PUT("profile") suspend fun update(@Header("Authorization") accessToken: String, @Body updateRequest: UpdateProfileRequest): Response<ProfileResponse>
+        @GET("profile/icon") suspend fun icon(@Header("Authorization") accessToken: String): Response<ResponseBody>
+        @GET("profile/photo") suspend fun photo(@Header("Authorization") accessToken: String): Response<ResponseBody>
+        @Multipart @POST("profile/photo") suspend fun updatePhoto(@Header("Authorization") accessToken: String, @Part image: MultipartBody.Part): Response<ResponseBody>
+        @GET("profile/unreadCount") suspend fun unreadCount(@Header("Authorization") accessToken: String): Response<ProfileUnreadCountResponse>
     }
 }
