@@ -1,10 +1,11 @@
 package com.dauma.grokimkartu.data.notifications
 
+import com.dauma.grokimkartu.data.DaoResult
 import com.dauma.grokimkartu.data.notifications.entities.NotificationResponse
 import com.dauma.grokimkartu.data.notifications.entities.NotificationsResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 
 interface NotificationsDao {
-    fun notifications(page: Int, pageSize: Int, accessToken: String, onComplete: (NotificationsResponse?, NotificationsDaoResponseStatus) -> Unit)
-    fun update(notificationId: Int, updateRequest: UpdateNotificationRequest, accessToken: String, onComplete: (NotificationResponse?, NotificationsDaoResponseStatus) -> Unit)
+    suspend fun notifications(page: Int, pageSize: Int, accessToken: String): DaoResult<NotificationsResponse?, NotificationsDaoResponseStatus>
+    suspend fun update(notificationId: Int, updateRequest: UpdateNotificationRequest, accessToken: String): DaoResult<NotificationResponse?, NotificationsDaoResponseStatus>
 }
