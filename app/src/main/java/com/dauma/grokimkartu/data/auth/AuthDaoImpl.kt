@@ -1,8 +1,7 @@
 package com.dauma.grokimkartu.data.auth
 
+import com.dauma.grokimkartu.data.DaoResult
 import com.dauma.grokimkartu.data.auth.entities.*
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
@@ -10,203 +9,177 @@ import retrofit2.http.*
 class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
     private val retrofitAuth: RetrofitAuth = retrofit.create(RetrofitAuth::class.java)
 
-    override fun register(
-        registrationRequest: RegistrationRequest,
-        onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit
-    ) {
-        retrofitAuth.register(registrationRequest).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(
-                call: Call<LoginResponse>,
-                response: Response<LoginResponse>
-            ) {
-                when (response.code()) {
-                    201 -> {
-                        val registrationResponse = response.body()
-                        val status = AuthDaoResponseStatus(true, null)
-                        onComplete(registrationResponse, status)
-                    }
-                    422 -> {
-                        val errorBody = response.errorBody()?.string() ?: ""
-                        if (errorBody.contains("The email has already been taken.", true)) {
-                            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_TAKEN)
-                            onComplete(null, status)
-                        } else if (errorBody.contains("The email must be a valid email address.", true)) {
-                            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INVALID_EMAIL)
-                            onComplete(null, status)
-                        } else if (errorBody.contains("The password confirmation does not match.", true)) {
-                            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.PSW_CONFIRMATION_DONT_MATCH)
-                            onComplete(null, status)
-                        }
-                    }
-                    else -> {
+    override suspend fun register(registrationRequest: RegistrationRequest): DaoResult<LoginResponse?, AuthDaoResponseStatus> {
+        val response = retrofitAuth.register(registrationRequest)
+        
+        if (response.isSuccessful) {
+            when (response.code()) {
+                201 -> {
+                    val registrationResponse = response.body()
+                    val status = AuthDaoResponseStatus(true, null)
+                    return DaoResult(registrationResponse, status)
+                }
+                422 -> {
+                    val errorBody = response.errorBody()?.string() ?: ""
+                    if (errorBody.contains("The email has already been taken.", true)) {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_TAKEN)
+                        return DaoResult(null, status)
+                    } else if (errorBody.contains("The email must be a valid email address.", true)) {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INVALID_EMAIL)
+                        return DaoResult(null, status)
+                    } else if (errorBody.contains("The password confirmation does not match.", true)) {
+                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.PSW_CONFIRMATION_DONT_MATCH)
+                        return DaoResult(null, status)
+                    } else {
                         val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
+                        return DaoResult(null, status)
                     }
                 }
-            }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
-    }
-
-    override fun login(
-        loginRequest: LoginRequest,
-        onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit
-    ) {
-        retrofitAuth.login(loginRequest).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                when (response.code()) {
-                    201 -> {
-                        val loginResponse = response.body()
-                        val status = AuthDaoResponseStatus(true, null)
-                        onComplete(loginResponse, status)
-                    }
-                    422 -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW)
-                        onComplete(null, status)
-                    }
-                    403 -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_NOT_VERIFIED)
-                        onComplete(null, status)
-                    }
-                    else -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
+                else -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun reauthenticate(
-        reauthenticateRequest: ReauthenticateRequest,
-        onComplete: (LoginResponse?, AuthDaoResponseStatus) -> Unit
-    ) {
-        retrofitAuth.tokenLogin(reauthenticateRequest).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                when (response.code()) {
-                    201 -> {
-                        val loginResponse = response.body()
-                        val status = AuthDaoResponseStatus(true, null)
-                        onComplete(loginResponse, status)
-                    }
-                    422 -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_ACCESS_TOKEN)
-                        onComplete(null, status)
-                    }
-                    else -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(null, status)
-                    }
+    override suspend fun login(loginRequest: LoginRequest): DaoResult<LoginResponse?, AuthDaoResponseStatus> {
+        val response = retrofitAuth.login(loginRequest)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                201 -> {
+                    val loginResponse = response.body()
+                    val status = AuthDaoResponseStatus(true, null)
+                    return DaoResult(loginResponse, status)
+                }
+                422 -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW)
+                    return DaoResult(null, status)
+                }
+                403 -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_NOT_VERIFIED)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(null, status)
-            }
-        })
+        } else {
+            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun logout(
+    override suspend fun reauthenticate(reauthenticateRequest: ReauthenticateRequest): DaoResult<LoginResponse?, AuthDaoResponseStatus> {
+        val response = retrofitAuth.tokenLogin(reauthenticateRequest)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                201 -> {
+                    val loginResponse = response.body()
+                    val status = AuthDaoResponseStatus(true, null)
+                    return DaoResult(loginResponse, status)
+                }
+                422 -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_ACCESS_TOKEN)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
+                }
+            }
+        } else {
+            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
+    }
+
+    override suspend fun logout(
         logoutRequest: LogoutRequest,
-        accessToken: String,
-        onComplete: (AuthDaoResponseStatus) -> Unit
-    ) {
-        retrofitAuth.logout(accessToken, logoutRequest).enqueue(object : Callback<Array<String>> {
-            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
-                when (response.code()) {
-                    200 -> {
-                        val status = AuthDaoResponseStatus(true, null)
-                        onComplete(status)
-                    }
-                    else -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(status)
-                    }
+        accessToken: String
+    ): DaoResult<Nothing?, AuthDaoResponseStatus> {
+        val response = retrofitAuth.logout(accessToken, logoutRequest)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val status = AuthDaoResponseStatus(true, null)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
-                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(status)
-            }
-        })
+        } else {
+            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun delete(
-        accessToken: String,
-        onComplete: (AuthDaoResponseStatus) -> Unit
-    ) {
-        retrofitAuth.delete(accessToken).enqueue(object : Callback<Array<String>> {
-            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
-                when (response.code()) {
-                    200 -> {
-                        val status = AuthDaoResponseStatus(true, null)
-                        onComplete(status)
-                    }
-                    else -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(status)
-                    }
+    override suspend fun delete(accessToken: String): DaoResult<Nothing?, AuthDaoResponseStatus> {
+        val response = retrofitAuth.delete(accessToken)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val status = AuthDaoResponseStatus(true, null)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
-                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(status)
-            }
-        })
+        } else {
+            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
-    override fun changePassword(
+    override suspend fun changePassword(
         accessToken: String,
-        changePasswordRequest: ChangePasswordRequest,
-        onComplete: (AuthDaoResponseStatus) -> Unit
-    ) {
-        retrofitAuth.changePassword(accessToken, changePasswordRequest).enqueue(object : Callback<Array<String>> {
-            override fun onResponse(call: Call<Array<String>>, response: Response<Array<String>>) {
-                when (response.code()) {
-                    200 -> {
-                        val status = AuthDaoResponseStatus(true, null)
-                        onComplete(status)
-                    }
-                    401 -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_OLD_PSW)
-                        onComplete(status)
-                    }
-                    403 -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.NEW_PSW_SIMILAR)
-                        onComplete(status)
-                    }
-                    else -> {
-                        val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                        onComplete(status)
-                    }
+        changePasswordRequest: ChangePasswordRequest
+    ): DaoResult<Nothing?, AuthDaoResponseStatus> {
+        val response = retrofitAuth.changePassword(accessToken, changePasswordRequest)
+
+        if (response.isSuccessful) {
+            when (response.code()) {
+                200 -> {
+                    val status = AuthDaoResponseStatus(true, null)
+                    return DaoResult(null, status)
+                }
+                401 -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_OLD_PSW)
+                    return DaoResult(null, status)
+                }
+                403 -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.NEW_PSW_SIMILAR)
+                    return DaoResult(null, status)
+                }
+                else -> {
+                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+                    return DaoResult(null, status)
                 }
             }
-
-            override fun onFailure(call: Call<Array<String>>, t: Throwable) {
-                val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                onComplete(status)
-            }
-        })
+        } else {
+            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
+            return DaoResult(null, status)
+        }
     }
 
     private interface RetrofitAuth {
-        @POST("register") fun register(@Body registrationRequest: RegistrationRequest): Call<LoginResponse>
-        @POST("login") fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
-        @POST("reauthenticate") fun tokenLogin(@Body reauthenticateRequest: ReauthenticateRequest): Call<LoginResponse>
-        @POST("logout") fun logout(@Header("Authorization") accessToken: String, @Body logoutRequest: LogoutRequest): Call<Array<String>>
-        @DELETE("user/delete") fun delete(@Header("Authorization") accessToken: String) : Call<Array<String>>
-        @POST("user/changepassword") fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Call<Array<String>>
+        @POST("register") suspend fun register(@Body registrationRequest: RegistrationRequest): Response<LoginResponse>
+        @POST("login") suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
+        @POST("reauthenticate") suspend fun tokenLogin(@Body reauthenticateRequest: ReauthenticateRequest): Response<LoginResponse>
+        @POST("logout") suspend fun logout(@Header("Authorization") accessToken: String, @Body logoutRequest: LogoutRequest): Response<Array<String>>
+        @DELETE("user/deletesuspend ") fun delete(@Header("Authorization") accessToken: String) : Response<Array<String>>
+        @POST("user/changepassword") fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Response<Array<String>>
     }
 }
