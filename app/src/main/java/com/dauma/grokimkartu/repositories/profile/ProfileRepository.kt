@@ -2,19 +2,19 @@ package com.dauma.grokimkartu.repositories.profile
 
 import android.graphics.Bitmap
 import com.dauma.grokimkartu.repositories.profile.entities.*
+import com.dauma.grokimkartu.repositories.Result
+import kotlinx.coroutines.flow.StateFlow
 
 interface ProfileRepository {
-    val unreadCount: ProfileUnreadCount?
-    fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit)
-    fun cities(onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit)
-    fun searchCity(value: String, onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit)
-    fun instruments(onComplete: (List<ProfileInstrument>?, ProfileErrors?) -> Unit)
-    fun searchInstrument(value: String, onComplete: (List<ProfileInstrument>?, ProfileErrors?) -> Unit)
-    fun update(updateProfile: UpdateProfile, onComplete: (Profile?, ProfileErrors?) -> Unit)
-    fun icon(onComplete: (Bitmap?, ProfileErrors?) -> Unit)
-    fun photo(onComplete: (Bitmap?, ProfileErrors?) -> Unit)
-    fun updatePhoto(photo: Bitmap, onComplete: (Bitmap?, ProfileErrors?) -> Unit)
-    fun reloadUnreadCount()
-    fun registerListener(id: String, listener: ProfileListener)
-    fun unregisterListener(id: String)
+    val unreadCount: StateFlow<ProfileUnreadCount?>
+    suspend fun profile(): Result<Profile?, ProfileErrors?>
+    suspend fun cities(): Result<List<ProfileCity>?, ProfileErrors?>
+    suspend fun searchCity(value: String): Result<List<ProfileCity>?, ProfileErrors?>
+    suspend fun instruments(): Result<List<ProfileInstrument>?, ProfileErrors?>
+    suspend fun searchInstrument(value: String): Result<List<ProfileInstrument>?, ProfileErrors?>
+    suspend fun update(updateProfile: UpdateProfile): Result<Profile?, ProfileErrors?>
+    suspend fun icon(): Result<Bitmap?, ProfileErrors?>
+    suspend fun photo(): Result<Bitmap?, ProfileErrors?>
+    suspend fun updatePhoto(photo: Bitmap): Result<Bitmap?, ProfileErrors?>
+    suspend fun reloadUnreadCount()
 }

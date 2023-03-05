@@ -16,6 +16,13 @@ import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.auth.LogoutListener
 import com.dauma.grokimkartu.repositories.profile.entities.*
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
+import com.dauma.grokimkartu.repositories.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao,
@@ -24,130 +31,130 @@ class ProfileRepositoryImpl(
     private val user: User,
     private val utils: Utils
 ) : ProfileRepository, LoginListener, LogoutListener {
-    private var _unreadCount: ProfileUnreadCount? = null
-    private val profileListeners: MutableMap<String, ProfileListener> = mutableMapOf()
+    private val coroutineIOScope = CoroutineScope(Dispatchers.IO)
 
-    override val unreadCount: ProfileUnreadCount?
-        get() = _unreadCount?.let { ProfileUnreadCount(it) }
+    private var _unreadCount: MutableStateFlow<ProfileUnreadCount?> = MutableStateFlow(null)
+    override val unreadCount: StateFlow<ProfileUnreadCount?> = _unreadCount.asStateFlow()
 
     companion object {
         private const val PROFILE_UNREAD_COUNT_PERIODIC_RELOAD = "PROFILE_UNREAD_COUNT_PERIODIC_RELOAD"
     }
 
-    override fun profile(onComplete: (Profile?, ProfileErrors?) -> Unit) {
+    override suspend fun profile(): Result<Profile?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            profileDao.profile(user.getBearerAccessToken()!!) { profileResponse, profileDaoResponseStatus ->
-                if (profileDaoResponseStatus.isSuccessful && profileResponse != null) {
-                    val profile = toProfile(profileResponse)
-                    onComplete(profile, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
-                }
+            val response = profileDao.profile(user.getBearerAccessToken()!!)
+            val status = response.status
+            val profileResponse = response.data
+            if (status.isSuccessful && profileResponse != null) {
+                val profile = toProfile(profileResponse)
+                return Result(profile, null)
+            } else {
+                return Result(null, ProfileErrors.UNKNOWN)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun cities(onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit) {
+    override suspend fun cities(): Result<List<ProfileCity>?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            citiesDao.cities(user.getBearerAccessToken()!!) { citiesResponse, citiesDaoResponseStatus ->
-                if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
-                    val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
-                    onComplete(profileCities, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
-                }
+            val response = citiesDao.cities(user.getBearerAccessToken()!!)
+            val status = response.status
+            val citiesResponse = response.data
+            if (status.isSuccessful && citiesResponse != null) {
+                val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
+                return Result(profileCities, null)
+            } else {
+                return Result(null, ProfileErrors.UNKNOWN)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun searchCity(
-        value: String,
-        onComplete: (List<ProfileCity>?, ProfileErrors?) -> Unit
-    ) {
+    override suspend fun searchCity(value: String): Result<List<ProfileCity>?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            citiesDao.search(value, user.getBearerAccessToken()!!) { citiesResponse, citiesDaoResponseStatus ->
-                if (citiesDaoResponseStatus.isSuccessful && citiesResponse != null) {
-                    val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
-                    onComplete(profileCities, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
-                }
+            val response = citiesDao.search(value, user.getBearerAccessToken()!!)
+            val status = response.status
+            val citiesResponse = response.data
+            if (status.isSuccessful && citiesResponse != null) {
+                val profileCities = citiesResponse.map { cr -> toProfileCity(cr) }
+                return Result(profileCities, null)
+            } else {
+                return Result(null, ProfileErrors.UNKNOWN)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun instruments(onComplete: (List<ProfileInstrument>?, ProfileErrors?) -> Unit) {
+    override suspend fun instruments(): Result<List<ProfileInstrument>?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            instrumentsDao.instruments(user.getBearerAccessToken()!!) { instrumentsResponse, instrumentsDaoResponseStatus ->
-                if (instrumentsDaoResponseStatus.isSuccessful && instrumentsResponse != null) {
-                    val profileInstruments = instrumentsResponse.map { ir -> toProfileInstrument(ir) }
-                    onComplete(profileInstruments, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
-                }
+            val response = instrumentsDao.instruments(user.getBearerAccessToken()!!)
+            val status = response.status
+            val instrumentsResponse = response.data
+            if (status.isSuccessful && instrumentsResponse != null) {
+                val profileInstruments = instrumentsResponse.map { ir -> toProfileInstrument(ir) }
+                return Result(profileInstruments, null)
+            } else {
+                return Result(null, ProfileErrors.UNKNOWN)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun searchInstrument(
-        value: String,
-        onComplete: (List<ProfileInstrument>?, ProfileErrors?) -> Unit
-    ) {
+    override suspend fun searchInstrument(value: String): Result<List<ProfileInstrument>?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            instrumentsDao.search(value, user.getBearerAccessToken()!!) { instrumentsResponse, instrumentsDaoResponseStatus ->
-                if (instrumentsDaoResponseStatus.isSuccessful && instrumentsResponse != null) {
-                    val profileInstruments = instrumentsResponse.map { ir -> toProfileInstrument(ir) }
-                    onComplete(profileInstruments, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
-                }
+            val response = instrumentsDao.search(value, user.getBearerAccessToken()!!)
+            val status = response.status
+            val instrumentsResponse = response.data
+            if (status.isSuccessful && instrumentsResponse != null) {
+                val profileInstruments = instrumentsResponse.map { ir -> toProfileInstrument(ir) }
+                return Result(profileInstruments, null)
+            } else {
+                return Result(null, ProfileErrors.UNKNOWN)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun update(updateProfile: UpdateProfile, onComplete: (Profile?, ProfileErrors?) -> Unit) {
+    override suspend fun update(updateProfile: UpdateProfile): Result<Profile?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
             val updateProfileRequest = UpdateProfileRequest(
                 description = updateProfile.description,
                 cityId = updateProfile.cityId,
                 instrumentId = updateProfile.instrumentId
             )
-            profileDao.update(updateProfileRequest, user.getBearerAccessToken()!!) { profileResponse, profileDaoResponseStatus ->
-                if (profileDaoResponseStatus.isSuccessful && profileResponse != null) {
-                    val updatedProfile = toProfile(profileResponse)
-                    onComplete(updatedProfile, null)
-                } else {
-                    onComplete(null, ProfileErrors.UNKNOWN)
-                }
+            val response = profileDao.update(updateProfileRequest, user.getBearerAccessToken()!!)
+            val status = response.status
+            val profileResponse = response.data
+            if (status.isSuccessful && profileResponse != null) {
+                val updatedProfile = toProfile(profileResponse)
+                return Result(updatedProfile, null)
+            } else {
+                return Result(null, ProfileErrors.UNKNOWN)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun icon(onComplete: (Bitmap?, ProfileErrors?) -> Unit) {
+    override suspend fun icon(): Result<Bitmap?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            profileDao.icon(user.getBearerAccessToken()!!) { icon, profileDaoResponseStatus ->
-                if (profileDaoResponseStatus.isSuccessful && icon != null) {
-                    onComplete(icon, null)
-                } else {
-                    when (profileDaoResponseStatus.error) {
-                        ProfileDaoResponseStatus.Errors.ICON_NOT_FOUND -> {
-                            onComplete(null, ProfileErrors.ICON_NOT_FOUND)
-                        }
-                        else -> {
-                            onComplete(null, ProfileErrors.UNKNOWN)
-                        }
+            val response = profileDao.icon(user.getBearerAccessToken()!!)
+            val status = response.status
+            val iconResponse = response.data
+            if (status.isSuccessful && iconResponse != null) {
+                return Result(iconResponse, null)
+            } else {
+                when (status.error) {
+                    ProfileDaoResponseStatus.Errors.ICON_NOT_FOUND -> {
+                        return Result(null, ProfileErrors.ICON_NOT_FOUND)
+                    }
+                    else -> {
+                        return Result(null, ProfileErrors.UNKNOWN)
                     }
                 }
             }
@@ -156,19 +163,20 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun photo(onComplete: (Bitmap?, ProfileErrors?) -> Unit) {
+    override suspend fun photo(): Result<Bitmap?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            profileDao.photo(user.getBearerAccessToken()!!) { photo, profileDaoResponseStatus ->
-                if (profileDaoResponseStatus.isSuccessful && photo != null) {
-                    onComplete(photo, null)
-                } else {
-                    when (profileDaoResponseStatus.error) {
-                        ProfileDaoResponseStatus.Errors.PHOTO_NOT_FOUND -> {
-                            onComplete(null, ProfileErrors.PHOTO_NOT_FOUND)
-                        }
-                        else -> {
-                            onComplete(null, ProfileErrors.UNKNOWN)
-                        }
+            val response = profileDao.photo(user.getBearerAccessToken()!!)
+            val status = response.status
+            val photoResponse = response.data
+            if (status.isSuccessful && photoResponse != null) {
+                return Result(photoResponse, null)
+            } else {
+                when (status.error) {
+                    ProfileDaoResponseStatus.Errors.PHOTO_NOT_FOUND -> {
+                        return Result(null, ProfileErrors.PHOTO_NOT_FOUND)
+                    }
+                    else -> {
+                        return Result(null, ProfileErrors.UNKNOWN)
                     }
                 }
             }
@@ -177,19 +185,20 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun updatePhoto(photo: Bitmap, onComplete: (Bitmap?, ProfileErrors?) -> Unit) {
+    override suspend fun updatePhoto(photo: Bitmap): Result<Bitmap?, ProfileErrors?> {
         if (user.isUserLoggedIn()) {
-            profileDao.updatePhoto(user.getBearerAccessToken()!!, photo) { updatedPhoto, profileDaoResponseStatus ->
-                if (profileDaoResponseStatus.isSuccessful && updatedPhoto != null) {
-                    onComplete(updatedPhoto, null)
-                } else {
-                    when (profileDaoResponseStatus.error) {
-                        ProfileDaoResponseStatus.Errors.ATTACHED_PHOTO_IS_INVALID -> {
-                            onComplete(null, ProfileErrors.ATTACHED_PHOTO_IS_INVALID)
-                        }
-                        else -> {
-                            onComplete(null, ProfileErrors.UNKNOWN)
-                        }
+            val response = profileDao.updatePhoto(user.getBearerAccessToken()!!, photo)
+            val status = response.status
+            val photoResponse = response.data
+            if (status.isSuccessful && photoResponse != null) {
+                return Result(photoResponse, null)
+            } else {
+                when (status.error) {
+                    ProfileDaoResponseStatus.Errors.ATTACHED_PHOTO_IS_INVALID -> {
+                        return Result(null, ProfileErrors.ATTACHED_PHOTO_IS_INVALID)
+                    }
+                    else -> {
+                        return Result(null, ProfileErrors.UNKNOWN)
                     }
                 }
             }
@@ -198,38 +207,17 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override fun reloadUnreadCount() {
+    override suspend fun reloadUnreadCount() {
         if (user.isUserLoggedIn()) {
-            profileDao.unreadCount(user.getBearerAccessToken()!!) { unreadCountResponse, profileDaoResponseStatus ->
-                if (profileDaoResponseStatus.isSuccessful && unreadCountResponse != null) {
-                    val previousUnreadCount = this._unreadCount
-                    this._unreadCount = toProfileUnreadCount(unreadCountResponse)
-                    this.notifyListenersIfNeeded(previousUnreadCount)
-                }
+            val response = profileDao.unreadCount(user.getBearerAccessToken()!!)
+            val status = response.status
+            val unreadCountResponse = response.data
+            if (status.isSuccessful && unreadCountResponse != null) {
+                this._unreadCount.value = toProfileUnreadCount(unreadCountResponse)
             }
         } else {
             throw ProfileException(ProfileErrors.USER_NOT_LOGGED_IN)
         }
-    }
-
-    private fun notifyListenersIfNeeded(previousUnreadCount: ProfileUnreadCount?) {
-        if (previousUnreadCount?.unreadNotificationsCount != unreadCount?.unreadNotificationsCount) {
-            this.profileListeners.forEach { it.value.notificationsCountChanged() }
-        }
-        if (previousUnreadCount?.unreadPrivateConversationsCount != unreadCount?.unreadPrivateConversationsCount) {
-            this.profileListeners.forEach { it.value.privateConversationsCountChanged() }
-        }
-        if (previousUnreadCount?.unreadThomannConversationsCount != unreadCount?.unreadThomannConversationsCount) {
-            this.profileListeners.forEach { it.value.thomannConversationsCountChanged() }
-        }
-    }
-
-    override fun registerListener(id: String, listener: ProfileListener) {
-        profileListeners[id] = listener
-    }
-
-    override fun unregisterListener(id: String) {
-        profileListeners.remove(id)
     }
 
     private fun toProfile(profileResponse: ProfileResponse): Profile {
@@ -275,7 +263,7 @@ class ProfileRepositoryImpl(
 
     override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
         if (isSuccessful) {
-            _unreadCount = null
+            _unreadCount.value = null
             utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
             utils.dispatcherUtils.main.periodic(
                 operationKey = PROFILE_UNREAD_COUNT_PERIODIC_RELOAD,
@@ -283,7 +271,9 @@ class ProfileRepositoryImpl(
                 startImmediately = true,
                 repeats = true
             ) {
-                reloadUnreadCount()
+                coroutineIOScope.launch {
+                    reloadUnreadCount()
+                }
             }
         }
     }
