@@ -5,38 +5,39 @@ import com.dauma.grokimkartu.data.settings.entities.SettingsResponse
 import com.dauma.grokimkartu.data.settings.entities.UpdateSettingsRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.settings.entities.Settings
+import com.dauma.grokimkartu.repositories.Result
 
 class SettingsRepositoryImpl(
     private val settingsDao: SettingsDao,
     private val user: User
 ): SettingsRepository {
-    override fun settings(onComplete: (Settings?, SettingsErrors?) -> Unit) {
+    override suspend fun settings(): Result<Settings?, SettingsErrors?> {
         if (user.isUserLoggedIn()) {
-            settingsDao.settings(user.getBearerAccessToken()!!) { settingsResponse, settingsDaoResponseStatus ->
-                if (settingsDaoResponseStatus.isSuccessful && settingsResponse != null) {
-                    val settings = toSettings(settingsResponse)
-                    onComplete(settings, null)
-                } else {
-                    onComplete(null, SettingsErrors.UNKNOWN)
-                }
+            val response = settingsDao.settings(user.getBearerAccessToken()!!)
+            val status = response.status
+            val settingsResponse = response.data
+            if (status.isSuccessful && settingsResponse != null) {
+                val settings = toSettings(settingsResponse)
+                return Result(settings, null)
+            } else {
+                return Result(null, SettingsErrors.UNKNOWN)
             }
         } else {
             throw SettingsException(SettingsErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun update(settings: Settings, onComplete: (Settings?, SettingsErrors?) -> Unit) {
+    override suspend fun update(settings: Settings): Result<Settings?, SettingsErrors?> {
         if (user.isUserLoggedIn()) {
-            val updateSettingsRequest = UpdateSettingsRequest(
-                isVisible = settings.isVisible
-            )
-            settingsDao.update(updateSettingsRequest, user.getBearerAccessToken()!!) { settingsResponse, settingsDaoResponseStatus ->
-                if (settingsDaoResponseStatus.isSuccessful && settingsResponse != null) {
-                    val updatedSettings = toSettings(settingsResponse)
-                    onComplete(updatedSettings, null)
-                } else {
-                    onComplete(null, SettingsErrors.UNKNOWN)
-                }
+            val updateSettingsRequest = UpdateSettingsRequest(isVisible = settings.isVisible)
+            val response = settingsDao.update(updateSettingsRequest, user.getBearerAccessToken()!!)
+            val status = response.status
+            val settingsResponse = response.data
+            if (status.isSuccessful && settingsResponse != null) {
+                val updatedSettings = toSettings(settingsResponse)
+                return Result(updatedSettings, null)
+            } else {
+                return Result(null, SettingsErrors.UNKNOWN)
             }
         } else {
             throw SettingsException(SettingsErrors.USER_NOT_LOGGED_IN)

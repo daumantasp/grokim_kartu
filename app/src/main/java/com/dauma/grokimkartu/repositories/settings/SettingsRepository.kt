@@ -1,8 +1,9 @@
 package com.dauma.grokimkartu.repositories.settings
 
 import com.dauma.grokimkartu.repositories.settings.entities.Settings
+import com.dauma.grokimkartu.repositories.Result
 
 interface SettingsRepository {
-    fun settings(onComplete: (Settings?, SettingsErrors?) -> Unit)
-    fun update(settings: Settings, onComplete: (Settings?, SettingsErrors?) -> Unit)
+    suspend fun settings(): Result<Settings?, SettingsErrors?>
+    suspend fun update(settings: Settings): Result<Settings?, SettingsErrors?>
 }
