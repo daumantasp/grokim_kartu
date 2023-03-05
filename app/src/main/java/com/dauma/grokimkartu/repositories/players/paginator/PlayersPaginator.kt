@@ -1,14 +1,16 @@
 package com.dauma.grokimkartu.repositories.players.paginator
 
-import com.dauma.grokimkartu.data.players.entities.PlayersResponse
+import com.dauma.grokimkartu.repositories.Result
 import com.dauma.grokimkartu.repositories.players.PlayersErrors
 import com.dauma.grokimkartu.repositories.players.PlayersFilter
+import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
+import kotlinx.coroutines.flow.StateFlow
 
 interface PlayersPaginator {
-    val pages: List<PlayersResponse>
-    val pageSize: Int
-    var filter: PlayersFilter
-    val isFilterApplied: Boolean
-    fun loadNextPage(accessToken: String, onComplete: (PlayersResponse?, PlayersErrors?) -> Unit)
+    val pages: StateFlow<List<PlayersPage>>
+    val filter: StateFlow<PlayersFilter>
+    val isFilterApplied: StateFlow<Boolean>
+    suspend fun loadNextPage(): Result<PlayersPage?, PlayersErrors?>
+    fun setFilter(filter: PlayersFilter)
     fun clear()
 }

@@ -12,4 +12,22 @@ class PlayersFilter(
             text = null
         )
     }
+
+    // NOTE: Values in state flow are conflated using Any.equals comparison in a similar way to
+    // distinctUntilChanged operator.
+    override fun equals(other: Any?): Boolean {
+        if (other is PlayersFilter) {
+            return cityId != other.cityId ||
+                    instrumentId != other.instrumentId ||
+                    text != other.text
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        var result = cityId ?: 0
+        result = 31 * result + (instrumentId ?: 0)
+        result = 31 * result + (text?.hashCode() ?: 0)
+        return result
+    }
 }
