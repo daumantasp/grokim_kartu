@@ -1,13 +1,14 @@
 package com.dauma.grokimkartu.repositories.notifications
 
+import com.dauma.grokimkartu.repositories.Result
 import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
+import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginator
+import kotlinx.coroutines.flow.StateFlow
 
 interface NotificationsRepository {
-    val pages: List<NotificationsPage>
-    fun loadNextPage(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit)
-    fun activate(notificationId: Int, onComplete: (Notification?, NotificationsErrors?) -> Unit)
-    fun reload(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit)
-    fun registerListener(id: String, listener: NotificationsListener)
-    fun unregisterListener(id: String)
+    val paginator: NotificationsPaginator
+    val unreadCount: StateFlow<Int?>
+    suspend fun expand(notificationId: Int): Result<Notification?, NotificationsErrors?>
+    suspend fun reload(): Result<NotificationsPage?, NotificationsErrors?>
 }

@@ -1,109 +1,87 @@
 package com.dauma.grokimkartu.repositories.notifications
 
+import com.dauma.grokimkartu.repositories.Result
 import com.dauma.grokimkartu.data.notifications.NotificationsDao
 import com.dauma.grokimkartu.data.notifications.entities.NotificationResponse
-import com.dauma.grokimkartu.data.notifications.entities.NotificationsResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.notifications.entities.*
 import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginator
-import com.dauma.grokimkartu.repositories.profile.ProfileListener
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class NotificationsRepositoryImpl(
     private val notificationsDao: NotificationsDao,
-    private val paginator: NotificationsPaginator,
+    private val _paginator: NotificationsPaginator,
     private val user: User
-) : NotificationsRepository, LoginListener, ProfileListener {
-    private val _pages: MutableList<NotificationsPage> = mutableListOf()
-    private var _unreadCount: Int? = null
-    private val notificationsListeners: MutableMap<String, NotificationsListener> = mutableMapOf()
+) : NotificationsRepository, LoginListener {
+    override val paginator: NotificationsPaginator
+        get() = _paginator
 
-    override val pages: List<NotificationsPage>
-        get() = _pages
+    private val _unreadCount: MutableStateFlow<Int?> = MutableStateFlow(null)
+    override val unreadCount: StateFlow<Int?> = _unreadCount.asStateFlow()
 
-    override fun loadNextPage(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit) {
-        if (user.isUserLoggedIn()) {
-            paginator.loadNextPage(user.getBearerAccessToken()!!) { notificationsResponse, isLastPage ->
-                if (notificationsResponse != null) {
-                    val notificationsPage = toNotificationsPage(notificationsResponse)
-                    _pages.add(notificationsPage)
-                    onComplete(notificationsPage, null)
-                } else {
-                    onComplete(null, NotificationsErrors.UNKNOWN)
-                }
-            }
-        } else {
-            throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
-        }
-    }
-
-    override fun activate(
-        notificationId: Int,
-        onComplete: (Notification?, NotificationsErrors?) -> Unit
-    ) {
+    override suspend fun expand(notificationId: Int): Result<Notification?, NotificationsErrors?> {
         if (user.isUserLoggedIn()) {
             if (hasNotification(notificationId)) {
                 val notification = getNotification(notificationId)!!
-                readNotificationIfNeeded(notificationId) { _, _ -> }
+                readNotificationIfNeeded(notificationId)
                 toggleNotificationActivity(notificationId)
-                onComplete(notification, null)
+                return Result(notification, null)
             } else {
-                onComplete(null, NotificationsErrors.UNKNOWN)
+                return Result(null, NotificationsErrors.UNKNOWN)
             }
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    private fun readNotificationIfNeeded(
-        notificationId: Int,
-        onComplete: (Notification?, NotificationsErrors?) -> Unit
-    ) {
+    private suspend fun readNotificationIfNeeded(notificationId: Int): Result<Notification?, NotificationsErrors?> {
         val previousNotification = getNotification(notificationId)
         if (previousNotification?.state == NotificationState.UNREAD) {
             val updateNotification = UpdateNotification(isRead = true)
-            update(notificationId, updateNotification) { updatedNotification, notificationsErrors ->
-                updatedNotification?.let {
-                    if (it.state != NotificationState.UNREAD) {
-                        previousNotification.state = it.state
-                        _unreadCount = _unreadCount?.let { it - 1 }
-                    }
+            val updateResult = update(notificationId, updateNotification)
+            updateResult.data?.let {
+                if (it.state != NotificationState.UNREAD) {
+                    previousNotification.state = it.state
+                    _unreadCount.value = _unreadCount.value?.let { it - 1 }
                 }
-                onComplete(updatedNotification, notificationsErrors)
             }
+            return updateResult
         } else {
-            onComplete(null, NotificationsErrors.UNKNOWN)
+            return Result(null, NotificationsErrors.UNKNOWN)
         }
     }
 
-    private fun update(
+    private suspend fun update(
         notificationId: Int,
         updateNotification: UpdateNotification,
-        onComplete: (Notification?, NotificationsErrors?) -> Unit
-    ) {
+    ): Result<Notification?, NotificationsErrors?> {
         if (user.isUserLoggedIn()) {
             val updateNotificationsRequest = UpdateNotificationRequest(
                 isRead = updateNotification.isRead
             )
-            notificationsDao.update(notificationId, updateNotificationsRequest, user.getBearerAccessToken()!!) { notificationResponse, notificationsDaoResponseStatus ->
-                if (notificationsDaoResponseStatus.isSuccessful && notificationResponse != null) {
-                    val notification = toNotification(notificationResponse)
-                    onComplete(notification, null)
-                } else {
-                    onComplete(null, NotificationsErrors.UNKNOWN)
-                }
+            val response = notificationsDao.update(notificationId, updateNotificationsRequest, user.getBearerAccessToken()!!)
+            val status = response.status
+            val notificationResponse = response.data
+            if (status.isSuccessful && notificationResponse != null) {
+                val notification = toNotification(notificationResponse)
+                return Result(notification, null)
+            } else {
+                return Result(null, NotificationsErrors.UNKNOWN)
             }
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
         }
     }
 
-    override fun reload(onComplete: (NotificationsPage?, NotificationsErrors?) -> Unit) {
+    override suspend fun reload(): Result<NotificationsPage?, NotificationsErrors?> {
         if (user.isUserLoggedIn()) {
             reset()
-            loadNextPage(onComplete)
+            return _paginator.loadNextPage()
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
         }
@@ -111,19 +89,10 @@ class NotificationsRepositoryImpl(
 
     private fun reset() {
         if (user.isUserLoggedIn()) {
-            _pages.clear()
-            paginator.clear()
+            _paginator.clear()
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
         }
-    }
-
-    override fun registerListener(id: String, listener: NotificationsListener) {
-        notificationsListeners[id] = listener
-    }
-
-    override fun unregisterListener(id: String) {
-        notificationsListeners.remove(id)
     }
 
     private fun hasNotification(notificationId: Int) : Boolean {
@@ -131,7 +100,7 @@ class NotificationsRepositoryImpl(
     }
 
     private fun getNotification(notificationId: Int) : Notification? {
-        for (page in _pages) {
+        for (page in _paginator.pages.value) {
             page.notifications?.let { notifications ->
                 for (notification in notifications) {
                     if (notification.id == notificationId) {
@@ -144,17 +113,17 @@ class NotificationsRepositoryImpl(
     }
 
     private fun toggleNotificationActivity(notificationId: Int) {
-        for (page in _pages) {
+        for (page in _paginator.pages.value) {
             page.notifications?.let { notifications ->
                 for (notification in notifications) {
                     if (notification.id == notificationId) {
-                        if (notification.state == NotificationState.INACTIVE || notification.state == NotificationState.UNREAD) {
-                            notification.state = NotificationState.ACTIVE
+                        if (notification.state == NotificationState.READ || notification.state == NotificationState.UNREAD) {
+                            notification.state = NotificationState.EXPANDED
                         } else {
-                            notification.state = NotificationState.INACTIVE
+                            notification.state = NotificationState.READ
                         }
-                    } else if (notification.state == NotificationState.ACTIVE) {
-                        notification.state = NotificationState.INACTIVE
+                    } else if (notification.state == NotificationState.EXPANDED) {
+                        notification.state = NotificationState.READ
                     }
                 }
             }
@@ -162,7 +131,7 @@ class NotificationsRepositoryImpl(
     }
 
     private fun toNotification(notificationResponse: NotificationResponse) : Notification {
-        val state = if (notificationResponse.isRead == true) NotificationState.INACTIVE else NotificationState.UNREAD
+        val state = if (notificationResponse.isRead == true) NotificationState.READ else NotificationState.UNREAD
         return Notification(
             id = notificationResponse.id,
             user = NotificationUserConcise(
@@ -176,35 +145,9 @@ class NotificationsRepositoryImpl(
         )
     }
 
-    private fun toNotificationsPage(notificationsResponse: NotificationsResponse) : NotificationsPage {
-        var notifications: List<Notification> = listOf()
-        var isLastPage: Boolean = false
-
-        if (notificationsResponse.data != null) {
-            notifications = notificationsResponse.data!!.map { nr -> toNotification(nr) }
-        }
-        if (notificationsResponse.pageData?.currentPage != null && notificationsResponse.pageData?.lastPage != null) {
-            isLastPage = notificationsResponse.pageData?.currentPage == notificationsResponse.pageData?.lastPage
-        }
-
-        return NotificationsPage(notifications, isLastPage)
-    }
-
     override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
         if (isSuccessful) {
             reset()
         }
     }
-
-    override fun notificationsCountChanged() {
-        reset()
-        loadNextPage { _, _ ->
-            for (listener in this.notificationsListeners.values) {
-                listener.notificationsChanged()
-            }
-        }
-    }
-
-    override fun privateConversationsCountChanged() {}
-    override fun thomannConversationsCountChanged() {}
 }
