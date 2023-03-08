@@ -1,20 +1,19 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
+import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
+import com.dauma.grokimkartu.repositories.Result
 
 interface ThomannsRepository {
-    val pages: List<ThomannsPage>
-    var filter: ThomannsFilter
-    val isFilterApplied: Boolean
-    fun loadNextPage(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit)
-    fun create(createThomann: CreateThomann, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun update(thomannId: Int, updateThomann: UpdateThomann, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun delete(thomannId: Int, onComplete: (ThomannsErrors?) -> Unit)
-    fun thomannDetails(thomannId: Int, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun join(thomannId: Int, amount: Double, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun quit(thomannId: Int, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun kick(thomannId: Int, userToKickId: Int, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun cities(onComplete: (List<ThomannCity>?, ThomannsErrors?) -> Unit)
-    fun searchCity(value: String, onComplete: (List<ThomannCity>?, ThomannsErrors?) -> Unit)
-    fun reload(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit)
+    val paginator: ThomannsPaginator
+    suspend fun create(createThomann: CreateThomann): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun update(thomannId: Int, updateThomann: UpdateThomann): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun delete(thomannId: Int): Result<Nothing?, ThomannsErrors?>
+    suspend fun thomannDetails(thomannId: Int): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun join(thomannId: Int, amount: Double): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun quit(thomannId: Int): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun kick(thomannId: Int, userToKickId: Int): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun cities(): Result<List<ThomannCity>?, ThomannsErrors?>
+    suspend fun searchCity(value: String): Result<List<ThomannCity>?, ThomannsErrors?>
+    suspend fun reload(): Result<ThomannsPage?, ThomannsErrors?>
 }

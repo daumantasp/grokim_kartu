@@ -1,31 +1,46 @@
 package com.dauma.grokimkartu.repositories.thomanns.paginator
 
+import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.thomanns.ThomannsDao
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannsRequest
-import com.dauma.grokimkartu.data.thomanns.entities.ThomannsResponse
+import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.repositories.Result
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsErrors
+import com.dauma.grokimkartu.repositories.thomanns.ThomannsException
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
 
-class ThomannsPaginatorImpl(private val thomannsDao: ThomannsDao) : ThomannsPaginator(thomannsDao) {
-    override fun loadNextPage(accessToken: String, onComplete: (ThomannsResponse?, ThomannsErrors?) -> Unit) {
-        if (isLastLoaded() == false) {
-            val nextPage = _pages.count() + 1
-            val thomannsRequest = ThomannsRequest(
-                page = nextPage,
-                pageSize = pageSize,
-                cityId = _filter.cityId,
-                validUntil = _filter.validUntil,
-                isLocked = _filter.isLocked
-            )
-            thomannsDao.thomanns(thomannsRequest, accessToken) { thomannsResponse, thomannsDaoResponseStatus ->
-                if (thomannsDaoResponseStatus.isSuccessful && thomannsResponse != null) {
-                    _pages.add(thomannsResponse)
-                    onComplete(thomannsResponse, null)
+class ThomannsPaginatorImpl(
+    private val thomannsDao: ThomannsDao,
+    playersDao: PlayersDao,
+    private val user: User
+    ) : ThomannsPaginator(playersDao, user) {
+    override suspend fun loadNextPage(): Result<ThomannsPage?, ThomannsErrors?> {
+        if (user.isUserLoggedIn()) {
+            if (isLastLoaded() == false) {
+                val nextPage = _pages.value.count() + 1
+                val thomannsRequest = ThomannsRequest(
+                    page = nextPage,
+                    pageSize = pageSize,
+                    cityId = _filter.value.cityId,
+                    validUntil = _filter.value.validUntil,
+                    isLocked = _filter.value.isLocked
+                )
+                val response = thomannsDao.thomanns(thomannsRequest, user.getBearerAccessToken()!!)
+                val status = response.status
+                val thomannsResponse = response.data
+                if (status.isSuccessful && thomannsResponse != null) {
+                    val thomannsPage = toThomannsPage(thomannsResponse)
+                    val pages = _pages.value.toMutableList()
+                    _pages.value = pages
+                    return Result(thomannsPage, null)
                 } else {
-                    onComplete(null, ThomannsErrors.UNKNOWN)
+                    return Result(null, ThomannsErrors.UNKNOWN)
                 }
+            } else {
+                return Result(_pages.value.lastOrNull(), null)
             }
         } else {
-            onComplete(_pages.lastOrNull(), null)
+            throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
         }
     }
 }

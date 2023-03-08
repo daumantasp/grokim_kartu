@@ -1,10 +1,11 @@
 package com.dauma.grokimkartu.repositories.thomanns
 
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
+import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
+import com.dauma.grokimkartu.repositories.Result
 
 interface MyThomannsRepository {
-    val pages: List<ThomannsPage>
-    fun loadNextPage(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit)
-    fun thomannDetails(thomannId: Int, onComplete: (ThomannDetails?, ThomannsErrors?) -> Unit)
-    fun reload(onComplete: (ThomannsPage?, ThomannsErrors?) -> Unit)
+    val paginator: ThomannsPaginator
+    suspend fun thomannDetails(thomannId: Int): Result<ThomannDetails?, ThomannsErrors?>
+    suspend fun reload(): Result<ThomannsPage?, ThomannsErrors?>
 }
