@@ -15,12 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class NotificationsRepositoryImpl(
     private val notificationsDao: NotificationsDao,
-    private val _paginator: NotificationsPaginator,
+    override val paginator: NotificationsPaginator,
     private val user: User
 ) : NotificationsRepository, LoginListener {
-    override val paginator: NotificationsPaginator
-        get() = _paginator
-
     private val _unreadCount: MutableStateFlow<Int?> = MutableStateFlow(null)
     override val unreadCount: StateFlow<Int?> = _unreadCount.asStateFlow()
 
@@ -81,7 +78,7 @@ class NotificationsRepositoryImpl(
     override suspend fun reload(): Result<NotificationsPage?, NotificationsErrors?> {
         if (user.isUserLoggedIn()) {
             reset()
-            return _paginator.loadNextPage()
+            return paginator.loadNextPage()
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
         }
@@ -89,7 +86,7 @@ class NotificationsRepositoryImpl(
 
     private fun reset() {
         if (user.isUserLoggedIn()) {
-            _paginator.clear()
+            paginator.clear()
         } else {
             throw NotificationsException(NotificationsErrors.USER_NOT_LOGGED_IN)
         }
@@ -100,7 +97,7 @@ class NotificationsRepositoryImpl(
     }
 
     private fun getNotification(notificationId: Int) : Notification? {
-        for (page in _paginator.pages.value) {
+        for (page in paginator.pages.value) {
             page.notifications?.let { notifications ->
                 for (notification in notifications) {
                     if (notification.id == notificationId) {
@@ -113,7 +110,7 @@ class NotificationsRepositoryImpl(
     }
 
     private fun toggleNotificationActivity(notificationId: Int) {
-        for (page in _paginator.pages.value) {
+        for (page in paginator.pages.value) {
             page.notifications?.let { notifications ->
                 for (notification in notifications) {
                     if (notification.id == notificationId) {

@@ -19,13 +19,9 @@ class ThomannsRepositoryImpl(
     private val thomannsDao: ThomannsDao,
     private val playersDao: PlayersDao,
     private val citiesDao: CitiesDao,
-    private val _paginator: ThomannsPaginator,
+    override val paginator: ThomannsPaginator,
     private val user: User
 ) : ThomannsRepository, LoginListener {
-
-    override val paginator: ThomannsPaginator
-        get() = _paginator
-
     override suspend fun create(createThomann: CreateThomann): Result<ThomannDetails?, ThomannsErrors?> {
         if (user.isUserLoggedIn()) {
             val createThomannRequest = CreateThomannRequest(
@@ -217,7 +213,7 @@ class ThomannsRepositoryImpl(
     override suspend fun reload(): Result<ThomannsPage?, ThomannsErrors?> {
         if (user.isUserLoggedIn()) {
             reset()
-            return _paginator.loadNextPage()
+            return paginator.loadNextPage()
         } else {
             throw ThomannsException(ThomannsErrors.USER_NOT_LOGGED_IN)
         }

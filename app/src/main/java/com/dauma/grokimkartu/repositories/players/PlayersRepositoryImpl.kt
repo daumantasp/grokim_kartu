@@ -21,15 +21,11 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 
 class PlayersRepositoryImpl(
     private val playersDao: PlayersDao,
-    private val _paginator: PlayersPaginator,
+    override val paginator: PlayersPaginator,
     private val citiesDao: CitiesDao,
     private val instrumentsDao: InstrumentsDao,
     private val user: User
 ) : PlayersRepository, LoginListener {
-
-    override val paginator: PlayersPaginator
-        get() = _paginator
-
     override suspend fun playerDetails(userId: Int): Result<PlayerDetails?, PlayersErrors?> {
         if (user.isUserLoggedIn()) {
             val response = playersDao.playerDetails(userId, user.getBearerAccessToken()!!)

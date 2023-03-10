@@ -15,13 +15,9 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 class MyThomannsRepositoryImpl(
     private val thomannsDao: ThomannsDao,
     private val playersDao: PlayersDao,
-    private val _paginator: ThomannsPaginator,
+    override val paginator: ThomannsPaginator,
     private val user: User
 ) : MyThomannsRepository, LoginListener {
-
-    override val paginator: ThomannsPaginator
-        get() = _paginator
-
     override suspend fun thomannDetails(thomannId: Int): Result<ThomannDetails?, ThomannsErrors?> {
         if (user.isUserLoggedIn()) {
             val response = thomannsDao.thomannDetails(thomannId, user.getBearerAccessToken()!!)
