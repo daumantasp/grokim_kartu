@@ -10,48 +10,35 @@ import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.conversations.entities.*
 import com.dauma.grokimkartu.repositories.players.PlayersErrors
+import com.dauma.grokimkartu.repositories.Result
 
 abstract class ConversationsRepository(
     private val playersDao: PlayersDao,
-    private val user: User
+    private val user: User,
+    private val conversationPartnersIcons: MutableMap<Int, Bitmap>
 ) {
-    protected val _pages: MutableList<ConversationPage> = mutableListOf()
-    protected var conversationPartnersIcons: MutableMap<Int, Bitmap> = mutableMapOf()
-    protected var isReloadInProgress: Boolean = false
-    protected val conversationListeners: MutableMap<String, ConversationListener> = mutableMapOf()
-
-    val pages: List<ConversationPage>
-        get() = _pages
-
-    fun registerListener(id: String, listener: ConversationListener) {
-        conversationListeners[id] = listener
-    }
-
-    fun unregisterListener(id: String) {
-        conversationListeners.remove(id)
-    }
-
-    protected fun playerIcon(userId: Int, onComplete: (Bitmap?, PlayersErrors?) -> Unit) {
+    private suspend fun playerIcon(userId: Int): Result<Bitmap?, PlayersErrors?> {
         if (user.isUserLoggedIn()) {
             if (conversationPartnersIcons.containsKey(userId)) {
-                onComplete(conversationPartnersIcons[userId], null)
+                return Result(conversationPartnersIcons[userId], null)
             } else {
-                playersDao.playerIcon(userId, user.getBearerAccessToken()!!) { playerIcon, playersDaoResponseStatus ->
-                    if (playerIcon != null) {
-                        this.conversationPartnersIcons[userId] = playerIcon
-                        onComplete(playerIcon, null)
-                    } else {
-                        val error: PlayersErrors
-                        when (playersDaoResponseStatus.error) {
-                            PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND -> {
-                                error = PlayersErrors.ICON_NOT_FOUND
-                            }
-                            else -> {
-                                error = PlayersErrors.UNKNOWN
-                            }
+                val response = playersDao.playerIcon(userId, user.getBearerAccessToken()!!)
+                val status = response.status
+                val playerIcon = response.data
+                if (playerIcon != null) {
+                    conversationPartnersIcons[userId] = playerIcon
+                    return Result(playerIcon, null)
+                } else {
+                    val error: PlayersErrors
+                    when (status.error) {
+                        PlayersDaoResponseStatus.Errors.ICON_NOT_FOUND -> {
+                            error = PlayersErrors.ICON_NOT_FOUND
                         }
-                        onComplete(null, error)
+                        else -> {
+                            error = PlayersErrors.UNKNOWN
+                        }
                     }
+                    return Result(null, error)
                 }
             }
         } else {
@@ -60,10 +47,9 @@ abstract class ConversationsRepository(
     }
 
     protected fun toMessage(messageResponse: MessageResponse) : Message {
-        val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
-            this.playerIcon(messageResponse.user?.id ?: -1) { icon, _ ->
-                onComplete(icon)
-            }
+        val iconDownload: suspend ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
+            val response = this.playerIcon(messageResponse.user?.id ?: -1)
+            onComplete(response.data)
         }
         return Message(
             id = messageResponse.id,
@@ -84,10 +70,9 @@ abstract class ConversationsRepository(
         conversationResponse.lastMessage?.let {
             lastMessage = toMessage(it)
         }
-        val iconDownload: ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
-            this.playerIcon(conversationResponse.partner?.id ?: -1) { icon, _ ->
-                onComplete(icon)
-            }
+        val iconDownload: suspend ((Bitmap?) -> Unit) -> Unit = { onComplete: (Bitmap?) -> Unit ->
+            val response = this.playerIcon(conversationResponse.partner?.id ?: -1)
+            onComplete(response.data)
         }
         return Conversation(
             id = conversationResponse.id,
@@ -115,11 +100,5 @@ abstract class ConversationsRepository(
         }
 
         return ConversationPage(messages, isLastPage)
-    }
-
-    protected fun notifyListeners() {
-        for (listener in this.conversationListeners.values) {
-            listener.conversationChanged()
-        }
     }
 }
