@@ -270,11 +270,11 @@ class ThomannDetailsAdapter(
             if (data.user.iconLoader.status == IconStatus.ICON_DOWNLOADED) {
                 bindIconIfPossible()
             } else if (data.user.iconLoader.status == IconStatus.NEED_TO_DOWNLOAD) {
-                data.user.iconLoader.loadIcon { icon ->
-                    if (icon != null) {
-                        bindIconIfPossible()
-                    }
-                }
+//                data.user.iconLoader.loadIcon { icon ->
+//                    if (icon != null) {
+//                        bindIconIfPossible()
+//                    }
+//                }
             }
         }
     }

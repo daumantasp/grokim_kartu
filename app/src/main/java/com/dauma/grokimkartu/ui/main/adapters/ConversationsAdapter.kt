@@ -166,11 +166,11 @@ class ConversationsAdapter(
             if (conversation.partner?.iconLoader?.status == IconStatus.ICON_DOWNLOADED) {
                 bindIconIfPossible()
             } else if (conversation.partner?.iconLoader?.status == IconStatus.NEED_TO_DOWNLOAD) {
-                conversation.partner?.iconLoader?.loadIcon { icon ->
-                    if (icon != null) {
-                        bindIconIfPossible()
-                    }
-                }
+//                conversation.partner?.iconLoader?.loadIcon { icon ->
+//                    if (icon != null) {
+//                        bindIconIfPossible()
+//                    }
+//                }
             }
         }
     }

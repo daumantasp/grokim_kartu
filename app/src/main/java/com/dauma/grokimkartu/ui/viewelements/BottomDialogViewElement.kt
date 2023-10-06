@@ -143,12 +143,12 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
             (data.selectedDate.month ?: 1) - 1,
             data.selectedDate.dayOfMonth ?: 0
         )
-        datePicker.setOnDateChangedListener { _, year, month, dayOfMonth ->
-            val datePickerDate = CustomDateTime().apply {
-                setDate(year, month - 1, dayOfMonth)
-            }
-            data.onSelectedDateChanged(datePickerDate)
-        }
+//        datePicker.setOnDateChangedListener { _, year, month, dayOfMonth ->
+//            val datePickerDate = CustomDateTime().apply {
+//                setDate(year, month - 1, dayOfMonth)
+//            }
+//            data.onSelectedDateChanged(datePickerDate)
+//        }
         if (data.minDate != null) {
             datePicker.minDate = utils.timeUtils.convertToTimeInMillis(data.minDate!!)
         }

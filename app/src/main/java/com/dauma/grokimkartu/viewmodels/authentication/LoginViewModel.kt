@@ -72,7 +72,7 @@ class LoginViewModel @Inject constructor(
     fun loginUser(email: String, password: String) {
         try {
             _loginInProgress.value = true
-            authRepository.login(email, password)
+//            authRepository.login(email, password)
         } catch (e: AuthenticationException) {
             Log.d(TAG, e.message ?: "Login was unsuccessful")
         }

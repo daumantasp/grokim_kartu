@@ -52,37 +52,37 @@ class PlayersFilterViewModel @Inject constructor(
     }
 
     private fun setFilter() {
-        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
-            pc.id == playersRepository.filter.cityId
-        }
-        val instrumentOrNull = playersFilterForm.pickableInstruments.firstOrNull { pi ->
-            pi.id == playersRepository.filter.instrumentId
-        }
-        playersFilterForm.setInitialValues(
-            city = cityOrNull,
-            instrument = instrumentOrNull,
-            text = playersRepository.filter.text
-        )
+//        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
+//            pc.id == playersRepository.filter.cityId
+//        }
+//        val instrumentOrNull = playersFilterForm.pickableInstruments.firstOrNull { pi ->
+//            pi.id == playersRepository.filter.instrumentId
+//        }
+//        playersFilterForm.setInitialValues(
+//            city = cityOrNull,
+//            instrument = instrumentOrNull,
+//            text = playersRepository.filter.text
+//        )
     }
 
     private fun loadPickableCities(onComplete: () -> Unit = {}) {
-        playersRepository.cities { citiesResponse, profileErrors ->
-            if (citiesResponse != null) {
-                playersFilterForm.pickableCities = citiesResponse
-                playersFilterForm.filteredPickableCities = citiesResponse
-            }
-            onComplete()
-        }
+//        playersRepository.cities { citiesResponse, profileErrors ->
+//            if (citiesResponse != null) {
+//                playersFilterForm.pickableCities = citiesResponse
+//                playersFilterForm.filteredPickableCities = citiesResponse
+//            }
+//            onComplete()
+//        }
     }
 
     private fun loadPickableInstruments(onComplete: () -> Unit = {}) {
-        playersRepository.instruments { instrumentsResponse, profileErrors ->
-            if (instrumentsResponse != null) {
-                playersFilterForm.pickableInstruments = instrumentsResponse
-                playersFilterForm.filteredPickableInstruments = instrumentsResponse
-            }
-            onComplete()
-        }
+//        playersRepository.instruments { instrumentsResponse, profileErrors ->
+//            if (instrumentsResponse != null) {
+//                playersFilterForm.pickableInstruments = instrumentsResponse
+//                playersFilterForm.filteredPickableInstruments = instrumentsResponse
+//            }
+//            onComplete()
+//        }
     }
 
     fun getPlayersFilterForm() : PlayersFilterForm {
@@ -113,12 +113,12 @@ class PlayersFilterViewModel @Inject constructor(
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-            playersRepository.searchCity(value) { citiesResponse, profileErrors ->
-                if (citiesResponse != null) {
-                    playersFilterForm.filteredPickableCities = citiesResponse
-                }
-                onComplete()
-            }
+//            playersRepository.searchCity(value) { citiesResponse, profileErrors ->
+//                if (citiesResponse != null) {
+//                    playersFilterForm.filteredPickableCities = citiesResponse
+//                }
+//                onComplete()
+//            }
         } else {
             playersFilterForm.filteredPickableCities = playersFilterForm.pickableCities
             onComplete()
@@ -127,12 +127,12 @@ class PlayersFilterViewModel @Inject constructor(
 
     fun searchInstrument(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-            playersRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
-                if (instrumentsResponse != null) {
-                    playersFilterForm.filteredPickableInstruments = instrumentsResponse
-                }
-                onComplete()
-            }
+//            playersRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
+//                if (instrumentsResponse != null) {
+//                    playersFilterForm.filteredPickableInstruments = instrumentsResponse
+//                }
+//                onComplete()
+//            }
         } else {
             playersFilterForm.filteredPickableInstruments = playersFilterForm.pickableInstruments
             onComplete()
@@ -157,20 +157,20 @@ class PlayersFilterViewModel @Inject constructor(
 
     fun applyFilter() {
         if (playersFilterForm.isChanged()) {
-            playersRepository.filter = PlayersFilter(
-                cityId = playersFilterForm.city.id,
-                instrumentId = playersFilterForm.instrument.id,
-                text = playersFilterForm.text
-            )
+//            playersRepository.filter = PlayersFilter(
+//                cityId = playersFilterForm.city.id,
+//                instrumentId = playersFilterForm.instrument.id,
+//                text = playersFilterForm.text
+//            )
             _navigation.value = Event(NavigationCommand.Back)
         }
     }
 
     fun clearFilter() {
         if (playersFilterForm.isInitialEmpty() == false) {
-            playersRepository.filter = PlayersFilter.CLEAR
-            setFilter()
-            _navigation.value = Event(NavigationCommand.Back)
+//            playersRepository.filter = PlayersFilter.CLEAR
+//            setFilter()
+//            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 }

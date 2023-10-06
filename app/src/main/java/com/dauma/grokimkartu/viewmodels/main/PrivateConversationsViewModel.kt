@@ -23,7 +23,7 @@ class PrivateConversationsViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadConversations()
-        profileRepository.reloadUnreadCount()
+//        profileRepository.reloadUnreadCount()
     }
 
     fun viewIsDiscarded() {
@@ -31,16 +31,16 @@ class PrivateConversationsViewModel @Inject constructor(
 
     fun reload() {
         loadConversations()
-        profileRepository.reloadUnreadCount()
+//        profileRepository.reloadUnreadCount()
     }
 
     private fun loadConversations() {
-        privateConversationsRepository.conversations { conversations, conversationsErrors ->
-            conversations?.let {
-                val newConversations: MutableList<Conversation> = mutableListOf()
-                newConversations.addAll(it)
-                _privateConversations.value = newConversations
-            }
-        }
+//        privateConversationsRepository.conversations { conversations, conversationsErrors ->
+//            conversations?.let {
+//                val newConversations: MutableList<Conversation> = mutableListOf()
+//                newConversations.addAll(it)
+//                _privateConversations.value = newConversations
+//            }
+//        }
     }
 }

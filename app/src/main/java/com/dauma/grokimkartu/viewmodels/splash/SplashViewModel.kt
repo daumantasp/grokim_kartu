@@ -26,7 +26,7 @@ class SplashViewModel @Inject constructor(
 
     fun viewIsReady() {
         authRepository.registerLoginListener(SPLASH_VIEW_MODEL_LOGIN_LISTENER_ID, this)
-        authRepository.tryReauthenticate()
+//        authRepository.tryReauthenticate()
     }
 
     fun viewIsDiscarded() {

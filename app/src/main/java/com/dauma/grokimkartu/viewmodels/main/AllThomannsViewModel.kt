@@ -26,39 +26,39 @@ class AllThomannsViewModel @Inject constructor(
     }
 
     fun viewIsReady() {
-        if (thomannsRepository.pages.isEmpty()) {
-            loadThomannsNextPage()
-        } else {
-            _thomannsPages.value = thomannsRepository.pages
-        }
+//        if (thomannsRepository.pages.isEmpty()) {
+//            loadThomannsNextPage()
+//        } else {
+//            _thomannsPages.value = thomannsRepository.pages
+//        }
     }
 
     fun thomannItemClicked(thomannId: Int) {
-        thomannFindLoop@for (page in thomannsRepository.pages) {
-            if (page.thomanns != null) {
-                for (thomann in page.thomanns) {
-                    if (thomann.id == thomannId) {
-                        if (thomann.isAccessible == true) {
-                            _navigation.value = Event(NavigationCommand.ToDirection(
-                                ThomannsFragmentDirections.actionThomannFragmentToThomannDetailsFragment(thomannId))
-                            )
-                        }
-                        break@thomannFindLoop
-                    }
-                }
-            }
-        }
+//        thomannFindLoop@for (page in thomannsRepository.pages) {
+//            if (page.thomanns != null) {
+//                for (thomann in page.thomanns) {
+//                    if (thomann.id == thomannId) {
+//                        if (thomann.isAccessible == true) {
+//                            _navigation.value = Event(NavigationCommand.ToDirection(
+//                                ThomannsFragmentDirections.actionThomannFragmentToThomannDetailsFragment(thomannId))
+//                            )
+//                        }
+//                        break@thomannFindLoop
+//                    }
+//                }
+//            }
+//        }
     }
 
     fun loadThomannsNextPage() {
-        thomannsRepository.loadNextPage() { _, _ ->
-            _thomannsPages.value = thomannsRepository.pages
-        }
+//        thomannsRepository.loadNextPage() { _, _ ->
+//            _thomannsPages.value = thomannsRepository.pages
+//        }
     }
 
     fun reload() {
-        thomannsRepository.reload { _, _ ->
-            _thomannsPages.value = thomannsRepository.pages
-        }
+//        thomannsRepository.reload { _, _ ->
+//            _thomannsPages.value = thomannsRepository.pages
+//        }
     }
 }

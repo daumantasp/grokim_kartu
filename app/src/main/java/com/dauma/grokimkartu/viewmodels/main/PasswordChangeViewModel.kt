@@ -54,16 +54,16 @@ class PasswordChangeViewModel @Inject constructor(
 
         try {
             _changeInProgress.value = true
-            authRepository.changePassword(oldPassword, newPassword, repeatPassword) { isSuccessful, authenticationErrors ->
-                if (isSuccessful) {
-                    _showSuccess.value = Event(true)
-                } else {
-                    if (authenticationErrors != null) {
-                        handleAuthenticationError(authenticationErrors)
-                    }
-                }
-                _changeInProgress.value = false
-            }
+//            authRepository.changePassword(oldPassword, newPassword, repeatPassword) { isSuccessful, authenticationErrors ->
+//                if (isSuccessful) {
+//                    _showSuccess.value = Event(true)
+//                } else {
+//                    if (authenticationErrors != null) {
+//                        handleAuthenticationError(authenticationErrors)
+//                    }
+//                }
+//                _changeInProgress.value = false
+//            }
         } catch (e: AuthenticationException) {
             _changeInProgress.value = false
             Log.d(TAG, e.message ?: "PasswordChange was unsuccessful")

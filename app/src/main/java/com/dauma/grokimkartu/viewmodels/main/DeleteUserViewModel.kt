@@ -45,14 +45,14 @@ class DeleteUserViewModel @Inject constructor(
 
         try {
             _deleteInProgress.value = true
-            authRepository.delete { isSuccessful, authenticationErrors ->
-                if (isSuccessful) {
-                    _navigation.value = Event(NavigationCommand.ToDirection(DeleteUserFragmentDirections.actionDeleteUserFragmentToAuthGraph()))
-                } else if (authenticationErrors != null) {
-                        handleAuthenticationError(authenticationErrors)
-                }
-                _deleteInProgress.value = false
-            }
+//            authRepository.delete { isSuccessful, authenticationErrors ->
+//                if (isSuccessful) {
+//                    _navigation.value = Event(NavigationCommand.ToDirection(DeleteUserFragmentDirections.actionDeleteUserFragmentToAuthGraph()))
+//                } else if (authenticationErrors != null) {
+//                        handleAuthenticationError(authenticationErrors)
+//                }
+//                _deleteInProgress.value = false
+//            }
         } catch (e: AuthenticationException) {
             _deleteInProgress.value = false
             Log.d(TAG, e.message ?: "User delete was unsuccessful")

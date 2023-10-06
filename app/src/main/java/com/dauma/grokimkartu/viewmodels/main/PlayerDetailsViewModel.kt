@@ -59,24 +59,24 @@ class PlayerDetailsViewModel @Inject constructor(
             }
         }
 
-        playersRepository.playerDetails(userId ?: -1) { playerDetails, playersError ->
-            this.playerDetailsForm.setInitialValues(
-                userId ?: -1,
-                playerDetails?.name ?: "",
-                playerDetails?.instrument ?: "",
-                playerDetails?.description ?: "",
-                playerDetails?.city ?: ""
-            )
-            isDetailsLoaded = true
-            checkIfFullProfileLoaded()
-        }
-        playersRepository.playerPhoto(userId ?: -1) { playerPhoto, playerError ->
-            if (playerPhoto != null) {
-                this.playerDetailsForm.setInitialPhoto(playerPhoto)
-            }
-            isPhotoLoaded = true
-            checkIfFullProfileLoaded()
-        }
+//        playersRepository.playerDetails(userId ?: -1) { playerDetails, playersError ->
+//            this.playerDetailsForm.setInitialValues(
+//                userId ?: -1,
+//                playerDetails?.name ?: "",
+//                playerDetails?.instrument ?: "",
+//                playerDetails?.description ?: "",
+//                playerDetails?.city ?: ""
+//            )
+//            isDetailsLoaded = true
+//            checkIfFullProfileLoaded()
+//        }
+//        playersRepository.playerPhoto(userId ?: -1) { playerPhoto, playerError ->
+//            if (playerPhoto != null) {
+//                this.playerDetailsForm.setInitialPhoto(playerPhoto)
+//            }
+//            isPhotoLoaded = true
+//            checkIfFullProfileLoaded()
+//        }
     }
 }
 

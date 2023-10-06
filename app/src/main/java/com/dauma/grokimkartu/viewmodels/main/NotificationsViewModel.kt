@@ -28,16 +28,16 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun viewIsReady() {
-        if (notificationsRepository.pages.isEmpty()) {
-            loadNextNotificationsPage()
-        } else {
-            _notificationsPages.value = notificationsRepository.pages
-        }
-        notificationsRepository.registerListener(NOTIFICATIONS_VIEW_MODEL_LISTENER_ID, this)
+//        if (notificationsRepository.pages.isEmpty()) {
+//            loadNextNotificationsPage()
+//        } else {
+//            _notificationsPages.value = notificationsRepository.pages
+//        }
+//        notificationsRepository.registerListener(NOTIFICATIONS_VIEW_MODEL_LISTENER_ID, this)
     }
 
     fun viewIsDiscarded() {
-        notificationsRepository.unregisterListener(NOTIFICATIONS_VIEW_MODEL_LISTENER_ID)
+//        notificationsRepository.unregisterListener(NOTIFICATIONS_VIEW_MODEL_LISTENER_ID)
     }
 
     fun backClicked() {
@@ -45,24 +45,24 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun notificationClicked(notificationId: Int) {
-        notificationsRepository.activate(notificationId) { _, _ ->
-            _notificationsUpdated.value = notificationsRepository.pages
-        }
+//        notificationsRepository.activate(notificationId) { _, _ ->
+//            _notificationsUpdated.value = notificationsRepository.pages
+//        }
     }
 
     fun loadNextNotificationsPage() {
-        notificationsRepository.loadNextPage { _, _ ->
-            _notificationsPages.value = notificationsRepository.pages
-        }
+//        notificationsRepository.loadNextPage { _, _ ->
+//            _notificationsPages.value = notificationsRepository.pages
+//        }
     }
 
     fun reload() {
-        notificationsRepository.reload { _, _ ->
-            _notificationsPages.value = notificationsRepository.pages
-        }
+//        notificationsRepository.reload { _, _ ->
+//            _notificationsPages.value = notificationsRepository.pages
+//        }
     }
 
     override fun notificationsChanged() {
-        _notificationsPages.value = notificationsRepository.pages
+//        _notificationsPages.value = notificationsRepository.pages
     }
 }

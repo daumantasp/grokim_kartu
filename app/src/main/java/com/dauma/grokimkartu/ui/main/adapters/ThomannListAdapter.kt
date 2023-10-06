@@ -133,11 +133,11 @@ class ThomannListAdapter(
             if (thomann.iconLoader.status == IconStatus.ICON_DOWNLOADED) {
                 bindIconIfPossible()
             } else if (thomann.iconLoader.status == IconStatus.NEED_TO_DOWNLOAD) {
-                thomann.iconLoader.loadIcon { icon ->
-                    if (icon != null) {
-                        bindIconIfPossible()
-                    }
-                }
+//                thomann.iconLoader.loadIcon { icon ->
+//                    if (icon != null) {
+//                        bindIconIfPossible()
+//                    }
+//                }
             }
         }
     }

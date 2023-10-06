@@ -23,7 +23,7 @@ class ThomannConversationsViewModel @Inject constructor(
 
     fun viewIsReady() {
         loadConversations()
-        profileRepository.reloadUnreadCount()
+//        profileRepository.reloadUnreadCount()
     }
 
     fun viewIsDiscarded() {
@@ -34,16 +34,16 @@ class ThomannConversationsViewModel @Inject constructor(
 
     fun reload() {
         loadConversations()
-        profileRepository.reloadUnreadCount()
+//        profileRepository.reloadUnreadCount()
     }
 
     private fun loadConversations() {
-        thomannConversationsRepository.thomannConversations { conversations, conversationsErrors ->
-            conversations?.let {
-                val newConversations: MutableList<Conversation> = mutableListOf()
-                newConversations.addAll(it)
-                _thomannConversations.value = newConversations
-            }
-        }
+//        thomannConversationsRepository.thomannConversations { conversations, conversationsErrors ->
+//            conversations?.let {
+//                val newConversations: MutableList<Conversation> = mutableListOf()
+//                newConversations.addAll(it)
+//                _thomannConversations.value = newConversations
+//            }
+//        }
     }
 }

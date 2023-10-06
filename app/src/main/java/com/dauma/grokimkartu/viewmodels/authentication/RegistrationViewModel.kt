@@ -54,18 +54,18 @@ class RegistrationViewModel @Inject constructor(
     fun createUser(name: String, email: String, password: String) {
         try {
             _registrationInProgress.value = true
-            authRepository.register(email, password, name) { isSuccessful, errors ->
-                if (isSuccessful == true) {
-//                    updateEmailVerificationTimer()
-                    clearAuthenticationErrors()
-                    _emailVerificationSent.value = Event(isSuccessful)
-                } else {
-                    if (errors != null) {
-                        handleAuthenticationError(errors)
-                    }
-                }
-                _registrationInProgress.value = false
-            }
+//            authRepository.register(email, password, name) { isSuccessful, errors ->
+//                if (isSuccessful == true) {
+////                    updateEmailVerificationTimer()
+//                    clearAuthenticationErrors()
+//                    _emailVerificationSent.value = Event(isSuccessful)
+//                } else {
+//                    if (errors != null) {
+//                        handleAuthenticationError(errors)
+//                    }
+//                }
+//                _registrationInProgress.value = false
+//            }
         } catch (e: AuthenticationException) {
             _registrationInProgress.value = false
             Log.d(TAG, e.message ?: "Registration was unsuccessful")

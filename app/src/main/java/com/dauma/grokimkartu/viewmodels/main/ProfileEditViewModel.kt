@@ -35,35 +35,35 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     private fun loadProfile() {
-        profileRepository.profile { profile, _ ->
-            profileEditForm.setInitialValues(
-                name = profile?.name,
-                instrument = profile?.instrument,
-                description = profile?.description,
-                city = profile?.city
-            )
-        }
-        profileRepository.photo { photo, _ ->
-            profileEditForm.setInitialPhoto(photo)
-        }
+//        profileRepository.profile { profile, _ ->
+//            profileEditForm.setInitialValues(
+//                name = profile?.name,
+//                instrument = profile?.instrument,
+//                description = profile?.description,
+//                city = profile?.city
+//            )
+//        }
+//        profileRepository.photo { photo, _ ->
+//            profileEditForm.setInitialPhoto(photo)
+//        }
     }
 
     private fun loadPickableCities() {
-        profileRepository.cities { citiesResponse, profileErrors ->
-            if (citiesResponse != null) {
-                profileEditForm.pickableCities = citiesResponse
-                profileEditForm.filteredPickableCities = citiesResponse
-            }
-        }
+//        profileRepository.cities { citiesResponse, profileErrors ->
+//            if (citiesResponse != null) {
+//                profileEditForm.pickableCities = citiesResponse
+//                profileEditForm.filteredPickableCities = citiesResponse
+//            }
+//        }
     }
 
     private fun loadPickableInstruments() {
-        profileRepository.instruments { instrumentsResponse, profileErrors ->
-            if (instrumentsResponse != null) {
-                profileEditForm.pickableInstruments = instrumentsResponse
-                profileEditForm.filteredPickableInstruments = instrumentsResponse
-            }
-        }
+//        profileRepository.instruments { instrumentsResponse, profileErrors ->
+//            if (instrumentsResponse != null) {
+//                profileEditForm.pickableInstruments = instrumentsResponse
+//                profileEditForm.filteredPickableInstruments = instrumentsResponse
+//            }
+//        }
     }
 
     fun getProfileEditForm(): ProfileEditForm {
@@ -103,12 +103,12 @@ class ProfileEditViewModel @Inject constructor(
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-            profileRepository.searchCity(value) { citiesResponse, profileErrors ->
-                if (citiesResponse != null) {
-                    profileEditForm.filteredPickableCities = citiesResponse
-                }
-                onComplete()
-            }
+//            profileRepository.searchCity(value) { citiesResponse, profileErrors ->
+//                if (citiesResponse != null) {
+//                    profileEditForm.filteredPickableCities = citiesResponse
+//                }
+//                onComplete()
+//            }
         } else {
             profileEditForm.filteredPickableCities = profileEditForm.pickableCities
             onComplete()
@@ -130,12 +130,12 @@ class ProfileEditViewModel @Inject constructor(
 
     fun searchInstrument(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-            profileRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
-                if (instrumentsResponse != null) {
-                    profileEditForm.filteredPickableInstruments = instrumentsResponse
-                }
-                onComplete()
-            }
+//            profileRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
+//                if (instrumentsResponse != null) {
+//                    profileEditForm.filteredPickableInstruments = instrumentsResponse
+//                }
+//                onComplete()
+//            }
         } else {
             profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
             onComplete()
@@ -150,24 +150,24 @@ class ProfileEditViewModel @Inject constructor(
                 instrumentId = profileEditForm.instrument.id
             )
 
-            profileRepository.update(updatedProfile) { profile, profileErrors ->
-                this.profileEditForm.setInitialValues(
-                    name = profile?.name,
-                    instrument = profile?.instrument,
-                    description = profile?.description,
-                    city = profile?.city
-                )
-            }
+//            profileRepository.update(updatedProfile) { profile, profileErrors ->
+//                this.profileEditForm.setInitialValues(
+//                    name = profile?.name,
+//                    instrument = profile?.instrument,
+//                    description = profile?.description,
+//                    city = profile?.city
+//                )
+//            }
         }
 
         if (profileEditForm.isPhotoChanged()) {
             if (profileEditForm.photo != null) {
-                profileRepository.updatePhoto(profileEditForm.photo!!) { updatedPhoto, profileErrors ->
-                    if (updatedPhoto != null) {
-                        this.profileEditForm.setInitialPhoto(updatedPhoto)
-                    }
-                    onComplete()
-                }
+//                profileRepository.updatePhoto(profileEditForm.photo!!) { updatedPhoto, profileErrors ->
+//                    if (updatedPhoto != null) {
+//                        this.profileEditForm.setInitialPhoto(updatedPhoto)
+//                    }
+//                    onComplete()
+//                }
             } else {
                 onComplete()
             }

@@ -122,11 +122,11 @@ class PlayersListAdapter(
             if (player.iconLoader.status == IconStatus.ICON_DOWNLOADED) {
                 bindIconIfPossible()
             } else if (player.iconLoader.status == IconStatus.NEED_TO_DOWNLOAD) {
-                player.iconLoader.loadIcon { icon ->
-                    if (icon != null) {
-                        bindIconIfPossible()
-                    }
-                }
+//                player.iconLoader.loadIcon { icon ->
+//                    if (icon != null) {
+//                        bindIconIfPossible()
+//                    }
+//                }
             }
         }
     }

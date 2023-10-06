@@ -47,27 +47,27 @@ class ThomannsFilterViewModel @Inject constructor(
     }
 
     private fun loadPickableCities(onComplete: () -> Unit = {}) {
-        thomannsRepository.cities { citiesResponse, profileErrors ->
-            if (citiesResponse != null) {
-                thomannsFilterForm.pickableCities = citiesResponse
-                thomannsFilterForm.filteredPickableCities = citiesResponse
-            }
-            onComplete()
-        }
+//        thomannsRepository.cities { citiesResponse, profileErrors ->
+//            if (citiesResponse != null) {
+//                thomannsFilterForm.pickableCities = citiesResponse
+//                thomannsFilterForm.filteredPickableCities = citiesResponse
+//            }
+//            onComplete()
+//        }
     }
 
     private fun setFilter() {
-        val cityOrNull = thomannsFilterForm.pickableCities.firstOrNull { pc ->
-            pc.id == thomannsRepository.filter.cityId
-        }
-        val validUntil: String? = thomannsRepository.filter.validUntil
-        val showOnlyUnlocked = thomannsRepository.filter.isLocked == false
+//        val cityOrNull = thomannsFilterForm.pickableCities.firstOrNull { pc ->
+//            pc.id == thomannsRepository.filter.cityId
+//        }
+//        val validUntil: String? = thomannsRepository.filter.validUntil
+//        val showOnlyUnlocked = thomannsRepository.filter.isLocked == false
 
-        thomannsFilterForm.setInitialValues(
-            city = cityOrNull,
-            validUntil = validUntil,
-            showOnlyUnlocked = showOnlyUnlocked
-        )
+//        thomannsFilterForm.setInitialValues(
+//            city = cityOrNull,
+//            validUntil = validUntil,
+//            showOnlyUnlocked = showOnlyUnlocked
+//        )
     }
 
     fun getThomannsFilterForm() : ThomannsFilterForm {
@@ -93,12 +93,12 @@ class ThomannsFilterViewModel @Inject constructor(
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-            thomannsRepository.searchCity(value) { citiesResponse, profileErrors ->
-                if (citiesResponse != null) {
-                    thomannsFilterForm.filteredPickableCities = citiesResponse
-                }
-                onComplete()
-            }
+//            thomannsRepository.searchCity(value) { citiesResponse, profileErrors ->
+//                if (citiesResponse != null) {
+//                    thomannsFilterForm.filteredPickableCities = citiesResponse
+//                }
+//                onComplete()
+//            }
         } else {
             thomannsFilterForm.filteredPickableCities = thomannsFilterForm.pickableCities
             onComplete()
@@ -148,20 +148,20 @@ class ThomannsFilterViewModel @Inject constructor(
                     formattedValidUntil = utils.timeUtils.format(it, CustomDateTimeFormatPattern.yyyyMMdd)
                 }
             }
-            thomannsRepository.filter = ThomannsFilter(
-                cityId = thomannsFilterForm.city.id,
-                validUntil = formattedValidUntil,
-                isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
-            )
+//            thomannsRepository.filter = ThomannsFilter(
+//                cityId = thomannsFilterForm.city.id,
+//                validUntil = formattedValidUntil,
+//                isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
+//            )
             _navigation.value = Event(NavigationCommand.Back)
         }
     }
 
     fun clearFilter() {
         if (thomannsFilterForm.isInitialEmpty() == false) {
-            thomannsRepository.filter = ThomannsFilter.CLEAR
-            setFilter()
-            _navigation.value = Event(NavigationCommand.Back)
+//            thomannsRepository.filter = ThomannsFilter.CLEAR
+//            setFilter()
+//            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 }

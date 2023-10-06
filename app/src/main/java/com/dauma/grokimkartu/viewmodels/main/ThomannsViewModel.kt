@@ -25,7 +25,7 @@ class ThomannsViewModel @Inject constructor(
     }
 
     init {
-        _uiState.value = UiState.AllThomanns(thomannsRepository.isFilterApplied)
+//        _uiState.value = UiState.AllThomanns(thomannsRepository.isFilterApplied)
     }
 
     fun backClicked() {
@@ -33,11 +33,11 @@ class ThomannsViewModel @Inject constructor(
     }
 
     fun tabSelected(isAllThomannsTabSelected: Boolean) {
-        _uiState.value = if (isAllThomannsTabSelected) {
-            UiState.AllThomanns(thomannsRepository.isFilterApplied)
-        } else {
-            UiState.MyThomanns
-        }
+//        _uiState.value = if (isAllThomannsTabSelected) {
+//            UiState.AllThomanns(thomannsRepository.isFilterApplied)
+//        } else {
+//            UiState.MyThomanns
+//        }
     }
 
     fun filterClicked() {

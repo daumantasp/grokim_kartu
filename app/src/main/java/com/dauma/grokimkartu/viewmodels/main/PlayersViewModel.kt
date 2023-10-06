@@ -26,12 +26,12 @@ class PlayersViewModel @Inject constructor(
     }
 
     fun viewIsReady() {
-        if (playersRepository.pages.isEmpty()) {
-            loadNextPlayersPage()
-        } else {
-            _playersPages.value = playersRepository.pages
-        }
-        _filterEnabled.value = Event(playersRepository.isFilterApplied)
+//        if (playersRepository.pages.isEmpty()) {
+//            loadNextPlayersPage()
+//        } else {
+//            _playersPages.value = playersRepository.pages
+//        }
+//        _filterEnabled.value = Event(playersRepository.isFilterApplied)
     }
 
     fun backClicked() {
@@ -39,14 +39,14 @@ class PlayersViewModel @Inject constructor(
     }
 
     fun loadNextPlayersPage() {
-        playersRepository.loadNextPage() { _, _ ->
-            _playersPages.value = playersRepository.pages
-        }
+//        playersRepository.loadNextPage() { _, _ ->
+//            _playersPages.value = playersRepository.pages
+//        }
     }
 
     fun reload() {
-        playersRepository.reload { _, _ ->
-            _playersPages.value = playersRepository.pages
-        }
+//        playersRepository.reload { _, _ ->
+//            _playersPages.value = playersRepository.pages
+//        }
     }
 }

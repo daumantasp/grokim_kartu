@@ -73,14 +73,14 @@ class SettingsViewModel @Inject constructor(
     }
     
     fun loadSettings() {
-        settingsRepository.settings { settings, settingsErrors ->
-            if (settings != null) {
-                this.settingsForm.setInitialValues(
-                    email = settings.email,
-                    isVisible = settings.isVisible
-                )
-            }
-        }
+//        settingsRepository.settings { settings, settingsErrors ->
+//            if (settings != null) {
+//                this.settingsForm.setInitialValues(
+//                    email = settings.email,
+//                    isVisible = settings.isVisible
+//                )
+//            }
+//        }
         setupPushNotificationsState()
     }
 
@@ -127,19 +127,19 @@ class SettingsViewModel @Inject constructor(
                 createdAt = null,
                 isVisible = settingsForm.isVisible
             )
-            settingsRepository.update(settingsUpdate) { settings, settingsErrors ->
-                if (settings != null) {
-                    this.settingsForm.setInitialValues(
-                        email = settings.email,
-                        isVisible = settings.isVisible
-                    )
-                }
-            }
+//            settingsRepository.update(settingsUpdate) { settings, settingsErrors ->
+//                if (settings != null) {
+//                    this.settingsForm.setInitialValues(
+//                        email = settings.email,
+//                        isVisible = settings.isVisible
+//                    )
+//                }
+//            }
         }
     }
 
     fun logoutClicked() {
-        authRepository.logout()
+//        authRepository.logout()
     }
 
     override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {

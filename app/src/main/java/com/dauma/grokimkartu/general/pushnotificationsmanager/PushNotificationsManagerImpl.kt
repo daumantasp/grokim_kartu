@@ -134,19 +134,19 @@ class PushNotificationsManagerImpl(
     private fun updateToken(
         pushNotificationsTokenRequest: PushNotificationsTokenRequest,
         onComplete: (SettingsDaoResponseStatus) -> Unit = {}) {
-        settingsDao.pushNotificationsToken(
-            pushNotificationsTokenRequest = pushNotificationsTokenRequest,
-            accessToken = user.getBearerAccessToken()!!,
-            onComplete = onComplete
-        )
+//        settingsDao.pushNotificationsToken(
+//            pushNotificationsTokenRequest = pushNotificationsTokenRequest,
+//            accessToken = user.getBearerAccessToken()!!,
+//            onComplete = onComplete
+//        )
     }
 
     private fun deleteToken(onComplete: (SettingsDaoResponseStatus) -> Unit = {}) {
-        settingsDao.deletePushNotificationsToken(
-            deletePushNotificationsTokenRequest = DeletePushNotificationsTokenRequest(utils.appUtils.deviceId()),
-            accessToken = user.getBearerAccessToken()!!,
-            onComplete = onComplete
-        )
+//        settingsDao.deletePushNotificationsToken(
+//            deletePushNotificationsTokenRequest = DeletePushNotificationsTokenRequest(utils.appUtils.deviceId()),
+//            accessToken = user.getBearerAccessToken()!!,
+//            onComplete = onComplete
+//        )
     }
 }
 

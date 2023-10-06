@@ -20,17 +20,17 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun loadProfile() {
-        profileRepository.profile { profile, _ ->
-            profileForm.setValues(
-                name = profile?.name,
-                instrument = profile?.instrument?.name,
-                description = profile?.description,
-                city = profile?.city?.name
-            )
-        }
-
-        profileRepository.photo { photo, _ ->
-            profileForm.photo = photo
-        }
+//        profileRepository.profile { profile, _ ->
+//            profileForm.setValues(
+//                name = profile?.name,
+//                instrument = profile?.instrument?.name,
+//                description = profile?.description,
+//                city = profile?.city?.name
+//            )
+//        }
+//
+//        profileRepository.photo { photo, _ ->
+//            profileForm.photo = photo
+//        }
     }
 }

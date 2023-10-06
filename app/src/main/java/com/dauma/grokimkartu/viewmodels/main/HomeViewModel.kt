@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.repositories.profile.ProfileListener
+//import com.dauma.grokimkartu.repositories.profile.ProfileListener
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
-) : ViewModel(), ProfileListener {
+) : ViewModel()/*, ProfileListener*/ {
     private val _name = MutableLiveData<String?>()
     private val _userIcon = MutableLiveData<Bitmap?>()
     private val _unreadCount = MutableLiveData<Int?>()
@@ -29,34 +29,34 @@ class HomeViewModel @Inject constructor(
         loadUserProfile()
         loadUserIcon()
         loadUnreadNotificationsCount()
-        profileRepository.registerListener(HOME_VIEW_MODEL_PROFILE_LISTENER_ID, this)
+//        profileRepository.registerListener(HOME_VIEW_MODEL_PROFILE_LISTENER_ID, this)
     }
 
     fun viewIsDiscarded() {
-        profileRepository.unregisterListener(HOME_VIEW_MODEL_PROFILE_LISTENER_ID)
+//        profileRepository.unregisterListener(HOME_VIEW_MODEL_PROFILE_LISTENER_ID)
     }
 
     private fun loadUserIcon() {
-        profileRepository.icon() { icon, profileErrors ->
-            this._userIcon.value = icon
-        }
+//        profileRepository.icon() { icon, profileErrors ->
+//            this._userIcon.value = icon
+//        }
     }
 
     private fun loadUserProfile() {
-        profileRepository.profile { profile, _ ->
-            _name.value = profile?.name
-        }
+//        profileRepository.profile { profile, _ ->
+//            _name.value = profile?.name
+//        }
     }
 
     private fun loadUnreadNotificationsCount() {
-        _unreadCount.value = profileRepository.unreadCount?.unreadNotificationsCount ?: 0
-        profileRepository.reloadUnreadCount()
+//        _unreadCount.value = profileRepository.unreadCount?.unreadNotificationsCount ?: 0
+//        profileRepository.reloadUnreadCount()
     }
 
-    override fun notificationsCountChanged() {
-        _unreadCount.value = profileRepository.unreadCount?.unreadNotificationsCount ?: 0
-    }
-
-    override fun privateConversationsCountChanged() {}
-    override fun thomannConversationsCountChanged() {}
+//    override fun notificationsCountChanged() {
+//        _unreadCount.value = profileRepository.unreadCount?.unreadNotificationsCount ?: 0
+//    }
+//
+//    override fun privateConversationsCountChanged() {}
+//    override fun thomannConversationsCountChanged() {}
 }

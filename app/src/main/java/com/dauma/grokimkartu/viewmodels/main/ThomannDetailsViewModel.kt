@@ -46,42 +46,42 @@ class ThomannDetailsViewModel @Inject constructor(
 
     fun joinClicked(amount: Int, onComplete: () -> Unit = {}) {
         if (thomannId != null) {
-            thomannsRepository.join(thomannId, amount.toDouble()) { thomannDetails, thomannsErrors ->
-                if (thomannDetails != null) {
-                    this.loadDetails()
-                }
-                onComplete()
-            }
+//            thomannsRepository.join(thomannId, amount.toDouble()) { thomannDetails, thomannsErrors ->
+//                if (thomannDetails != null) {
+//                    this.loadDetails()
+//                }
+//                onComplete()
+//            }
         }
     }
 
     fun quitClicked() {
         if (thomannId != null) {
-            thomannsRepository.quit(thomannId) { thomannDetails, thomannsErrors ->
-                if (thomannDetails != null) {
-                    this.loadDetails()
-                }
-            }
+//            thomannsRepository.quit(thomannId) { thomannDetails, thomannsErrors ->
+//                if (thomannDetails != null) {
+//                    this.loadDetails()
+//                }
+//            }
         }
     }
 
     fun kickClicked(userId: Int) {
         if (thomannId != null) {
-            thomannsRepository.kick(thomannId, userId) { thomannDetails, thomannsErrors ->
-                if (thomannDetails != null) {
-                    this.loadDetails()
-                }
-            }
+//            thomannsRepository.kick(thomannId, userId) { thomannDetails, thomannsErrors ->
+//                if (thomannDetails != null) {
+//                    this.loadDetails()
+//                }
+//            }
         }
     }
 
     fun cancelClicked() {
         if (thomannId != null) {
-            thomannsRepository.delete(thomannId) { thomannsErrors ->
-                if (thomannsErrors == null) {
-                    _navigation.value = Event(NavigationCommand.Back)
-                }
-            }
+//            thomannsRepository.delete(thomannId) { thomannsErrors ->
+//                if (thomannsErrors == null) {
+//                    _navigation.value = Event(NavigationCommand.Back)
+//                }
+//            }
         }
     }
 
@@ -92,11 +92,11 @@ class ThomannDetailsViewModel @Inject constructor(
                 cityId = null,
                 validUntil = null
             )
-            thomannsRepository.update(thomannId, updateThomann) { thomannDetails, thomannsErrors ->
-                if (thomannDetails != null) {
-                    this.loadDetails()
-                }
-            }
+//            thomannsRepository.update(thomannId, updateThomann) { thomannDetails, thomannsErrors ->
+//                if (thomannDetails != null) {
+//                    this.loadDetails()
+//                }
+//            }
         }
     }
 
@@ -118,73 +118,73 @@ class ThomannDetailsViewModel @Inject constructor(
         }
 
         var details: ThomannDetails? = null
-        thomannsRepository.thomannDetails(thomannId) { thomannDetails, thomannsErrors ->
-            if (thomannDetails != null) {
-                val isJoinable = thomannDetails.actions?.contains("JOIN")
-                val isQuitable = thomannDetails.actions?.contains("QUIT")
-                details = ThomannDetails(
-                    user = thomannDetails.user?.name,
-                    city = thomannDetails.city?.name,
-                    isOwner = thomannDetails.isOwner,
-                    isLocked = thomannDetails.isLocked,
-                    createdAt = thomannDetails.createdAt,
-                    validUntil = thomannDetails.validUntil,
-                    users = thomannDetails.users,
-                    totalAmount = thomannDetails.totalAmount,
-                    isJoinable = isJoinable,
-                    isQuitable = isQuitable
-                )
-
-                if (isJoinable == true) {
-                    details?.onJoinClicked = {
-                        if (thomannDetails.id != null) {
-                            this._join.value = Event(thomannDetails.id!!)
-                        }
-                    }
-                }
-
-                if (isQuitable == true) {
-                    details?.onQuitClicked = {
-                        if (thomannDetails.id != null) {
-                            this._quit.value = Event(thomannDetails.id!!)
-                        }
-                    }
-                }
-
-                if (thomannDetails.isOwner == true) {
-                    details?.onEditClicked = {
-                        this.editClicked()
-                    }
-                    details?.onCancelClicked = {
-                        this.cancelClicked()
-                    }
-                    details?.onLockClicked = { isLocked ->
-                        this.lockClicked(isLocked)
-                    }
-                    details?.onPostMessageClicked = {
-                        this.postMessageClicked()
-                    }
-                } else {
-                    for (user in thomannDetails.users ?: listOf()) {
-                        if (user.isCurrentUser == true) {
-                            details?.onPostMessageClicked = {
-                                this.postMessageClicked()
-                            }
-                            break
-                        }
-                    }
-                }
-
-                if (thomannDetails.user?.id != null) {
-                    this.playersRepository.playerPhoto(thomannDetails.user!!.id!!) { photo, playersErrors ->
-                        details?.photo = photo
-                        _detailsLoaded.value = details!!
-                    }
-                } else {
-                    _detailsLoaded.value = details!!
-                }
-            }
-        }
+//        thomannsRepository.thomannDetails(thomannId) { thomannDetails, thomannsErrors ->
+//            if (thomannDetails != null) {
+//                val isJoinable = thomannDetails.actions?.contains("JOIN")
+//                val isQuitable = thomannDetails.actions?.contains("QUIT")
+//                details = ThomannDetails(
+//                    user = thomannDetails.user?.name,
+//                    city = thomannDetails.city?.name,
+//                    isOwner = thomannDetails.isOwner,
+//                    isLocked = thomannDetails.isLocked,
+//                    createdAt = thomannDetails.createdAt,
+//                    validUntil = thomannDetails.validUntil,
+//                    users = thomannDetails.users,
+//                    totalAmount = thomannDetails.totalAmount,
+//                    isJoinable = isJoinable,
+//                    isQuitable = isQuitable
+//                )
+//
+//                if (isJoinable == true) {
+//                    details?.onJoinClicked = {
+//                        if (thomannDetails.id != null) {
+//                            this._join.value = Event(thomannDetails.id!!)
+//                        }
+//                    }
+//                }
+//
+//                if (isQuitable == true) {
+//                    details?.onQuitClicked = {
+//                        if (thomannDetails.id != null) {
+//                            this._quit.value = Event(thomannDetails.id!!)
+//                        }
+//                    }
+//                }
+//
+//                if (thomannDetails.isOwner == true) {
+//                    details?.onEditClicked = {
+//                        this.editClicked()
+//                    }
+//                    details?.onCancelClicked = {
+//                        this.cancelClicked()
+//                    }
+//                    details?.onLockClicked = { isLocked ->
+//                        this.lockClicked(isLocked)
+//                    }
+//                    details?.onPostMessageClicked = {
+//                        this.postMessageClicked()
+//                    }
+//                } else {
+//                    for (user in thomannDetails.users ?: listOf()) {
+//                        if (user.isCurrentUser == true) {
+//                            details?.onPostMessageClicked = {
+//                                this.postMessageClicked()
+//                            }
+//                            break
+//                        }
+//                    }
+//                }
+//
+//                if (thomannDetails.user?.id != null) {
+//                    this.playersRepository.playerPhoto(thomannDetails.user!!.id!!) { photo, playersErrors ->
+//                        details?.photo = photo
+//                        _detailsLoaded.value = details!!
+//                    }
+//                } else {
+//                    _detailsLoaded.value = details!!
+//                }
+//            }
+//        }
     }
 }
 

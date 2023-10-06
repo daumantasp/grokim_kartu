@@ -25,39 +25,39 @@ class MyThomannsViewModel @Inject constructor(
     }
 
     fun viewIsReady() {
-        if (myThomannsRepository.pages.isEmpty()) {
-            loadThomannsNextPage()
-        } else {
-            _thomannsPages.value = myThomannsRepository.pages
-        }
+//        if (myThomannsRepository.pages.isEmpty()) {
+//            loadThomannsNextPage()
+//        } else {
+//            _thomannsPages.value = myThomannsRepository.pages
+//        }
     }
 
     fun thomannItemClicked(thomannId: Int) {
-        thomannFindLoop@for (page in myThomannsRepository.pages) {
-            if (page.thomanns != null) {
-                for (thomann in page.thomanns) {
-                    if (thomann.id == thomannId) {
-                        if (thomann.isAccessible == true) {
-                            _navigation.value = Event(NavigationCommand.ToDirection(
-                                ThomannsFragmentDirections.actionThomannFragmentToThomannDetailsFragment(thomannId))
-                            )
-                        }
-                        break@thomannFindLoop
-                    }
-                }
-            }
-        }
+//        thomannFindLoop@for (page in myThomannsRepository.pages) {
+//            if (page.thomanns != null) {
+//                for (thomann in page.thomanns) {
+//                    if (thomann.id == thomannId) {
+//                        if (thomann.isAccessible == true) {
+//                            _navigation.value = Event(NavigationCommand.ToDirection(
+//                                ThomannsFragmentDirections.actionThomannFragmentToThomannDetailsFragment(thomannId))
+//                            )
+//                        }
+//                        break@thomannFindLoop
+//                    }
+//                }
+//            }
+//        }
     }
 
     fun loadThomannsNextPage() {
-        myThomannsRepository.loadNextPage() { _, _ ->
-            _thomannsPages.value = myThomannsRepository.pages
-        }
+//        myThomannsRepository.loadNextPage() { _, _ ->
+//            _thomannsPages.value = myThomannsRepository.pages
+//        }
     }
 
     fun reload() {
-        myThomannsRepository.reload { _, _ ->
-            _thomannsPages.value = myThomannsRepository.pages
-        }
+//        myThomannsRepository.reload { _, _ ->
+//            _thomannsPages.value = myThomannsRepository.pages
+//        }
     }
 }

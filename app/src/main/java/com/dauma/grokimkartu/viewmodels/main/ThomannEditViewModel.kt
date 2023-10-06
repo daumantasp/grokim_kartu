@@ -51,28 +51,28 @@ class ThomannEditViewModel @Inject constructor(
 
     private fun loadDetailsIfNeeded() {
         thomannId?.let {
-            thomannsRepository.thomannDetails(it) { thomannDetails, thomannsErrors ->
-                if (thomannDetails != null) {
-                    var validUntilAsString = ""
-                    if (thomannDetails.validUntil != null) {
-                        validUntilAsString = utils.timeUtils.format(Date(thomannDetails.validUntil!!.time), CustomDateTimeFormatPattern.yyyyMMdd)
-                    }
-                    thomannEditForm.setInitialValues(
-                        city = thomannDetails.city,
-                        validUntil = validUntilAsString
-                    )
-                }
-            }
+//            thomannsRepository.thomannDetails(it) { thomannDetails, thomannsErrors ->
+//                if (thomannDetails != null) {
+//                    var validUntilAsString = ""
+//                    if (thomannDetails.validUntil != null) {
+//                        validUntilAsString = utils.timeUtils.format(Date(thomannDetails.validUntil!!.time), CustomDateTimeFormatPattern.yyyyMMdd)
+//                    }
+//                    thomannEditForm.setInitialValues(
+//                        city = thomannDetails.city,
+//                        validUntil = validUntilAsString
+//                    )
+//                }
+//            }
         }
     }
 
     private fun loadPickableCities() {
-        thomannsRepository.cities { citiesResponse, thomannErrors ->
-            citiesResponse?.let {
-                thomannEditForm.pickableCities = it
-                thomannEditForm.filteredPickableCities = it
-            }
-        }
+//        thomannsRepository.cities { citiesResponse, thomannErrors ->
+//            citiesResponse?.let {
+//                thomannEditForm.pickableCities = it
+//                thomannEditForm.filteredPickableCities = it
+//            }
+//        }
     }
 
     fun thomannEditForm(): ThomannEditForm {
@@ -104,12 +104,12 @@ class ThomannEditViewModel @Inject constructor(
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-            thomannsRepository.searchCity(value) { citiesResponse, thomannErrors ->
-                citiesResponse?.let {
-                    thomannEditForm.filteredPickableCities = it
-                }
-                onComplete()
-            }
+//            thomannsRepository.searchCity(value) { citiesResponse, thomannErrors ->
+//                citiesResponse?.let {
+//                    thomannEditForm.filteredPickableCities = it
+//                }
+//                onComplete()
+//            }
         } else {
             thomannEditForm.filteredPickableCities = thomannEditForm.pickableCities
             onComplete()
@@ -163,24 +163,24 @@ class ThomannEditViewModel @Inject constructor(
                     cityId = thomannEditForm.city.id,
                     validUntil = validUntilTimestamp
                 )
-                thomannsRepository.create(createThomann) { thomannDetails, thomannsErrors ->
-                    if (thomannDetails != null) {
-                        _navigation.value = Event(NavigationCommand.Back)
-                    }
-                    onComplete()
-                }
+//                thomannsRepository.create(createThomann) { thomannDetails, thomannsErrors ->
+//                    if (thomannDetails != null) {
+//                        _navigation.value = Event(NavigationCommand.Back)
+//                    }
+//                    onComplete()
+//                }
             } else {
                 val updateThomann = UpdateThomann(
                     isLocked = null,
                     cityId = thomannEditForm.city.id,
                     validUntil = validUntilTimestamp
                 )
-                thomannsRepository.update(thomannId!!, updateThomann) { thomannDetails, thomannsErrors ->
-                    if (thomannDetails != null) {
-                        _navigation.value = Event(NavigationCommand.Back)
-                    }
-                    onComplete()
-                }
+//                thomannsRepository.update(thomannId!!, updateThomann) { thomannDetails, thomannsErrors ->
+//                    if (thomannDetails != null) {
+//                        _navigation.value = Event(NavigationCommand.Back)
+//                    }
+//                    onComplete()
+//                }
             }
         } catch (e: Exception) {}
     }

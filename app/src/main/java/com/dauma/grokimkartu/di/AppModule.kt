@@ -243,8 +243,8 @@ class AppModule {
     }
 
     @Provides
-    fun providePlayersPaginator(playersDao: PlayersDao) : PlayersPaginator {
-        return PlayersPaginatorImpl(playersDao)
+    fun providePlayersPaginator(playersDao: PlayersDao, user: User) : PlayersPaginator {
+        return PlayersPaginatorImpl(playersDao, user)
     }
 
     @Provides
@@ -297,7 +297,7 @@ class AppModule {
         user: User,
         authRepository: AuthRepository
     ) : ThomannsRepository {
-        val thomannsPaginator = ThomannsPaginatorImpl(thomannsDao)
+        val thomannsPaginator = ThomannsPaginatorImpl(thomannsDao, playersDao, user)
         val thomannsRepository = ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, thomannsPaginator, user)
         authRepository.registerLoginListener("THOMANNS_REPOSITORY_LOGIN_LISTENER_ID", thomannsRepository)
         return thomannsRepository
@@ -311,7 +311,7 @@ class AppModule {
         user: User,
         authRepository: AuthRepository
     ) : MyThomannsRepository {
-        val myThommansPaginator = MyThomannsPaginatorImpl(thomannsDao)
+        val myThommansPaginator = MyThomannsPaginatorImpl(thomannsDao, playersDao, user)
         val myThomannsRepository = MyThomannsRepositoryImpl(thomannsDao, playersDao, myThommansPaginator, user)
         authRepository.registerLoginListener("THOMANNS_MY_REPOSITORY_LOGIN_LISTENER_ID", myThomannsRepository)
         return myThomannsRepository
@@ -333,8 +333,8 @@ class AppModule {
     }
 
     @Provides
-    fun providesNotificationsPaginator(notificationsDao: NotificationsDao) : NotificationsPaginator {
-        return NotificationsPaginatorImpl(notificationsDao)
+    fun providesNotificationsPaginator(notificationsDao: NotificationsDao, user: User) : NotificationsPaginator {
+        return NotificationsPaginatorImpl(notificationsDao, user)
     }
 
     @Provides
@@ -348,7 +348,7 @@ class AppModule {
     ) : NotificationsRepository {
         val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user)
         authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
-        profileRepository.registerListener("NOTIFICATIONS_REPOSITORY_PROFILE_LISTENER", notificationsRepository)
+//        profileRepository.registerListener("NOTIFICATIONS_REPOSITORY_PROFILE_LISTENER", notificationsRepository)
         return notificationsRepository
     }
 
@@ -363,15 +363,25 @@ class AppModule {
     }
 
     @Provides
-    fun providesPrivateConversationsPaginator(privateConversationsDao: PrivateConversationsDao)
+    fun providesPrivateConversationsPaginator(
+        privateConversationsDao: PrivateConversationsDao,
+        playersDao: PlayersDao,
+        user: User,
+        utils: Utils
+    )
         : PrivateConversationsPaginator {
-        return PrivateConversationsPaginatorImpl(privateConversationsDao)
+        return PrivateConversationsPaginatorImpl(privateConversationsDao, playersDao, user, utils)
     }
 
     @Provides
-    fun providesThomannConversationsPaginator(thomannConversationsDao: ThomannConversationsDao)
+    fun providesThomannConversationsPaginator(
+        thomannConversationsDao: ThomannConversationsDao,
+        playersDao: PlayersDao,
+        user: User,
+        utils: Utils
+    )
             : ThomannConversationsPaginator {
-        return ThomannConversationsPaginatorImpl(thomannConversationsDao)
+        return ThomannConversationsPaginatorImpl(thomannConversationsDao, playersDao, user, utils)
     }
 
     @Provides
@@ -380,10 +390,9 @@ class AppModule {
         privateConversationsDao: PrivateConversationsDao,
         playersDao: PlayersDao,
         paginator: PrivateConversationsPaginator,
-        user: User,
-        utils: Utils
+        user: User
     ) : PrivateConversationsRepository {
-        return PrivateConversationsRepositoryImpl(privateConversationsDao, playersDao, paginator, user, utils)
+        return PrivateConversationsRepositoryImpl(privateConversationsDao, playersDao, paginator, user)
     }
 
     @Provides
@@ -392,10 +401,9 @@ class AppModule {
         thomannConversationsDao: ThomannConversationsDao,
         playersDao: PlayersDao,
         paginator: ThomannConversationsPaginator,
-        user: User,
-        utils: Utils
+        user: User
     ) : ThomannConversationsRepository {
-        return ThomannConversationsRepositoryImpl(thomannConversationsDao, playersDao, paginator, user, utils)
+        return ThomannConversationsRepositoryImpl(thomannConversationsDao, playersDao, paginator, user)
     }
 
     @Provides
