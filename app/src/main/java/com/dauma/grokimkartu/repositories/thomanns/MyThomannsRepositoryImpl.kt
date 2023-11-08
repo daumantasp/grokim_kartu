@@ -7,7 +7,6 @@ import com.dauma.grokimkartu.data.thomanns.entities.ThomannDetailsResponse
 import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.Result
-import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.thomanns.entities.*
 import com.dauma.grokimkartu.repositories.thomanns.paginator.ThomannsPaginator
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -17,7 +16,7 @@ class MyThomannsRepositoryImpl(
     private val playersDao: PlayersDao,
     override val paginator: ThomannsPaginator,
     private val user: User
-) : MyThomannsRepository, LoginListener {
+) : MyThomannsRepository/*, LoginListener*/ {
     override suspend fun thomannDetails(thomannId: Int): Result<ThomannDetails?, ThomannsErrors?> {
         if (user.isUserLoggedIn()) {
             val response = thomannsDao.thomannDetails(thomannId, user.getBearerAccessToken()!!)
@@ -90,9 +89,9 @@ class MyThomannsRepositoryImpl(
         )
     }
 
-    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        if (isSuccessful) {
-            reset()
-        }
-    }
+//    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+//        if (isSuccessful) {
+//            reset()
+//        }
+//    }
 }

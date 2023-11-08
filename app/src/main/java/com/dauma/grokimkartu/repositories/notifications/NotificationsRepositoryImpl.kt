@@ -5,7 +5,6 @@ import com.dauma.grokimkartu.data.notifications.NotificationsDao
 import com.dauma.grokimkartu.data.notifications.entities.NotificationResponse
 import com.dauma.grokimkartu.data.notifications.entities.UpdateNotificationRequest
 import com.dauma.grokimkartu.general.user.User
-import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.notifications.entities.*
 import com.dauma.grokimkartu.repositories.notifications.paginator.NotificationsPaginator
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -17,7 +16,7 @@ class NotificationsRepositoryImpl(
     private val notificationsDao: NotificationsDao,
     override val paginator: NotificationsPaginator,
     private val user: User
-) : NotificationsRepository, LoginListener {
+) : NotificationsRepository/*, LoginListener*/ {
     private val _unreadCount: MutableStateFlow<Int?> = MutableStateFlow(null)
     override val unreadCount: StateFlow<Int?> = _unreadCount.asStateFlow()
 
@@ -142,9 +141,9 @@ class NotificationsRepositoryImpl(
         )
     }
 
-    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        if (isSuccessful) {
-            reset()
-        }
-    }
+//    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+//        if (isSuccessful) {
+//            reset()
+//        }
+//    }
 }

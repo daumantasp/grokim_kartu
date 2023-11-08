@@ -11,7 +11,7 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
 
     override suspend fun register(registrationRequest: RegistrationRequest): DaoResult<LoginResponse?, AuthDaoResponseStatus> {
         val response = retrofitAuth.register(registrationRequest)
-        
+
         if (response.isSuccessful) {
             when (response.code()) {
                 201 -> {
@@ -19,7 +19,11 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     val status = AuthDaoResponseStatus(true, null)
                     return DaoResult(registrationResponse, status)
                 }
-                422 -> {
+                else -> { throw Exception("UNEXPECTED SERVER SUCCESS RESPONSE") }
+            }
+        } else {
+            when (response.code()) {
+                401 -> {
                     val errorBody = response.errorBody()?.string() ?: ""
                     if (errorBody.contains("The email has already been taken.", true)) {
                         val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.EMAIL_TAKEN)
@@ -40,9 +44,6 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     return DaoResult(null, status)
                 }
             }
-        } else {
-            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-            return DaoResult(null, status)
         }
     }
 
@@ -56,7 +57,11 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     val status = AuthDaoResponseStatus(true, null)
                     return DaoResult(loginResponse, status)
                 }
-                422 -> {
+                else -> { throw Exception("UNEXPECTED SERVER SUCCESS RESPONSE") }
+            }
+        } else {
+            when (response.code()) {
+                401 -> {
                     val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW)
                     return DaoResult(null, status)
                 }
@@ -69,9 +74,6 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     return DaoResult(null, status)
                 }
             }
-        } else {
-            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-            return DaoResult(null, status)
         }
     }
 
@@ -85,7 +87,11 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     val status = AuthDaoResponseStatus(true, null)
                     return DaoResult(loginResponse, status)
                 }
-                422 -> {
+                else -> { throw Exception("UNEXPECTED SERVER SUCCESS RESPONSE") }
+            }
+        } else {
+            when (response.code()) {
+                401 -> {
                     val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_ACCESS_TOKEN)
                     return DaoResult(null, status)
                 }
@@ -94,9 +100,6 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     return DaoResult(null, status)
                 }
             }
-        } else {
-            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-            return DaoResult(null, status)
         }
     }
 
@@ -112,10 +115,7 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     val status = AuthDaoResponseStatus(true, null)
                     return DaoResult(null, status)
                 }
-                else -> {
-                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                    return DaoResult(null, status)
-                }
+                else -> { throw Exception("UNEXPECTED SERVER SUCCESS RESPONSE") }
             }
         } else {
             val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
@@ -132,10 +132,7 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     val status = AuthDaoResponseStatus(true, null)
                     return DaoResult(null, status)
                 }
-                else -> {
-                    val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-                    return DaoResult(null, status)
-                }
+                else -> { throw Exception("UNEXPECTED SERVER SUCCESS RESPONSE") }
             }
         } else {
             val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
@@ -155,6 +152,10 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     val status = AuthDaoResponseStatus(true, null)
                     return DaoResult(null, status)
                 }
+                else -> { throw Exception("UNEXPECTED SERVER SUCCESS RESPONSE") }
+            }
+        } else {
+            when (response.code()) {
                 401 -> {
                     val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.INCORRECT_OLD_PSW)
                     return DaoResult(null, status)
@@ -168,9 +169,6 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
                     return DaoResult(null, status)
                 }
             }
-        } else {
-            val status = AuthDaoResponseStatus(false, AuthDaoResponseStatus.Errors.UNKNOWN)
-            return DaoResult(null, status)
         }
     }
 

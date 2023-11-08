@@ -8,12 +8,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.dauma.grokimkartu.data.settings.SettingsDao
 import com.dauma.grokimkartu.data.settings.SettingsDaoResponseStatus
-import com.dauma.grokimkartu.data.settings.entities.DeletePushNotificationsTokenRequest
 import com.dauma.grokimkartu.data.settings.entities.PushNotificationsTokenRequest
 import com.dauma.grokimkartu.general.pushnotificationsshower.PushNotificationsShower
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.google.firebase.messaging.FirebaseMessaging
 
@@ -22,7 +20,7 @@ class PushNotificationsManagerImpl(
     private val settingsDao: SettingsDao,
     private val user: User,
     private val utils: Utils
-): PushNotificationsManager, LoginListener {
+): PushNotificationsManager/*, LoginListener*/ {
     private var context: Context? = null
 
     companion object {
@@ -119,17 +117,17 @@ class PushNotificationsManagerImpl(
     }
 
     // MARK: LoginListener
-    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        if (isSuccessful) {
-            if (arePushNotificationsSettingsEnabled() == PushNotificationsSettings.ENABLED_AND_SUBSCRIBED) {
-                getToken { token, _ ->
-                    updateToken(PushNotificationsTokenRequest(token, utils.appUtils.deviceId())) { _ -> }
-                }
-            } else {
-                deleteToken { _ -> }
-            }
-        }
-    }
+//    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+//        if (isSuccessful) {
+//            if (arePushNotificationsSettingsEnabled() == PushNotificationsSettings.ENABLED_AND_SUBSCRIBED) {
+//                getToken { token, _ ->
+//                    updateToken(PushNotificationsTokenRequest(token, utils.appUtils.deviceId())) { _ -> }
+//                }
+//            } else {
+//                deleteToken { _ -> }
+//            }
+//        }
+//    }
 
     private fun updateToken(
         pushNotificationsTokenRequest: PushNotificationsTokenRequest,

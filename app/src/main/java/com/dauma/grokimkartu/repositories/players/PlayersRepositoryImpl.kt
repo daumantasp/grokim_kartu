@@ -9,7 +9,6 @@ import com.dauma.grokimkartu.data.players.PlayersDao
 import com.dauma.grokimkartu.data.players.PlayersDaoResponseStatus
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.repositories.Result
-import com.dauma.grokimkartu.repositories.auth.LoginListener
 import com.dauma.grokimkartu.repositories.players.entities.PlayerCity
 import com.dauma.grokimkartu.repositories.players.entities.PlayerDetails
 import com.dauma.grokimkartu.repositories.players.entities.PlayerInstrument
@@ -25,7 +24,7 @@ class PlayersRepositoryImpl(
     private val citiesDao: CitiesDao,
     private val instrumentsDao: InstrumentsDao,
     private val user: User
-) : PlayersRepository, LoginListener {
+) : PlayersRepository/*, LoginListener*/ {
     override suspend fun playerDetails(userId: Int): Result<PlayerDetails?, PlayersErrors?> {
         if (user.isUserLoggedIn()) {
             val response = playersDao.playerDetails(userId, user.getBearerAccessToken()!!)
@@ -168,10 +167,10 @@ class PlayersRepositoryImpl(
         )
     }
 
-    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        if (isSuccessful) {
-            reset()
-        }
-    }
+//    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+//        if (isSuccessful) {
+//            reset()
+//        }
+//    }
 }
 

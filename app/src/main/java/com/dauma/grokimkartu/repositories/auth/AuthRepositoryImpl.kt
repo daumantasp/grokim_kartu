@@ -1,5 +1,6 @@
 package com.dauma.grokimkartu.repositories.users
 
+import android.util.Log
 import com.dauma.grokimkartu.data.auth.AuthDao
 import com.dauma.grokimkartu.data.auth.AuthDaoResponseStatus
 import com.dauma.grokimkartu.data.auth.entities.*
@@ -7,16 +8,17 @@ import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.Result
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
-import com.dauma.grokimkartu.repositories.auth.LoginListener
-import com.dauma.grokimkartu.repositories.auth.LogoutListener
+import com.dauma.grokimkartu.repositories.auth.AuthState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthRepositoryImpl(
     private val authDao: AuthDao,
     private val user: User,
     private val utils: Utils
 ) : AuthRepository {
-    private val loginListeners: MutableMap<String, LoginListener> = mutableMapOf()
-    private val logoutListeners: MutableMap<String, LogoutListener> = mutableMapOf()
+    private val _authState = MutableStateFlow<AuthState?>(null)
+    override val authState: StateFlow<AuthState?> = _authState
 
     companion object {
         private const val USER_ACCESS_TOKEN_KEY = "USER_ACCESS_TOKEN_KEY"
@@ -27,7 +29,7 @@ class AuthRepositoryImpl(
         password: String,
         name: String
     ): Result<Boolean?, AuthenticationErrors?> {
-        if (user.isUserLoggedIn() == false) {
+        if (!user.isUserLoggedIn()) {
             val registrationRequest = RegistrationRequest(
                 name = name,
                 email = email,
@@ -61,7 +63,8 @@ class AuthRepositoryImpl(
         email: String,
         password: String
     ) {
-        if (user.isUserLoggedIn() == false) {
+        if (!user.isUserLoggedIn()) {
+            _authState.value = AuthState.LoginStarted
             val loginRequest = LoginRequest(email, password)
             val response = authDao.login(loginRequest)
             val status = response.status
@@ -71,17 +74,18 @@ class AuthRepositoryImpl(
                 if (loginResponse.accessToken != null) {
                     saveAccessTokenToStorage(loginResponse.accessToken!!)
                 }
-                notifyLoginListeners(true, null)
+                _authState.value = AuthState.LoginCompleted(true, null)
             } else {
                 when (status.error) {
                     AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW -> {
-                        notifyLoginListeners(false, AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW)
+                        Log.d("Daumantas", "AuthRepositoryImpl SetValue _authState.value=AuthStateLogin with INCORRECT USER_NAME OR PSW errpr")
+                        _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW)
                     }
                     AuthDaoResponseStatus.Errors.EMAIL_NOT_VERIFIED -> {
-                        notifyLoginListeners(false, AuthenticationErrors.EMAIL_NOT_VERIFIED)
+                        _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.EMAIL_NOT_VERIFIED)
                     }
                     else -> {
-                        notifyLoginListeners(false, AuthenticationErrors.UNKNOWN)
+                        _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.UNKNOWN)
                     }
                 }
             }
@@ -91,9 +95,10 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun tryReauthenticate() {
-        if (user.isUserLoggedIn() == false) {
+        if (!user.isUserLoggedIn()) {
             val accessToken = getAccessTokenFromStorage()
             if (accessToken != null) {
+                _authState.value = AuthState.LoginStarted
                 val reauthenticateRequest = ReauthenticateRequest(accessToken)
                 val response = authDao.reauthenticate(reauthenticateRequest)
                 val status = response.status
@@ -103,39 +108,40 @@ class AuthRepositoryImpl(
                     if (loginResponse.accessToken != null) {
                         saveAccessTokenToStorage(loginResponse.accessToken!!)
                     }
-                    notifyLoginListeners(true, null)
+                    _authState.value = AuthState.LoginCompleted(true, null)
                 } else {
                     when (status.error) {
                         AuthDaoResponseStatus.Errors.INCORRECT_ACCESS_TOKEN -> {
-                            notifyLoginListeners(false, AuthenticationErrors.INCORRECT_ACCESS_TOKEN)
+                            _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.INCORRECT_ACCESS_TOKEN)
                         }
                         else -> {
-                            notifyLoginListeners(false, AuthenticationErrors.UNKNOWN)
+                            _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.UNKNOWN)
                         }
                     }
                 }
             } else {
-                notifyLoginListeners(false, AuthenticationErrors.ACCESS_TOKEN_NOT_PROVIDED)
+                _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.ACCESS_TOKEN_NOT_PROVIDED)
             }
         } else {
 //            Crashes when user receives push notification and app is in the background
-//            So instead notify login listeners
+//            So instead set Login state
 //            throw AuthenticationException(AuthenticationErrors.USER_ALREADY_LOGGED_IN)
-            this.notifyLoginListeners(true, null)
+            _authState.value = AuthState.LoginCompleted(true, null)
         }
     }
 
     override suspend fun logout() {
         if (user.isUserLoggedIn()) {
+            _authState.value = AuthState.LogoutStarted
             val logoutRequest = LogoutRequest(utils.appUtils.deviceId())
             val response = authDao.logout(logoutRequest, user.getBearerAccessToken()!!)
             val status = response.status
             if (status.isSuccessful) {
                 user.logout()
                 removeAccessTokenFromStorage()
-                notifyLogoutListeners(true, null)
+                _authState.value = AuthState.LogoutCompleted(true, null)
             } else {
-                notifyLogoutListeners(false, AuthenticationErrors.UNKNOWN)
+                _authState.value = AuthState.LogoutCompleted(false, AuthenticationErrors.UNKNOWN)
             }
         } else {
             throw AuthenticationException(AuthenticationErrors.USER_NOT_LOGGED_IN)
@@ -184,34 +190,6 @@ class AuthRepositoryImpl(
             }
         } else {
             throw AuthenticationException(AuthenticationErrors.USER_NOT_LOGGED_IN)
-        }
-    }
-
-    override fun registerLoginListener(id: String, listener: LoginListener) {
-        loginListeners[id] = listener
-    }
-
-    override fun unregisterLoginListener(id: String) {
-        loginListeners.remove(id)
-    }
-
-    private fun notifyLoginListeners(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        for (listener in loginListeners.values) {
-            listener.loginCompleted(isSuccessful, errors)
-        }
-    }
-
-    override fun registerLogoutListener(id: String, listener: LogoutListener) {
-        logoutListeners[id] = listener
-    }
-
-    override fun unregisterLogoutListener(id: String) {
-        logoutListeners.remove(id)
-    }
-
-    private fun notifyLogoutListeners(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        for (listener in logoutListeners.values) {
-            listener.logoutCompleted(isSuccessful, errors)
         }
     }
 

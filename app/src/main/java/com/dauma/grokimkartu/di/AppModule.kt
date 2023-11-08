@@ -258,7 +258,7 @@ class AppModule {
         authRepository: AuthRepository
     ) : PlayersRepository {
         val playersRepository = PlayersRepositoryImpl(playersDao, paginator, citiesDao, instrumentsDao, user)
-        authRepository.registerLoginListener("PLAYERS_REPOSITORY_LOGIN_LISTENER_ID", playersRepository)
+//        authRepository.registerLoginListener("PLAYERS_REPOSITORY_LOGIN_LISTENER_ID", playersRepository)
         return playersRepository
     }
 
@@ -278,8 +278,8 @@ class AppModule {
         authRepository: AuthRepository
     ) : ProfileRepository {
         val profileRepository = ProfileRepositoryImpl(profileDao, citiesDao, instrumentsDao, user, utils)
-        authRepository.registerLoginListener("PROFILE_REPOSITORY_LOGIN_LISTENER", profileRepository)
-        authRepository.registerLogoutListener("PROFILE_REPOSITORY_LOGOUT_LISTENER", profileRepository)
+//        authRepository.registerLoginListener("PROFILE_REPOSITORY_LOGIN_LISTENER", profileRepository)
+//        authRepository.registerLogoutListener("PROFILE_REPOSITORY_LOGOUT_LISTENER", profileRepository)
         return profileRepository
     }
 
@@ -299,7 +299,7 @@ class AppModule {
     ) : ThomannsRepository {
         val thomannsPaginator = ThomannsPaginatorImpl(thomannsDao, playersDao, user)
         val thomannsRepository = ThomannsRepositoryImpl(thomannsDao, playersDao, citiesDao, thomannsPaginator, user)
-        authRepository.registerLoginListener("THOMANNS_REPOSITORY_LOGIN_LISTENER_ID", thomannsRepository)
+//        authRepository.registerLoginListener("THOMANNS_REPOSITORY_LOGIN_LISTENER_ID", thomannsRepository)
         return thomannsRepository
     }
 
@@ -313,7 +313,7 @@ class AppModule {
     ) : MyThomannsRepository {
         val myThommansPaginator = MyThomannsPaginatorImpl(thomannsDao, playersDao, user)
         val myThomannsRepository = MyThomannsRepositoryImpl(thomannsDao, playersDao, myThommansPaginator, user)
-        authRepository.registerLoginListener("THOMANNS_MY_REPOSITORY_LOGIN_LISTENER_ID", myThomannsRepository)
+//        authRepository.registerLoginListener("THOMANNS_MY_REPOSITORY_LOGIN_LISTENER_ID", myThomannsRepository)
         return myThomannsRepository
     }
 
@@ -347,7 +347,7 @@ class AppModule {
         profileRepository: ProfileRepository
     ) : NotificationsRepository {
         val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user)
-        authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
+//        authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
 //        profileRepository.registerListener("NOTIFICATIONS_REPOSITORY_PROFILE_LISTENER", notificationsRepository)
         return notificationsRepository
     }
@@ -486,7 +486,7 @@ class AppModule {
             user = user,
             utils = utils
         )
-        authRepository.registerLoginListener("PUSH_NOTIFICATIONS_MANAGER", pushNotificationsManager)
+//        authRepository.registerLoginListener("PUSH_NOTIFICATIONS_MANAGER", pushNotificationsManager)
         return pushNotificationsManager
     }
 }

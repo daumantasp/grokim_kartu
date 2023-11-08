@@ -13,7 +13,6 @@ import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
 import com.dauma.grokimkartu.models.forms.SettingsForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
-import com.dauma.grokimkartu.repositories.auth.LogoutListener
 import com.dauma.grokimkartu.repositories.settings.SettingsRepository
 import com.dauma.grokimkartu.repositories.settings.entities.Settings
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
@@ -30,7 +29,7 @@ class SettingsViewModel @Inject constructor(
     private val themeModeManager: ThemeModeManager,
     private val pushNotificationsManager: PushNotificationsManager,
     private val utils: Utils
-) : ViewModel(), LogoutListener {
+) : ViewModel()/*, LogoutListener*/ {
     private val _navigation = MutableLiveData<Event<NavigationCommand>>()
     private val _passwordError = MutableLiveData<Int>()
     private val _language = MutableLiveData<Event<Language>>()
@@ -59,13 +58,13 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun viewIsReady(context: Context) {
-        authRepository.registerLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER, this)
+//        authRepository.registerLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER, this)
         selectLanguage(context)
         selectThemeMode()
     }
 
     fun viewIsDiscarded() {
-        authRepository.unregisterLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER)
+//        authRepository.unregisterLogoutListener(SETTINGS_VIEW_MODEL_LOGOUT_LISTENER)
     }
 
     fun getSettingsForm() : SettingsForm {
@@ -142,11 +141,11 @@ class SettingsViewModel @Inject constructor(
 //        authRepository.logout()
     }
 
-    override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-        if (isSuccessful) {
-            _navigation.value = Event(NavigationCommand.ToDirection(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph()))
-        }
-    }
+//    override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
+//        if (isSuccessful) {
+//            _navigation.value = Event(NavigationCommand.ToDirection(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph()))
+//        }
+//    }
 
     private fun handleAuthenticationError(error: AuthenticationErrors) {
         when(error) {
