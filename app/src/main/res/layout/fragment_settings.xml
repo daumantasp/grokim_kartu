@@ -125,7 +125,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="30dp"
                     app:type="primary"
-                    app:onClick="@{() -> model.logoutClicked()}"
+                    app:onClick="@{() -> model.logoutUser()}"
                     app:text="@string/settings_logout" />
 
             </LinearLayout>
