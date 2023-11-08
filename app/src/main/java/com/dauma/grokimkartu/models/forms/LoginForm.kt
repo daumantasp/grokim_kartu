@@ -3,14 +3,12 @@ package com.dauma.grokimkartu.models.forms
 import android.util.Patterns
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
 
 class LoginForm: BaseObservable() {
+
     private var email: String = ""
     private var password: String = ""
-    private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
     fun getEmail(): String {
         return email
@@ -28,16 +26,6 @@ class LoginForm: BaseObservable() {
     fun setPassword(password: String) {
         this.password = password
         notifyPropertyChanged(BR.valid)
-    }
-
-    fun getFormFields(): LiveData<List<String>> {
-        return formFields
-    }
-
-    fun onClick() {
-        if (isValid()) {
-            formFields.value = listOf(email, password)
-        }
     }
 
     @Bindable

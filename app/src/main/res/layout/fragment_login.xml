@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     app:enabled="@{model.loginForm.valid}"
-                    app:onClick="@{() -> model.loginForm.onClick()}"
+                    app:onClick="@{() -> model.loginUser()}"
                     app:text="@string/login_login_button" />
 
                 <LinearLayout
