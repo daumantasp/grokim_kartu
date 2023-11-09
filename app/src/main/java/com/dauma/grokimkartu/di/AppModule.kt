@@ -136,8 +136,8 @@ class AppModule {
     }
 
     @Provides
-    fun localeUtils() : LocaleUtils {
-        return LocaleUtilsImpl()
+    fun localeUtils(sharedStorageUtils: SharedStorageUtils) : LocaleUtils {
+        return LocaleUtilsImpl(sharedStorageUtils)
     }
 
     @Provides

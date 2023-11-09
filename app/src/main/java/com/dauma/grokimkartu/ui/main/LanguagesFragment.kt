@@ -8,20 +8,26 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLanguagesBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.ui.BottomMenuManager
 import com.dauma.grokimkartu.viewmodels.main.LanguagesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LanguagesFragment : Fragment() {
+
     private val languagesViewModel by viewModels<LanguagesViewModel>()
     private var bottomMenuManager: BottomMenuManager? = null
+    @Inject lateinit var utils: Utils
 
     private var _binding: FragmentLanguagesBinding? = null
     // This property is only valid between onCreateView and
@@ -36,14 +42,12 @@ class LanguagesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLanguagesBinding.inflate(inflater, container, false)
         binding.model = languagesViewModel
         val view = binding.root
         setupObservers()
-        setupBackHandlers()
-        setupOnClicks()
-        languagesViewModel.viewIsReady(requireContext())
+        setupOnClickers()
         return view
     }
 
@@ -58,33 +62,46 @@ class LanguagesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        languagesViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        languagesViewModel.language.observe(viewLifecycleOwner, EventObserver {
-            selectLanguage(it)
-        })
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    languagesViewModel.uiState.collect {
+                        when (it) {
+                            is LanguagesViewModel.UiState.Loaded -> {
+                                selectLanguage()
+                            }
+                            is LanguagesViewModel.UiState.LanguageSelected -> {
+                                utils.localeUtils.setLanguage(requireContext(), it.language)
+                                selectLanguage()
+                                findNavController().popBackStack()
+                            }
+                            is LanguagesViewModel.UiState.Canceled -> {
+                                findNavController().popBackStack()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    private fun setupBackHandlers() {
-        binding.languagesHeaderViewElement.setOnBackClick {
-            languagesViewModel.backClicked()
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            languagesViewModel.backClicked()
-        }
-    }
-
-    private fun setupOnClicks() {
+    private fun setupOnClickers() {
         binding.ltLanguageViewElement.setOnClick {
-            languagesViewModel.languageClicked(requireContext(), Language.LT)
+            languagesViewModel.languageSelected(Language.LT)
         }
         binding.enLanguageViewElement.setOnClick {
-            languagesViewModel.languageClicked(requireContext(), Language.EN)
+            languagesViewModel.languageSelected(Language.EN)
+        }
+        binding.languagesHeaderViewElement.setOnBackClick {
+            languagesViewModel.back()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            languagesViewModel.back()
         }
     }
 
-    private fun selectLanguage(language: Language) {
+    private fun selectLanguage() {
+        val language = utils.localeUtils.getCurrentLanguage(requireContext())
         when (language) {
             Language.LT -> {
                 binding.enLanguageViewElement.isSelected = false
@@ -95,24 +112,8 @@ class LanguagesFragment : Fragment() {
                 binding.enLanguageViewElement.isSelected = true
             }
         }
-        refreshHeaderTitle()
-        refreshMenuItemTitles()
-    }
-
-    private fun refreshHeaderTitle() {
         val title = getString(R.string.settings_language)
         binding.languagesHeaderViewElement.setTitle(title)
-    }
-
-    private fun refreshMenuItemTitles() {
         bottomMenuManager?.refreshBottomMenuItemTitles()
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }

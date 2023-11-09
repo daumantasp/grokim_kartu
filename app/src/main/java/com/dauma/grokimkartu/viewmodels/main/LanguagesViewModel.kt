@@ -1,49 +1,34 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.locale.Language
-import com.dauma.grokimkartu.general.utils.locale.LocaleUtils
-import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class LanguagesViewModel @Inject constructor(
-    private val localeUtils: LocaleUtils,
-    private val sharedStorageUtils: SharedStorageUtils
-) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _language = MutableLiveData<Event<Language>>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val language: LiveData<Event<Language>> = _language
+class LanguagesViewModel @Inject constructor() : ViewModel() {
+
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loaded)
+    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    sealed class UiState {
+        data object Loaded : UiState()
+        data class LanguageSelected(val language: Language) : UiState()
+        data object Canceled : UiState()
+    }
 
     companion object {
         private val TAG = "LanguagesViewModel"
-        const val CURRENT_LANGUAGE_KEY = "CURRENT_LANGUAGE_KEY"
     }
 
-    fun viewIsReady(context: Context) {
-        selectLanguage(context)
+    fun back() {
+        _uiState.value = UiState.Canceled
     }
 
-    fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
-    }
-
-    fun languageClicked(context: Context, language: Language) {
-        localeUtils.setLanguage(context, language)
-        sharedStorageUtils.save(CURRENT_LANGUAGE_KEY, language.toString())
-        selectLanguage(context)
-        backClicked()
-    }
-
-    private fun selectLanguage(context: Context) {
-        val currentLanguage = localeUtils.getCurrentLanguage(context)
-        _language.value = Event(currentLanguage)
+    fun languageSelected(language: Language) {
+        _uiState.value = UiState.LanguageSelected(language)
     }
 }

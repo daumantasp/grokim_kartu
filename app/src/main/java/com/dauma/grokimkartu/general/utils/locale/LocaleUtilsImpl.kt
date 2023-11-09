@@ -1,9 +1,17 @@
 package com.dauma.grokimkartu.general.utils.locale
 
 import android.content.Context
+import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtils
 import java.util.*
 
-class LocaleUtilsImpl() : LocaleUtils {
+class LocaleUtilsImpl(
+    private val sharedStorageUtils: SharedStorageUtils
+) : LocaleUtils {
+
+    companion object {
+        const val CURRENT_LANGUAGE_KEY = "CURRENT_LANGUAGE_KEY"
+    }
+
     override fun getCurrentLanguage(context: Context) : Language {
         val locale = context.resources.configuration.locale
         val language = getLanguage(locale.language)
@@ -17,6 +25,7 @@ class LocaleUtilsImpl() : LocaleUtils {
         val configuration = resources.configuration
         configuration.locale = locale
         resources.updateConfiguration(configuration, resources.displayMetrics)
+        sharedStorageUtils.save(CURRENT_LANGUAGE_KEY, language.toString())
     }
 
     private fun getLanguage(languageCode: String): Language {

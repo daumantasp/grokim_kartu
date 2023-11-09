@@ -29,6 +29,7 @@ import com.dauma.grokimkartu.general.thememodemanager.ThemeManager
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
 import com.dauma.grokimkartu.general.utils.locale.Language
 import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl
+import com.dauma.grokimkartu.general.utils.locale.LocaleUtilsImpl.Companion.CURRENT_LANGUAGE_KEY
 import com.dauma.grokimkartu.general.utils.sharedstorage.SharedStorageUtilsImpl
 //import com.dauma.grokimkartu.repositories.profile.ProfileListener
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
@@ -92,9 +93,10 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
 
     private fun setLocale() {
         // Utils injection won't help because at this stage it has not been created yet
-        val currentLanguageCode = SharedStorageUtilsImpl(this).getEntry(LanguagesViewModel.CURRENT_LANGUAGE_KEY)
+        val sharedStorageUtils = SharedStorageUtilsImpl(this)
+        val currentLanguageCode = sharedStorageUtils.getEntry(CURRENT_LANGUAGE_KEY)
         val language = if (currentLanguageCode == "LT") Language.LT else Language.EN
-        LocaleUtilsImpl().setLanguage(this, language)
+        LocaleUtilsImpl(sharedStorageUtils).setLanguage(this, language)
     }
 
     private fun initializeBottomNavigation() {
