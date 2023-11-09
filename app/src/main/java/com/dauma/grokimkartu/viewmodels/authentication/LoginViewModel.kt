@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.models.forms.LoginForm
@@ -12,7 +11,6 @@ import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.auth.AuthState
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.ui.authentication.LoginFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,13 +25,11 @@ class LoginViewModel @Inject constructor(
     private val user: User
 ) : ViewModel() {
 
-    private val _navigation: MutableStateFlow<NavigationCommand?> = MutableStateFlow(null)
-    val navigation: StateFlow<NavigationCommand?> = _navigation
-
-    private val _uiState: MutableStateFlow<UiState?> = MutableStateFlow(null)
-    val uiState: StateFlow<UiState?> = _uiState
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loaded)
+    val uiState: StateFlow<UiState> = _uiState
 
     sealed class UiState {
+        data object Loaded : UiState()
         data object AskForNotificationPermission : UiState()
         data object LoginStarted : UiState()
         data class LoginCompleted(
@@ -41,6 +37,9 @@ class LoginViewModel @Inject constructor(
             val emailError: Int? = null,
             val passwordError: Int? = null
         ) : UiState()
+        data object CloseApp : UiState()
+        data object RegistrationStarted : UiState()
+        data object ForgotPasswordStarted : UiState()
     }
 
     companion object {
@@ -55,12 +54,20 @@ class LoginViewModel @Inject constructor(
         askForNotificationsPermissionIfAllowed()
     }
 
-    private fun askForNotificationsPermissionIfAllowed() {
-        val hasNotificationPermissionShown = user.hasNotificationsPermissionShown ?: false
-        if (!hasNotificationPermissionShown) {
-            _uiState.value = UiState.AskForNotificationPermission
-            user.hasNotificationsPermissionShown = true
-        }
+    fun getLoginForm() : LoginForm {
+        return loginForm
+    }
+
+    fun back() {
+        _uiState.value = UiState.CloseApp
+    }
+
+    fun registration() {
+        _uiState.value = UiState.RegistrationStarted
+    }
+
+    fun forgotPassword() {
+        _uiState.value = UiState.ForgotPasswordStarted
     }
 
     fun enableNotifications(isEnabled: Boolean) {
@@ -82,12 +89,12 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun getLoginForm() : LoginForm {
-        return loginForm
-    }
-
-    fun backClicked() {
-        _navigation.value = NavigationCommand.CloseApp
+    private fun askForNotificationsPermissionIfAllowed() {
+        val hasNotificationPermissionShown = user.hasNotificationsPermissionShown ?: false
+        if (!hasNotificationPermissionShown) {
+            _uiState.value = UiState.AskForNotificationPermission
+            user.hasNotificationsPermissionShown = true
+        }
     }
 
     private suspend fun observeAuthState() {
@@ -99,7 +106,6 @@ class LoginViewModel @Inject constructor(
                 is AuthState.LoginCompleted -> {
                     if (authState.isSuccessful) {
                         _uiState.value = UiState.LoginCompleted(isSuccessful = true)
-                        _navigation.value = NavigationCommand.ToDirection(LoginFragmentDirections.actionLoginFragmentToHomeGraph())
                     } else if (authState.errors != null) {
                         handleAuthenticationError(authState.errors)
                     } else {

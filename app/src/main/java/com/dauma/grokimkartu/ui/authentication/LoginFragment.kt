@@ -20,7 +20,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentLoginBinding
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.ui.MainActivity
 import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.viewmodels.authentication.LoginViewModel
@@ -51,9 +50,6 @@ class LoginFragment : Fragment() {
         setupOnClickListeners()
         setupObservers()
 
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            loginViewModel.backClicked()
-        }
         (requireActivity() as MainActivity).changeStatusBarTheme(StatusBarTheme.LOGIN)
 
         return view
@@ -65,11 +61,14 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupOnClickListeners() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            loginViewModel.back()
+        }
         binding.registerTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+            loginViewModel.registration()
         }
         binding.forgotPasswordTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+            loginViewModel.forgotPassword()
         }
     }
 
@@ -77,13 +76,9 @@ class LoginFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    loginViewModel.navigation.collect {
-                        handleNavigation(it)
-                    }
-                }
-                launch {
                     loginViewModel.uiState.collect {
                         when (it) {
+                            is LoginViewModel.UiState.Loaded -> {}
                             is LoginViewModel.UiState.AskForNotificationPermission -> {
                                 askForNotificationsPermissionIfAllowedElseEnableNotifications()
                             }
@@ -96,8 +91,19 @@ class LoginFragment : Fragment() {
                                 binding.loginButton.showAnimation(false)
                                 binding.emailTextInput.error = if (it.emailError != null) requireContext().getString(it.emailError) else ""
                                 binding.passwordTextInput.error = if (it.passwordError != null) requireContext().getString(it.passwordError) else ""
+                                if (it.isSuccessful) {
+                                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeGraph())
+                                }
                             }
-                            else -> {}
+                            is LoginViewModel.UiState.ForgotPasswordStarted -> {
+                                findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+                            }
+                            is LoginViewModel.UiState.RegistrationStarted -> {
+                                findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+                            }
+                            is LoginViewModel.UiState.CloseApp -> {
+                                activity?.finish()
+                            }
                         }
                     }
                 }
@@ -114,15 +120,6 @@ class LoginFragment : Fragment() {
             }
         } else {
             loginViewModel.enableNotifications(true)
-        }
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand?) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-            else -> {}
         }
     }
 }

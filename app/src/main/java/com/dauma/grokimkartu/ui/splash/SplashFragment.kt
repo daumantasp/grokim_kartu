@@ -11,7 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentSplashBinding
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -45,17 +44,20 @@ class SplashFragment : Fragment() {
     private fun setupObservers() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                splashViewModel.navigation.collect {
-                    handleNavigation(it)
+                splashViewModel.uiState.collect {
+                    when (it) {
+                        is SplashViewModel.UiState.LoginCompleted -> {
+                            val direction = if (it.isSuccessful) {
+                                SplashFragmentDirections.actionSplashFragmentToHomeGraph()
+                            } else {
+                                SplashFragmentDirections.actionSplashFragmentToLoginFragment()
+                            }
+                            findNavController().navigate(direction)
+                        }
+                        else -> {}
+                    }
                 }
             }
-        }
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand?) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            else -> {}
         }
     }
 }

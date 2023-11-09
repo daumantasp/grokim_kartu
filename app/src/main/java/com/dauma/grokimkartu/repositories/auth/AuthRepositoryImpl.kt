@@ -78,7 +78,6 @@ class AuthRepositoryImpl(
             } else {
                 when (status.error) {
                     AuthDaoResponseStatus.Errors.INCORRECT_USR_NAME_OR_PSW -> {
-                        Log.d("Daumantas", "AuthRepositoryImpl SetValue _authState.value=AuthStateLogin with INCORRECT USER_NAME OR PSW errpr")
                         _authState.value = AuthState.LoginCompleted(false, AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW)
                     }
                     AuthDaoResponseStatus.Errors.EMAIL_NOT_VERIFIED -> {

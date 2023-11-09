@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsManager
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsSettings
 import com.dauma.grokimkartu.general.utils.Utils
@@ -17,7 +16,6 @@ import com.dauma.grokimkartu.repositories.auth.AuthState
 import com.dauma.grokimkartu.repositories.settings.SettingsRepository
 import com.dauma.grokimkartu.repositories.settings.entities.Settings
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.ui.main.SettingsFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,14 +31,12 @@ class SettingsViewModel @Inject constructor(
     private val utils: Utils
 ) : ViewModel() {
 
-    private val _navigation: MutableStateFlow<NavigationCommand?> = MutableStateFlow(null)
-    val navigation: StateFlow<NavigationCommand?> = _navigation
-
-    private val _uiState: MutableStateFlow<UiState?> = MutableStateFlow(null)
-    val uiState: StateFlow<UiState?> = _uiState
+    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState
 
     sealed class UiState {
-        data class Main(val pushNotificationSettings: PushNotificationsSettings) : UiState()
+        data object Loading : UiState()
+        data class Loaded(val pushNotificationSettings: PushNotificationsSettings) : UiState()
         data object LogoutStarted : UiState()
         data class LogoutCompleted(val isSuccessful: Boolean) : UiState()
     }
@@ -74,9 +70,6 @@ class SettingsViewModel @Inject constructor(
                 }
                 is AuthState.LogoutCompleted -> {
                     _uiState.value = UiState.LogoutCompleted(authState.isSuccessful)
-                    if (authState.isSuccessful) {
-                        _navigation.value = NavigationCommand.ToDirection(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph())
-                    }
                 }
                 else -> {}
             }
@@ -101,7 +94,7 @@ class SettingsViewModel @Inject constructor(
             PushNotificationsSettings.ENABLED_NOT_SUBSCRIBED -> settingsForm.arePushNotificationsEnabled = false
             else -> {}
         }
-        _uiState.value = UiState.Main(arePushNotificationSettingsEnabled)
+        _uiState.value = UiState.Loaded(arePushNotificationSettingsEnabled)
     }
 
     fun enablePushNotificationsChanged() {

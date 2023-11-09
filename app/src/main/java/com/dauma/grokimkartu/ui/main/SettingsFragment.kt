@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentSettingsBinding
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.pushnotificationsmanager.PushNotificationsSettings
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
 import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
@@ -43,11 +42,11 @@ class SettingsFragment : Fragment() {
         binding.model = settingsViewModel
         val view = binding.root
 
-        setLanguageRowValue()
-        setThemeModeRowValue()
-
         setupOnClickers()
         setupObservers()
+
+        setLanguageRowValue()
+        setThemeModeRowValue()
 
         return view
     }
@@ -79,14 +78,10 @@ class SettingsFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    settingsViewModel.navigation.collect {
-                        handleNavigation(it)
-                    }
-                }
-                launch {
                     settingsViewModel.uiState.collect {
                         when (it) {
-                            is SettingsViewModel.UiState.Main -> {
+                            is SettingsViewModel.UiState.Loading -> {}
+                            is SettingsViewModel.UiState.Loaded -> {
                                 binding.arePushNotificationsEnabledRowViewElement
                                     .setSwitchEnabled(it.pushNotificationSettings != PushNotificationsSettings.DISABLED)
                             }
@@ -95,8 +90,10 @@ class SettingsFragment : Fragment() {
                             }
                             is SettingsViewModel.UiState.LogoutCompleted -> {
                                 binding.logoutButton.showAnimation(false)
+                                if (it.isSuccessful) {
+                                    findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph())
+                                }
                             }
-                            else -> {}
                         }
                     }
                 }
@@ -121,14 +118,5 @@ class SettingsFragment : Fragment() {
             ThemeMode.Device -> getString(R.string.theme_mode_device)
         }
         binding.themeModeRowViewElement.setValue(value)
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand?) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-            else -> {}
-        }
     }
 }
