@@ -13,7 +13,7 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +38,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState: StateFlow<LoginUiState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     companion object {
         private val TAG = "LoginViewModel"
