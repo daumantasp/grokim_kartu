@@ -14,8 +14,20 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class LoginUiState(
+    val isLoginStarted: Boolean = false,
+    val isLoginSuccessful: Boolean? = null,
+    val emailError: Int? = null,
+    val passwordError: Int? = null,
+    val isRegistrationStarted: Boolean = false,
+    val isForgotPasswordStarted: Boolean = false,
+    val closeApp: Boolean = false,
+    val askForNotificationPermissionDialog: Boolean = false
+)
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -25,22 +37,8 @@ class LoginViewModel @Inject constructor(
     private val user: User
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loaded)
-    val uiState: StateFlow<UiState> = _uiState
-
-    sealed class UiState {
-        data object Loaded : UiState()
-        data object AskForNotificationPermission : UiState()
-        data object LoginStarted : UiState()
-        data class LoginCompleted(
-            val isSuccessful: Boolean,
-            val emailError: Int? = null,
-            val passwordError: Int? = null
-        ) : UiState()
-        data object CloseApp : UiState()
-        data object RegistrationStarted : UiState()
-        data object ForgotPasswordStarted : UiState()
-    }
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState
 
     companion object {
         private val TAG = "LoginViewModel"
@@ -54,21 +52,19 @@ class LoginViewModel @Inject constructor(
         askForNotificationsPermissionIfAllowed()
     }
 
-    fun getLoginForm() : LoginForm {
-        return loginForm
-    }
+    fun getLoginForm() : LoginForm = loginForm
 
-    fun back() {
-        _uiState.value = UiState.CloseApp
-    }
+    fun back() = _uiState.update { it.copy(closeApp = true) }
 
-    fun registration() {
-        _uiState.value = UiState.RegistrationStarted
-    }
+    fun registration() = _uiState.update { it.copy(isRegistrationStarted = true) }
 
-    fun forgotPassword() {
-        _uiState.value = UiState.ForgotPasswordStarted
-    }
+    fun forgotPassword() = _uiState.update { it.copy(isForgotPasswordStarted = true) }
+
+    fun notificationPermissionsDialogShown() = _uiState.update { it.copy(askForNotificationPermissionDialog = false) }
+
+    fun registrationStarted() = _uiState.update { it.copy(isRegistrationStarted = false) }
+
+    fun forgotPasswordStarted() = _uiState.update { it.copy(isForgotPasswordStarted = false) }
 
     fun enableNotifications(isEnabled: Boolean) {
         if (isEnabled) {
@@ -92,7 +88,7 @@ class LoginViewModel @Inject constructor(
     private fun askForNotificationsPermissionIfAllowed() {
         val hasNotificationPermissionShown = user.hasNotificationsPermissionShown ?: false
         if (!hasNotificationPermissionShown) {
-            _uiState.value = UiState.AskForNotificationPermission
+            _uiState.update { it.copy(askForNotificationPermissionDialog = true) }
             user.hasNotificationsPermissionShown = true
         }
     }
@@ -101,15 +97,30 @@ class LoginViewModel @Inject constructor(
         authRepository.authState.collect { authState ->
             when (authState) {
                 is AuthState.LoginStarted -> {
-                    _uiState.value = UiState.LoginStarted
+                    _uiState.update { it.copy(
+                        isLoginStarted = true,
+                        isLoginSuccessful = null,
+                        emailError = null,
+                        passwordError = null
+                    ) }
                 }
                 is AuthState.LoginCompleted -> {
                     if (authState.isSuccessful) {
-                        _uiState.value = UiState.LoginCompleted(isSuccessful = true)
+                        _uiState.update { it.copy(
+                            isLoginStarted = false,
+                            isLoginSuccessful = true,
+                            emailError = null,
+                            passwordError = null
+                        ) }
                     } else if (authState.errors != null) {
                         handleAuthenticationError(authState.errors)
                     } else {
-                        _uiState.value = UiState.LoginCompleted(isSuccessful = false)
+                        _uiState.update { it.copy(
+                            isLoginStarted = false,
+                            isLoginSuccessful = false,
+                            emailError = null,
+                            passwordError = null
+                        ) }
                     }
                 }
                 else -> {}
@@ -120,17 +131,32 @@ class LoginViewModel @Inject constructor(
     private fun handleAuthenticationError(error: AuthenticationErrors) {
         when(error) {
             AuthenticationErrors.INCORRECT_USR_NAME_OR_PSW -> {
-                _uiState.value = UiState.LoginCompleted(false, null, R.string.login_incorrect_usr_name_or_psw_error)
+                _uiState.update { it.copy(
+                    isLoginStarted = false,
+                    isLoginSuccessful = false,
+                    emailError = null,
+                    passwordError = R.string.login_incorrect_usr_name_or_psw_error
+                ) }
             }
             AuthenticationErrors.EMAIL_NOT_VERIFIED -> {
-                _uiState.value = UiState.LoginCompleted(false, R.string.login_email_not_verified_error, null)
+                _uiState.update { it.copy(
+                    isLoginStarted = false,
+                    isLoginSuccessful = false,
+                    emailError = R.string.login_email_not_verified_error,
+                    passwordError = null
+                ) }
             }
 //            AuthenticationErrors.TOO_MANY_REQUESTS -> {
 //                _emailError.value = R.string.login_too_many_requests_error
 //                _passwordError.value = -1
 //            }
             else -> {
-                _uiState.value = UiState.LoginCompleted(false)
+                _uiState.update { it.copy(
+                    isLoginStarted = false,
+                    isLoginSuccessful = false,
+                    emailError = null,
+                    passwordError = null
+                ) }
             }
         }
     }

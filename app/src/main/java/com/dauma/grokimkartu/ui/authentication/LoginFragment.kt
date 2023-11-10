@@ -77,33 +77,33 @@ class LoginFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     loginViewModel.uiState.collect {
-                        when (it) {
-                            is LoginViewModel.UiState.Loaded -> {}
-                            is LoginViewModel.UiState.AskForNotificationPermission -> {
-                                askForNotificationsPermissionIfAllowedElseEnableNotifications()
-                            }
-                            is LoginViewModel.UiState.LoginStarted -> {
-                                binding.loginButton.showAnimation(true)
-                                binding.emailTextInput.error = ""
-                                binding.passwordTextInput.error = ""
-                            }
-                            is LoginViewModel.UiState.LoginCompleted -> {
-                                binding.loginButton.showAnimation(false)
-                                binding.emailTextInput.error = if (it.emailError != null) requireContext().getString(it.emailError) else ""
-                                binding.passwordTextInput.error = if (it.passwordError != null) requireContext().getString(it.passwordError) else ""
-                                if (it.isSuccessful) {
-                                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeGraph())
-                                }
-                            }
-                            is LoginViewModel.UiState.ForgotPasswordStarted -> {
-                                findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
-                            }
-                            is LoginViewModel.UiState.RegistrationStarted -> {
-                                findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
-                            }
-                            is LoginViewModel.UiState.CloseApp -> {
-                                activity?.finish()
-                            }
+                        if (it.isLoginStarted) {
+                            binding.loginButton.showAnimation(true)
+                            binding.emailTextInput.error = ""
+                            binding.passwordTextInput.error = ""
+                        } else {
+                            binding.loginButton.showAnimation(false)
+                        }
+                        if (it.isLoginSuccessful == true) {
+                            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToHomeGraph())
+                        } else {
+                            binding.emailTextInput.error = if (it.emailError != null) requireContext().getString(it.emailError) else ""
+                            binding.passwordTextInput.error = if (it.passwordError != null) requireContext().getString(it.passwordError) else ""
+                        }
+                        if (it.isRegistrationStarted) {
+                            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+                            loginViewModel.registrationStarted()
+                        }
+                        if (it.isForgotPasswordStarted) {
+                            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment)
+                            loginViewModel.forgotPasswordStarted()
+                        }
+                        if (it.closeApp) {
+                            activity?.finish()
+                        }
+                        if (it.askForNotificationPermissionDialog) {
+                            askForNotificationsPermissionIfAllowedElseEnableNotifications()
+                            loginViewModel.notificationPermissionsDialogShown()
                         }
                     }
                 }
