@@ -48,6 +48,7 @@ class LanguagesFragment : Fragment() {
         val view = binding.root
         setupObservers()
         setupOnClickers()
+        showCurrentLanguageAsSelected()
         return view
     }
 
@@ -67,12 +68,10 @@ class LanguagesFragment : Fragment() {
                 launch {
                     languagesViewModel.uiState.collect {
                         when (it) {
-                            is LanguagesViewModel.UiState.Loaded -> {
-                                selectLanguage()
-                            }
+                            is LanguagesViewModel.UiState.Loaded -> {}
                             is LanguagesViewModel.UiState.LanguageSelected -> {
                                 utils.localeUtils.setLanguage(requireContext(), it.language)
-                                selectLanguage()
+                                showCurrentLanguageAsSelected()
                                 findNavController().popBackStack()
                             }
                             is LanguagesViewModel.UiState.Canceled -> {
@@ -100,7 +99,7 @@ class LanguagesFragment : Fragment() {
         }
     }
 
-    private fun selectLanguage() {
+    private fun showCurrentLanguageAsSelected() {
         val language = utils.localeUtils.getCurrentLanguage(requireContext())
         when (language) {
             Language.LT -> {
