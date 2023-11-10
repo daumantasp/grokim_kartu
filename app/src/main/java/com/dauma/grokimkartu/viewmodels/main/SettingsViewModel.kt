@@ -19,8 +19,15 @@ import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class SettingsUiState(
+    val pushNotificationSettings: PushNotificationsSettings? = null,
+    val isLogoutStarted: Boolean = false,
+    val isLogoutSuccessful: Boolean? = null
+)
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -31,15 +38,8 @@ class SettingsViewModel @Inject constructor(
     private val utils: Utils
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState
-
-    sealed class UiState {
-        data object Loading : UiState()
-        data class Loaded(val pushNotificationSettings: PushNotificationsSettings) : UiState()
-        data object LogoutStarted : UiState()
-        data class LogoutCompleted(val isSuccessful: Boolean) : UiState()
-    }
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState: StateFlow<SettingsUiState> = _uiState
 
     companion object {
         private val TAG = "SettingsViewModel"
@@ -66,36 +66,20 @@ class SettingsViewModel @Inject constructor(
         authRepository.authState.collect { authState ->
             when (authState) {
                 is AuthState.LogoutStarted -> {
-                    _uiState.value = UiState.LogoutStarted
+                    _uiState.update { it.copy(isLogoutStarted = true, isLogoutSuccessful = null) }
                 }
                 is AuthState.LogoutCompleted -> {
-                    _uiState.value = UiState.LogoutCompleted(authState.isSuccessful)
+                    _uiState.update { it.copy(
+                        isLogoutStarted = false,
+                        isLogoutSuccessful = authState.isSuccessful
+                    ) }
                 }
                 else -> {}
             }
         }
     }
 
-    fun getSettingsForm() : SettingsForm {
-        return settingsForm
-    }
-    
-    private suspend fun loadSettings() {
-        val settings = settingsRepository.settings()
-        settings.data?.let {
-            settingsForm.setInitialValues(it.email, it.isVisible)
-        }
-    }
-
-    private fun setupPushNotifications() {
-        val arePushNotificationSettingsEnabled = pushNotificationsManager.arePushNotificationsSettingsEnabled()
-        when (arePushNotificationSettingsEnabled) {
-            PushNotificationsSettings.ENABLED_AND_SUBSCRIBED -> settingsForm.arePushNotificationsEnabled = true
-            PushNotificationsSettings.ENABLED_NOT_SUBSCRIBED -> settingsForm.arePushNotificationsEnabled = false
-            else -> {}
-        }
-        _uiState.value = UiState.Loaded(arePushNotificationSettingsEnabled)
-    }
+    fun getSettingsForm() : SettingsForm = settingsForm
 
     fun enablePushNotificationsChanged() {
         utils.dispatcherUtils.main.cancelPeriodic(PUSH_NOTIFICATIONS_CHANGE_PERIODIC)
@@ -137,5 +121,22 @@ class SettingsViewModel @Inject constructor(
                 Log.d(TAG, e.message ?: "Logout was unsuccessful")
             }
         }
+    }
+
+    private suspend fun loadSettings() {
+        val settings = settingsRepository.settings()
+        settings.data?.let {
+            settingsForm.setInitialValues(it.email, it.isVisible)
+        }
+    }
+
+    private fun setupPushNotifications() {
+        val arePushNotificationSettingsEnabled = pushNotificationsManager.arePushNotificationsSettingsEnabled()
+        when (arePushNotificationSettingsEnabled) {
+            PushNotificationsSettings.ENABLED_AND_SUBSCRIBED -> settingsForm.arePushNotificationsEnabled = true
+            PushNotificationsSettings.ENABLED_NOT_SUBSCRIBED -> settingsForm.arePushNotificationsEnabled = false
+            else -> {}
+        }
+        _uiState.update { it.copy(pushNotificationSettings = arePushNotificationSettingsEnabled) }
     }
 }

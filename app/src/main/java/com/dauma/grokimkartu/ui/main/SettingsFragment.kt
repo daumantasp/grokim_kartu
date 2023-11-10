@@ -41,13 +41,10 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.model = settingsViewModel
         val view = binding.root
-
         setupOnClickers()
         setupObservers()
-
         setLanguageRowValue()
         setThemeModeRowValue()
-
         return view
     }
 
@@ -79,21 +76,13 @@ class SettingsFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     settingsViewModel.uiState.collect {
-                        when (it) {
-                            is SettingsViewModel.UiState.Loading -> {}
-                            is SettingsViewModel.UiState.Loaded -> {
-                                binding.arePushNotificationsEnabledRowViewElement
-                                    .setSwitchEnabled(it.pushNotificationSettings != PushNotificationsSettings.DISABLED)
-                            }
-                            is SettingsViewModel.UiState.LogoutStarted -> {
-                                binding.logoutButton.showAnimation(true)
-                            }
-                            is SettingsViewModel.UiState.LogoutCompleted -> {
-                                binding.logoutButton.showAnimation(false)
-                                if (it.isSuccessful) {
-                                    findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph())
-                                }
-                            }
+                        it.pushNotificationSettings?.let { pushNotificationSettings ->
+                            binding.arePushNotificationsEnabledRowViewElement
+                                .setSwitchEnabled(pushNotificationSettings != PushNotificationsSettings.DISABLED)
+                        }
+                        binding.logoutButton.showAnimation(it.isLogoutStarted)
+                        if (it.isLogoutSuccessful == true) {
+                            findNavController().navigate(SettingsFragmentDirections.actionSettingsFragmentToAuthGraph())
                         }
                     }
                 }
