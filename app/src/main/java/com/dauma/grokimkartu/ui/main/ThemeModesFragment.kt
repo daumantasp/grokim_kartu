@@ -20,7 +20,6 @@ import com.dauma.grokimkartu.ui.StatusBarManager
 import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.viewmodels.main.ThemeModesViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,8 +31,6 @@ class ThemeModesFragment : Fragment() {
     private var statusBarManager: StatusBarManager? = null
     @Inject lateinit var utils: Utils
     @Inject lateinit var themeModeManager: ThemeModeManager
-
-    private var popBackStackWithDelayJob: Job? = null
 
     private var _binding: FragmentThemeModesBinding? = null
     // This property is only valid between onCreateView and
@@ -74,23 +71,20 @@ class ThemeModesFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     themeModesViewModel.uiState.collect {
-                        when (it) {
-                            is ThemeModesViewModel.UiState.Loaded -> {}
-                            is ThemeModesViewModel.UiState.ThemeModeSelected -> {
-                                themeModeManager.selectThemeMode(it.themeMode)
-                                showCurrentThemeModeAsSelected()
+                        it.selectedThemeMode?.let { themeMode ->
+                            themeModeManager.selectThemeMode(themeMode)
+                            showCurrentThemeModeAsSelected()
 
-                                // NOTE: Theme change requires to recreate activity
-                                // which takes some time. Navigation does not look
-                                // good if it occurs during theme change
-                                popBackStackWithDelayJob = lifecycleScope.launch {
-                                    delay(300)
-                                    findNavController().popBackStack()
-                                }
-                            }
-                            is ThemeModesViewModel.UiState.Canceled -> {
+                            // NOTE: Theme change requires to recreate activity
+                            // which takes some time. Navigation does not look
+                            // good if it occurs during theme change
+                            lifecycleScope.launch {
+                                delay(300)
                                 findNavController().popBackStack()
                             }
+                        }
+                        if (it.isCanceled) {
+                            findNavController().popBackStack()
                         }
                     }
                 }
