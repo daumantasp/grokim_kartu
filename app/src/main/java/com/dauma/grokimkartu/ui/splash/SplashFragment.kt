@@ -45,16 +45,10 @@ class SplashFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 splashViewModel.uiState.collect {
-                    when (it) {
-                        is SplashViewModel.UiState.LoginCompleted -> {
-                            val direction = if (it.isSuccessful) {
-                                SplashFragmentDirections.actionSplashFragmentToHomeGraph()
-                            } else {
-                                SplashFragmentDirections.actionSplashFragmentToLoginFragment()
-                            }
-                            findNavController().navigate(direction)
-                        }
-                        else -> {}
+                    if (it.isLoginSuccessful == true) {
+                        findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToHomeGraph())
+                    } else if (it.isLoginSuccessful == false) {
+                        findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToLoginFragment())
                     }
                 }
             }

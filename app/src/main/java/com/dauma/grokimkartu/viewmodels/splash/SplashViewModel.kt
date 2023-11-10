@@ -8,21 +8,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class SplashUiState(
+    val isLoginSuccessful: Boolean? = null
+)
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
-    sealed class UiState {
-        data object Loading : UiState()
-        data class LoginCompleted(val isSuccessful: Boolean) : UiState()
-    }
+    private val _uiState = MutableStateFlow(SplashUiState())
+    val uiState: StateFlow<SplashUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -37,7 +37,7 @@ class SplashViewModel @Inject constructor(
         authRepository.authState.collect { authState ->
             when (authState) {
                 is AuthState.LoginCompleted -> {
-                    _uiState.value = UiState.LoginCompleted(authState.isSuccessful)
+                    _uiState.update { it.copy(isLoginSuccessful = authState.isSuccessful) }
                 }
                 else -> {}
             }
