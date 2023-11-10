@@ -8,20 +8,32 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentThemeModesBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.thememodemanager.ThemeMode
+import com.dauma.grokimkartu.general.thememodemanager.ThemeModeManager
+import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.StatusBarManager
 import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.viewmodels.main.ThemeModesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ThemeModesFragment : Fragment() {
+
     private val themeModesViewModel by viewModels<ThemeModesViewModel>()
     private var statusBarManager: StatusBarManager? = null
+    @Inject lateinit var utils: Utils
+    @Inject lateinit var themeModeManager: ThemeModeManager
+
+    private var popBackStackWithDelayJob: Job? = null
 
     private var _binding: FragmentThemeModesBinding? = null
     // This property is only valid between onCreateView and
@@ -31,14 +43,14 @@ class ThemeModesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThemeModesBinding.inflate(inflater, container, false)
         binding.model = themeModesViewModel
         val view = binding.root
         setupObservers()
-        setupBackHandlers()
-        setupOnClicks()
-        themeModesViewModel.viewIsReady()
+        setupOnClickers()
+        showAvailableThemeModes()
+        showCurrentThemeModeAsSelected()
         return view
     }
 
@@ -58,45 +70,70 @@ class ThemeModesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        themeModesViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        themeModesViewModel.availableThemeModes.observe(viewLifecycleOwner, EventObserver {
-            if (it.contains(ThemeMode.Light)) {
-                binding.lightModeRowViewElement.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    themeModesViewModel.uiState.collect {
+                        when (it) {
+                            is ThemeModesViewModel.UiState.Loaded -> {}
+                            is ThemeModesViewModel.UiState.ThemeModeSelected -> {
+                                themeModeManager.selectThemeMode(it.themeMode)
+                                showCurrentThemeModeAsSelected()
+
+                                // NOTE: Theme change requires to recreate activity
+                                // which takes some time. Navigation does not look
+                                // good if it occurs during theme change
+                                popBackStackWithDelayJob = lifecycleScope.launch {
+                                    delay(300)
+                                    findNavController().popBackStack()
+                                }
+                            }
+                            is ThemeModesViewModel.UiState.Canceled -> {
+                                findNavController().popBackStack()
+                            }
+                        }
+                    }
+                }
             }
-            if (it.contains(ThemeMode.Dark)) {
-                binding.darkModeRowViewElement.visibility = View.VISIBLE
-            }
-            if (it.contains(ThemeMode.Device)) {
-                binding.deviceModeRowViewElement.visibility = View.VISIBLE
-            }
-        })
-        themeModesViewModel.currentThemeMode.observe(viewLifecycleOwner, EventObserver {
-            binding.lightModeRowViewElement.showIcon(it == ThemeMode.Light)
-            binding.darkModeRowViewElement.showIcon(it == ThemeMode.Dark)
-            binding.deviceModeRowViewElement.showIcon(it == ThemeMode.Device)
-            statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
-        })
+        }
     }
 
-    private fun setupBackHandlers() {
+    private fun setupOnClickers() {
+        binding.lightModeRowViewElement.setOnClick {
+            themeModesViewModel.themeModeSelected(ThemeMode.Light)
+        }
+        binding.darkModeRowViewElement.setOnClick {
+            themeModesViewModel.themeModeSelected(ThemeMode.Dark)
+        }
+        binding.deviceModeRowViewElement.setOnClick {
+            themeModesViewModel.themeModeSelected(ThemeMode.Device)
+        }
         binding.themeModesHeaderViewElement.setOnBackClick {
-            themeModesViewModel.backClicked()
+            themeModesViewModel.back()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            themeModesViewModel.backClicked()
+            themeModesViewModel.back()
         }
     }
 
-    private fun setupOnClicks() {
+    private fun showAvailableThemeModes() {
+        val availableThemeModes = themeModeManager.availableThemeModes
+        if (availableThemeModes.contains(ThemeMode.Light)) {
+            binding.lightModeRowViewElement.visibility = View.VISIBLE
+        }
+        if (availableThemeModes.contains(ThemeMode.Dark)) {
+            binding.darkModeRowViewElement.visibility = View.VISIBLE
+        }
+        if (availableThemeModes.contains(ThemeMode.Device)) {
+            binding.deviceModeRowViewElement.visibility = View.VISIBLE
+        }
     }
 
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
+    private fun showCurrentThemeModeAsSelected() {
+        val currentThemeMode = themeModeManager.currentThemeMode
+        binding.lightModeRowViewElement.showIcon(currentThemeMode == ThemeMode.Light)
+        binding.darkModeRowViewElement.showIcon(currentThemeMode == ThemeMode.Dark)
+        binding.deviceModeRowViewElement.showIcon(currentThemeMode == ThemeMode.Device)
+        statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
     }
 }

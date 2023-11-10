@@ -36,8 +36,7 @@
                 app:row_custom_icon="@drawable/ic_check"
                 app:row_icon_tint_color="?attr/check_selected_color"
                 app:row_icon_width="30dp"
-                app:row_icon_height="30dp"
-                app:onClick="@{() -> model.lightClicked()}" />
+                app:row_icon_height="30dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                 android:id="@+id/dark_mode_row_view_element"
@@ -50,8 +49,7 @@
                 app:row_custom_icon="@drawable/ic_check"
                 app:row_icon_tint_color="?attr/check_selected_color"
                 app:row_icon_width="30dp"
-                app:row_icon_height="30dp"
-                app:onClick="@{() -> model.darkClicked()}" />
+                app:row_icon_height="30dp" />
 
             <com.dauma.grokimkartu.ui.viewelements.RowViewElement
                 android:id="@+id/device_mode_row_view_element"
@@ -64,8 +62,7 @@
                 app:row_custom_icon="@drawable/ic_check"
                 app:row_icon_tint_color="?attr/check_selected_color"
                 app:row_icon_width="30dp"
-                app:row_icon_height="30dp"
-                app:onClick="@{() -> model.deviceClicked()}" />
+                app:row_icon_height="30dp" />
 
         </LinearLayout>
 
