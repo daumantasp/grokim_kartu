@@ -67,16 +67,13 @@ class LanguagesFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     languagesViewModel.uiState.collect {
-                        when (it) {
-                            is LanguagesViewModel.UiState.Loaded -> {}
-                            is LanguagesViewModel.UiState.LanguageSelected -> {
-                                utils.localeUtils.setLanguage(requireContext(), it.language)
-                                showCurrentLanguageAsSelected()
-                                findNavController().popBackStack()
-                            }
-                            is LanguagesViewModel.UiState.Canceled -> {
-                                findNavController().popBackStack()
-                            }
+                        it.selectedLanguage?.let { lang ->
+                            utils.localeUtils.setLanguage(requireContext(), lang)
+                            showCurrentLanguageAsSelected()
+                            findNavController().popBackStack()
+                        }
+                        if (it.isCanceled) {
+                            findNavController().popBackStack()
                         }
                     }
                 }
