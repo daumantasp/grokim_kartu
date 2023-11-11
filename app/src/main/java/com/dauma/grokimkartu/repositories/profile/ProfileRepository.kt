@@ -17,4 +17,6 @@ interface ProfileRepository {
     suspend fun photo(): Result<Bitmap?, ProfileErrors?>
     suspend fun updatePhoto(photo: Bitmap): Result<Bitmap?, ProfileErrors?>
     suspend fun reloadUnreadCount()
+    fun loginCompleted(isSuccessful: Boolean)
+    fun logoutCompleted(isSuccessful: Boolean)
 }

@@ -53,6 +53,7 @@ import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.general.utils.time.TimeUtilsImpl
 import com.dauma.grokimkartu.models.forms.*
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
+import com.dauma.grokimkartu.repositories.auth.AuthState
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepository
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepositoryImpl
 import com.dauma.grokimkartu.repositories.conversations.ThomannConversationsRepository
@@ -85,6 +86,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -278,8 +281,19 @@ class AppModule {
         authRepository: AuthRepository
     ) : ProfileRepository {
         val profileRepository = ProfileRepositoryImpl(profileDao, citiesDao, instrumentsDao, user, utils)
-//        authRepository.registerLoginListener("PROFILE_REPOSITORY_LOGIN_LISTENER", profileRepository)
-//        authRepository.registerLogoutListener("PROFILE_REPOSITORY_LOGOUT_LISTENER", profileRepository)
+        GlobalScope.launch {
+            authRepository.authState.collect {
+                when (it) {
+                    is AuthState.LoginCompleted -> {
+                        profileRepository.loginCompleted(it.isSuccessful)
+                    }
+                    is AuthState.LogoutCompleted -> {
+                        profileRepository.logoutCompleted(it.isSuccessful)
+                    }
+                    else -> {}
+                }
+            }
+        }
         return profileRepository
     }
 

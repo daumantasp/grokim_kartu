@@ -1,13 +1,15 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentHomeBinding
 import com.dauma.grokimkartu.general.utils.Utils
@@ -16,17 +18,15 @@ import com.dauma.grokimkartu.ui.StatusBarManager
 import com.dauma.grokimkartu.ui.StatusBarTheme
 import com.dauma.grokimkartu.viewmodels.main.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
+
     private val homeViewModel by viewModels<HomeViewModel>()
     private var customNavigator: CustomNavigator? = null
     private var statusBarManager: StatusBarManager? = null
-    private var isUserIconGot: Boolean = false
-    private var isUserProfileGot: Boolean = false
-    private var userInitials: String = ""
-    private var userIcon: Bitmap? = null
     @Inject lateinit var utils: Utils
 
     private var _binding: FragmentHomeBinding? = null
@@ -48,34 +48,21 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.model = homeViewModel
         val view = binding.root
-        statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
+        setupOnClickListeners()
         setupObservers()
 
-        binding.homeHeaderViewElement.setOnInitialsOrIconClick {
-            customNavigator?.navigateToProfile()
-        }
-        binding.homeHeaderViewElement.setOnNotificationsClick {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNotificationsFragment())
-        }
-        binding.playersCardViewElement.setOnClick {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPlayersFragment())
-        }
-        binding.thomannCardViewElement.setOnClick {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToThomannFragment())
-        }
+        statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
 
-        homeViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        homeViewModel.viewIsDiscarded()
     }
 
     override fun onDetach() {
@@ -84,31 +71,50 @@ class HomeFragment : Fragment() {
         statusBarManager = null
     }
 
-    private fun setupObservers() {
-        homeViewModel.name.observe(viewLifecycleOwner, { name ->
-            binding.homeHeaderViewElement.setTitle(name ?: "")
-            userInitials = utils.stringUtils.getInitials(name ?: "")
-            this.isUserProfileGot = true
-            this.setPhotoOrInitialsInHeaderIfPossible()
-        })
-        homeViewModel.userIcon.observe(viewLifecycleOwner, {
-            this.userIcon = it
-            this.isUserIconGot = true
-            this.setPhotoOrInitialsInHeaderIfPossible()
-        })
-        homeViewModel.unreadCount.observe(viewLifecycleOwner, { unreadCount ->
-            val unreadCountNotNUll = unreadCount ?: 0
-            binding.homeHeaderViewElement.setUnreadNotificationsCount(unreadCountNotNUll.toString())
-            binding.homeHeaderViewElement.showUnreadNotificationsCount(unreadCountNotNUll > 0)
-        })
+    private fun setupOnClickListeners() {
+        binding.homeHeaderViewElement.setOnInitialsOrIconClick {
+            customNavigator?.navigateToProfile()
+        }
+        binding.homeHeaderViewElement.setOnNotificationsClick {
+            homeViewModel.notifications()
+        }
+        binding.playersCardViewElement.setOnClick {
+            homeViewModel.players()
+        }
+        binding.thomannCardViewElement.setOnClick {
+            homeViewModel.thomann()
+        }
     }
 
-    private fun setPhotoOrInitialsInHeaderIfPossible() {
-        if (isUserProfileGot == true && isUserIconGot == true) {
-            if (userIcon != null) {
-                binding.homeHeaderViewElement.setPhotoIcon(userIcon!!)
-            } else {
-                binding.homeHeaderViewElement.setInitials(userInitials)
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    homeViewModel.uiState.collect {
+                        binding.homeHeaderViewElement.setTitle(it.name ?: "")
+                        it.userIcon?.let { userIcon ->
+                            binding.homeHeaderViewElement.setPhotoIcon(userIcon)
+                        } ?: run {
+                            val userInitials = utils.stringUtils.getInitials(it.name ?: "")
+                            binding.homeHeaderViewElement.setInitials(userInitials)
+                        }
+                        val unreadCountNotNull = it.unreadCount ?: 0
+                        binding.homeHeaderViewElement.setUnreadNotificationsCount(unreadCountNotNull.toString())
+                        binding.homeHeaderViewElement.showUnreadNotificationsCount(
+                            unreadCountNotNull > 0
+                        )
+                        if (it.isNotificationsStarted) {
+                            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNotificationsFragment())
+                            homeViewModel.notificationsStarted()
+                        } else if (it.isPlayersStarted) {
+                            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPlayersFragment())
+                            homeViewModel.playersStarted()
+                        } else if (it.isThomannStarted) {
+                            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToThomannFragment())
+                            homeViewModel.thomannStarted()
+                        }
+                    }
+                }
             }
         }
     }

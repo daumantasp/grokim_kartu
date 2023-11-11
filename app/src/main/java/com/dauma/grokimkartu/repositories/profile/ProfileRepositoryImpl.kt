@@ -1,6 +1,7 @@
 package com.dauma.grokimkartu.repositories.profile
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.dauma.grokimkartu.data.cities.CitiesDao
 import com.dauma.grokimkartu.data.cities.entities.CityResponse
 import com.dauma.grokimkartu.data.instruments.InstrumentsDao
@@ -12,9 +13,12 @@ import com.dauma.grokimkartu.data.profile.entities.ProfileUnreadCountResponse
 import com.dauma.grokimkartu.data.profile.entities.UpdateProfileRequest
 import com.dauma.grokimkartu.general.user.User
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.profile.entities.*
-import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.Result
+import com.dauma.grokimkartu.repositories.profile.entities.Profile
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileCity
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileInstrument
+import com.dauma.grokimkartu.repositories.profile.entities.ProfileUnreadCount
+import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +32,7 @@ class ProfileRepositoryImpl(
     private val instrumentsDao: InstrumentsDao,
     private val user: User,
     private val utils: Utils
-) : ProfileRepository/*, LoginListener, LogoutListener*/ {
+) : ProfileRepository {
     private val coroutineIOScope = CoroutineScope(Dispatchers.IO)
 
     private var _unreadCount: MutableStateFlow<ProfileUnreadCount?> = MutableStateFlow(null)
@@ -259,26 +263,26 @@ class ProfileRepositoryImpl(
         )
     }
 
-//    override fun loginCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-//        if (isSuccessful) {
-//            _unreadCount.value = null
-//            utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
-//            utils.dispatcherUtils.main.periodic(
-//                operationKey = PROFILE_UNREAD_COUNT_PERIODIC_RELOAD,
-//                period = 60.0,
-//                startImmediately = true,
-//                repeats = true
-//            ) {
-//                coroutineIOScope.launch {
-//                    reloadUnreadCount()
-//                }
-//            }
-//        }
-//    }
-//
-//    override fun logoutCompleted(isSuccessful: Boolean, errors: AuthenticationErrors?) {
-//        if (isSuccessful) {
-//            utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
-//        }
-//    }
+    override fun loginCompleted(isSuccessful: Boolean) {
+        if (isSuccessful) {
+            _unreadCount.value = null
+            utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
+            utils.dispatcherUtils.main.periodic(
+                operationKey = PROFILE_UNREAD_COUNT_PERIODIC_RELOAD,
+                period = 60.0,
+                startImmediately = true,
+                repeats = true
+            ) {
+                coroutineIOScope.launch {
+                    reloadUnreadCount()
+                }
+            }
+        }
+    }
+
+    override fun logoutCompleted(isSuccessful: Boolean) {
+        if (isSuccessful) {
+            utils.dispatcherUtils.main.cancelPeriodic(PROFILE_UNREAD_COUNT_PERIODIC_RELOAD)
+        }
+    }
 }
