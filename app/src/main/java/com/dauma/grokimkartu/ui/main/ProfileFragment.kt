@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.databinding.Observable
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.databinding.FragmentProfileBinding
@@ -14,6 +17,7 @@ import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileForm
 import com.dauma.grokimkartu.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,12 +53,25 @@ class ProfileFragment : Fragment() {
 
     private fun setupOnClickers() {
         binding.editProfileButton.setOnClick {
-            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToProfileEditFragment())
+            profileViewModel.editProfile()
         }
     }
 
     private fun setupObservers() {
         profileViewModel.getProfileForm().addOnPropertyChangedCallback(onPhotoOrNameChanged())
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    profileViewModel.uiState.collect {
+                        if (it.isProfileEditStarted) {
+                            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToProfileEditFragment())
+                            profileViewModel.editProfileStarted()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun onPhotoOrNameChanged() : Observable.OnPropertyChangedCallback {
