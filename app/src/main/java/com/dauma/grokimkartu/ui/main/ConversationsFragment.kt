@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ConversationsFragment : Fragment() {
+
     private val conversationsViewModel by viewModels<ConversationsViewModel>()
     @Inject lateinit var utils: Utils
 
@@ -32,7 +33,7 @@ class ConversationsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentConversationsBinding.inflate(inflater, container, false)
         binding.model = conversationsViewModel
         val view = binding.root
@@ -51,13 +52,11 @@ class ConversationsFragment : Fragment() {
             tab.text = tabTitles[position]
         }.attach()
 
-        conversationsViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        conversationsViewModel.viewIsDiscarded()
     }
 }

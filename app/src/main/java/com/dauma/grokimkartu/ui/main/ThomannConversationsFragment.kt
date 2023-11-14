@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentThomannConversationsBinding
@@ -14,10 +17,12 @@ import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
 import com.dauma.grokimkartu.ui.main.adapters.ThomannConversationData
 import com.dauma.grokimkartu.viewmodels.main.ThomannConversationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ThomannConversationsFragment : Fragment() {
+
     private val thomannConversationsViewModel by viewModels<ThomannConversationsViewModel>()
     private var isViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
@@ -34,42 +39,49 @@ class ThomannConversationsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThomannConversationsBinding.inflate(inflater, container, false)
         binding.model = thomannConversationsViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
         isViewSetup = false
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            thomannConversationsViewModel.reload()
-        }
-
-        thomannConversationsViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        thomannConversationsViewModel.viewIsDiscarded()
+    }
+
+    private fun setupOnClickers() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            thomannConversationsViewModel.reload()
+        }
     }
 
     private fun setupObservers() {
-        thomannConversationsViewModel.thomannConversations.observe(viewLifecycleOwner, {
-            val thomannConversationData = it.map { c -> ThomannConversationData(c) }
-            if (isViewSetup == false) {
-                setupThomannConversationsRecyclerView(thomannConversationData)
-            } else {
-                val conversationsAdapter = binding.thomannConversationsRecyclerView.adapter as? ConversationsAdapter
-                conversationsAdapter?.conversationsListData?.clear()
-                conversationsAdapter?.conversationsListData?.addAll(thomannConversationData)
-                binding.thomannConversationsRecyclerView.adapter?.notifyDataSetChanged()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    thomannConversationsViewModel.uiState.collect {
+                        val thomannConversationData = it.conversations.map { c -> ThomannConversationData(c) }
+                        if (isViewSetup == false) {
+                            setupThomannConversationsRecyclerView(thomannConversationData)
+                        } else {
+                            val conversationsAdapter = binding.thomannConversationsRecyclerView.adapter as? ConversationsAdapter
+                            conversationsAdapter?.conversationsListData?.clear()
+                            conversationsAdapter?.conversationsListData?.addAll(thomannConversationData)
+                            binding.thomannConversationsRecyclerView.adapter?.notifyDataSetChanged()
+                        }
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                    }
+                }
             }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        })
+        }
     }
 
     private fun setupThomannConversationsRecyclerView(conversations: List<ThomannConversationData>) {

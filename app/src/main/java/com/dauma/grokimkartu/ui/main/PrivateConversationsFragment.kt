@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.databinding.FragmentPrivateConversationsBinding
@@ -14,10 +17,12 @@ import com.dauma.grokimkartu.ui.main.adapters.ConversationsAdapter
 import com.dauma.grokimkartu.ui.main.adapters.PrivateConversationData
 import com.dauma.grokimkartu.viewmodels.main.PrivateConversationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PrivateConversationsFragment : Fragment() {
+
     private val privateConversationsViewModel by viewModels<PrivateConversationsViewModel>()
     private var isViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
@@ -34,42 +39,49 @@ class PrivateConversationsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPrivateConversationsBinding.inflate(inflater, container, false)
         binding.model = privateConversationsViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
         isViewSetup = false
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            privateConversationsViewModel.reload()
-        }
-
-        privateConversationsViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        privateConversationsViewModel.viewIsDiscarded()
+    }
+
+    private fun setupOnClickers() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            privateConversationsViewModel.reload()
+        }
     }
 
     private fun setupObservers() {
-        privateConversationsViewModel.privateConversations.observe(viewLifecycleOwner, {
-            val privateConversationData = it.map { c -> PrivateConversationData(c) }
-            if (isViewSetup == false) {
-                setupPrivateConversationsRecyclerView(privateConversationData)
-            } else {
-                val conversationsAdapter = binding.privateConversationsRecyclerView.adapter as? ConversationsAdapter
-                conversationsAdapter?.conversationsListData?.clear()
-                conversationsAdapter?.conversationsListData?.addAll(privateConversationData)
-                binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    privateConversationsViewModel.uiState.collect {
+                        val privateConversationData = it.conversations.map { c -> PrivateConversationData(c) }
+                        if (isViewSetup == false) {
+                            setupPrivateConversationsRecyclerView(privateConversationData)
+                        } else {
+                            val conversationsAdapter = binding.privateConversationsRecyclerView.adapter as? ConversationsAdapter
+                            conversationsAdapter?.conversationsListData?.clear()
+                            conversationsAdapter?.conversationsListData?.addAll(privateConversationData)
+                            binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
+                        }
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                    }
+                }
             }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        })
+        }
     }
 
     private fun setupPrivateConversationsRecyclerView(conversations: List<PrivateConversationData>) {

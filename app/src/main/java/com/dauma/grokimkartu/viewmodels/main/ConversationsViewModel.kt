@@ -9,10 +9,4 @@ class ConversationsViewModel @Inject constructor() : ViewModel() {
     companion object {
         private val TAG = "ConversationsViewModelImpl"
     }
-
-    fun viewIsReady() {
-    }
-
-    fun viewIsDiscarded() {
-    }
 }
