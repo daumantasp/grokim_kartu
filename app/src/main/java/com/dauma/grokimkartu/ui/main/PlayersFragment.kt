@@ -8,26 +8,28 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersBinding
 import com.dauma.grokimkartu.general.DummyCell
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.players.entities.Player
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import com.dauma.grokimkartu.ui.main.adapters.PlayersListAdapter
 import com.dauma.grokimkartu.viewmodels.main.PlayersViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 // read more at https://medium.com/mobile-app-development-publication/injecting-viewmodel-with-dagger-hilt-54ca2e433865
 
 @AndroidEntryPoint
 class PlayersFragment : Fragment() {
+
     private val playersViewModel by viewModels<PlayersViewModel>()
     private var isPlayersRecyclerViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
@@ -44,32 +46,15 @@ class PlayersFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentPlayersBinding.inflate(inflater, container, false)
         binding.model = playersViewModel
         val view = binding.root
-        setupObservers()
         isPlayersRecyclerViewSetup = false
+        setupOnClickers()
+        setupObservers()
+        setupSwipeToRefresh()
 
-        binding.playersHeaderViewElement.setOnBackClick {
-            playersViewModel.backClicked()
-        }
-        binding.playersHeaderViewElement.setOnRightTextClick {
-            findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
-        }
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            playersViewModel.reload()
-        }
-        val typedValue = TypedValue()
-        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
-        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            playersViewModel.backClicked()
-        }
-
-        playersViewModel.viewIsReady()
         return view
     }
 
@@ -78,24 +63,52 @@ class PlayersFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupOnClickers() {
+        binding.playersHeaderViewElement.setOnRightTextClick {
+            playersViewModel.playersFilter()
+        }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            playersViewModel.reload()
+        }
+        binding.playersHeaderViewElement.setOnBackClick {
+            playersViewModel.back()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            playersViewModel.back()
+        }
+    }
+
     private fun setupObservers() {
-        playersViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        playersViewModel.filterEnabled.observe(viewLifecycleOwner, EventObserver {
-            binding.playersHeaderViewElement.showRightTextAttentioner(it)
-        })
-        playersViewModel.playersPages.observe(viewLifecycleOwner, Observer { playersPages ->
-            val data = getAllPlayersFromPages(playersPages)
-            if (isPlayersRecyclerViewSetup == false) {
-                setupPlayersRecyclerView(data)
-            } else {
-                reloadRecyclerViewWithNewData(data)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    playersViewModel.uiState.collect {
+                        val data = getAllPlayersFromPages(it.playersPages)
+                        if (!isPlayersRecyclerViewSetup) {
+                            setupPlayersRecyclerView(data)
+                        } else {
+                            reloadRecyclerViewWithNewData(data)
+                        }
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                        binding.playersHeaderViewElement.showRightTextAttentioner(it.isFilterApplied)
+                        if (it.playersFilterStarted) {
+                            findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
+                            playersViewModel.playersFilterStarted()
+                        } else if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
             }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        })
+        }
+    }
+
+    private fun setupSwipeToRefresh() {
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
+        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
     }
 
     private fun getAllPlayersFromPages(pages: List<PlayersPage>) : List<Any> {
@@ -189,14 +202,6 @@ class PlayersFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
-        }
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

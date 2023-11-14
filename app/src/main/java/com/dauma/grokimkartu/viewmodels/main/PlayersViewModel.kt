@@ -1,52 +1,72 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class PlayersUiState(
+    val playersPages: List<PlayersPage> = listOf(),
+    val isFilterApplied: Boolean = false,
+    val playersFilterStarted: Boolean = false,
+    val close: Boolean = false
+)
 
 @HiltViewModel
 class PlayersViewModel @Inject constructor(
     private val playersRepository: PlayersRepository
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _playersPages = MutableLiveData<List<PlayersPage>>()
-    private val _filterEnabled = MutableLiveData<Event<Boolean>>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val playersPages: LiveData<List<PlayersPage>> = _playersPages
-    val filterEnabled: LiveData<Event<Boolean>> = _filterEnabled
+
+    private val _uiState = MutableStateFlow(PlayersUiState())
+    val uiState = _uiState.asStateFlow()
 
     companion object {
         private val TAG = "PlayersViewModel"
     }
 
-    fun viewIsReady() {
-//        if (playersRepository.pages.isEmpty()) {
-//            loadNextPlayersPage()
-//        } else {
-//            _playersPages.value = playersRepository.pages
-//        }
-//        _filterEnabled.value = Event(playersRepository.isFilterApplied)
+    init {
+        viewModelScope.launch {
+            observePlayersPages()
+        }
+        viewModelScope.launch {
+            observeFilterAppliance()
+        }
+        loadNextPlayersPage()
     }
 
-    fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
-    }
+    fun back() = _uiState.update { it.copy(close = true) }
+
+    fun playersFilter() = _uiState.update { it.copy(playersFilterStarted = true) }
+
+    fun playersFilterStarted() = _uiState.update { it.copy(playersFilterStarted = false) }
 
     fun loadNextPlayersPage() {
-//        playersRepository.loadNextPage() { _, _ ->
-//            _playersPages.value = playersRepository.pages
-//        }
+        viewModelScope.launch {
+            playersRepository.paginator.loadNextPage()
+        }
     }
 
     fun reload() {
-//        playersRepository.reload { _, _ ->
-//            _playersPages.value = playersRepository.pages
-//        }
+        viewModelScope.launch {
+            playersRepository.reload()
+        }
+    }
+
+    private suspend fun observePlayersPages() {
+        playersRepository.paginator.pages.collect { playersPages ->
+            _uiState.update { it.copy(playersPages = playersPages) }
+        }
+    }
+
+    private suspend fun observeFilterAppliance() {
+        playersRepository.paginator.isFilterApplied.collect { isFilterApplied ->
+            _uiState.update { it.copy(isFilterApplied = isFilterApplied) }
+        }
     }
 }

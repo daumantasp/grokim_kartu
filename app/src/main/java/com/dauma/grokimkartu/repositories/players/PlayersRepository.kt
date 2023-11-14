@@ -17,4 +17,5 @@ interface PlayersRepository {
     suspend fun searchCity(value: String): Result<List<PlayerCity>?, PlayersErrors?>
     suspend fun instruments(): Result<List<PlayerInstrument>?, PlayersErrors?>
     suspend fun searchInstrument(value: String): Result<List<PlayerInstrument>?, PlayersErrors?>
+    fun loginCompleted(isSuccessful: Boolean)
 }

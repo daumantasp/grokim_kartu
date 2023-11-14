@@ -261,7 +261,16 @@ class AppModule {
         authRepository: AuthRepository
     ) : PlayersRepository {
         val playersRepository = PlayersRepositoryImpl(playersDao, paginator, citiesDao, instrumentsDao, user)
-//        authRepository.registerLoginListener("PLAYERS_REPOSITORY_LOGIN_LISTENER_ID", playersRepository)
+        GlobalScope.launch {
+            authRepository.authState.collect {
+                when (it) {
+                    is AuthState.LoginCompleted -> {
+                        playersRepository.loginCompleted(it.isSuccessful)
+                    }
+                    else -> {}
+                }
+            }
+        }
         return playersRepository
     }
 
