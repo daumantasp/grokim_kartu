@@ -123,29 +123,29 @@ class NotificationViewElement(context: Context, attrs: AttributeSet)
     }
 
     fun setState(state: NotificationState) {
-//        when (state) {
-//            NotificationState.INACTIVE -> {
-//                notificationCardView.setCardBackgroundColor(inactiveNotificationBackgroundColor)
-//                nameTextView.setTextColor(inactiveNotificationNameColor)
-//                dateTextView.setTextColor(inactiveNotificationDateColor)
-//                descriptionTextView.setTextColor(inactiveNotificationDescriptionColor)
-//
-//                activeNotificationCardView.visibility = View.GONE
-//                notificationCardView.visibility = View.VISIBLE
-//            }
-//            NotificationState.ACTIVE -> {
-//                notificationCardView.visibility = View.GONE
-//                activeNotificationCardView.visibility = View.VISIBLE
-//            }
-//            NotificationState.UNREAD -> {
-//                notificationCardView.setCardBackgroundColor(unreadNotificationBackgroundColor)
-//                nameTextView.setTextColor(unreadNotificationNameColor)
-//                dateTextView.setTextColor(unreadNotificationDateColor)
-//                descriptionTextView.setTextColor(unreadNotificationDescriptionColor)
-//
-//                activeNotificationCardView.visibility = View.GONE
-//                notificationCardView.visibility = View.VISIBLE
-//            }
-//        }
+        when (state) {
+            NotificationState.READ -> {
+                notificationCardView.setCardBackgroundColor(inactiveNotificationBackgroundColor)
+                nameTextView.setTextColor(inactiveNotificationNameColor)
+                dateTextView.setTextColor(inactiveNotificationDateColor)
+                descriptionTextView.setTextColor(inactiveNotificationDescriptionColor)
+
+                activeNotificationCardView.visibility = View.GONE
+                notificationCardView.visibility = View.VISIBLE
+            }
+            NotificationState.EXPANDED -> {
+                notificationCardView.visibility = View.GONE
+                activeNotificationCardView.visibility = View.VISIBLE
+            }
+            NotificationState.UNREAD -> {
+                notificationCardView.setCardBackgroundColor(unreadNotificationBackgroundColor)
+                nameTextView.setTextColor(unreadNotificationNameColor)
+                dateTextView.setTextColor(unreadNotificationDateColor)
+                descriptionTextView.setTextColor(unreadNotificationDescriptionColor)
+
+                activeNotificationCardView.visibility = View.GONE
+                notificationCardView.visibility = View.VISIBLE
+            }
+        }
     }
 }

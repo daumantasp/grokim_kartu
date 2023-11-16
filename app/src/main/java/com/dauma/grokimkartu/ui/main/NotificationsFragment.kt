@@ -8,23 +8,26 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentNotificationsBinding
 import com.dauma.grokimkartu.general.DummyCell
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
 import com.dauma.grokimkartu.ui.main.adapters.NotificationsListAdapter
 import com.dauma.grokimkartu.viewmodels.main.NotificationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class NotificationsFragment : Fragment() {
+
     private val notificationsViewModel by viewModels<NotificationsViewModel>()
     private var isViewSetup: Boolean = false
     @Inject lateinit var utils: Utils
@@ -41,67 +44,69 @@ class NotificationsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         binding.model = notificationsViewModel
         val view = binding.root
-        setupObservers()
         isViewSetup = false
+        setupOnClickers()
+        setupObservers()
+        setupSwipeToRefresh()
 
-        binding.notificationsHeaderViewElement.setOnBackClick {
-            notificationsViewModel.backClicked()
-        }
-
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            notificationsViewModel.reload()
-        }
-        val typedValue = TypedValue()
-        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
-        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            notificationsViewModel.backClicked()
-        }
-
-        notificationsViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        notificationsViewModel.viewIsDiscarded()
+    }
+
+    private fun setupOnClickers() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            notificationsViewModel.reload()
+        }
+        binding.notificationsHeaderViewElement.setOnBackClick {
+            notificationsViewModel.back()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            notificationsViewModel.back()
+        }
     }
 
     private fun setupObservers() {
-        notificationsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        notificationsViewModel.notificationsPages.observe(viewLifecycleOwner, { notificationsPages ->
-            val data = getAllNotificationsFromPages(notificationsPages)
-            if (isViewSetup == false) {
-                setupNotificationsRecyclerView(data)
-            } else {
-                reloadRecyclerViewWithNewData(data)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    notificationsViewModel.uiState.collect {
+                        val data = getAllNotificationsFromPages(it.notificationsPages)
+                        if (isViewSetup == false) {
+                            setupNotificationsRecyclerView(data)
+                        } else {
+                            reloadRecyclerViewWithNewData(data)
+                        }
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                        if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
             }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        })
-        notificationsViewModel.notificationsUpdated.observe(viewLifecycleOwner, { notificationsPages ->
-            val data = getAllNotificationsFromPages(notificationsPages)
-            reloadRecyclerViewWithNewData(data)
-        })
+        }
+    }
+
+    private fun setupSwipeToRefresh() {
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
+        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
     }
 
     private fun getAllNotificationsFromPages(pages: List<NotificationsPage>) : List<Any> {
         val data: MutableList<Any> = mutableListOf()
         for (page in pages) {
-            if (page.notifications != null) {
-                for (notification in page.notifications) {
-                    val copiedNotification = Notification(notification)
-                    data.add(copiedNotification)
-                }
+            for (notification in page.notifications) {
+                data.add(notification)
             }
         }
         if (pages.lastOrNull()?.isLast == false) {
@@ -115,7 +120,7 @@ class NotificationsFragment : Fragment() {
         binding.notificationsRecyclerView.adapter = NotificationsListAdapter(
             notificationsListData = notificationsListData.toMutableList(),
             utils = utils,
-            onItemClicked = { notificationId -> this.notificationsViewModel.notificationClicked(notificationId)},
+            onItemClicked = { notificationId -> this.notificationsViewModel.notificationExpand(notificationId)},
             loadNextPage = { this.notificationsViewModel.loadNextNotificationsPage() }
         )
         isViewSetup = true
@@ -188,14 +193,6 @@ class NotificationsFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
-        }
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

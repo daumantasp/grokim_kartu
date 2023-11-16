@@ -11,4 +11,5 @@ interface NotificationsRepository {
     val unreadCount: StateFlow<Int?>
     suspend fun expand(notificationId: Int): Result<Notification?, NotificationsErrors?>
     suspend fun reload(): Result<NotificationsPage?, NotificationsErrors?>
+    fun loginCompleted(isSuccessful: Boolean)
 }

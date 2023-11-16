@@ -73,7 +73,7 @@ class NotificationsListAdapter(
                 setName(notification.name ?: "")
                 setDate(createdAtFormatted ?: "")
                 setDescription(notification.description ?: "")
-//                setState(notification.state ?: NotificationState.INACTIVE)
+                setState(notification.state ?: NotificationState.READ)
                 setOnClick { onItemClicked(notification.id ?: -1) }
             }
 

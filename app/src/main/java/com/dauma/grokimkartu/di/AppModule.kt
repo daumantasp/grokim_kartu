@@ -367,11 +367,18 @@ class AppModule {
         paginator: NotificationsPaginator,
         user: User,
         authRepository: AuthRepository,
-        profileRepository: ProfileRepository
     ) : NotificationsRepository {
-        val notificationsRepository = NotificationsRepositoryImpl(notificationsDao, paginator, user)
-//        authRepository.registerLoginListener("NOTIFICATIONS_REPOSITORY_LOGIN_LISTENER", notificationsRepository)
-//        profileRepository.registerListener("NOTIFICATIONS_REPOSITORY_PROFILE_LISTENER", notificationsRepository)
+        val notificationsRepository = NotificationsRepositoryImpl(paginator, user)
+        GlobalScope.launch {
+            authRepository.authState.collect {
+                when (it) {
+                    is AuthState.LoginCompleted -> {
+                        notificationsRepository.loginCompleted(it.isSuccessful)
+                    }
+                    else -> {}
+                }
+            }
+        }
         return notificationsRepository
     }
 
