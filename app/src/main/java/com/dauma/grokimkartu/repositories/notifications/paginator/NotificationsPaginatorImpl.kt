@@ -80,7 +80,6 @@ class NotificationsPaginatorImpl(
                         val updateResult = update(notificationId, UpdateNotification(isRead = true))
                         if (updateResult.data != null) {
                             updatedNotification = notification.copy(state = NotificationState.EXPANDED)
-                            _unreadCount.value = _unreadCount.value?.let { it - 1 }
                         } else {
                             updatedNotification = notification.copy()
                         }

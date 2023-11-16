@@ -57,6 +57,12 @@ class HomeViewModel @Inject constructor(
 
     fun thomannStarted() = _uiState.update { it.copy(isThomannStarted = false) }
 
+    fun getNotificationsUnreadCount() {
+        viewModelScope.launch {
+            profileRepository.reloadUnreadCount()
+        }
+    }
+
     private suspend fun setUserIcon() {
         val result = profileRepository.icon()
         _uiState.update { it.copy(userIcon = result.data) }

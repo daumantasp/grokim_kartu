@@ -56,6 +56,7 @@ class HomeFragment : Fragment() {
         setupObservers()
 
         statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
+        homeViewModel.getNotificationsUnreadCount()
 
         return view
     }

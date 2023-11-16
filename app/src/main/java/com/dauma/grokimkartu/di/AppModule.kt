@@ -87,6 +87,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -291,15 +292,17 @@ class AppModule {
     ) : ProfileRepository {
         val profileRepository = ProfileRepositoryImpl(profileDao, citiesDao, instrumentsDao, user, utils)
         GlobalScope.launch {
-            authRepository.authState.collect {
-                when (it) {
-                    is AuthState.LoginCompleted -> {
-                        profileRepository.loginCompleted(it.isSuccessful)
+            launch {
+                authRepository.authState.collect {
+                    when (it) {
+                        is AuthState.LoginCompleted -> {
+                            profileRepository.loginCompleted(it.isSuccessful)
+                        }
+                        is AuthState.LogoutCompleted -> {
+                            profileRepository.logoutCompleted(it.isSuccessful)
+                        }
+                        else -> {}
                     }
-                    is AuthState.LogoutCompleted -> {
-                        profileRepository.logoutCompleted(it.isSuccessful)
-                    }
-                    else -> {}
                 }
             }
         }
@@ -363,7 +366,6 @@ class AppModule {
     @Provides
     @Singleton
     fun providesNotificationsRepository(
-        notificationsDao: NotificationsDao,
         paginator: NotificationsPaginator,
         user: User,
         authRepository: AuthRepository,
