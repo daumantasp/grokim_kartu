@@ -113,7 +113,6 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     app:type="primary"
-                    app:onClick="@{() -> model.messageClicked()}"
                     app:text="@string/player_details_message" />
 
             </LinearLayout>

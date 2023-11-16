@@ -1,16 +1,25 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.models.forms.PlayerDetailsForm
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
-import com.dauma.grokimkartu.ui.main.PlayerDetailsFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+// READ https://medium.com/@fabioCollini/android-data-binding-f9f9d3afc761
+
+data class PlayerDetailsUiState(
+    val messageStarted: Boolean = false,
+    val messageTitle: String? = null,
+    val messageUserId: Int? = null,
+    val close: Boolean = false
+)
 
 @HiltViewModel
 class PlayerDetailsViewModel @Inject constructor(
@@ -18,65 +27,58 @@ class PlayerDetailsViewModel @Inject constructor(
     private val playerDetailsForm: PlayerDetailsForm,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    // READ https://medium.com/@fabioCollini/android-data-binding-f9f9d3afc761
+
     private val userId = savedStateHandle.get<Int>("userId")
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _detailsLoaded = MutableLiveData<Event<String>>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val detailsLoaded: LiveData<Event<String>> = _detailsLoaded
+    private val _uiState = MutableStateFlow(PlayerDetailsUiState())
+    val uiState = _uiState.asStateFlow()
 
     companion object {
         private val TAG = "DetailsViewModel"
     }
 
-    fun getPlayerDetailsForm() : PlayerDetailsForm {
-        return playerDetailsForm
+    init {
+        viewModelScope.launch {
+            loadProfile()
+        }
+        viewModelScope.launch {
+            loadProfilePhoto()
+        }
     }
 
-    fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
-    }
+    fun getPlayerDetailsForm() : PlayerDetailsForm = playerDetailsForm
 
-    fun reportClicked() {
+    fun back() = _uiState.update { it.copy(close = true) }
+
+    fun report() {
         // TODO: not implemented
     }
 
-    fun messageClicked() {
-        userId?.let { userId ->
-            val name = playerDetailsForm.name
-            _navigation.value = Event(NavigationCommand.ToDirection(
-                PlayerDetailsFragmentDirections.actionPlayerDetailsFragmentToConversationFragment(userId, -1, name))
+    fun message() = _uiState.update {
+        it.copy(messageStarted = true, messageTitle = playerDetailsForm.name, messageUserId = userId)
+    }
+
+    fun messageStarted() = _uiState.update {
+        it.copy(messageStarted = false, messageTitle = null, messageUserId = null)
+    }
+
+    private suspend fun loadProfile() {
+        userId?.let {
+            val profile = playersRepository.playerDetails(it)
+            playerDetailsForm.setInitialValues(
+                userId = it,
+                name = profile.data?.name ?: "",
+                instrument = profile.data?.instrument ?: "",
+                description = profile.data?.description ?: "",
+                city = profile.data?.city ?: ""
             )
         }
     }
 
-    fun loadDetails() {
-        var isDetailsLoaded = false
-        var isPhotoLoaded = false
-        fun checkIfFullProfileLoaded() {
-            if (isDetailsLoaded == true && isPhotoLoaded == true) {
-                _detailsLoaded.value = Event("")
-            }
+    private suspend fun loadProfilePhoto() {
+        userId?.let {userId ->
+            val profilePhoto = playersRepository.playerPhoto(userId)
+            playerDetailsForm.photo = profilePhoto.data
         }
-
-//        playersRepository.playerDetails(userId ?: -1) { playerDetails, playersError ->
-//            this.playerDetailsForm.setInitialValues(
-//                userId ?: -1,
-//                playerDetails?.name ?: "",
-//                playerDetails?.instrument ?: "",
-//                playerDetails?.description ?: "",
-//                playerDetails?.city ?: ""
-//            )
-//            isDetailsLoaded = true
-//            checkIfFullProfileLoaded()
-//        }
-//        playersRepository.playerPhoto(userId ?: -1) { playerPhoto, playerError ->
-//            if (playerPhoto != null) {
-//                this.playerDetailsForm.setInitialPhoto(playerPhoto)
-//            }
-//            isPhotoLoaded = true
-//            checkIfFullProfileLoaded()
-//        }
     }
 }
 

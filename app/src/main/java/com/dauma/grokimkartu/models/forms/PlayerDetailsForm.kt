@@ -35,8 +35,8 @@ class PlayerDetailsForm: BaseObservable() {
         }
 
     @get:Bindable
-    var photo: Bitmap? = null
-        private set(value) {
+    var photo: Bitmap? = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444) // Workaround
+        set(value) {
             field = value
             notifyPropertyChanged(BR.photo)
         }
@@ -60,9 +60,5 @@ class PlayerDetailsForm: BaseObservable() {
         this.instrument = instrument
         this.description = description
         this.city = city
-    }
-
-    fun setInitialPhoto(photo: Bitmap) {
-        this.photo = photo
     }
 }

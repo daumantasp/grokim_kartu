@@ -1,22 +1,28 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.Observable
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.databinding.FragmentPlayerDetailsBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
+import com.dauma.grokimkartu.models.forms.PlayerDetailsForm
 import com.dauma.grokimkartu.viewmodels.main.PlayerDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlayerDetailsFragment : Fragment() {
+
     private val playerDetailsViewModel by viewModels<PlayerDetailsViewModel>()
     @Inject lateinit var utils: Utils
 
@@ -32,21 +38,22 @@ class PlayerDetailsFragment : Fragment() {
         _binding = FragmentPlayerDetailsBinding.inflate(inflater, container, false)
         binding.model = playerDetailsViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
 
-        if (savedInstanceState == null) {
-            // TODO: Still reloads on device rotate, probably need to save state instance
-            playerDetailsViewModel.loadDetails()
-        }
+        return view
+    }
 
+    private fun setupOnClickers() {
         binding.playerDetailsHeaderViewElement.setOnBackClick {
-            playerDetailsViewModel.backClicked()
+            playerDetailsViewModel.back()
         }
         binding.playerDetailsHeaderViewElement.setOnRightTextClick {
-            playerDetailsViewModel.reportClicked()
+            playerDetailsViewModel.report()
         }
-
-        return view
+        binding.messageButtonViewElement.setOnClick {
+            playerDetailsViewModel.message()
+        }
     }
 
     override fun onDestroyView() {
@@ -55,28 +62,56 @@ class PlayerDetailsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        playerDetailsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        playerDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner, EventObserver {
-            if (playerDetailsViewModel.getPlayerDetailsForm().photo == null) {
-                val initials = utils.stringUtils.getInitials(playerDetailsViewModel.getPlayerDetailsForm().name)
-                binding.profileInitialsViewElement.setInitials(initials)
-                binding.photoImageView.visibility = View.GONE
-                binding.profileInitialsViewElement.visibility = View.VISIBLE
-            } else {
-                binding.profileInitialsViewElement.visibility = View.GONE
-                binding.photoImageView.visibility = View.VISIBLE
+        playerDetailsViewModel.getPlayerDetailsForm().addOnPropertyChangedCallback(onPhotoOrNameChanged())
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    playerDetailsViewModel.uiState.collect {
+                        if (it.messageStarted) {
+                            it.messageUserId?.let { userId ->
+                                findNavController().navigate(PlayerDetailsFragmentDirections.actionPlayerDetailsFragmentToConversationFragment(userId, -1, it.messageTitle ?: ""))
+                                playerDetailsViewModel.messageStarted()
+                            }
+                        } else if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
             }
-            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
-        })
+        }
     }
 
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
+    private fun onPhotoOrNameChanged() : Observable.OnPropertyChangedCallback {
+        return object : Observable.OnPropertyChangedCallback() {
+            var isProfileLoaded = false
+            var isPhotoLoaded = false
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                fun checkIfFullProfileLoaded() {
+                    if (isProfileLoaded == true && isPhotoLoaded == true) {
+                        val playerDetailsForm = sender as PlayerDetailsForm
+                        playerDetailsForm.photo?.let {
+                            binding.photoImageView.setImageBitmap(it)
+                            binding.profileInitialsViewElement.visibility = View.GONE
+                            binding.photoImageView.visibility = View.VISIBLE
+                            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
+                        } ?: run {
+                            val initials = utils.stringUtils.getInitials(playerDetailsForm.name)
+                            binding.profileInitialsViewElement.setInitials(initials)
+                            binding.photoImageView.visibility = View.GONE
+                            binding.profileInitialsViewElement.visibility = View.VISIBLE
+                            binding.profilePhotoOrInitialsConstraintLayout.visibility = View.VISIBLE
+                        }
+                    }
+                }
+                if (propertyId == BR.photo) {
+                    isPhotoLoaded = true
+                    checkIfFullProfileLoaded()
+                } else if (propertyId == BR.name) {
+                    isProfileLoaded = true
+                    checkIfFullProfileLoaded()
+                }
+            }
         }
     }
 }
