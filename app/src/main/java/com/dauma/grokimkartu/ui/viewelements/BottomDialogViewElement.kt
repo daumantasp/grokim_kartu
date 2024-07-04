@@ -186,6 +186,7 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
         setOnValueChanged { value ->
                 data.onSearchValueChanged(value)
         }
+        setOnCancelClick { data.onCancelClicked() }
 
         valueEditText.visibility = View.GONE
         datePicker.visibility = View.GONE
@@ -265,7 +266,6 @@ class BottomDialogViewElement(context: Context, attrs: AttributeSet)
 
     private fun reset() {
         setOnValueChanged {}
-        setOnCancelClick {}
         setOnCancelClick {}
         titleTextView.text = ""
         valueEditText.setText("")

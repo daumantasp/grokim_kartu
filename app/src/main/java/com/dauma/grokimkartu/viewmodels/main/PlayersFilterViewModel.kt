@@ -1,124 +1,78 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.models.forms.PlayersFilterForm
 import com.dauma.grokimkartu.repositories.players.PlayersFilter
 import com.dauma.grokimkartu.repositories.players.PlayersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class PlayersFilterUiState(
+    val close: Boolean = false,
+    val isCitySelectionStarted: Boolean = false,
+    val isInstrumentSelectionStarted: Boolean = false
+)
 
 @HiltViewModel
 class PlayersFilterViewModel @Inject constructor(
     private val playersRepository: PlayersRepository,
     private val playersFilterForm: PlayersFilterForm
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _uiState = MutableLiveData<UiState>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val uiState: LiveData<UiState> = _uiState
 
-    enum class UiState {
-        FORM,
-        CITY,
-        INSTRUMENT
-    }
+    private val _uiState = MutableStateFlow(PlayersFilterUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
-        loadPickableValuesAndSetFilter()
-    }
-
-    private fun loadPickableValuesAndSetFilter() {
-        var isPickableCitiesLoaded = false
-        var isPickableInstrumentsLoaded = false
-
-        fun setFilterIfAllValuesLoaded() {
-            if (isPickableCitiesLoaded && isPickableInstrumentsLoaded) {
-                setFilter()
-            }
-        }
-
-        loadPickableCities {
-            isPickableCitiesLoaded = true
-            setFilterIfAllValuesLoaded()
-        }
-        loadPickableInstruments {
-            isPickableInstrumentsLoaded = true
-            setFilterIfAllValuesLoaded()
+        viewModelScope.launch {
+            val cities = async { loadCities() }
+            val instruments = async { loadInstruments() }
+            cities.await()
+            instruments.await()
+            setFilter()
         }
     }
 
-    private fun setFilter() {
-//        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
-//            pc.id == playersRepository.filter.cityId
-//        }
-//        val instrumentOrNull = playersFilterForm.pickableInstruments.firstOrNull { pi ->
-//            pi.id == playersRepository.filter.instrumentId
-//        }
-//        playersFilterForm.setInitialValues(
-//            city = cityOrNull,
-//            instrument = instrumentOrNull,
-//            text = playersRepository.filter.text
-//        )
-    }
+    fun getPlayersFilterForm() : PlayersFilterForm = playersFilterForm
 
-    private fun loadPickableCities(onComplete: () -> Unit = {}) {
-//        playersRepository.cities { citiesResponse, profileErrors ->
-//            if (citiesResponse != null) {
-//                playersFilterForm.pickableCities = citiesResponse
-//                playersFilterForm.filteredPickableCities = citiesResponse
-//            }
-//            onComplete()
-//        }
-    }
-
-    private fun loadPickableInstruments(onComplete: () -> Unit = {}) {
-//        playersRepository.instruments { instrumentsResponse, profileErrors ->
-//            if (instrumentsResponse != null) {
-//                playersFilterForm.pickableInstruments = instrumentsResponse
-//                playersFilterForm.filteredPickableInstruments = instrumentsResponse
-//            }
-//            onComplete()
-//        }
-    }
-
-    fun getPlayersFilterForm() : PlayersFilterForm {
-        return playersFilterForm
-    }
-
-    fun backClicked() {
-        if (listOf(UiState.CITY, UiState.INSTRUMENT).contains(_uiState.value)) {
-            _uiState.value = UiState.FORM
+    fun back() {
+        if (uiState.value.isCitySelectionStarted || uiState.value.isInstrumentSelectionStarted) {
+            _uiState.update { it.copy(isCitySelectionStarted = false, isInstrumentSelectionStarted = false) }
         } else {
-            _navigation.value = Event(NavigationCommand.Back)
+            _uiState.update { it.copy(close = true) }
         }
-    }
-
-    fun cancelPickerClicked() {
-        _uiState.value = UiState.FORM
     }
 
     fun cityClicked() {
         playersFilterForm.filteredPickableCities = playersFilterForm.pickableCities
-        _uiState.value = UiState.CITY
+        _uiState.update { it.copy(isCitySelectionStarted = true) }
     }
 
     fun instrumentClicked() {
         playersFilterForm.filteredPickableInstruments = playersFilterForm.pickableInstruments
-        _uiState.value = UiState.INSTRUMENT
+        _uiState.update { it.copy(isInstrumentSelectionStarted = true) }
+    }
+
+    fun cancelPickerClicked() {
+        if (uiState.value.isCitySelectionStarted || uiState.value.isInstrumentSelectionStarted) {
+            _uiState.update { it.copy(isCitySelectionStarted = false, isInstrumentSelectionStarted = false) }
+        }
     }
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-//            playersRepository.searchCity(value) { citiesResponse, profileErrors ->
-//                if (citiesResponse != null) {
-//                    playersFilterForm.filteredPickableCities = citiesResponse
-//                }
-//                onComplete()
-//            }
+            viewModelScope.launch {
+                val searchResponse = playersRepository.searchCity(value)
+                searchResponse.data?.let {
+                    playersFilterForm.filteredPickableCities = it
+                }
+                onComplete()
+            }
         } else {
             playersFilterForm.filteredPickableCities = playersFilterForm.pickableCities
             onComplete()
@@ -127,12 +81,13 @@ class PlayersFilterViewModel @Inject constructor(
 
     fun searchInstrument(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-//            playersRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
-//                if (instrumentsResponse != null) {
-//                    playersFilterForm.filteredPickableInstruments = instrumentsResponse
-//                }
-//                onComplete()
-//            }
+            viewModelScope.launch {
+                val searchResponse = playersRepository.searchInstrument(value)
+                searchResponse.data?.let {
+                    playersFilterForm.filteredPickableInstruments = it
+                }
+                onComplete()
+            }
         } else {
             playersFilterForm.filteredPickableInstruments = playersFilterForm.pickableInstruments
             onComplete()
@@ -143,7 +98,7 @@ class PlayersFilterViewModel @Inject constructor(
         val city = playersFilterForm.pickableCities.firstOrNull { pc -> pc.id == id }
         city?.let {
             playersFilterForm.city = it
-            _uiState.value = UiState.FORM
+            _uiState.update { it.copy(isCitySelectionStarted = false) }
         }
     }
 
@@ -151,26 +106,60 @@ class PlayersFilterViewModel @Inject constructor(
         val instrument = playersFilterForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
         instrument?.let {
             playersFilterForm.instrument = it
-            _uiState.value = UiState.FORM
+            _uiState.update { it.copy(isInstrumentSelectionStarted = false) }
         }
     }
 
     fun applyFilter() {
-        if (playersFilterForm.isChanged()) {
-//            playersRepository.filter = PlayersFilter(
-//                cityId = playersFilterForm.city.id,
-//                instrumentId = playersFilterForm.instrument.id,
-//                text = playersFilterForm.text
-//            )
-            _navigation.value = Event(NavigationCommand.Back)
+        viewModelScope.launch {
+            if (playersFilterForm.isChanged()) {
+                playersRepository.paginator.setFilterAndReload(PlayersFilter(
+                    cityId = playersFilterForm.city.id,
+                    instrumentId = playersFilterForm.instrument.id,
+                    text = playersFilterForm.text)
+                )
+                _uiState.update { it.copy(close = true) }
+            }
         }
     }
 
     fun clearFilter() {
-        if (playersFilterForm.isInitialEmpty() == false) {
-//            playersRepository.filter = PlayersFilter.CLEAR
-//            setFilter()
-//            _navigation.value = Event(NavigationCommand.Back)
+        viewModelScope.launch {
+            if (!playersFilterForm.isInitialEmpty()) {
+                playersRepository.paginator.setFilterAndReload(PlayersFilter.CLEAR)
+                setFilter()
+                _uiState.update { it.copy(close = true) }
+            }
         }
+    }
+
+    private suspend fun loadCities() {
+        val citiesResponse = playersRepository.cities()
+        citiesResponse.data?.let {
+            playersFilterForm.pickableCities = it
+            playersFilterForm.filteredPickableCities = it
+        }
+    }
+
+    private suspend fun loadInstruments() {
+        val instrumentsResponse = playersRepository.instruments()
+        instrumentsResponse.data?.let {
+            playersFilterForm.pickableInstruments = it
+            playersFilterForm.filteredPickableInstruments = it
+        }
+    }
+
+    private fun setFilter() {
+        val cityOrNull = playersFilterForm.pickableCities.firstOrNull { pc ->
+            pc.id == playersRepository.paginator.filter.value.cityId
+        }
+        val instrumentOrNull = playersFilterForm.pickableInstruments.firstOrNull { pi ->
+            pi.id == playersRepository.paginator.filter.value.instrumentId
+        }
+        playersFilterForm.setInitialValues(
+            city = cityOrNull,
+            instrument = instrumentOrNull,
+            text = playersRepository.paginator.filter.value.text
+        )
     }
 }

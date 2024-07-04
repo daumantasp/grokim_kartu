@@ -16,6 +16,7 @@ import com.dauma.grokimkartu.repositories.players.entities.PlayersPage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class PlayersPaginatorImpl(
     private val playersDao: PlayersDao,
@@ -121,11 +122,17 @@ class PlayersPaginatorImpl(
         }
     }
 
-    override fun setFilter(filter: PlayersFilter) {
-        _filter.value = filter
-        _isFilterApplied.value = filter.cityId != null
+    override suspend fun setFilterAndReload(filter: PlayersFilter): Result<PlayersPage?, PlayersErrors?> {
+        setFilter(filter)
+        return loadNextPage()
+    }
+
+    private fun setFilter(filter: PlayersFilter) {
+        _filter.update { filter }
+        _isFilterApplied.update { filter.cityId != null
                 || filter.instrumentId != null
                 || filter.text != null
+        }
         clear()
     }
 

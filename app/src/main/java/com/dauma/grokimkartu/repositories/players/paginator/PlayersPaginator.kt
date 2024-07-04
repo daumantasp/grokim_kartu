@@ -11,6 +11,6 @@ interface PlayersPaginator {
     val filter: StateFlow<PlayersFilter>
     val isFilterApplied: StateFlow<Boolean>
     suspend fun loadNextPage(): Result<PlayersPage?, PlayersErrors?>
-    fun setFilter(filter: PlayersFilter)
+    suspend fun setFilterAndReload(filter: PlayersFilter): Result<PlayersPage?, PlayersErrors?>
     fun clear()
 }

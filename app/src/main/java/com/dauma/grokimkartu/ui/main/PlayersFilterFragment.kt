@@ -8,16 +8,18 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentPlayersFilterBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.PlayersFilterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,8 +49,8 @@ class PlayersFilterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObservers()
         setupOnClickListeners()
+        setupObservers()
     }
 
     override fun onDestroyView() {
@@ -61,27 +63,7 @@ class PlayersFilterFragment : Fragment() {
         dialogsManager = null
     }
 
-    private fun setupObservers() {
-        playersFilterViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        playersFilterViewModel.uiState.observe(viewLifecycleOwner) {
-            when (it) {
-                PlayersFilterViewModel.UiState.FORM -> showForm()
-                PlayersFilterViewModel.UiState.CITY -> showCitiesPicker()
-                PlayersFilterViewModel.UiState.INSTRUMENT -> showInstrumentsPicker()
-                null -> {}
-            }
-        }
-    }
-
     private fun setupOnClickListeners() {
-        binding.playersFilterHeaderViewElement.setOnBackClick {
-            playersFilterViewModel.backClicked()
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            playersFilterViewModel.backClicked()
-        }
         binding.cityInputEditText.setOnClickListener {
             playersFilterViewModel.cityClicked()
         }
@@ -93,6 +75,33 @@ class PlayersFilterFragment : Fragment() {
         }
         binding.clearFilterButton.setOnClick {
             playersFilterViewModel.clearFilter()
+        }
+        binding.playersFilterHeaderViewElement.setOnBackClick {
+            playersFilterViewModel.back()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            playersFilterViewModel.back()
+        }
+    }
+
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    playersFilterViewModel.uiState.collect {
+                        if (it.isCitySelectionStarted) {
+                            showCitiesPicker()
+                        } else if (it.isInstrumentSelectionStarted) {
+                            showInstrumentsPicker()
+                        } else {
+                            showForm()
+                        }
+                        if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -154,13 +163,5 @@ class PlayersFilterFragment : Fragment() {
 
     private fun showForm() {
         dialogsManager?.hideBottomDialog()
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }
