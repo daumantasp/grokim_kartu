@@ -17,11 +17,13 @@ import androidx.databinding.Observable
 import androidx.databinding.Observable.OnPropertyChangedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
-import com.dauma.grokimkartu.general.event.EventObserver
 import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
@@ -30,6 +32,7 @@ import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.YesNoDialogData
 import com.dauma.grokimkartu.viewmodels.main.ProfileEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -76,10 +79,10 @@ class ProfileEditFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         binding.profileEditHeaderViewElement.setOnBackClick {
-            profileEditViewModel.backClicked()
+            profileEditViewModel.back()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            profileEditViewModel.backClicked()
+            profileEditViewModel.back()
         }
         binding.selectPhotoButton.setOnClickListener {
             showPhotoChooser()
@@ -109,21 +112,30 @@ class ProfileEditFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        profileEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        profileEditViewModel.uiState.observe(viewLifecycleOwner) {
-            when (it) {
-                ProfileEditViewModel.UiState.FORM -> showForm()
-                ProfileEditViewModel.UiState.CITY -> showCitiesPicker()
-                ProfileEditViewModel.UiState.INSTRUMENT -> showInstrumentsPicker()
-                ProfileEditViewModel.UiState.BACK_CONFIRMATION -> showBackConfirmationDialog()
-                null -> {}
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    profileEditViewModel.uiState.collect {
+                        if (it.isCitySelectionStarted) {
+                            showCitiesPicker()
+                        } else if (it.isInstrumentSelectionStarted) {
+                            showInstrumentsPicker()
+                        } else {
+                            showForm()
+                        }
+                        if (it.isConfirmation) {
+                            showBackConfirmationDialog()
+                        } else if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
             }
         }
         profileEditViewModel.getProfileEditForm().addOnPropertyChangedCallback(onPhotoOrNameChanged())
     }
 
+    // TODO: Refactor using MVVM
     private fun onPhotoOrNameChanged() : OnPropertyChangedCallback {
         return object : OnPropertyChangedCallback() {
             var isProfileLoaded = false
@@ -219,9 +231,9 @@ class ProfileEditFragment : Fragment() {
             positiveText = getString(R.string.profile_edit_navigate_back_confirmation_positive),
             negativeText = getString(R.string.profile_edit_navigate_back_confirmation_negative),
             cancelable = true,
-            onPositiveButtonClick = { profileEditViewModel.backClicked() },
-            onNegativeButtonClick = { profileEditViewModel.cancelBackClicked() },
-            onCancelClicked = { profileEditViewModel.cancelBackClicked() }
+            onPositiveButtonClick = { profileEditViewModel.back() },
+            onNegativeButtonClick = { profileEditViewModel.cancelBack() },
+            onCancelClicked = { profileEditViewModel.cancelBack() }
         ))
     }
 
@@ -309,13 +321,5 @@ class ProfileEditFragment : Fragment() {
     private fun canCapture() : Boolean {
         val captureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         return captureIntent.resolveActivity(requireContext().packageManager) != null
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }

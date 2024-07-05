@@ -1,178 +1,204 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
 import com.dauma.grokimkartu.repositories.profile.ProfileRepository
 import com.dauma.grokimkartu.repositories.profile.entities.UpdateProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class ProfileEditUiState(
+    val close: Boolean = false,
+    val isCitySelectionStarted: Boolean = false,
+    val isInstrumentSelectionStarted: Boolean = false,
+    val isConfirmation: Boolean = false,
+)
 
 @HiltViewModel
 class ProfileEditViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val profileEditForm: ProfileEditForm
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _uiState = MutableLiveData<UiState>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val uiState: LiveData<UiState> = _uiState
 
-    enum class UiState {
-        FORM,
-        BACK_CONFIRMATION,
-        INSTRUMENT,
-        CITY
-    }
+    private val _uiState = MutableStateFlow(ProfileEditUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
-        loadProfile()
-        loadPickableCities()
-        loadPickableInstruments()
-    }
-
-    private fun loadProfile() {
-//        profileRepository.profile { profile, _ ->
-//            profileEditForm.setInitialValues(
-//                name = profile?.name,
-//                instrument = profile?.instrument,
-//                description = profile?.description,
-//                city = profile?.city
-//            )
-//        }
-//        profileRepository.photo { photo, _ ->
-//            profileEditForm.setInitialPhoto(photo)
-//        }
-    }
-
-    private fun loadPickableCities() {
-//        profileRepository.cities { citiesResponse, profileErrors ->
-//            if (citiesResponse != null) {
-//                profileEditForm.pickableCities = citiesResponse
-//                profileEditForm.filteredPickableCities = citiesResponse
-//            }
-//        }
-    }
-
-    private fun loadPickableInstruments() {
-//        profileRepository.instruments { instrumentsResponse, profileErrors ->
-//            if (instrumentsResponse != null) {
-//                profileEditForm.pickableInstruments = instrumentsResponse
-//                profileEditForm.filteredPickableInstruments = instrumentsResponse
-//            }
-//        }
-    }
-
-    fun getProfileEditForm(): ProfileEditForm {
-        return profileEditForm
-    }
-
-    fun backClicked() {
-        if (listOf(UiState.CITY, UiState.INSTRUMENT).contains(_uiState.value)) {
-            _uiState.value = UiState.FORM
-        } else if (profileEditForm.isChanged() && _uiState.value == UiState.FORM) {
-            _uiState.value = UiState.BACK_CONFIRMATION
-        } else {
-            _navigation.value = Event(NavigationCommand.Back)
+        viewModelScope.launch {
+            launch { loadProfile() }
+            launch { loadPhoto() }
+        }
+        viewModelScope.launch {
+            val cities = async { loadCities() }
+            val instruments = async { loadInstruments() }
+            cities.await()
+            instruments.await()
         }
     }
 
-    fun cancelBackClicked() {
-        _uiState.value = UiState.FORM
+    fun getProfileEditForm() : ProfileEditForm = profileEditForm
+
+    fun back() {
+        if (uiState.value.isCitySelectionStarted || uiState.value.isInstrumentSelectionStarted) {
+            _uiState.update { it.copy(isCitySelectionStarted = false, isInstrumentSelectionStarted = false) }
+        } else if (profileEditForm.isChanged() && !_uiState.value.isConfirmation) {
+            _uiState.update { it.copy(isConfirmation = true) }
+        } else {
+            _uiState.update { it.copy(isConfirmation = false, close = true) }
+        }
     }
 
-    fun cancelPickerClicked() {
-        _uiState.value = UiState.FORM
+    fun cancelBack() {
+        _uiState.update { it.copy(isConfirmation = false) }
     }
 
     fun cityClicked() {
         profileEditForm.filteredPickableCities = profileEditForm.pickableCities
-        _uiState.value = UiState.CITY
+        _uiState.update { it.copy(isCitySelectionStarted = true) }
     }
 
-    fun citySelected(id: Int) {
-        val city = profileEditForm.pickableCities.firstOrNull { pc -> pc.id == id }
-        city?.let {
-            profileEditForm.city = it
-            _uiState.value = UiState.FORM
+    fun instrumentClicked() {
+        profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
+        _uiState.update { it.copy(isInstrumentSelectionStarted = true) }
+    }
+
+    fun cancelPickerClicked() {
+        if (uiState.value.isCitySelectionStarted || uiState.value.isInstrumentSelectionStarted) {
+            _uiState.update { it.copy(isCitySelectionStarted = false, isInstrumentSelectionStarted = false) }
         }
     }
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-//            profileRepository.searchCity(value) { citiesResponse, profileErrors ->
-//                if (citiesResponse != null) {
-//                    profileEditForm.filteredPickableCities = citiesResponse
-//                }
-//                onComplete()
-//            }
+            viewModelScope.launch {
+                val searchResponse = profileRepository.searchCity(value)
+                searchResponse.data?.let {
+                    profileEditForm.filteredPickableCities = it
+                }
+                onComplete()
+            }
         } else {
             profileEditForm.filteredPickableCities = profileEditForm.pickableCities
             onComplete()
         }
     }
 
-    fun instrumentClicked() {
-        profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
-        _uiState.value = UiState.INSTRUMENT
-    }
-
-    fun instrumentSelected(id: Int) {
-        val instrument = profileEditForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
-        instrument?.let {
-            profileEditForm.instrument = it
-            _uiState.value = UiState.FORM
-        }
-    }
-
     fun searchInstrument(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-//            profileRepository.searchInstrument(value) { instrumentsResponse, profileErrors ->
-//                if (instrumentsResponse != null) {
-//                    profileEditForm.filteredPickableInstruments = instrumentsResponse
-//                }
-//                onComplete()
-//            }
+            viewModelScope.launch {
+                val searchResponse = profileRepository.searchInstrument(value)
+                searchResponse.data?.let {
+                    profileEditForm.filteredPickableInstruments = it
+                }
+                onComplete()
+            }
         } else {
             profileEditForm.filteredPickableInstruments = profileEditForm.pickableInstruments
             onComplete()
         }
     }
 
-    fun saveChanges(onComplete: () -> Unit = {}) {
-        if (profileEditForm.areValuesChanged()) {
-            val updatedProfile = UpdateProfile(
-                description = profileEditForm.description,
-                cityId = profileEditForm.city.id,
-                instrumentId = profileEditForm.instrument.id
-            )
-
-//            profileRepository.update(updatedProfile) { profile, profileErrors ->
-//                this.profileEditForm.setInitialValues(
-//                    name = profile?.name,
-//                    instrument = profile?.instrument,
-//                    description = profile?.description,
-//                    city = profile?.city
-//                )
-//            }
+    fun citySelected(id: Int) {
+        val city = profileEditForm.pickableCities.firstOrNull { pc -> pc.id == id }
+        city?.let {
+            profileEditForm.city = it
+            _uiState.update { it.copy(isCitySelectionStarted = false) }
         }
+    }
 
-        if (profileEditForm.isPhotoChanged()) {
-            if (profileEditForm.photo != null) {
-//                profileRepository.updatePhoto(profileEditForm.photo!!) { updatedPhoto, profileErrors ->
-//                    if (updatedPhoto != null) {
-//                        this.profileEditForm.setInitialPhoto(updatedPhoto)
-//                    }
-//                    onComplete()
-//                }
-            } else {
-                onComplete()
-            }
-        } else {
+    fun instrumentSelected(id: Int) {
+        val instrument = profileEditForm.pickableInstruments.firstOrNull { pi -> pi.id == id }
+        instrument?.let {
+            profileEditForm.instrument = it
+            _uiState.update { it.copy(isInstrumentSelectionStarted = false) }
+        }
+    }
+
+    fun saveChanges(onComplete: () -> Unit = {}) {
+        viewModelScope.launch {
+            val saveProfileTask = async { saveProfile() }
+            val savePhotoTask = async { savePhoto() }
+            saveProfileTask.await()
+            savePhotoTask.await()
             onComplete()
+        }
+    }
+
+    private suspend fun saveProfile() {
+        if (!profileEditForm.areValuesChanged())
+            return
+
+        val updatedProfile = UpdateProfile(
+            description = profileEditForm.description,
+            cityId = profileEditForm.city.id,
+            instrumentId = profileEditForm.instrument.id
+        )
+
+        viewModelScope.launch {
+            val updateResponse = profileRepository.update(updatedProfile)
+            updateResponse.data?.let {
+                profileEditForm.setInitialValues(
+                    name = it.name,
+                    instrument = it.instrument,
+                    description = it.description,
+                    city = it.city
+                )
+            }
+        }
+    }
+
+    private suspend fun savePhoto() {
+        if (!profileEditForm.isPhotoChanged())
+            return
+
+        profileEditForm.photo?.let {
+            viewModelScope.launch {
+                val updateResponse = profileRepository.updatePhoto(it)
+                updateResponse.data?.let {
+                    profileEditForm.setInitialPhoto(it)
+                }
+            }
+        }
+    }
+
+    private suspend fun loadProfile() {
+        val profileResponse = profileRepository.profile()
+        profileResponse.data?.let {
+            profileEditForm.setInitialValues(
+                name = it.name,
+                instrument = it.instrument,
+                description = it.description,
+                city = it.city
+            )
+        }
+    }
+
+    private suspend fun loadPhoto() {
+        val photoResponse = profileRepository.photo()
+        photoResponse.data?.let {
+            profileEditForm.setInitialPhoto(it)
+        }
+    }
+
+    private suspend fun loadCities() {
+        val citiesResponse = profileRepository.cities()
+        citiesResponse.data?.let {
+            profileEditForm.pickableCities = it
+            profileEditForm.filteredPickableCities = it
+        }
+    }
+
+    private suspend fun loadInstruments() {
+        val instrumentsResponse = profileRepository.instruments()
+        instrumentsResponse.data?.let {
+            profileEditForm.pickableInstruments = it
+            profileEditForm.filteredPickableInstruments = it
         }
     }
 }
