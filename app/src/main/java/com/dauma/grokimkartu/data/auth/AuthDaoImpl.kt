@@ -177,7 +177,7 @@ class AuthDaoImpl(retrofit: Retrofit) : AuthDao {
         @POST("login") suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
         @POST("reauthenticate") suspend fun tokenLogin(@Body reauthenticateRequest: ReauthenticateRequest): Response<LoginResponse>
         @POST("logout") suspend fun logout(@Header("Authorization") accessToken: String, @Body logoutRequest: LogoutRequest): Response<Array<String>>
-        @DELETE("user/deletesuspend ") fun delete(@Header("Authorization") accessToken: String) : Response<Array<String>>
-        @POST("user/changepassword") fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Response<Array<String>>
+        @DELETE("user/deletesuspend ") suspend fun delete(@Header("Authorization") accessToken: String) : Response<Array<String>>
+        @POST("user/changepassword") suspend fun changePassword(@Header("Authorization") accessToken: String, @Body changePasswordRequest: ChangePasswordRequest): Response<Array<String>>
     }
 }

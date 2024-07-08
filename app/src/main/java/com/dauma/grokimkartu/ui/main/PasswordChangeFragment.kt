@@ -1,18 +1,20 @@
 package com.dauma.grokimkartu.ui.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentPasswordChangeBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.main.PasswordChangeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PasswordChangeFragment : Fragment() {
@@ -30,14 +32,8 @@ class PasswordChangeFragment : Fragment() {
         _binding = FragmentPasswordChangeBinding.inflate(inflater, container, false)
         binding.model = passwordChangeViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
-
-        binding.changePasswordHeaderViewElement.setOnBackClick {
-            passwordChangeViewModel.backClicked()
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            passwordChangeViewModel.backClicked()
-        }
 
         return view
     }
@@ -47,39 +43,35 @@ class PasswordChangeFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupObservers() {
-        passwordChangeViewModel.passwordChangeForm().getFormFields().observe(viewLifecycleOwner) {
-            passwordChangeViewModel.passwordChangeClicked(it[0], it[1], it[2])
+    private fun setupOnClickers() {
+        binding.changePasswordHeaderViewElement.setOnBackClick {
+            passwordChangeViewModel.back()
         }
-        passwordChangeViewModel.oldPasswordError.observe(viewLifecycleOwner) {
-            binding.oldPasswordTextInput.error =
-                if (it != -1) requireContext().getString(it) else ""
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            passwordChangeViewModel.back()
         }
-        passwordChangeViewModel.newPasswordError.observe(viewLifecycleOwner) {
-            binding.newPasswordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        }
-        passwordChangeViewModel.repeatPasswordError.observe(viewLifecycleOwner) {
-            binding.repeatPasswordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        }
-        passwordChangeViewModel.showSuccess.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                binding.inputsAndButtonLinearLayout.visibility = View.GONE
-                binding.passwordChangeSuccessfulLinearLayout.visibility = View.VISIBLE
-            }
-        })
-        passwordChangeViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        passwordChangeViewModel.changeInProgress.observe(viewLifecycleOwner, {
-            binding.changePasswordButton.showAnimation(it)
-        })
     }
 
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    passwordChangeViewModel.uiState.collect {
+                        binding.changePasswordButton.showAnimation(it.isPasswordChangeStarted)
+                        binding.oldPasswordTextInput.error = getErrorFor(it.oldPasswordError)
+                        binding.newPasswordTextInput.error = getErrorFor(it.newPasswordError)
+                        binding.repeatPasswordTextInput.error = getErrorFor(it.repeatPasswordError)
+                        if (it.isPasswordChangeSuccessful) {
+                            binding.inputsAndButtonLinearLayout.visibility = View.GONE
+                            binding.passwordChangeSuccessfulLinearLayout.visibility = View.VISIBLE
+                        } else if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
         }
     }
+
+    private fun getErrorFor(errorId: Int): String = if (errorId != -1) requireContext().getString(errorId) else ""
 }
