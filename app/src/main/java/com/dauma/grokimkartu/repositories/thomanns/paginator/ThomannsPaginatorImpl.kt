@@ -31,6 +31,7 @@ class ThomannsPaginatorImpl(
                 if (status.isSuccessful && thomannsResponse != null) {
                     val thomannsPage = toThomannsPage(thomannsResponse)
                     val pages = _pages.value.toMutableList()
+                    pages.add(thomannsPage)
                     _pages.value = pages
                     return Result(thomannsPage, null)
                 } else {

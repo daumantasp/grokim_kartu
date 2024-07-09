@@ -337,10 +337,10 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
     }
 
     private interface RetrofitThomanns {
-        @POST("thomanns") fun createThomann(@Header("Authorization") accessToken: String, @Body createRequest: CreateThomannRequest): Response<ThomannDetailsResponse>
+        @POST("thomanns") suspend fun createThomann(@Header("Authorization") accessToken: String, @Body createRequest: CreateThomannRequest): Response<ThomannDetailsResponse>
 
         @GET("thomanns")
-        fun thomanns(
+        suspend fun thomanns(
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
             @Query("city_id") cityId: Int?,
@@ -350,7 +350,7 @@ class ThomannsDaoImpl(retrofit: Retrofit) : ThomannsDao {
         ): Response<ThomannsResponse>
 
         @GET("mythomanns")
-        fun myThomanns(
+        suspend fun myThomanns(
             @Query("page") page: Int,
             @Query("page_size") pageSize: Int,
             @Header("Authorization") accessToken: String
