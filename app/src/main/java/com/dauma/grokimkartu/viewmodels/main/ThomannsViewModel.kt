@@ -1,48 +1,57 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
-import com.dauma.grokimkartu.ui.main.ThomannsFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class ThomannsUiState(
+    val isAllTabActive: Boolean = true,
+    val isFilterStarted: Boolean = false,
+    val isCreateStarted: Boolean = false,
+    val isFilterApplied: Boolean = false,
+    val close: Boolean = false
+)
 
 @HiltViewModel
 class ThomannsViewModel @Inject constructor(
     private val thomannsRepository: ThomannsRepository
 ): ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _uiState = MutableLiveData<UiState>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val uiState: LiveData<UiState> = _uiState
 
-    sealed class UiState {
-        data class AllThomanns(val isFilterEnabled: Boolean): UiState()
-        object MyThomanns: UiState()
-    }
+    private val _uiState = MutableStateFlow(ThomannsUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
-//        _uiState.value = UiState.AllThomanns(thomannsRepository.isFilterApplied)
+        viewModelScope.launch {
+            observeFilterAppliance()
+        }
     }
 
-    fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
-    }
+    fun back() = _uiState.update { it.copy(close = true) }
 
-    fun tabSelected(isAllThomannsTabSelected: Boolean) {
-//        _uiState.value = if (isAllThomannsTabSelected) {
-//            UiState.AllThomanns(thomannsRepository.isFilterApplied)
-//        } else {
-//            UiState.MyThomanns
-//        }
-    }
+    fun tabSelected(isAllTabActive: Boolean) = _uiState.update { it.copy(
+        isAllTabActive = isAllTabActive,
+        isFilterStarted = false,
+        isCreateStarted = false
+    ) }
 
     fun filterClicked() {
-        if (_uiState.value is UiState.AllThomanns) {
-            _navigation.value = Event(NavigationCommand.ToDirection(ThomannsFragmentDirections.actionThomannFragmentToThomannsFilterFragment()))
+        if (_uiState.value.isAllTabActive)
+            _uiState.update { it.copy(isFilterStarted = true, isCreateStarted = false) }
+    }
+
+    fun createClicked() {
+        _uiState.update { it.copy(isFilterStarted = false, isCreateStarted = true) }
+    }
+
+    private suspend fun observeFilterAppliance() {
+        thomannsRepository.paginator.isFilterApplied.collect { isFilterApplied ->
+            _uiState.update { it.copy(isFilterApplied = isFilterApplied) }
         }
     }
 }

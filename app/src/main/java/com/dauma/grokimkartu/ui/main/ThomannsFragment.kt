@@ -6,17 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.ui.main.adapters.ThomannsPagerAdapter
 import com.dauma.grokimkartu.viewmodels.main.ThomannsViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,29 +54,35 @@ class ThomannsFragment : Fragment() {
     }
 
     private fun setupOnClickers() {
-        binding.createThomannItemButton.setOnClick {
-            findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
-        }
         binding.thomannsHeaderViewElement.setOnBackClick {
-            thomannsViewModel.backClicked()
+            thomannsViewModel.back()
         }
         binding.thomannsHeaderViewElement.setOnRightTextClick {
             thomannsViewModel.filterClicked()
         }
+        binding.createThomannItemButton.setOnClick {
+            thomannsViewModel.createClicked()
+        }
     }
 
     private fun setupObservers() {
-        thomannsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        thomannsViewModel.uiState.observe(viewLifecycleOwner) {
-            when (it) {
-                is ThomannsViewModel.UiState.AllThomanns -> {
-                    binding.thomannsHeaderViewElement.showRightTextAsDisabled(false)
-                    binding.thomannsHeaderViewElement.showRightTextAttentioner(it.isFilterEnabled)
-                }
-                is ThomannsViewModel.UiState.MyThomanns -> {
-                    binding.thomannsHeaderViewElement.showRightTextAsDisabled(true)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    thomannsViewModel.uiState.collect {
+                        if (it.isAllTabActive) {
+                            binding.thomannsHeaderViewElement.showRightTextAsDisabled(false)
+                            binding.thomannsHeaderViewElement.showRightTextAttentioner(it.isFilterApplied)
+                        } else {
+                            binding.thomannsHeaderViewElement.showRightTextAsDisabled(true)
+                        }
+                        if (it.isFilterStarted)
+                            findNavController().navigate(R.id.action_thomannFragment_to_thomannsFilterFragment)
+                        else if (it.isCreateStarted)
+                            findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
+                        else if (it.close)
+                            findNavController().popBackStack()
+                    }
                 }
             }
         }
@@ -104,13 +112,5 @@ class ThomannsFragment : Fragment() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }

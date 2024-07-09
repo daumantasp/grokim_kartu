@@ -6,15 +6,16 @@ import com.dauma.grokimkartu.data.thomanns.entities.ThomannResponse
 import com.dauma.grokimkartu.data.thomanns.entities.ThomannsResponse
 import com.dauma.grokimkartu.general.IconLoader
 import com.dauma.grokimkartu.general.user.User
+import com.dauma.grokimkartu.repositories.Result
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsErrors
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsFilter
+import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
+import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUserConcise
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import com.dauma.grokimkartu.repositories.Result
-import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
-import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannUserConcise
+import kotlinx.coroutines.flow.update
 
 abstract class ThomannsPaginator(
     private val playersDao: PlayersDao,
@@ -35,6 +36,20 @@ abstract class ThomannsPaginator(
 
     fun clear() {
         _pages.value = mutableListOf()
+    }
+
+    private fun setFilter(filter: ThomannsFilter) {
+        _filter.update { filter }
+        _isFilterApplied.update { filter.cityId != null
+                || filter.validUntil != null
+                || filter.isLocked != null
+        }
+        clear()
+    }
+
+    suspend fun setFilterAndReload(filter: ThomannsFilter): Result<ThomannsPage?, ThomannsErrors?> {
+        setFilter(filter)
+        return loadNextPage()
     }
 
     protected fun isLastLoaded(): Boolean {
