@@ -1,30 +1,34 @@
 package com.dauma.grokimkartu.viewmodels.main
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.models.forms.DeleteUserForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
 import com.dauma.grokimkartu.repositories.users.AuthenticationException
-import com.dauma.grokimkartu.ui.main.DeleteUserFragmentDirections
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class DeleteUserUiState(
+    val isDeleteStarted: Boolean = false,
+    val isDeleteSuccessful: Boolean = false,
+    val passwordError: Int = -1,
+    val close: Boolean = false
+)
 
 @HiltViewModel
 class DeleteUserViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val deleteUserForm: DeleteUserForm
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _passwordError = MutableLiveData<Int>()
-    private val _deleteInProgress = MutableLiveData<Boolean>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val passwordError: LiveData<Int> = _passwordError
-    val deleteInProgress: LiveData<Boolean> = _deleteInProgress
+
+    private val _uiState = MutableStateFlow(DeleteUserUiState())
+    val uiState = _uiState.asStateFlow()
 
     companion object {
         private val TAG = "DeleteUserViewModel"
@@ -34,27 +38,27 @@ class DeleteUserViewModel @Inject constructor(
         return deleteUserForm
     }
 
-    fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
-    }
+    fun back() = _uiState.update { it.copy(close = true, isDeleteSuccessful = false) }
 
     fun deleteUserClicked() {
-        if (deleteUserForm.isPasswordValid() == false) {
+        if (!deleteUserForm.isPasswordValid())
             return
-        }
 
         try {
-            _deleteInProgress.value = true
-//            authRepository.delete { isSuccessful, authenticationErrors ->
-//                if (isSuccessful) {
-//                    _navigation.value = Event(NavigationCommand.ToDirection(DeleteUserFragmentDirections.actionDeleteUserFragmentToAuthGraph()))
-//                } else if (authenticationErrors != null) {
-//                        handleAuthenticationError(authenticationErrors)
-//                }
-//                _deleteInProgress.value = false
-//            }
+            _uiState.update { it.copy(isDeleteStarted = true) }
+            viewModelScope.launch {
+                val deleteResponse = authRepository.delete()
+                val isSuccessful = deleteResponse.data
+                if (isSuccessful) {
+                    _uiState.update { it.copy(isDeleteStarted = false, isDeleteSuccessful = true) }
+                } else {
+                    deleteResponse.error?.let {
+                        handleAuthenticationError(it)
+                    }
+                }
+            }
         } catch (e: AuthenticationException) {
-            _deleteInProgress.value = false
+            _uiState.update { it.copy(isDeleteStarted = false, isDeleteSuccessful = false) }
             Log.d(TAG, e.message ?: "User delete was unsuccessful")
         }
     }
@@ -69,6 +73,6 @@ class DeleteUserViewModel @Inject constructor(
     }
 
     private fun clearAuthenticationErrors() {
-        _passwordError.value = -1
+        _uiState.update { it.copy(isDeleteStarted = false, passwordError = -1, isDeleteSuccessful = false) }
     }
 }

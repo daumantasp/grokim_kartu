@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentDeleteUserBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.main.DeleteUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DeleteUserFragment : Fragment() {
@@ -30,15 +32,8 @@ class DeleteUserFragment : Fragment() {
         _binding = FragmentDeleteUserBinding.inflate(inflater, container, false)
         binding.model = deleteUserViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
-
-        binding.deleteUserHeaderViewElement.setOnBackClick {
-            deleteUserViewModel.backClicked()
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            deleteUserViewModel.backClicked()
-        }
-
         return view
     }
 
@@ -47,23 +42,31 @@ class DeleteUserFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupObservers() {
-        deleteUserViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        deleteUserViewModel.passwordError.observe(viewLifecycleOwner) {
-            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
+    private fun setupOnClickers() {
+        binding.deleteUserHeaderViewElement.setOnBackClick {
+            deleteUserViewModel.back()
         }
-        deleteUserViewModel.deleteInProgress.observe(viewLifecycleOwner, {
-            binding.deleteUserButton.showAnimation(it)
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            deleteUserViewModel.back()
+        }
     }
 
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    deleteUserViewModel.uiState.collect {
+                        binding.deleteUserButton.showAnimation(it.isDeleteStarted)
+                        binding.passwordTextInput.error = getErrorFor(it.passwordError)
+                        if (it.isDeleteSuccessful)
+                            findNavController().navigate(DeleteUserFragmentDirections.actionDeleteUserFragmentToAuthGraph())
+                        else if (it.close)
+                            findNavController().popBackStack()
+                    }
+                }
+            }
         }
     }
+
+    private fun getErrorFor(errorId: Int): String = if (errorId != -1) requireContext().getString(errorId) else ""
 }
