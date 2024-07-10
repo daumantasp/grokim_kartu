@@ -7,19 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentMyThomannsBinding
 import com.dauma.grokimkartu.general.DummyCell
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
 import com.dauma.grokimkartu.ui.main.adapters.ThomannListAdapter
 import com.dauma.grokimkartu.viewmodels.main.MyThomannsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,17 +48,14 @@ class MyThomannsFragment : Fragment() {
         binding.model = myThomannsViewModel
         val view = binding.root
 
-        setupObservers()
         isRecyclerViewSetup = false
+        setupOnClickers()
+        setupObservers()
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            myThomannsViewModel.reload()
-        }
         val typedValue = TypedValue()
         context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
         binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
 
-        myThomannsViewModel.viewIsReady()
         return view
     }
 
@@ -65,21 +64,35 @@ class MyThomannsFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupOnClickers() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            myThomannsViewModel.reload()
+        }
+    }
+
     private fun setupObservers() {
-        myThomannsViewModel.thomannsPages.observe(viewLifecycleOwner, { thomannsPages ->
-            val data = getAllThomannsFromPages(thomannsPages)
-            if (isRecyclerViewSetup == false) {
-                setupRecyclerView(data)
-            } else {
-                reloadRecyclerViewWithNewData(data)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    myThomannsViewModel.uiState.collect {
+                        val data = getAllThomannsFromPages(it.thomannsPages)
+                        if (isRecyclerViewSetup == false) {
+                            setupRecyclerView(data)
+                        } else {
+                            reloadRecyclerViewWithNewData(data)
+                        }
+                        if (binding.swipeRefreshLayout.isRefreshing) {
+                            binding.swipeRefreshLayout.isRefreshing = false
+                        }
+                        if (it.isThomannDetailsStarted != -1) {
+                            val args = Bundle()
+                            args.putInt("thomannId", it.isThomannDetailsStarted)
+                            findNavController().navigate(R.id.action_thomannFragment_to_thomannDetailsFragment, args)
+                        }
+                    }
+                }
             }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        })
-        myThomannsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
+        }
     }
 
     private fun getAllThomannsFromPages(pages: List<ThomannsPage>) : List<Any> {
@@ -102,7 +115,7 @@ class MyThomannsFragment : Fragment() {
             thomannListData = thomannListData.toMutableList(),
             utils = utils,
             onItemClicked = { thomannId -> this.myThomannsViewModel.thomannItemClicked(thomannId) },
-            loadNextPage = { this.myThomannsViewModel.loadThomannsNextPage() })
+            loadNextPage = { this.myThomannsViewModel.loadNextThomannsPage() })
         isRecyclerViewSetup = true
     }
 
@@ -169,14 +182,6 @@ class MyThomannsFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
-        }
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

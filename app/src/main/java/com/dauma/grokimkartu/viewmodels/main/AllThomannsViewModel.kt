@@ -13,8 +13,7 @@ import javax.inject.Inject
 
 data class AllThomannsUiState(
     val thomannsPages: List<ThomannsPage> = listOf(),
-    val isThomannDetailsStarted: Int = -1,
-    val close: Boolean = false
+    val isThomannDetailsStarted: Int = -1
 )
 
 @HiltViewModel
@@ -34,12 +33,6 @@ class AllThomannsViewModel @Inject constructor(
             observeThomannsPages()
         }
         loadNextThomannsPage()
-    }
-
-    private suspend fun observeThomannsPages() {
-        thomannsRepository.paginator.pages.collect { thomannsPages ->
-            _uiState.update { it.copy(thomannsPages = thomannsPages) }
-        }
     }
 
     fun thomannItemClicked(thomannId: Int) {
@@ -67,6 +60,12 @@ class AllThomannsViewModel @Inject constructor(
     fun reload() {
         viewModelScope.launch {
             thomannsRepository.reload()
+        }
+    }
+
+    private suspend fun observeThomannsPages() {
+        thomannsRepository.paginator.pages.collect { thomannsPages ->
+            _uiState.update { it.copy(thomannsPages = thomannsPages) }
         }
     }
 }
