@@ -9,20 +9,27 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import com.dauma.grokimkartu.databinding.FragmentThomannDetailsBinding
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogAmountData
 import com.dauma.grokimkartu.ui.DialogsManager
-import com.dauma.grokimkartu.ui.main.adapters.*
+import com.dauma.grokimkartu.ui.main.adapters.ThomannDetailsAdapter
+import com.dauma.grokimkartu.ui.main.adapters.ThomannDetailsButtonData
+import com.dauma.grokimkartu.ui.main.adapters.ThomannDetailsPhotoData
+import com.dauma.grokimkartu.ui.main.adapters.ThomannDetailsRowData
+import com.dauma.grokimkartu.ui.main.adapters.ThomannDetailsStatusData
+import com.dauma.grokimkartu.ui.main.adapters.ThomannDetailsUserData
 import com.dauma.grokimkartu.viewmodels.main.ThomannDetails
+import com.dauma.grokimkartu.viewmodels.main.ThomannDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.sql.Date
 import javax.inject.Inject
 
@@ -71,7 +78,7 @@ class ThomannDetailsFragment : Fragment() {
         }
 
         binding.thomannDetailsHeaderViewElement.setOnBackClick {
-            thomannDetailsViewModel.backClicked()
+            thomannDetailsViewModel.back()
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -95,52 +102,60 @@ class ThomannDetailsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        thomannDetailsViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        thomannDetailsViewModel.detailsLoaded.observe(viewLifecycleOwner) {
-            this.binding.thomannDetailsHeaderViewElement.setTitle(getString(R.string.thomann_details_title))
-            setupRecyclerViewData(it)
-            if (isDetailsRecyclerViewSetup == false) {
-                setupDetailsRecyclerView()
-            } else {
-                binding.thomannDetailsRecyclerView.adapter?.notifyDataSetChanged()
-            }
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                binding.swipeRefreshLayout.isRefreshing = false
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    thomannDetailsViewModel.uiState.collect {
+                        binding.thomannDetailsHeaderViewElement.setTitle(getString(R.string.thomann_details_title))
+                        it.details?.let { details ->
+                            setupRecyclerViewData(details)
+                            if (isDetailsRecyclerViewSetup == false) {
+                                setupDetailsRecyclerView()
+                            } else {
+                                binding.thomannDetailsRecyclerView.adapter?.notifyDataSetChanged()
+                            }
+                            if (binding.swipeRefreshLayout.isRefreshing) {
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            }
+                        }
+                        if (it.isJoinStarted) {
+                            dialogsManager?.let { manager ->
+                                val dialogAmountData = BottomDialogAmountData(
+                                    title = getString(R.string.thomann_details_join_dialog_title),
+                                    amount = 0,
+                                    onSaveClicked = { amount ->
+                                        thomannDetailsViewModel.joinClicked(amount) {
+                                            manager.showBottomDialogLoading(false)
+                                            manager.hideBottomDialog()
+                                            utils.keyboardUtils.hideKeyboard(requireView())
+                                            isJoinDialogShown = false
+                                        }
+                                    },
+                                    onCancelClicked = { thomannDetailsViewModel.cancelDialogClicked() }
+                                )
+                                manager.showBottomAmountDialog(dialogAmountData)
+                                isJoinDialogShown = true
+                            }
+                        } else if (it.isEditStarted) {
+                            findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToThomannEditFragment(it.details?.id ?: -1))
+                        } else if (it.isPostMessageStarted) {
+                            findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToConversationFragment(it.details?.id ?: -1))
+                        } else {
+                            showForm()
+                        }
+                        if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
             }
         }
-        thomannDetailsViewModel.join.observe(viewLifecycleOwner, EventObserver {
-            this.dialogsManager?.let { manager ->
-                val dialogAmountData = BottomDialogAmountData(
-                    title = getString(R.string.thomann_details_join_dialog_title),
-                    amount = 0,
-                    onSaveClicked = { amount ->
-                        this.thomannDetailsViewModel.joinClicked(amount) {
-                            manager.showBottomDialogLoading(false)
-                            manager.hideBottomDialog()
-                            utils.keyboardUtils.hideKeyboard(requireView())
-                            isJoinDialogShown = false
-                        }
-                    },
-                    onCancelClicked = {
-                        manager.hideBottomDialog()
-                        utils.keyboardUtils.hideKeyboard(requireView())
-                        isJoinDialogShown = false
-                    }
-                )
-                manager.showBottomAmountDialog(dialogAmountData)
-                isJoinDialogShown = true
-            }
-        })
-        thomannDetailsViewModel.edit.observe(viewLifecycleOwner, EventObserver { thomannId ->
-            findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToThomannEditFragment(thomannId))
-        })
-        thomannDetailsViewModel.message.observe(viewLifecycleOwner, EventObserver { thomannId ->
-            findNavController().navigate(ThomannDetailsFragmentDirections.actionThomannDetailsFragmentToConversationFragment(
-                thomannId = thomannId
-            ))
-        })
+    }
+
+    private fun showForm() {
+        dialogsManager?.hideBottomDialog()
+        utils.keyboardUtils.hideKeyboard(requireView())
+        isJoinDialogShown = false
     }
 
     private fun setupDetailsRecyclerView() {
@@ -207,12 +222,4 @@ class ThomannDetailsFragment : Fragment() {
             recyclerViewData.add(ThomannDetailsButtonData(getString(R.string.thomann_details_post_message), false, details.onPostMessageClicked))
         }
     }
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
-    }
-
 }
