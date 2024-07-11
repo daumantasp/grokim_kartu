@@ -17,7 +17,7 @@ data class ProfileEditUiState(
     val close: Boolean = false,
     val isCitySelectionStarted: Boolean = false,
     val isInstrumentSelectionStarted: Boolean = false,
-    val isConfirmation: Boolean = false,
+    val isConfirmation: Boolean = false
 )
 
 @HiltViewModel

@@ -8,20 +8,21 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannEditBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
-import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.ui.YesNoDialogData
 import com.dauma.grokimkartu.viewmodels.main.ThomannEditViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -68,10 +69,10 @@ class ThomannEditFragment : Fragment() {
 
     private fun setupOnClickListeners() {
         binding.thomannEditHeaderViewElement.setOnBackClick {
-            thomannEditViewModel.backClicked()
+            thomannEditViewModel.back()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            thomannEditViewModel.backClicked()
+            thomannEditViewModel.back()
         }
         binding.cityInputEditText.setOnClickListener {
             thomannEditViewModel.cityClicked()
@@ -80,28 +81,35 @@ class ThomannEditFragment : Fragment() {
             thomannEditViewModel.validUntilClicked()
         }
         binding.saveThomannButton.setOnClick {
-            binding.saveThomannButton.showAnimation(true)
-            thomannEditViewModel.saveChanges {
-                binding.saveThomannButton.showAnimation(false)
-            }
+            thomannEditViewModel.saveChanges()
         }
     }
 
     private fun setupObservers() {
-        thomannEditViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        thomannEditViewModel.uiState.observe(viewLifecycleOwner) {
-            when (it) {
-                is ThomannEditViewModel.UiState.Form -> showForm()
-                is ThomannEditViewModel.UiState.BackConfirmation -> showBackConfirmationDialog()
-                is ThomannEditViewModel.UiState.City -> showCitiesPicker()
-                is ThomannEditViewModel.UiState.ValidUntil -> showValidUntilPicker(
-                    currentDate = it.currentDate,
-                    minDate = it.minDateTime,
-                    maxDate = it.maxDateTime,
-                    isSaveButtonEnabled = it.isSaveButtonEnabled
-                )
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    thomannEditViewModel.uiState.collect {
+                        binding.saveThomannButton.showAnimation(it.isInProgress)
+                        if (it.isCitySelectionStarted) {
+                            showCitiesPicker()
+                        } else if (it.isDateSelectionStarted && it.date != null) {
+                            showValidUntilPicker(
+                                currentDate = it.date.currentDate,
+                                minDate = it.date.minDateTime,
+                                maxDate = it.date.maxDateTime,
+                                isSaveButtonEnabled = it.date.isSaveButtonEnabled
+                            )
+                        } else {
+                            showForm()
+                        }
+                        if (it.isConfirmation) {
+                            showBackConfirmationDialog()
+                        } else if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
             }
         }
     }
@@ -164,21 +172,13 @@ class ThomannEditFragment : Fragment() {
             positiveText = getString(R.string.thomann_edit_navigate_back_confirmation_positive),
             negativeText = getString(R.string.thomann_edit_navigate_back_confirmation_negative),
             cancelable = true,
-            onPositiveButtonClick = { thomannEditViewModel.backClicked() },
-            onNegativeButtonClick = { thomannEditViewModel.cancelBackClicked() },
-            onCancelClicked = { thomannEditViewModel.cancelBackClicked() }
+            onPositiveButtonClick = { thomannEditViewModel.back() },
+            onNegativeButtonClick = { thomannEditViewModel.cancelBack() },
+            onCancelClicked = { thomannEditViewModel.cancelBack() }
         ))
     }
 
     private fun showForm() {
         dialogsManager?.hideBottomDialog()
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }
