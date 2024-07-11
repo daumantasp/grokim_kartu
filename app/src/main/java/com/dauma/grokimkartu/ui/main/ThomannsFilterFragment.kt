@@ -8,19 +8,20 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentThomannsFilterBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
-import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
 import com.dauma.grokimkartu.ui.BottomDialogDatePickerData
 import com.dauma.grokimkartu.ui.DialogsManager
 import com.dauma.grokimkartu.viewmodels.main.ThomannsFilterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,8 +51,8 @@ class ThomannsFilterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupObservers()
         setupOnClickListeners()
+        setupObservers()
     }
 
     override fun onDestroyView() {
@@ -64,30 +65,12 @@ class ThomannsFilterFragment : Fragment() {
         dialogsManager = null
     }
 
-    private fun setupObservers() {
-        thomannsFilterViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        thomannsFilterViewModel.uiState.observe(viewLifecycleOwner) {
-            when (it) {
-                is ThomannsFilterViewModel.UiState.Form -> showForm()
-                is ThomannsFilterViewModel.UiState.City -> showCitiesPicker()
-                is ThomannsFilterViewModel.UiState.ValidUntil -> showValidUntilPicker(
-                    currentDate = it.currentDate,
-                    minDate = it.minDateTime,
-                    maxDate = it.maxDateTime,
-                    isSaveButtonEnabled = it.isSaveButtonEnabled
-                )
-            }
-        }
-    }
-
     private fun setupOnClickListeners() {
         binding.thomannsFilterHeaderViewElement.setOnBackClick {
-            thomannsFilterViewModel.backClicked()
+            thomannsFilterViewModel.back()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            thomannsFilterViewModel.backClicked()
+            thomannsFilterViewModel.back()
         }
         binding.cityInputEditText.setOnClickListener {
             thomannsFilterViewModel.cityClicked()
@@ -100,6 +83,32 @@ class ThomannsFilterFragment : Fragment() {
         }
         binding.clearFilterButton.setOnClick {
             thomannsFilterViewModel.clearFilter()
+        }
+    }
+
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    thomannsFilterViewModel.uiState.collect {
+                        if (it.isCitySelectionStarted) {
+                            showCitiesPicker()
+                        } else if (it.isDateSelectionStarted && it.date != null) {
+                            showValidUntilPicker(
+                                currentDate = it.date.currentDate,
+                                minDate = it.date.minDateTime,
+                                maxDate = it.date.maxDateTime,
+                                isSaveButtonEnabled = it.date.isSaveButtonEnabled
+                            )
+                        } else {
+                            showForm()
+                        }
+                        if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -158,13 +167,5 @@ class ThomannsFilterFragment : Fragment() {
 
     private fun showForm() {
         dialogsManager?.hideBottomDialog()
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }

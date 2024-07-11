@@ -1,10 +1,7 @@
 package com.dauma.grokimkartu.viewmodels.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTime
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
@@ -12,7 +9,18 @@ import com.dauma.grokimkartu.models.forms.ThomannsFilterForm
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsFilter
 import com.dauma.grokimkartu.repositories.thomanns.ThomannsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class ThomannsFilterUiState(
+    val close: Boolean = false,
+    val isCitySelectionStarted: Boolean = false,
+    val isDateSelectionStarted: Boolean = false,
+    val date: ThomannEditDateData? = null
+)
 
 @HiltViewModel
 class ThomannsFilterViewModel @Inject constructor(
@@ -20,85 +28,70 @@ class ThomannsFilterViewModel @Inject constructor(
     private val thomannsFilterForm: ThomannsFilterForm,
     private val utils: Utils
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _uiState = MutableLiveData<UiState>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val uiState: LiveData<UiState> = _uiState
 
-    sealed class UiState {
-        object Form: UiState()
-        object City: UiState()
-        data class ValidUntil(
-            val currentDate: CustomDateTime,
-            val minDateTime: CustomDateTime,
-            val maxDateTime: CustomDateTime,
-            val isSaveButtonEnabled: Boolean
-        ): UiState()
-    }
+    private val _uiState = MutableStateFlow(ThomannsFilterUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
-        loadPickableValuesAndSetFilter()
-    }
-
-    private fun loadPickableValuesAndSetFilter() {
-        loadPickableCities {
+        viewModelScope.launch {
+            loadCities()
             setFilter()
         }
     }
 
-    private fun loadPickableCities(onComplete: () -> Unit = {}) {
-//        thomannsRepository.cities { citiesResponse, profileErrors ->
-//            if (citiesResponse != null) {
-//                thomannsFilterForm.pickableCities = citiesResponse
-//                thomannsFilterForm.filteredPickableCities = citiesResponse
-//            }
-//            onComplete()
-//        }
+    fun getThomannsFilterForm() = thomannsFilterForm
+
+    private suspend fun loadCities() {
+        val citiesResponse = thomannsRepository.cities()
+        citiesResponse.data?.let {
+            thomannsFilterForm.pickableCities = it
+            thomannsFilterForm.filteredPickableCities = it
+        }
     }
 
     private fun setFilter() {
-//        val cityOrNull = thomannsFilterForm.pickableCities.firstOrNull { pc ->
-//            pc.id == thomannsRepository.filter.cityId
-//        }
-//        val validUntil: String? = thomannsRepository.filter.validUntil
-//        val showOnlyUnlocked = thomannsRepository.filter.isLocked == false
+        val cityOrNull = thomannsFilterForm.pickableCities.firstOrNull { pc ->
+            pc.id == thomannsRepository.paginator.filter.value.cityId
+        }
 
-//        thomannsFilterForm.setInitialValues(
-//            city = cityOrNull,
-//            validUntil = validUntil,
-//            showOnlyUnlocked = showOnlyUnlocked
-//        )
+        val validUntil: String? = thomannsRepository.paginator.filter.value.validUntil
+        val showOnlyUnlocked = thomannsRepository.paginator.filter.value.isLocked == false
+
+        thomannsFilterForm.setInitialValues(
+            city = cityOrNull,
+            validUntil = validUntil,
+            showOnlyUnlocked = showOnlyUnlocked
+        )
     }
 
-    fun getThomannsFilterForm() : ThomannsFilterForm {
-        return thomannsFilterForm
-    }
-
-    fun backClicked() {
-        if (_uiState.value is UiState.City || _uiState.value is UiState.ValidUntil) {
-            _uiState.value = UiState.Form
+    fun back() {
+        if (uiState.value.isCitySelectionStarted || uiState.value.isDateSelectionStarted) {
+            _uiState.update { it.copy(isCitySelectionStarted = false, isDateSelectionStarted = false) }
         } else {
-            _navigation.value = Event(NavigationCommand.Back)
+            _uiState.update { it.copy(close = true) }
         }
     }
 
     fun cancelPickerClicked() {
-        _uiState.value = UiState.Form
+        if (uiState.value.isCitySelectionStarted || uiState.value.isDateSelectionStarted) {
+            _uiState.update { it.copy(isCitySelectionStarted = false, isDateSelectionStarted = false) }
+        }
     }
 
     fun cityClicked() {
         thomannsFilterForm.filteredPickableCities = thomannsFilterForm.pickableCities
-        _uiState.value = UiState.City
+        _uiState.update { it.copy(isCitySelectionStarted = true) }
     }
 
     fun searchCity(value: String, onComplete: () -> Unit) {
         if (value.length > 2) {
-//            thomannsRepository.searchCity(value) { citiesResponse, profileErrors ->
-//                if (citiesResponse != null) {
-//                    thomannsFilterForm.filteredPickableCities = citiesResponse
-//                }
-//                onComplete()
-//            }
+            viewModelScope.launch {
+                val searchResponse = thomannsRepository.searchCity(value)
+                searchResponse.data?.let {
+                    thomannsFilterForm.filteredPickableCities = it
+                }
+                onComplete()
+            }
         } else {
             thomannsFilterForm.filteredPickableCities = thomannsFilterForm.pickableCities
             onComplete()
@@ -109,7 +102,7 @@ class ThomannsFilterViewModel @Inject constructor(
         val city = thomannsFilterForm.pickableCities.firstOrNull { pc -> pc.id == id }
         city?.let {
             thomannsFilterForm.city = it
-            _uiState.value = UiState.Form
+            _uiState.update { it.copy(isCitySelectionStarted = false) }
         }
     }
 
@@ -130,38 +123,45 @@ class ThomannsFilterViewModel @Inject constructor(
                 }
             }
         }
-        _uiState.value = UiState.ValidUntil(selectedDate, minDate, maxDate, isSaveButtonEnabled)
+        _uiState.update { it.copy(
+            isDateSelectionStarted = true,
+            date = ThomannEditDateData(selectedDate, minDate, maxDate, isSaveButtonEnabled))
+        }
     }
 
     fun validUntilSelected(validUntilDateTime: CustomDateTime) {
-        val formattedDate = this.utils.timeUtils.format(validUntilDateTime, CustomDateTimeFormatPattern.yyyyMMdd)
+        val formattedDate = utils.timeUtils.format(validUntilDateTime, CustomDateTimeFormatPattern.yyyyMMdd)
         getThomannsFilterForm().validUntil = formattedDate
-        _uiState.value = UiState.Form
+        _uiState.update { it.copy(isDateSelectionStarted = false) }
     }
 
     fun applyFilter() {
-        if (thomannsFilterForm.isChanged()) {
-            var formattedValidUntil: String? = null
-            if (thomannsFilterForm.validUntil.isNotBlank()) {
-                val validUntilAsCustomDateTime = utils.timeUtils.parseToCustomDateTime(thomannsFilterForm.validUntil)
-                validUntilAsCustomDateTime?.let {
-                    formattedValidUntil = utils.timeUtils.format(it, CustomDateTimeFormatPattern.yyyyMMdd)
+        viewModelScope.launch {
+            if (thomannsFilterForm.isChanged()) {
+                var formattedValidUntil: String? = null
+                if (thomannsFilterForm.validUntil.isNotBlank()) {
+                    val validUntilAsCustomDateTime = utils.timeUtils.parseToCustomDateTime(thomannsFilterForm.validUntil)
+                    validUntilAsCustomDateTime?.let {
+                        formattedValidUntil = utils.timeUtils.format(it, CustomDateTimeFormatPattern.yyyyMMdd)
+                    }
                 }
+                thomannsRepository.paginator.setFilterAndReload(ThomannsFilter(
+                    cityId = thomannsFilterForm.city.id,
+                    validUntil = formattedValidUntil,
+                    isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
+                ))
+                _uiState.update { it.copy(close = true) }
             }
-//            thomannsRepository.filter = ThomannsFilter(
-//                cityId = thomannsFilterForm.city.id,
-//                validUntil = formattedValidUntil,
-//                isLocked = if (thomannsFilterForm.showOnlyUnlocked) false else null
-//            )
-            _navigation.value = Event(NavigationCommand.Back)
         }
     }
 
     fun clearFilter() {
-        if (thomannsFilterForm.isInitialEmpty() == false) {
-//            thomannsRepository.filter = ThomannsFilter.CLEAR
-//            setFilter()
-//            _navigation.value = Event(NavigationCommand.Back)
+        viewModelScope.launch {
+            if (!thomannsFilterForm.isInitialEmpty()) {
+                thomannsRepository.paginator.setFilterAndReload(ThomannsFilter.CLEAR)
+                setFilter()
+                _uiState.update { it.copy(close = true) }
+            }
         }
     }
 }
