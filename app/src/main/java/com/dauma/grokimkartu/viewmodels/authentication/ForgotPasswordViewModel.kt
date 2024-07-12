@@ -1,38 +1,40 @@
 package com.dauma.grokimkartu.viewmodels.authentication
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.ForgotPasswordForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+
+data class ForgotPasswordUiState(
+    val isPasswordResetInProgress: Boolean = false,
+    val isPasswordResetSuccessful: Boolean = false,
+    val emailError: Int? = null,
+    val close: Boolean = false
+)
 
 @HiltViewModel
 class ForgotPasswordViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val forgotPasswordForm: ForgotPasswordForm
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _showSuccess = MutableLiveData<Event<Boolean>>()
-    private val _emailError = MutableLiveData<Int>()
-    private val _passwordResetInProgress = MutableLiveData<Boolean>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val showSuccess: LiveData<Event<Boolean>> = _showSuccess
-    val emailError: LiveData<Int> = _emailError
-    val passwordResetInProgress = _passwordResetInProgress
+
+    private val _uiState = MutableStateFlow(ForgotPasswordUiState())
+    val uiState = _uiState.asStateFlow()
 
     companion object {
         private val TAG = "ForgotPasswordViewModel"
     }
 
-    fun getForgotPasswordForm(): ForgotPasswordForm {
-        return forgotPasswordForm
-    }
+    fun getForgotPasswordForm() = forgotPasswordForm
 
-    fun resetClicked(email: String) {
+    fun resetClicked() {
+        if (!forgotPasswordForm.isEmailValid()) { return }
+        _uiState.update { it.copy(isPasswordResetInProgress = true) }
+
 //        _passwordResetInProgress.value = true
 //        authRepository.sendPasswordResetEmail(email) { isSuccessful, error ->
 //            if (isSuccessful) {
@@ -48,11 +50,11 @@ class ForgotPasswordViewModel @Inject constructor(
     }
 
     fun okClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
+        _uiState.update { it.copy(close = true) }
     }
 
     fun backClicked() {
-        _navigation.value = Event(NavigationCommand.Back)
+        _uiState.update { it.copy(close = true) }
     }
 
 //    private fun handleAuthenticationError(error: AuthenticationError) {
@@ -65,6 +67,10 @@ class ForgotPasswordViewModel @Inject constructor(
 //    }
 
     private fun clearAuthenticationErrors() {
-        _emailError.value = -1
+        _uiState.update { it.copy(
+            isPasswordResetInProgress = false,
+            isPasswordResetSuccessful = false,
+            emailError = null
+        ) }
     }
 }

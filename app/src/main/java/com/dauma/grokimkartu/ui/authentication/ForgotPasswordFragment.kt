@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentForgotPasswordBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.authentication.ForgotPasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ForgotPasswordFragment : Fragment() {
@@ -30,11 +32,8 @@ class ForgotPasswordFragment : Fragment() {
         _binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
         binding.model = forgotPasswordViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            forgotPasswordViewModel.backClicked()
-        }
 
         return view
     }
@@ -44,34 +43,32 @@ class ForgotPasswordFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupObservers() {
-        forgotPasswordViewModel.getForgotPasswordForm().getFormFields().observe(viewLifecycleOwner) {
-            forgotPasswordViewModel.resetClicked(it.get(0))
+    private fun setupOnClickers() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            forgotPasswordViewModel.backClicked()
         }
-        forgotPasswordViewModel.passwordResetInProgress.observe(viewLifecycleOwner, {
-            binding.forgotPasswordButton.showAnimation(it)
-        })
-        forgotPasswordViewModel.emailError.observe(viewLifecycleOwner) {
-            binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        }
-        forgotPasswordViewModel.showSuccess.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                binding.forgotPasswordDescriptionTextView.visibility = View.INVISIBLE
-                binding.emailTextInput.visibility = View.INVISIBLE
-                binding.forgotPasswordButton.visibility = View.INVISIBLE
-                binding.forgotPasswordResetSuccessLinearLayout.visibility = View.VISIBLE
-            }
-        })
-        forgotPasswordViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
     }
 
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
+    private fun setupObservers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    forgotPasswordViewModel.uiState.collect {
+                        binding.forgotPasswordButton.showAnimation(it.isPasswordResetInProgress)
+                        if (it.isPasswordResetSuccessful) {
+                            binding.forgotPasswordDescriptionTextView.visibility = View.INVISIBLE
+                            binding.emailTextInput.visibility = View.INVISIBLE
+                            binding.forgotPasswordButton.visibility = View.INVISIBLE
+                            binding.forgotPasswordResetSuccessLinearLayout.visibility = View.VISIBLE
+                        } else {
+                            binding.emailTextInput.error = if (it.emailError != null) requireContext().getString(it.emailError) else ""
+                        }
+                        if (it.close) {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
         }
     }
 }

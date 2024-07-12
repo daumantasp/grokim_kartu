@@ -24,12 +24,6 @@ class ForgotPasswordForm: BaseObservable() {
         return formFields
     }
 
-    fun onClick() {
-        if (isEmailValid()) {
-            formFields.value = listOf(email)
-        }
-    }
-
     // TODO: refactor, Duplicating in registrationForm
     @Bindable
     fun isEmailValid() : Boolean {

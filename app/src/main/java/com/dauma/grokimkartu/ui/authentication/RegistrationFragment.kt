@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
 import com.dauma.grokimkartu.viewmodels.authentication.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,6 +64,9 @@ class RegistrationFragment : Fragment() {
                         } else {
                             binding.emailTextInput.error = if (it.emailError != null) requireContext().getString(it.emailError) else ""
                             binding.passwordTextInput.error = if (it.passwordError != null) requireContext().getString(it.passwordError) else ""
+                        }
+                        if (it.close) {
+                            findNavController().popBackStack()
                         }
                     }
                 }
