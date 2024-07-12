@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.dauma.grokimkartu.databinding.FragmentRegistrationBinding
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.viewmodels.authentication.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegistrationFragment : Fragment() {
@@ -32,47 +32,42 @@ class RegistrationFragment : Fragment() {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         binding.model = registrationViewModel
         val view = binding.root
-
+        setupOnClickers()
         setupObservers()
 
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            registrationViewModel.backClicked()
-        }
-
-        registrationViewModel.viewIsReady()
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        registrationViewModel.viewIsDiscarded()
+    }
+
+    private fun setupOnClickers() {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            registrationViewModel.backClicked()
+        }
     }
 
     fun setupObservers() {
-        registrationViewModel.getRegistrationForm().getFormFields().observe(viewLifecycleOwner) {
-            registrationViewModel.createUser(it.get(0), it.get(1), it.get(2))
-        }
-        registrationViewModel.emailVerificationSent.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                binding.inputsLinearLayout.visibility = View.INVISIBLE
-                binding.registerButton.visibility = View.INVISIBLE
-                binding.registrationSuccessfulTextView.visibility = View.VISIBLE
-                binding.registrationSuccessLinearLayout.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    registrationViewModel.uiState.collect {
+                        binding.registerButton.showAnimation(it.isRegistrationStarted)
+                        if (it.isRegistrationSuccessful) {
+                            binding.inputsLinearLayout.visibility = View.INVISIBLE
+                            binding.registerButton.visibility = View.INVISIBLE
+                            binding.registrationSuccessfulTextView.visibility = View.VISIBLE
+                            binding.registrationSuccessLinearLayout.visibility = View.VISIBLE
+                        } else {
+                            binding.emailTextInput.error = if (it.emailError != null) requireContext().getString(it.emailError) else ""
+                            binding.passwordTextInput.error = if (it.passwordError != null) requireContext().getString(it.passwordError) else ""
+                        }
+                    }
+                }
             }
-        })
-        registrationViewModel.registrationInProgress.observe(viewLifecycleOwner) {
-            this.binding.registerButton.showAnimation(it)
         }
-        registrationViewModel.emailError.observe(viewLifecycleOwner, Observer {
-            binding.emailTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        })
-        registrationViewModel.passwordError.observe(viewLifecycleOwner, Observer {
-            binding.passwordTextInput.error = if (it != -1) requireContext().getString(it) else ""
-        })
-        registrationViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
 //        registrationViewModel.enableResendButton.observe(viewLifecycleOwner, {
 //            binding.resendTextView.isEnabled = it
 //        })
@@ -85,13 +80,5 @@ class RegistrationFragment : Fragment() {
 //            }
 //            binding.resendTextView.text = resendButtonTitle
 //        })
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
-        }
     }
 }

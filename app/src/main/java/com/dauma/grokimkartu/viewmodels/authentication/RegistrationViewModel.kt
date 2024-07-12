@@ -1,83 +1,77 @@
 package com.dauma.grokimkartu.viewmodels.authentication
 
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dauma.grokimkartu.R
-import com.dauma.grokimkartu.general.event.Event
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.models.forms.RegistrationForm
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.users.AuthenticationErrors
-import com.dauma.grokimkartu.repositories.users.AuthenticationException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+data class RegistrationUiState(
+    val isRegistrationStarted: Boolean = false,
+    val isRegistrationSuccessful: Boolean = false,
+    val emailError: Int? = null,
+    val passwordError: Int? = null,
+    val close: Boolean = false
+)
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val registrationForm: RegistrationForm,
 ) : ViewModel() {
-    private val _navigation = MutableLiveData<Event<NavigationCommand>>()
-    private val _emailVerificationSent = MutableLiveData<Event<Boolean>>()
-    private val _emailError = MutableLiveData<Int>()
-    private val _passwordError = MutableLiveData<Int>()
-    private val _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
-    private val _enableResendButton = MutableLiveData<Boolean>()
-    private val _registrationInProgress = MutableLiveData<Boolean>()
-    val navigation: LiveData<Event<NavigationCommand>> = _navigation
-    val emailVerificationSent: LiveData<Event<Boolean>> = _emailVerificationSent
-    val emailError: LiveData<Int> = _emailError
-    val passwordError: LiveData<Int> = _passwordError
-    var verificationEmailWillBeAllowedToSentInSeconds: LiveData<Int> = _verificationEmailWillBeAllowedToSentInSeconds
-    val enableResendButton: LiveData<Boolean> = _enableResendButton
-    val registrationInProgress: LiveData<Boolean> = _registrationInProgress
+
+    private val _uiState = MutableStateFlow(RegistrationUiState())
+    val uiState = _uiState.asStateFlow()
+
+//    private val _emailVerificationSent = MutableLiveData<Event<Boolean>>()
+//    private val _verificationEmailWillBeAllowedToSentInSeconds = MutableLiveData<Int>()
+//    private val _enableResendButton = MutableLiveData<Boolean>()
+//    val emailVerificationSent: LiveData<Event<Boolean>> = _emailVerificationSent
+//    var verificationEmailWillBeAllowedToSentInSeconds: LiveData<Int> = _verificationEmailWillBeAllowedToSentInSeconds
+//    val enableResendButton: LiveData<Boolean> = _enableResendButton
 
     companion object {
         private val TAG = "RegistrationViewModel"
         private const val REGISTRATION_VIEW_MODEL_LOGIN_LISTENER_ID = "REGISTRATION_VIEW_MODEL_LOGIN_LISTENER_ID"
     }
 
-    fun viewIsReady() {
-    }
+    fun getRegistrationForm() = registrationForm
 
-    fun viewIsDiscarded() {
-    }
-
-    fun getRegistrationForm() : RegistrationForm {
-        return registrationForm
-    }
-
-    fun createUser(name: String, email: String, password: String) {
-        try {
-            _registrationInProgress.value = true
-//            authRepository.register(email, password, name) { isSuccessful, errors ->
-//                if (isSuccessful == true) {
-////                    updateEmailVerificationTimer()
-//                    clearAuthenticationErrors()
-//                    _emailVerificationSent.value = Event(isSuccessful)
-//                } else {
-//                    if (errors != null) {
-//                        handleAuthenticationError(errors)
-//                    }
-//                }
-//                _registrationInProgress.value = false
-//            }
-        } catch (e: AuthenticationException) {
-            _registrationInProgress.value = false
-            Log.d(TAG, e.message ?: "Registration was unsuccessful")
+    fun registrationClicked() {
+        if (!registrationForm.isValid()) { return }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isRegistrationStarted = true) }
+            val registrationResponse = authRepository.register(
+                email = registrationForm.getEmail(),
+                password = registrationForm.getPassword(),
+                name = registrationForm.getName()
+            )
+            val isSuccessful = registrationResponse.data == true
+            if (isSuccessful) {
+//                updateEmailVerificationTimer()
+                clearAuthenticationErrors()
+                _uiState.update { it.copy(isRegistrationStarted = false, isRegistrationSuccessful = true) }
+            } else if (registrationResponse.error != null) {
+                handleAuthenticationError(registrationResponse.error)
+            } else {
+                clearAuthenticationErrors()
+            }
         }
     }
 
     fun backClicked() {
-        cleanUp()
+        _uiState.update { it.copy(close = true) }
     }
 
     fun okClicked() {
-        cleanUp()
+        _uiState.update { it.copy(close = true) }
     }
 
     fun resendClicked() {
@@ -90,31 +84,35 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun updateEmailVerificationTimer() {
-        val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
-        if (timerValue == null || timerValue > 0) {
-            _verificationEmailWillBeAllowedToSentInSeconds.value = if (timerValue == null) 60 else timerValue - 1
-            _enableResendButton.value = false
-            Handler(Looper.getMainLooper()).postDelayed({
-                updateEmailVerificationTimer()
-            }, 1000)
-        } else {
-            _enableResendButton.value = true
-        }
-    }
-
-    private fun cleanUp() {
-        _navigation.value = Event(NavigationCommand.Back)
+//        val timerValue = _verificationEmailWillBeAllowedToSentInSeconds.value
+//        if (timerValue == null || timerValue > 0) {
+//            _verificationEmailWillBeAllowedToSentInSeconds.value = if (timerValue == null) 60 else timerValue - 1
+//            _enableResendButton.value = false
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                updateEmailVerificationTimer()
+//            }, 1000)
+//        } else {
+//            _enableResendButton.value = true
+//        }
     }
 
     private fun handleAuthenticationError(error: AuthenticationErrors) {
         when(error) {
             AuthenticationErrors.EMAIL_TAKEN -> {
-                _emailError.value = R.string.registration_email_already_exists_error
-                _passwordError.value = -1
+                _uiState.update { it.copy(
+                    isRegistrationStarted = false,
+                    isRegistrationSuccessful = false,
+                    emailError = R.string.registration_email_already_exists_error,
+                    passwordError = null
+                ) }
             }
             AuthenticationErrors.INVALID_EMAIL -> {
-                _emailError.value = R.string.registration_email_incorrect_format_error
-                _passwordError.value = -1
+                _uiState.update { it.copy(
+                    isRegistrationStarted = false,
+                    isRegistrationSuccessful = false,
+                    emailError = R.string.registration_email_incorrect_format_error,
+                    passwordError = null
+                ) }
             }
 //            AuthenticationErrors.PASSWORD_TOO_WEAK -> {
 //                _emailError.value = -1
@@ -125,7 +123,10 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun clearAuthenticationErrors() {
-        _emailError.value = -1
-        _passwordError.value = -1
+        _uiState.update { it.copy(
+            isRegistrationStarted = false,
+            emailError = null,
+            passwordError = null
+        ) }
     }
 }
