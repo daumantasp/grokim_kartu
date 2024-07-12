@@ -4,7 +4,6 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,19 +12,21 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentConversationBinding
 import com.dauma.grokimkartu.general.DummyCell
-import com.dauma.grokimkartu.general.event.EventObserver
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
 import com.dauma.grokimkartu.repositories.conversations.entities.Message
-import com.dauma.grokimkartu.ui.main.adapters.*
+import com.dauma.grokimkartu.ui.main.adapters.ConversationAdapter
 import com.dauma.grokimkartu.viewmodels.main.ConversationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,27 +47,9 @@ class ConversationFragment : Fragment() {
         _binding = FragmentConversationBinding.inflate(inflater, container, false)
         binding.model = conversationViewModel
         val view = binding.root
+        setupOnClickers()
         setupObservers()
         isViewSetup = false
-
-        binding.conversationsHeaderViewElement.setOnBackClick {
-            conversationViewModel.backClicked()
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            conversationViewModel.backClicked()
-        }
-
-        binding.postMessageImageButton.setOnClickListener {
-            onPostMessageClicked()
-        }
-        binding.postMessageTextInputEditText.setOnEditorActionListener { textView, actionId, keyEvent ->
-            var handled = false
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onPostMessageClicked()
-                handled = true
-            }
-            handled
-        }
 
         val typedValue = TypedValue()
         context?.theme?.resolveAttribute(R.attr.post_message_icon_active_color, typedValue, true)
@@ -83,14 +66,6 @@ class ConversationFragment : Fragment() {
             }
         })
 
-        binding.conversationsRecyclerView.setOnTouchListener { view, motionEvent ->
-            if (binding.postMessageTextInputEditText.isFocused) {
-                utils.keyboardUtils.hideKeyboard(requireView())
-                binding.postMessageTextInputEditText.clearFocus()
-            }
-            false
-        }
-
         activity?.window?.decorView?.let {
             utils.keyboardUtils.registerListener("ConversationFragment", it) { isOpened, keyboardHeight ->
                 if (isOpened) {
@@ -100,7 +75,6 @@ class ConversationFragment : Fragment() {
             }
         }
 
-        conversationViewModel.viewIsReady()
         return view
     }
 
@@ -108,43 +82,60 @@ class ConversationFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         utils.keyboardUtils.unregisterListener("ConversationFragment")
-        conversationViewModel.viewIsDiscarded()
+    }
+
+    private fun setupOnClickers() {
+        binding.conversationsHeaderViewElement.setOnBackClick {
+            conversationViewModel.back()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            conversationViewModel.back()
+        }
+        binding.postMessageImageButton.setOnClickListener {
+            onPostMessageClicked()
+        }
+        binding.postMessageTextInputEditText.setOnEditorActionListener { textView, actionId, keyEvent ->
+            var handled = false
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onPostMessageClicked()
+                handled = true
+            }
+            handled
+        }
+        binding.conversationsRecyclerView.setOnTouchListener { view, motionEvent ->
+            if (binding.postMessageTextInputEditText.isFocused) {
+                utils.keyboardUtils.hideKeyboard(requireView())
+                binding.postMessageTextInputEditText.clearFocus()
+            }
+            false
+        }
     }
 
     private fun setupObservers() {
-        conversationViewModel.navigation.observe(viewLifecycleOwner, EventObserver {
-            handleNavigation(it)
-        })
-        conversationViewModel.id.observe(viewLifecycleOwner, EventObserver {
-            it?.let {
-                binding.conversationsHeaderViewElement.setTitle(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    conversationViewModel.uiState.collect {
+                        binding.conversationsHeaderViewElement.setTitle(it.title)
+                        val data = getAllConversationFromPagesAndReverse(it.conversationPages)
+                        if (isViewSetup == false) {
+                            setupConversationRecyclerView(data)
+                        } else {
+                            reloadRecyclerViewWithNewData(data)
+                        }
+                        binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
+                        if (it.close)
+                            findNavController().popBackStack()
+                    }
+                }
             }
-        })
-        conversationViewModel.newConversationPages.observe(viewLifecycleOwner, { conversationPages ->
-            val data = getAllConversationFromPagesAndReverse(conversationPages)
-            if (isViewSetup == false) {
-                setupConversationRecyclerView(data)
-            } else {
-                reloadRecyclerViewWithNewData(data)
-            }
-            binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
-        })
-        conversationViewModel.nextConversationPage.observe(viewLifecycleOwner, { conversationPages ->
-            val data = getAllConversationFromPagesAndReverse(conversationPages)
-            reloadRecyclerViewWithNewData(data)
-            val position = (conversationPages.lastOrNull()?.messages?.count() ?: 0) + 5
-            Log.d("ConversationFragment", "scrolling to ${position}")
-            binding.conversationsRecyclerView.scrollToPosition(position)
-        })
-        conversationViewModel.messagePosted.observe(viewLifecycleOwner, EventObserver {
-            binding.conversationsRecyclerView.adapter?.notifyDataSetChanged()
-            binding.postMessageTextInputEditText.editableText.clear()
-        })
+        }
     }
 
     private fun onPostMessageClicked() {
         val messageText = binding.postMessageTextInputEditText.editableText.toString()
         conversationViewModel.postMessageClicked(messageText)
+        binding.postMessageTextInputEditText.editableText.clear()
     }
 
     private fun getAllConversationFromPagesAndReverse(pages: List<ConversationPage>) : List<Any> {
@@ -239,14 +230,6 @@ class ConversationFragment : Fragment() {
             for (range in sortedChangedRanges) {
                 adapter.notifyItemRangeChanged(range[0], range[1])
             }
-        }
-    }
-
-    private fun handleNavigation(navigationCommand: NavigationCommand) {
-        when (navigationCommand) {
-            is NavigationCommand.ToDirection -> findNavController().navigate(navigationCommand.directions)
-            is NavigationCommand.Back -> findNavController().popBackStack()
-            is NavigationCommand.CloseApp -> activity?.finish()
         }
     }
 }

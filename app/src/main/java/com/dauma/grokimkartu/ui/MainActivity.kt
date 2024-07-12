@@ -17,6 +17,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dauma.grokimkartu.R
@@ -41,6 +44,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -89,6 +93,16 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
         addNetworkListenerAndShowDialogIfNeeded()
 //        profileRepository.registerListener(MAIN_ACTIVITY_PROFILE_LISTENER_ID, this)
         pushNotificationsManager.withContext(this)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    profileRepository.unreadCount.collect {
+                        showIfNeededConversationsCountBadgeInBottomNavigation()
+                    }
+                }
+            }
+        }
     }
 
     private fun setLocale() {
@@ -144,18 +158,18 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
     }
 
     private fun showIfNeededConversationsCountBadgeInBottomNavigation() {
-//        bottomNavigationView?.getBadge(R.id.conversations)?.let {
-//            val unreadPrivateConversationsCount = profileRepository.unreadCount?.unreadPrivateConversationsCount ?: 0
-//            val unreadThomannConversationsCount = profileRepository.unreadCount?.unreadThomannConversationsCount ?: 0
-//            val totalCount = unreadPrivateConversationsCount + unreadThomannConversationsCount
-//            if (totalCount > 0) {
-//                it.isVisible = true
-//                it.number = totalCount
-//            } else {
-//                it.isVisible = false
-//                it.clearNumber()
-//            }
-//        }
+        bottomNavigationView?.getBadge(R.id.conversations)?.let {
+            val unreadPrivateConversationsCount = profileRepository.unreadCount.value?.unreadPrivateConversationsCount ?: 0
+            val unreadThomannConversationsCount = profileRepository.unreadCount.value?.unreadThomannConversationsCount ?: 0
+            val totalCount = unreadPrivateConversationsCount + unreadThomannConversationsCount
+            if (totalCount > 0) {
+                it.isVisible = true
+                it.number = totalCount
+            } else {
+                it.isVisible = false
+                it.clearNumber()
+            }
+        }
     }
 
     private fun setupInsets() {
@@ -366,13 +380,4 @@ class MainActivity : AppCompatActivity(), CustomNavigator, StatusBarManager, Dia
             it.findItem(R.id.settings).title = getString(R.string.menu_settings)
         }
     }
-
-    // MARK: ProfileListener
-//    override fun notificationsCountChanged() {}
-//    override fun privateConversationsCountChanged() {
-//        showIfNeededConversationsCountBadgeInBottomNavigation()
-//    }
-//    override fun thomannConversationsCountChanged() {
-//        showIfNeededConversationsCountBadgeInBottomNavigation()
-//    }
 }

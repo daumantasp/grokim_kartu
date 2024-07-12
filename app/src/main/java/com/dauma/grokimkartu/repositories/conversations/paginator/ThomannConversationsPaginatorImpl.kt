@@ -40,6 +40,7 @@ class ThomannConversationsPaginatorImpl(
                 if (status.isSuccessful && messagesResponse != null) {
                     val conversationPage = toConversationPage(messagesResponse)
                     val pages = _pages.value.toMutableList()
+                    pages.add(conversationPage)
                     _pages.value = pages
                     return Result(conversationPage, null)
                 } else {
@@ -61,6 +62,8 @@ class ThomannConversationsPaginatorImpl(
     }
 
     private fun reloadConversationPeriodically() {
+        // TODO: REFACTOR USING COROUTINES
+        // FIX: KEEPS RUNNING WHEN VIEW IS NOT PRESENTED
         utils.dispatcherUtils.main.periodic(
             operationKey = CONVERSATION_PERIODIC_RELOAD,
             period = 1.0,
@@ -68,14 +71,14 @@ class ThomannConversationsPaginatorImpl(
             repeats = true
         ) {
             Log.d("ThomannConversationsRepositoryImpl", "reloadConversationPeriodically")
-            try {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val isNeeded = isConversationReloadNeeded()
-                    if (isNeeded) {
-                        reload()
-                    }
+                    try {
+                        val isNeeded = isConversationReloadNeeded()
+                        if (isNeeded) {
+                            reload()
+                        }
+                    } catch (e: ConversationsException) {}
                 }
-            } catch (e: ConversationsException) {}
         }
     }
 
@@ -105,6 +108,7 @@ class ThomannConversationsPaginatorImpl(
                     isReloadInProgress = true
                     clear()
                     val response = loadNextPage()
+                    isReloadInProgress = false
                     val conversationPage = response.data
                     if (conversationPage != null) {
                         return Result(conversationPage, null)
