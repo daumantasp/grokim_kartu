@@ -28,13 +28,16 @@ class DeleteUserFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentDeleteUserBinding.inflate(inflater, container, false)
         binding.model = deleteUserViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
-        return view
     }
 
     override fun onDestroyView() {
@@ -52,7 +55,7 @@ class DeleteUserFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     deleteUserViewModel.uiState.collect {

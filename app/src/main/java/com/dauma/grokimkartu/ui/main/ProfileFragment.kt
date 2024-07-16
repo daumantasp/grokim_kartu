@@ -59,8 +59,7 @@ class ProfileFragment : Fragment() {
 
     private fun setupObservers() {
         profileViewModel.getProfileForm().addOnPropertyChangedCallback(onPhotoOrNameChanged())
-
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     profileViewModel.uiState.collect {
@@ -82,6 +81,7 @@ class ProfileFragment : Fragment() {
                 fun checkIfFullProfileLoaded() {
                     if (isProfileLoaded == true && isPhotoLoaded == true) {
                         val profileEditForm = sender as ProfileForm
+                        if (_binding == null) { return }
                         profileEditForm.photo?.let {
                             binding.photoImageView.setImageBitmap(it)
                             binding.profileInitialsViewElement.visibility = View.GONE

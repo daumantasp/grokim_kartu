@@ -46,13 +46,15 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.model = loginViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickListeners()
         setupObservers()
 
         (requireActivity() as MainActivity).changeStatusBarTheme(StatusBarTheme.LOGIN)
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -73,7 +75,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     loginViewModel.uiState.collect {

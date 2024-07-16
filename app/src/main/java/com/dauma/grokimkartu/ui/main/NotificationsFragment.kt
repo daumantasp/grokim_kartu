@@ -47,13 +47,15 @@ class NotificationsFragment : Fragment() {
     ): View {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         binding.model = notificationsViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         isViewSetup = false
         setupOnClickers()
         setupObservers()
         setupSwipeToRefresh()
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -74,7 +76,7 @@ class NotificationsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     notificationsViewModel.uiState.collect {

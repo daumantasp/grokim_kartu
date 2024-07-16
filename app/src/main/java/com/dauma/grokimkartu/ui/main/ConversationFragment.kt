@@ -43,10 +43,14 @@ class ConversationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentConversationBinding.inflate(inflater, container, false)
         binding.model = conversationViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
         isViewSetup = false
@@ -74,8 +78,6 @@ class ConversationFragment : Fragment() {
                 }
             }
         }
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -112,7 +114,7 @@ class ConversationFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     conversationViewModel.uiState.collect {

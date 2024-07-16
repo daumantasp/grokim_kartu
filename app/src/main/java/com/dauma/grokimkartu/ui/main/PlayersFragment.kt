@@ -1,6 +1,8 @@
 package com.dauma.grokimkartu.ui.main
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -51,18 +53,21 @@ class PlayersFragment : Fragment() {
         binding.model = playersViewModel
         val view = binding.root
         isPlayersRecyclerViewSetup = false
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
         setupSwipeToRefresh()
-
-        return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
     private fun setupOnClickers() {
         binding.playersHeaderViewElement.setOnRightTextClick {
             playersViewModel.playersFilter()
@@ -79,8 +84,8 @@ class PlayersFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     playersViewModel.uiState.collect {
                         val data = getAllPlayersFromPages(it.playersPages)

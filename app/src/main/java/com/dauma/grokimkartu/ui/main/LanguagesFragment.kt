@@ -45,11 +45,14 @@ class LanguagesFragment : Fragment() {
     ): View {
         _binding = FragmentLanguagesBinding.inflate(inflater, container, false)
         binding.model = languagesViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupOnClickers()
         showCurrentLanguageAsSelected()
-        return view
     }
 
     override fun onDestroyView() {
@@ -63,7 +66,7 @@ class LanguagesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     languagesViewModel.uiState.collect {

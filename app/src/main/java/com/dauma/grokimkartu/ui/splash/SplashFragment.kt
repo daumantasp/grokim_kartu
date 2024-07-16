@@ -31,9 +31,12 @@ class SplashFragment : Fragment() {
     ): View {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
         binding.model = splashViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObservers()
-        return view
     }
 
     override fun onDestroyView() {
@@ -42,7 +45,7 @@ class SplashFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 splashViewModel.uiState.collect {
                     if (it.isLoginSuccessful == true) {

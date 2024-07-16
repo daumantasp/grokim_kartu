@@ -42,12 +42,14 @@ class PrivateConversationsFragment : Fragment() {
     ): View {
         _binding = FragmentPrivateConversationsBinding.inflate(inflater, container, false)
         binding.model = privateConversationsViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
         isViewSetup = false
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -62,7 +64,7 @@ class PrivateConversationsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     privateConversationsViewModel.uiState.collect {

@@ -24,7 +24,6 @@ import androidx.navigation.fragment.findNavController
 import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentProfileEditBinding
-import com.dauma.grokimkartu.general.navigationcommand.NavigationCommand
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.models.forms.ProfileEditForm
 import com.dauma.grokimkartu.ui.BottomDialogCodeValueData
@@ -112,7 +111,7 @@ class ProfileEditFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     profileEditViewModel.uiState.collect {

@@ -28,14 +28,17 @@ class ForgotPasswordFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
         binding.model = forgotPasswordViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
 
-        return view
     }
 
     override fun onDestroyView() {
@@ -50,7 +53,7 @@ class ForgotPasswordFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     forgotPasswordViewModel.uiState.collect {

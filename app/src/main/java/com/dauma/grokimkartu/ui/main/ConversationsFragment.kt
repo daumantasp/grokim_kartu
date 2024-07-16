@@ -36,7 +36,11 @@ class ConversationsFragment : Fragment() {
     ): View {
         _binding = FragmentConversationsBinding.inflate(inflater, container, false)
         binding.model = conversationsViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val viewPager = binding.conversationsViewPager
         val tabLayout = binding.conversationsTabLayout
@@ -51,8 +55,6 @@ class ConversationsFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
-
-        return view
     }
 
     override fun onDestroyView() {

@@ -51,14 +51,16 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.model = homeViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickListeners()
         setupObservers()
 
         statusBarManager?.changeStatusBarTheme(StatusBarTheme.MAIN)
         homeViewModel.getNotificationsUnreadCount()
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -88,7 +90,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     homeViewModel.uiState.collect {

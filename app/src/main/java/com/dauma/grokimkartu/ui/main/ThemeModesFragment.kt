@@ -43,12 +43,15 @@ class ThemeModesFragment : Fragment() {
     ): View {
         _binding = FragmentThemeModesBinding.inflate(inflater, container, false)
         binding.model = themeModesViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObservers()
         setupOnClickers()
         showAvailableThemeModes()
         showCurrentThemeModeAsSelected()
-        return view
     }
 
     override fun onAttach(context: Context) {
@@ -67,7 +70,7 @@ class ThemeModesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     themeModesViewModel.uiState.collect {

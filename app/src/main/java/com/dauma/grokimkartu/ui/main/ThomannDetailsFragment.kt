@@ -55,10 +55,15 @@ class ThomannDetailsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentThomannDetailsBinding.inflate(inflater, container, false)
         binding.model = thomannDetailsViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupOnClickers()
         setupObservers()
         isDetailsRecyclerViewSetup = false
 
@@ -67,6 +72,23 @@ class ThomannDetailsFragment : Fragment() {
             thomannDetailsViewModel.loadDetails()
         }
 
+
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
+        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        dialogsManager = null
+    }
+
+    private fun setupOnClickers() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (isJoinDialogShown == true) {
                 dialogsManager?.hideBottomDialog()
@@ -84,25 +106,10 @@ class ThomannDetailsFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             thomannDetailsViewModel.loadDetails()
         }
-        val typedValue = TypedValue()
-        context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
-        binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
-
-        return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        dialogsManager = null
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     thomannDetailsViewModel.uiState.collect {

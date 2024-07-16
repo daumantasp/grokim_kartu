@@ -29,14 +29,16 @@ class RegistrationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         binding.model = registrationViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -51,7 +53,7 @@ class RegistrationFragment : Fragment() {
     }
 
     fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     registrationViewModel.uiState.collect {

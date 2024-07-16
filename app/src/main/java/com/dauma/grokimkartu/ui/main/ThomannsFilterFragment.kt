@@ -87,7 +87,7 @@ class ThomannsFilterFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     thomannsFilterViewModel.uiState.collect {

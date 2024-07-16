@@ -42,12 +42,14 @@ class ThomannConversationsFragment : Fragment() {
     ): View {
         _binding = FragmentThomannConversationsBinding.inflate(inflater, container, false)
         binding.model = thomannConversationsViewModel
-        val view = binding.root
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupOnClickers()
         setupObservers()
         isViewSetup = false
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -62,7 +64,7 @@ class ThomannConversationsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     thomannConversationsViewModel.uiState.collect {

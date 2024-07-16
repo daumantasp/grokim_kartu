@@ -43,11 +43,14 @@ class MyThomannsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentMyThomannsBinding.inflate(inflater, container, false)
         binding.model = myThomannsViewModel
-        val view = binding.root
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         isRecyclerViewSetup = false
         setupOnClickers()
         setupObservers()
@@ -55,8 +58,6 @@ class MyThomannsFragment : Fragment() {
         val typedValue = TypedValue()
         context?.theme?.resolveAttribute(R.attr.swipe_to_refresh_progress_spinner_color, typedValue, true)
         binding.swipeRefreshLayout.setColorSchemeColors(typedValue.data)
-
-        return view
     }
 
     override fun onDestroyView() {
@@ -71,7 +72,7 @@ class MyThomannsFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     myThomannsViewModel.uiState.collect {
