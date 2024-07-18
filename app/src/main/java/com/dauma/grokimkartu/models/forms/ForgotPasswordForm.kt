@@ -1,15 +1,14 @@
 package com.dauma.grokimkartu.models.forms
 
-import android.util.Patterns
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.models.validators.email.EmailValidator
 
-class ForgotPasswordForm: BaseObservable() {
+class ForgotPasswordForm(
+    private val emailValidator: EmailValidator
+): BaseObservable() {
     private var email: String = ""
-    private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
     fun getEmail(): String {
         return email
@@ -20,16 +19,6 @@ class ForgotPasswordForm: BaseObservable() {
         notifyPropertyChanged(BR.emailValid)
     }
 
-    fun getFormFields(): LiveData<List<String>> {
-        return formFields
-    }
-
-    // TODO: refactor, Duplicating in registrationForm
     @Bindable
-    fun isEmailValid() : Boolean {
-        if (Patterns.EMAIL_ADDRESS.matcher(email).matches() == false) {
-            return false
-        }
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
+    fun isEmailValid() : Boolean = emailValidator.isValid(email)
 }

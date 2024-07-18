@@ -1,17 +1,21 @@
 package com.dauma.grokimkartu.models.forms
 
-import android.util.Patterns
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.models.validators.email.EmailValidator
+import com.dauma.grokimkartu.models.validators.name.NameValidator
+import com.dauma.grokimkartu.models.validators.password.PasswordValidator
 
-class RegistrationForm: BaseObservable() {
+class RegistrationForm(
+    private val nameValidator: NameValidator,
+    private val passwordValidator: PasswordValidator,
+    private val emailValidator: EmailValidator
+): BaseObservable() {
     private var name: String = ""
     private var email: String = ""
     private var password: String = ""
     private var passwordRepeat: String = ""
-    private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
     fun getName(): String {
         return name
@@ -51,31 +55,9 @@ class RegistrationForm: BaseObservable() {
 
     @Bindable
     fun isValid() : Boolean {
-        return isEmailValid() && isNameValid() && isPasswordValid() && isPasswordRepeatValid()
-    }
-
-    private fun isEmailValid() : Boolean {
-        if (Patterns.EMAIL_ADDRESS.matcher(email).matches() == false) {
-            return false
-        }
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    private fun isNameValid() : Boolean {
-        if (name.isEmpty() || name.length > 20) {
-            return false
-        }
-        return true
-    }
-
-    private fun isPasswordValid() : Boolean {
-        if (password.length < 6 || password.length > 35) {
-            return false
-        }
-        return true
-    }
-
-    private fun isPasswordRepeatValid() : Boolean {
-        return password == passwordRepeat
+        return emailValidator.isValid(email)
+                && nameValidator.isValid(name)
+                && passwordValidator.isValid(password)
+                && password == passwordRepeat
     }
 }

@@ -52,6 +52,14 @@ import com.dauma.grokimkartu.general.utils.string.StringUtilsImpl
 import com.dauma.grokimkartu.general.utils.time.TimeUtils
 import com.dauma.grokimkartu.general.utils.time.TimeUtilsImpl
 import com.dauma.grokimkartu.models.forms.*
+import com.dauma.grokimkartu.models.validators.email.EmailValidator
+import com.dauma.grokimkartu.models.validators.email.EmailValidatorImpl
+import com.dauma.grokimkartu.models.validators.name.NameValidator
+import com.dauma.grokimkartu.models.validators.name.NameValidatorImpl
+import com.dauma.grokimkartu.models.validators.newpassword.NewPasswordValidator
+import com.dauma.grokimkartu.models.validators.newpassword.NewPasswordValidatorImpl
+import com.dauma.grokimkartu.models.validators.password.PasswordValidator
+import com.dauma.grokimkartu.models.validators.password.PasswordValidatorImpl
 import com.dauma.grokimkartu.repositories.auth.AuthRepository
 import com.dauma.grokimkartu.repositories.auth.AuthState
 import com.dauma.grokimkartu.repositories.conversations.PrivateConversationsRepository
@@ -439,18 +447,25 @@ class AppModule {
     }
 
     @Provides
-    fun providesRegistrationForm() : RegistrationForm {
-        return RegistrationForm()
+    fun providesRegistrationForm(
+        nameValidator: NameValidator,
+        passwordValidator: PasswordValidator,
+        emailValidator: EmailValidator
+    ) : RegistrationForm {
+        return RegistrationForm(nameValidator, passwordValidator, emailValidator)
     }
 
     @Provides
-    fun providesLoginForm() : LoginForm {
-        return LoginForm()
+    fun providesLoginForm(
+        emailValidator: EmailValidator,
+        passwordValidator: PasswordValidator
+    ) : LoginForm {
+        return LoginForm(emailValidator, passwordValidator)
     }
 
     @Provides
-    fun providesForgotPasswordForm() : ForgotPasswordForm {
-        return ForgotPasswordForm()
+    fun providesForgotPasswordForm(emailValidator: EmailValidator) : ForgotPasswordForm {
+        return ForgotPasswordForm(emailValidator)
     }
 
     @Provides
@@ -459,8 +474,8 @@ class AppModule {
     }
 
     @Provides
-    fun providesPasswordChangeForm() : PasswordChangeForm {
-        return PasswordChangeForm()
+    fun providesPasswordChangeForm(newPasswordValidator: NewPasswordValidator) : PasswordChangeForm {
+        return PasswordChangeForm(newPasswordValidator)
     }
 
     @Provides
@@ -474,8 +489,8 @@ class AppModule {
     }
 
     @Provides
-    fun deleteUserForm() : DeleteUserForm {
-        return DeleteUserForm()
+    fun deleteUserForm(passwordValidator: PasswordValidator) : DeleteUserForm {
+        return DeleteUserForm(passwordValidator)
     }
 
     @Provides
@@ -521,4 +536,16 @@ class AppModule {
 //        authRepository.registerLoginListener("PUSH_NOTIFICATIONS_MANAGER", pushNotificationsManager)
         return pushNotificationsManager
     }
+
+    @Provides
+    fun providesEmailValidator(): EmailValidator = EmailValidatorImpl()
+
+    @Provides
+    fun providesPasswordValidator(): PasswordValidator = PasswordValidatorImpl()
+
+    @Provides
+    fun providesNewPasswordValidator(passwordValidator: PasswordValidator): NewPasswordValidator = NewPasswordValidatorImpl(passwordValidator)
+
+    @Provides
+    fun providesNameValidator(): NameValidator = NameValidatorImpl()
 }

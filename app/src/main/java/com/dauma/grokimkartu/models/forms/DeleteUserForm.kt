@@ -3,8 +3,11 @@ package com.dauma.grokimkartu.models.forms
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.models.validators.password.PasswordValidator
 
-class DeleteUserForm: BaseObservable() {
+class DeleteUserForm(
+    private val passwordValidator: PasswordValidator
+): BaseObservable() {
     @get:Bindable
     var password: String = ""
         set(value) {
@@ -12,12 +15,6 @@ class DeleteUserForm: BaseObservable() {
             notifyPropertyChanged(BR.passwordValid)
         }
 
-    // TODO: refactor, Duplicating in registrationForm
     @Bindable
-    fun isPasswordValid(): Boolean {
-        if (password.length < 6 || password.length > 35) {
-            return false
-        }
-        return true
-    }
+    fun isPasswordValid(): Boolean = passwordValidator.isValid(password)
 }

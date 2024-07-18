@@ -2,15 +2,15 @@ package com.dauma.grokimkartu.models.forms
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
+import com.dauma.grokimkartu.models.validators.newpassword.NewPasswordValidator
 
-class PasswordChangeForm: BaseObservable() {
+class PasswordChangeForm(
+    private val newPasswordValidator: NewPasswordValidator
+): BaseObservable() {
     private var oldPassword: String = ""
     private var newPassword: String = ""
     private var repeatPassword: String = ""
-    private var formFields: MutableLiveData<List<String>> = MutableLiveData()
 
     fun getOldPassword(): String {
         return oldPassword
@@ -39,30 +39,10 @@ class PasswordChangeForm: BaseObservable() {
         notifyPropertyChanged(BR.valid)
     }
 
-    fun getFormFields(): LiveData<List<String>> {
-        return formFields
-    }
-
-    // TODO: refactor, Duplicating in registrationForm
     @Bindable
-    fun isValid() : Boolean {
-        return isNewPasswordValid() &&
-                oldPassword.isEmpty() == false &&
-                newPassword.isEmpty() == false
-    }
+    fun isValid() : Boolean = newPasswordValidator.isValid(oldPassword, repeatPassword, newPassword)
 
-    private fun isNewPasswordValid() : Boolean {
-        if (newPassword.length < 8 || newPassword.length > 35) {
-            return false
-        }
-        return true
-    }
+    fun isOldAndNewPasswordSame() : Boolean = newPassword == oldPassword
 
-    fun isOldAndNewPasswordSame() : Boolean {
-        return newPassword == oldPassword
-    }
-
-    fun isNewAndRepeatPasswordSame() : Boolean {
-        return newPassword == repeatPassword
-    }
+    fun isNewAndRepeatPasswordSame() : Boolean = newPassword == repeatPassword
 }

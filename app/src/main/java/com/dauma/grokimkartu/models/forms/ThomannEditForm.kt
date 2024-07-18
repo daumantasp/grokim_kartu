@@ -2,7 +2,6 @@ package com.dauma.grokimkartu.models.forms
 
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.dauma.grokimkartu.BR
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannCity
@@ -44,10 +43,6 @@ class ThomannEditForm: BaseObservable() {
         this.initialValidUntil = validUntil ?: ""
         this.city = city ?: ThomannCity()
         this.validUntil = validUntil ?: ""
-    }
-
-    fun getFormFields(): LiveData<List<String>> {
-        return formFields
     }
 
     @Bindable
