@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
@@ -25,12 +27,29 @@ import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 
 class PlayersListAdapter(
     val context: Context,
-    var playersListData: MutableList<Any>,
     private val utils: Utils,
     private val onItemClicked: (Int) -> Unit,
     private val loadNextPage: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    var data: List<Any>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
+
+    private val differ: AsyncListDiffer<Any> = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Player && newItem is Player)
+                return oldItem.userId == newItem.userId
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Player && newItem is Player)
+                return oldItem == newItem
+            return false
+        }
+    })
 
     companion object {
         private const val PLAYER = 1
@@ -51,9 +70,9 @@ class PlayersListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (playersListData[position] is DummyCell) {
+        if (data[position] is DummyCell) {
             return LAST
-        } else if (playersListData[position] is Player) {
+        } else if (data[position] is Player) {
             return PLAYER
         }
         return PLAYER
@@ -69,7 +88,7 @@ class PlayersListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemData = playersListData[position]
+        val itemData = data[position]
         if (holder is PlayerLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
         } else if (holder is PlayerViewHolder && itemData is Player) {
@@ -78,7 +97,7 @@ class PlayersListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return playersListData.size
+        return data.size
     }
 
     class PlayerViewHolder(

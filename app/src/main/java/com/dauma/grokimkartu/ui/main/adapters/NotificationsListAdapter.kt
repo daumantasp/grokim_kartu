@@ -3,6 +3,8 @@ package com.dauma.grokimkartu.ui.main.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
@@ -15,11 +17,28 @@ import com.dauma.grokimkartu.ui.viewelements.SpinnerViewElement
 import java.sql.Date
 
 class NotificationsListAdapter(
-    var notificationsListData: MutableList<Any>,
     private val utils: Utils,
     private val onItemClicked: (Int) -> Unit,
     private val loadNextPage: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var data: List<Any>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
+
+    private val differ: AsyncListDiffer<Any> = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Notification && newItem is Notification)
+                return oldItem.id == newItem.id
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Notification && newItem is Notification)
+                return oldItem == newItem
+            return false
+        }
+    })
 
     companion object {
         private const val NOTIFICATION = 1
@@ -27,9 +46,9 @@ class NotificationsListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (notificationsListData[position] is DummyCell) {
+        if (data[position] is DummyCell) {
             return LAST
-        } else if (notificationsListData[position] is Notification) {
+        } else if (data[position] is Notification) {
             return NOTIFICATION
         }
         return NOTIFICATION
@@ -45,7 +64,7 @@ class NotificationsListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemData = notificationsListData[position]
+        val itemData = data[position]
         if (holder is NotificationLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
         } else if (holder is NotificationViewHolder && itemData is Notification) {
@@ -54,7 +73,7 @@ class NotificationsListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return notificationsListData.size
+        return data.size
     }
 
     class NotificationViewHolder(

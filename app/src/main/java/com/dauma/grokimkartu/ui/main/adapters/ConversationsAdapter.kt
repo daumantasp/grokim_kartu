@@ -15,22 +15,42 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.IconStatus
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.general.utils.time.CustomDateTimeFormatPattern
+import com.dauma.grokimkartu.repositories.conversations.entities.Message
 import com.dauma.grokimkartu.ui.viewelements.InitialsViewElement
 import java.sql.Date
 import java.sql.Timestamp
 
 class ConversationsAdapter(
     val context: Context,
-    var conversationsListData: MutableList<Any>,
     private val utils: Utils,
     private val onItemClicked: (Int, String) -> Unit
 ) : RecyclerView.Adapter<ConversationsAdapter.ConversationViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    var data: List<Any>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
+
+    private val differ: AsyncListDiffer<Any> = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Message && newItem is Message)
+                return oldItem.id == newItem.id
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Message && newItem is Message)
+                return oldItem == newItem
+            return false
+        }
+    })
 
     companion object {
         private const val PRIVATE = 1
@@ -51,9 +71,9 @@ class ConversationsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (conversationsListData[position] is PrivateConversationData) {
+        if (data[position] is PrivateConversationData) {
             return PRIVATE
-        } else if (conversationsListData[position] is ThomannConversationData) {
+        } else if (data[position] is ThomannConversationData) {
             return THOMANN
         }
         return PRIVATE
@@ -69,7 +89,7 @@ class ConversationsAdapter(
     }
 
     override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
-        val itemData = conversationsListData[position]
+        val itemData = data[position]
         if (holder is PrivateConversationViewHolder && itemData is PrivateConversationData) {
             holder.bind(itemData)
         }
@@ -79,7 +99,7 @@ class ConversationsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return conversationsListData.size
+        return data.size
     }
 
     abstract class ConversationViewHolder(

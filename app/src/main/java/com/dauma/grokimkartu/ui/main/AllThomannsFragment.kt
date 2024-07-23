@@ -16,7 +16,6 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentAllThomannsBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.thomanns.entities.Thomann
 import com.dauma.grokimkartu.repositories.thomanns.entities.ThomannsPage
 import com.dauma.grokimkartu.ui.main.adapters.ThomannListAdapter
 import com.dauma.grokimkartu.viewmodels.main.AllThomannsViewModel
@@ -78,10 +77,9 @@ class AllThomannsFragment : Fragment() {
                     allThomannsViewModel.uiState.collect {
                         val data = getAllThomannsFromPages(it.thomannsPages)
                         if (!isRecyclerViewSetup) {
-                            setupRecyclerView(data)
-                        } else {
-                            reloadRecyclerViewWithNewData(data)
+                            setupRecyclerView()
                         }
+                        reloadRecyclerViewWithNewData(data)
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
@@ -109,11 +107,10 @@ class AllThomannsFragment : Fragment() {
         return data
     }
 
-    private fun setupRecyclerView(thomannListData: List<Any>) {
+    private fun setupRecyclerView() {
         binding.allThomannsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.allThomannsRecyclerView.adapter = ThomannListAdapter(
             context = requireContext(),
-            thomannListData = thomannListData.toMutableList(),
             utils = utils,
             onItemClicked = { thomannId -> this.allThomannsViewModel.thomannItemClicked(thomannId) },
             loadNextPage = { this.allThomannsViewModel.loadNextThomannsPage() })
@@ -123,66 +120,7 @@ class AllThomannsFragment : Fragment() {
     private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
         val adapter = binding.allThomannsRecyclerView.adapter
         if (adapter is ThomannListAdapter) {
-            val previousData = adapter.thomannListData
-
-            val changedItems: MutableList<Int> = mutableListOf()
-            val insertedItems: MutableList<Int> = mutableListOf()
-            val removedItems: MutableList<Int> = mutableListOf()
-
-            if (previousData.count() <= newData.count()) {
-                for (i in 0 until previousData.count()) {
-                    val previousItem = previousData[i]
-                    val newItem = newData[i]
-                    if (previousItem is Thomann && newItem is Thomann) {
-                        if (previousItem.id != newItem.id) {
-                            changedItems.add(i)
-                        }
-                    } else if (previousItem is DummyCell && newItem is DummyCell) {
-                        // DO NOTHING
-                    } else {
-                        changedItems.add(i)
-                    }
-                }
-                for (i in previousData.count() until newData.count()) {
-                    insertedItems.add(i)
-                }
-            } else {
-                for (i in 0 until newData.count()) {
-                    val previousItem = previousData[i]
-                    val newItem = newData[i]
-                    if (previousItem is Thomann && newItem is Thomann) {
-                        if (previousItem.id != newItem.id) {
-                            changedItems.add(i)
-                        }
-                    } else if (previousItem is DummyCell && newItem is DummyCell) {
-                        // DO NOTHING
-                    } else {
-                        changedItems.add(i)
-                    }
-                }
-                for (i in newData.count() until previousData.count()) {
-                    removedItems.add(i)
-                }
-            }
-
-            val sortedChangedItems = changedItems.sorted()
-            val sortedInsertedItems = insertedItems.sorted()
-            val sortedRemovedItems = removedItems.sorted()
-
-            val sortedChangedRanges = utils.otherUtils.getRanges(sortedChangedItems)
-            val sortedInsertedRanges = utils.otherUtils.getRanges(sortedInsertedItems)
-            val sortedRemovedRanges = utils.otherUtils.getRanges(sortedRemovedItems)
-
-            adapter.thomannListData = newData.toMutableList()
-            for (range in sortedRemovedRanges.reversed()) {
-                adapter.notifyItemRangeRemoved(range[0], range[1])
-            }
-            for (range in sortedInsertedRanges) {
-                adapter.notifyItemRangeInserted(range[0], range[1])
-            }
-            for (range in sortedChangedRanges) {
-                adapter.notifyItemRangeChanged(range[0], range[1])
-            }
+            adapter.data = newData
         }
     }
 }

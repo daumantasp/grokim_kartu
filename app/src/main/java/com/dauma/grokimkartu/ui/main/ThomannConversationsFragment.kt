@@ -69,14 +69,10 @@ class ThomannConversationsFragment : Fragment() {
                 launch {
                     thomannConversationsViewModel.uiState.collect {
                         val thomannConversationData = it.conversations.map { c -> ThomannConversationData(c) }
-                        if (isViewSetup == false) {
-                            setupThomannConversationsRecyclerView(thomannConversationData)
-                        } else {
-                            val conversationsAdapter = binding.thomannConversationsRecyclerView.adapter as? ConversationsAdapter
-                            conversationsAdapter?.conversationsListData?.clear()
-                            conversationsAdapter?.conversationsListData?.addAll(thomannConversationData)
-                            binding.thomannConversationsRecyclerView.adapter?.notifyDataSetChanged()
+                        if (!isViewSetup) {
+                            setupThomannConversationsRecyclerView()
                         }
+                        reloadRecyclerViewWithNewData(thomannConversationData)
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
@@ -86,11 +82,10 @@ class ThomannConversationsFragment : Fragment() {
         }
     }
 
-    private fun setupThomannConversationsRecyclerView(conversations: List<ThomannConversationData>) {
+    private fun setupThomannConversationsRecyclerView() {
         binding.thomannConversationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.thomannConversationsRecyclerView.adapter = ConversationsAdapter(
             context = requireContext(),
-            conversationsListData = conversations.toMutableList(),
             utils = utils,
             onItemClicked = { thomannId, name ->
                 findNavController().navigate(ConversationsFragmentDirections.actionConversationsFragmentToConversationFragment2(
@@ -101,5 +96,12 @@ class ThomannConversationsFragment : Fragment() {
             }
         )
         isViewSetup = true
+    }
+
+    private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
+        val adapter = binding.thomannConversationsRecyclerView.adapter
+        if (adapter is ConversationsAdapter) {
+            adapter.data = newData
+        }
     }
 }

@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
@@ -27,12 +29,29 @@ import java.util.*
 
 class ThomannListAdapter(
     val context: Context,
-    var thomannListData: MutableList<Any>,
     private val utils: Utils,
     private val onItemClicked: (Int) -> Unit,
     private val loadNextPage: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    var data: List<Any>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
+
+    private val differ: AsyncListDiffer<Any> = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Thomann && newItem is Thomann)
+                return oldItem.id == newItem.id
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Thomann && newItem is Thomann)
+                return oldItem == newItem
+            return false
+        }
+    })
 
     companion object {
         private const val THOMANN = 1
@@ -54,9 +73,9 @@ class ThomannListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (thomannListData[position] is DummyCell) {
+        if (data[position] is DummyCell) {
             return LAST
-        } else if (thomannListData[position] is Thomann) {
+        } else if (data[position] is Thomann) {
             return THOMANN
         }
         return THOMANN
@@ -72,7 +91,7 @@ class ThomannListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemData = thomannListData[position]
+        val itemData = data[position]
         if (holder is ThomannLastViewHolder && itemData is DummyCell) {
             holder.bind(itemData)
         } else if (holder is ThomannViewHolder && itemData is Thomann) {
@@ -81,7 +100,7 @@ class ThomannListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return thomannListData.size
+        return data.size
     }
 
     class ThomannViewHolder(

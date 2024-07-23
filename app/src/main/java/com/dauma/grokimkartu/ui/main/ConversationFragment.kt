@@ -22,7 +22,6 @@ import com.dauma.grokimkartu.databinding.FragmentConversationBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
 import com.dauma.grokimkartu.repositories.conversations.entities.ConversationPage
-import com.dauma.grokimkartu.repositories.conversations.entities.Message
 import com.dauma.grokimkartu.ui.main.adapters.ConversationAdapter
 import com.dauma.grokimkartu.viewmodels.main.ConversationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -73,7 +72,7 @@ class ConversationFragment : Fragment() {
         activity?.window?.decorView?.let {
             utils.keyboardUtils.registerListener("ConversationFragment", it) { isOpened, keyboardHeight ->
                 if (isOpened) {
-                    val data = (binding.conversationsRecyclerView.adapter as ConversationAdapter).conversation
+                    val data = (binding.conversationsRecyclerView.adapter as ConversationAdapter).data
                     binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
                 }
             }
@@ -120,11 +119,10 @@ class ConversationFragment : Fragment() {
                     conversationViewModel.uiState.collect {
                         binding.conversationsHeaderViewElement.setTitle(it.title)
                         val data = getAllConversationFromPagesAndReverse(it.conversationPages)
-                        if (isViewSetup == false) {
-                            setupConversationRecyclerView(data)
-                        } else {
-                            reloadRecyclerViewWithNewData(data)
+                        if (!isViewSetup) {
+                            setupConversationRecyclerView()
                         }
+                        reloadRecyclerViewWithNewData(data)
                         binding.conversationsRecyclerView.scrollToPosition(data.count() - 1)
                         if (it.close)
                             findNavController().popBackStack()
@@ -154,11 +152,10 @@ class ConversationFragment : Fragment() {
         return reversedData
     }
 
-    private fun setupConversationRecyclerView(conversation: List<Any>) {
+    private fun setupConversationRecyclerView() {
         binding.conversationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.conversationsRecyclerView.adapter = ConversationAdapter(
             context = requireContext(),
-            conversation = conversation.toMutableList(),
             utils = utils,
             loadNextPage = { this.conversationViewModel.loadNextConversationPage() }
         )
@@ -168,70 +165,7 @@ class ConversationFragment : Fragment() {
     private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
         val adapter = binding.conversationsRecyclerView.adapter
         if (adapter is ConversationAdapter) {
-            val previousData = adapter.conversation
-
-            val changedItems: MutableList<Int> = mutableListOf()
-            val insertedItems: MutableList<Int> = mutableListOf()
-            val removedItems: MutableList<Int> = mutableListOf()
-
-            if (previousData.count() <= newData.count()) {
-                for (i in 0 until previousData.count()) {
-                    val previousItem = previousData[i]
-                    val newItem = newData[i]
-                    if (previousItem is Message && newItem is Message) {
-                        if (previousItem.id != newItem.id) {
-                            changedItems.add(i)
-                        }
-                    }
-                    else if (previousItem is DummyCell && newItem is DummyCell) {
-                        // DO NOTHING
-                    }
-                    else {
-                        changedItems.add(i)
-                    }
-                }
-                for (i in previousData.count() until newData.count()) {
-                    insertedItems.add(i)
-                }
-            } else {
-                for (i in 0 until newData.count()) {
-                    val previousItem = previousData[i]
-                    val newItem = newData[i]
-                    if (previousItem is Message && newItem is Message) {
-                        if (previousItem.id != newItem.id) {
-                            changedItems.add(i)
-                        }
-                    }
-                    else if (previousItem is DummyCell && newItem is DummyCell) {
-                        // DO NOTHING
-                    }
-                    else {
-                        changedItems.add(i)
-                    }
-                }
-                for (i in newData.count() until previousData.count()) {
-                    removedItems.add(i)
-                }
-            }
-
-            val sortedChangedItems = changedItems.sorted()
-            val sortedInsertedItems = insertedItems.sorted()
-            val sortedRemovedItems = removedItems.sorted()
-
-            val sortedChangedRanges = utils.otherUtils.getRanges(sortedChangedItems)
-            val sortedInsertedRanges = utils.otherUtils.getRanges(sortedInsertedItems)
-            val sortedRemovedRanges = utils.otherUtils.getRanges(sortedRemovedItems)
-
-            adapter.conversation = newData.toMutableList()
-            for (range in sortedRemovedRanges.reversed()) {
-                adapter.notifyItemRangeRemoved(range[0], range[1])
-            }
-            for (range in sortedInsertedRanges) {
-                adapter.notifyItemRangeInserted(range[0], range[1])
-            }
-            for (range in sortedChangedRanges) {
-                adapter.notifyItemRangeChanged(range[0], range[1])
-            }
+            adapter.data = newData
         }
     }
 }

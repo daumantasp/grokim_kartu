@@ -69,14 +69,10 @@ class PrivateConversationsFragment : Fragment() {
                 launch {
                     privateConversationsViewModel.uiState.collect {
                         val privateConversationData = it.conversations.map { c -> PrivateConversationData(c) }
-                        if (isViewSetup == false) {
-                            setupPrivateConversationsRecyclerView(privateConversationData)
-                        } else {
-                            val conversationsAdapter = binding.privateConversationsRecyclerView.adapter as? ConversationsAdapter
-                            conversationsAdapter?.conversationsListData?.clear()
-                            conversationsAdapter?.conversationsListData?.addAll(privateConversationData)
-                            binding.privateConversationsRecyclerView.adapter?.notifyDataSetChanged()
+                        if (!isViewSetup) {
+                            setupPrivateConversationsRecyclerView()
                         }
+                        reloadRecyclerViewWithNewData(privateConversationData)
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
@@ -86,11 +82,10 @@ class PrivateConversationsFragment : Fragment() {
         }
     }
 
-    private fun setupPrivateConversationsRecyclerView(conversations: List<PrivateConversationData>) {
+    private fun setupPrivateConversationsRecyclerView() {
         binding.privateConversationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.privateConversationsRecyclerView.adapter = ConversationsAdapter(
             context = requireContext(),
-            conversationsListData = conversations.toMutableList(),
             utils = utils,
             onItemClicked = { userId, name ->
                 findNavController().navigate(ConversationsFragmentDirections.actionConversationsFragmentToConversationFragment2(
@@ -101,5 +96,12 @@ class PrivateConversationsFragment : Fragment() {
             }
         )
         isViewSetup = true
+    }
+
+    private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
+        val adapter = binding.privateConversationsRecyclerView.adapter
+        if (adapter is ConversationsAdapter) {
+            adapter.data = newData
+        }
     }
 }

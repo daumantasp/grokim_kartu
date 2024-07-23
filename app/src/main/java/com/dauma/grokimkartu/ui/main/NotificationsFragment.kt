@@ -17,7 +17,6 @@ import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.databinding.FragmentNotificationsBinding
 import com.dauma.grokimkartu.general.DummyCell
 import com.dauma.grokimkartu.general.utils.Utils
-import com.dauma.grokimkartu.repositories.notifications.entities.Notification
 import com.dauma.grokimkartu.repositories.notifications.entities.NotificationsPage
 import com.dauma.grokimkartu.ui.main.adapters.NotificationsListAdapter
 import com.dauma.grokimkartu.viewmodels.main.NotificationsViewModel
@@ -81,11 +80,10 @@ class NotificationsFragment : Fragment() {
                 launch {
                     notificationsViewModel.uiState.collect {
                         val data = getAllNotificationsFromPages(it.notificationsPages)
-                        if (isViewSetup == false) {
-                            setupNotificationsRecyclerView(data)
-                        } else {
-                            reloadRecyclerViewWithNewData(data)
+                        if (!isViewSetup) {
+                            setupNotificationsRecyclerView()
                         }
+                        reloadRecyclerViewWithNewData(data)
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
@@ -117,10 +115,9 @@ class NotificationsFragment : Fragment() {
         return data
     }
 
-    private fun setupNotificationsRecyclerView(notificationsListData: List<Any>) {
+    private fun setupNotificationsRecyclerView() {
         binding.notificationsRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.notificationsRecyclerView.adapter = NotificationsListAdapter(
-            notificationsListData = notificationsListData.toMutableList(),
             utils = utils,
             onItemClicked = { notificationId -> this.notificationsViewModel.notificationExpand(notificationId)},
             loadNextPage = { this.notificationsViewModel.loadNextNotificationsPage() }
@@ -131,70 +128,7 @@ class NotificationsFragment : Fragment() {
     private fun reloadRecyclerViewWithNewData(newData: List<Any>) {
         val adapter = binding.notificationsRecyclerView.adapter
         if (adapter is NotificationsListAdapter) {
-            val previousData = adapter.notificationsListData
-
-            val changedItems: MutableList<Int> = mutableListOf()
-            val insertedItems: MutableList<Int> = mutableListOf()
-            val removedItems: MutableList<Int> = mutableListOf()
-
-            if (previousData.count() <= newData.count()) {
-                for (i in 0 until previousData.count()) {
-                    val previousItem = previousData[i]
-                    val newItem = newData[i]
-                    if (previousItem is Notification && newItem is Notification) {
-                        if (previousItem.id != newItem.id) {
-                            changedItems.add(i)
-                        } else if (previousItem.state != newItem.state) {
-                            changedItems.add(i)
-                        }
-                    } else if (previousItem is DummyCell && newItem is DummyCell) {
-                        // DO NOTHING
-                    } else {
-                        changedItems.add(i)
-                    }
-                }
-                for (i in previousData.count() until newData.count()) {
-                    insertedItems.add(i)
-                }
-            } else {
-                for (i in 0 until newData.count()) {
-                    val previousItem = previousData[i]
-                    val newItem = newData[i]
-                    if (previousItem is Notification && newItem is Notification) {
-                        if (previousItem.id != newItem.id) {
-                            changedItems.add(i)
-                        } else if (previousItem.state != newItem.state) {
-                            changedItems.add(i)
-                        }
-                    } else if (previousItem is DummyCell && newItem is DummyCell) {
-                        // DO NOTHING
-                    } else {
-                        changedItems.add(i)
-                    }
-                }
-                for (i in newData.count() until previousData.count()) {
-                    removedItems.add(i)
-                }
-            }
-
-            val sortedChangedItems = changedItems.sorted()
-            val sortedInsertedItems = insertedItems.sorted()
-            val sortedRemovedItems = removedItems.sorted()
-
-            val sortedChangedRanges = utils.otherUtils.getRanges(sortedChangedItems)
-            val sortedInsertedRanges = utils.otherUtils.getRanges(sortedInsertedItems)
-            val sortedRemovedRanges = utils.otherUtils.getRanges(sortedRemovedItems)
-
-            adapter.notificationsListData = newData.toMutableList()
-            for (range in sortedRemovedRanges.reversed()) {
-                adapter.notifyItemRangeRemoved(range[0], range[1])
-            }
-            for (range in sortedInsertedRanges) {
-                adapter.notifyItemRangeInserted(range[0], range[1])
-            }
-            for (range in sortedChangedRanges) {
-                adapter.notifyItemRangeChanged(range[0], range[1])
-            }
+            adapter.data = newData
         }
     }
 }

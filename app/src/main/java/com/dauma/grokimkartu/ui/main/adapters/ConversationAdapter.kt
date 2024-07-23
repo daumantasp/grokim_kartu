@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dauma.grokimkartu.R
 import com.dauma.grokimkartu.general.DummyCell
@@ -27,11 +29,28 @@ import java.sql.Timestamp
 
 class ConversationAdapter(
     val context: Context,
-    var conversation: MutableList<Any>,
     private val utils: Utils,
     private val loadNextPage: () -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val photoIconBackgroundDrawable: Drawable?
+
+    var data: List<Any>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
+
+    private val differ: AsyncListDiffer<Any> = AsyncListDiffer(this, object : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Message && newItem is Message)
+                return oldItem.id == newItem.id
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            if (oldItem is Message && newItem is Message)
+                return oldItem == newItem
+            return false
+        }
+    })
 
     companion object {
         private const val MY_MESSAGE = 1
@@ -53,12 +72,12 @@ class ConversationAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        val data = conversation[position]
-        if (data is Message && data.user?.isCurrent == true) {
+        val item = data[position]
+        if (item is Message && item.user?.isCurrent == true) {
             return MY_MESSAGE
-        } else if (data is Message && data.user?.isCurrent != true) {
+        } else if (item is Message && item.user?.isCurrent != true) {
             return PARTNER_MESSAGE
-        } else if (data is DummyCell) {
+        } else if (item is DummyCell) {
             return LAST
         }
         return MY_MESSAGE
@@ -76,7 +95,7 @@ class ConversationAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val itemData = conversation[position]
+        val itemData = data[position]
         if (holder is MyMessageViewHolder && itemData is Message) {
             holder.bind(itemData)
         } else if (holder is PartnerMessageViewHolder && itemData is Message) {
@@ -87,7 +106,7 @@ class ConversationAdapter(
     }
 
     override fun getItemCount(): Int {
-        return conversation.size
+        return data.size
     }
 
     class MyMessageViewHolder(
