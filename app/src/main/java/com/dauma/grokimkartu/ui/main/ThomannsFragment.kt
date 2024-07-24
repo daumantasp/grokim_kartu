@@ -76,11 +76,13 @@ class ThomannsFragment : Fragment() {
                         } else {
                             binding.thomannsHeaderViewElement.showRightTextAsDisabled(true)
                         }
-                        if (it.isFilterStarted)
+                        if (it.isFilterStarted) {
                             findNavController().navigate(R.id.action_thomannFragment_to_thomannsFilterFragment)
-                        else if (it.isCreateStarted)
+                            thomannsViewModel.filterStarted()
+                        } else if (it.isCreateStarted) {
                             findNavController().navigate(R.id.action_thomannFragment_to_thomannEditFragment)
-                        else if (it.close)
+                            thomannsViewModel.createStarted()
+                        } else if (it.close)
                             findNavController().popBackStack()
                     }
                 }

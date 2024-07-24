@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 data class PlayersUiState(
     val playersPages: List<PlayersPage> = listOf(),
+    val playerDetailsId: Int? = null,
     val isFilterApplied: Boolean = false,
     val playersFilterStarted: Boolean = false,
     val close: Boolean = false
@@ -41,6 +42,10 @@ class PlayersViewModel @Inject constructor(
     }
 
     fun back() = _uiState.update { it.copy(close = true) }
+
+    fun playerDetails(userId: Int) = _uiState.update { it.copy(playerDetailsId = userId) }
+
+    fun playerDetailsStarted() = _uiState.update { it.copy(playerDetailsId = null) }
 
     fun playersFilter() = _uiState.update { it.copy(playersFilterStarted = true) }
 

@@ -94,7 +94,12 @@ class PlayersFragment : Fragment() {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
                         binding.playersHeaderViewElement.showRightTextAttentioner(it.isFilterApplied)
-                        if (it.playersFilterStarted) {
+                        if (it.playerDetailsId != null) {
+                            val args = Bundle()
+                            args.putInt("userId", it.playerDetailsId)
+                            findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment, args)
+                            playersViewModel.playerDetailsStarted()
+                        } else if (it.playersFilterStarted) {
                             findNavController().navigate(R.id.action_playersFragment_to_playersFilterFragment)
                             playersViewModel.playersFilterStarted()
                         } else if (it.close) {
@@ -130,12 +135,8 @@ class PlayersFragment : Fragment() {
         binding.playersRecyclerView.adapter = PlayersListAdapter(
             context = requireContext(),
             utils = utils,
-            onItemClicked = { userId ->
-                val args = Bundle()
-                args.putInt("userId", userId)
-                this.findNavController().navigate(R.id.action_playersFragment_to_playerDetailsFragment, args)
-            },
-            loadNextPage = { this.playersViewModel.loadNextPlayersPage() })
+            onItemClicked = { userId -> playersViewModel.playerDetails(userId) },
+            loadNextPage = { playersViewModel.loadNextPlayersPage() })
         isPlayersRecyclerViewSetup = true
     }
 

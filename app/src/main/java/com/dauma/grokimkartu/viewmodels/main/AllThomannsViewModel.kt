@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 data class AllThomannsUiState(
     val thomannsPages: List<ThomannsPage> = listOf(),
-    val isThomannDetailsStarted: Int = -1
+    val thomannDetailsId: Int? = null
 )
 
 @HiltViewModel
@@ -35,14 +35,14 @@ class AllThomannsViewModel @Inject constructor(
         loadNextThomannsPage()
     }
 
-    fun thomannItemClicked(thomannId: Int) {
+    fun thomannDetails(thomannId: Int) {
         thomannFindLoop@for (page in _uiState.value.thomannsPages) {
             page.thomanns?.let {  }
             if (page.thomanns != null) {
                 for (thomann in page.thomanns) {
                     if (thomann.id == thomannId) {
                         if (thomann.isAccessible == true) {
-                            _uiState.update { it.copy(isThomannDetailsStarted = thomannId ) }
+                            _uiState.update { it.copy(thomannDetailsId = thomannId) }
                         }
                         break@thomannFindLoop
                     }
@@ -50,6 +50,8 @@ class AllThomannsViewModel @Inject constructor(
             }
         }
     }
+
+    fun thomannDetailsStarted() = _uiState.update { it.copy(thomannDetailsId = null) }
 
     fun loadNextThomannsPage() {
         viewModelScope.launch {

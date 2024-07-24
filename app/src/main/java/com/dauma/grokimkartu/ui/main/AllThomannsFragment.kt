@@ -83,10 +83,11 @@ class AllThomannsFragment : Fragment() {
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
-                        if (it.isThomannDetailsStarted != -1) {
+                        if (it.thomannDetailsId != null) {
                             val args = Bundle()
-                            args.putInt("thomannId", it.isThomannDetailsStarted)
+                            args.putInt("thomannId", it.thomannDetailsId)
                             findNavController().navigate(R.id.action_thomannFragment_to_thomannDetailsFragment, args)
+                            allThomannsViewModel.thomannDetailsStarted()
                         }
                     }
                 }
@@ -112,8 +113,8 @@ class AllThomannsFragment : Fragment() {
         binding.allThomannsRecyclerView.adapter = ThomannListAdapter(
             context = requireContext(),
             utils = utils,
-            onItemClicked = { thomannId -> this.allThomannsViewModel.thomannItemClicked(thomannId) },
-            loadNextPage = { this.allThomannsViewModel.loadNextThomannsPage() })
+            onItemClicked = { thomannId -> allThomannsViewModel.thomannDetails(thomannId) },
+            loadNextPage = { allThomannsViewModel.loadNextThomannsPage() })
         isRecyclerViewSetup = true
     }
 

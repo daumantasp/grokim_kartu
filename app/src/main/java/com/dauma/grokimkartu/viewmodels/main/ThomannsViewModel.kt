@@ -45,9 +45,11 @@ class ThomannsViewModel @Inject constructor(
             _uiState.update { it.copy(isFilterStarted = true, isCreateStarted = false) }
     }
 
-    fun createClicked() {
-        _uiState.update { it.copy(isFilterStarted = false, isCreateStarted = true) }
-    }
+    fun filterStarted() = _uiState.update { it.copy(isFilterStarted = false, isCreateStarted = false) }
+
+    fun createClicked() = _uiState.update { it.copy(isFilterStarted = false, isCreateStarted = true) }
+
+    fun createStarted() = _uiState.update { it.copy(isFilterStarted = false, isCreateStarted = false) }
 
     private suspend fun observeFilterAppliance() {
         thomannsRepository.paginator.isFilterApplied.collect { isFilterApplied ->
